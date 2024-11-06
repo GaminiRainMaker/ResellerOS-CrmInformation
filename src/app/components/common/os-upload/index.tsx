@@ -405,28 +405,28 @@ const OsUpload: React.FC<any> = ({
                       return newItem;
                     },
                   );
+                  console.log('35435324234', transformedArrForLOwerCase);
 
                   resultantValues = transformedArrForLOwerCase?.map(
                     (obj: any) => {
                       const newObj: any = {};
                       lineItemSyncingData?.forEach((mapping: any) => {
-                        console.log(
-                          '43543543432',
-                          mapping?.pdf_header,
-                          transformString(mapping?.pdf_header),
-                        );
+                        // console.log(
+                        //   '43543543432',
+                        //   mapping?.pdf_header,
+                        //   transformString(mapping?.pdf_header),
+                        // );
 
                         if (transformString(mapping?.pdf_header) in obj) {
-                          console.log(
-                            '43543543432',
-                            mapping?.quote_header,
-                            mapping?.pdf_header,
-                          );
+                          // console.log(
+                          //   '43543543432',
+                          //   mapping?.quote_header,
+                          //   mapping?.pdf_header,
+                          // );
                           newObj[mapping?.quote_header] =
                             obj[transformString(mapping?.pdf_header)];
                         }
                       });
-                      console.log('35435324234', lineItemSyncingData);
 
                       Object.entries(obj).forEach(([key, value]) => {
                         if (
@@ -459,10 +459,9 @@ const OsUpload: React.FC<any> = ({
 
     let requiredResult = resultantValues?.filter(
       (items: any) =>
-        items?.product_code &&
-        items?.product_code !== undefined &&
-        items?.product_code !== null &&
-        containsLetterAndNumber(items?.product_code),
+        items?.description &&
+        items?.description !== undefined &&
+        items?.description !== null,
     );
 
     return {

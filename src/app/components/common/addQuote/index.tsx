@@ -345,11 +345,21 @@ const AddQuote: FC<AddQuoteInterface> = ({
                 product_id: itemsToAdd?.id,
                 product_code: itemsToAdd?.product_code,
                 line_amount: itemsToAdd?.line_amount,
-                list_price: itemsToAdd?.list_price,
-                description: itemsToAdd?.description,
-                quantity: itemsToAdd?.quantity,
-                adjusted_price: itemsToAdd?.adjusted_price,
-                line_number: itemsToAdd?.line_number,
+                list_price: itemssProduct?.list_price
+                  ? itemssProduct?.list_price
+                  : itemsToAdd?.list_price,
+                description: itemssProduct?.description
+                  ? itemssProduct?.description
+                  : itemsToAdd?.description,
+                quantity: itemssProduct?.quantity
+                  ? itemssProduct?.quantity
+                  : itemsToAdd?.quantity,
+                adjusted_price: itemssProduct?.adjusted_price
+                  ? itemssProduct?.adjusted_price
+                  : itemsToAdd?.adjusted_price,
+                line_number: itemssProduct?.line_number
+                  ? itemssProduct?.line_number
+                  : itemsToAdd?.line_number,
                 organization: userInformation.organization,
               };
               finalLineItems?.push(obj1);
@@ -571,8 +581,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
         }
       });
     }
-    // console.log('324232223323233', newArrWithoutManual);
-    // return;
+
     try {
       setFinalLoading(true);
       setLoading(true);
@@ -760,11 +769,21 @@ const AddQuote: FC<AddQuoteInterface> = ({
                 product_id: itemsToAdd?.id,
                 product_code: itemsToAdd?.product_code,
                 line_amount: itemsToAdd?.line_amount,
-                list_price: itemsToAdd?.list_price,
-                description: itemsToAdd?.description,
-                quantity: itemsToAdd?.quantity,
-                adjusted_price: itemsToAdd?.adjusted_price,
-                line_number: itemsToAdd?.line_number,
+                list_price: itemssProduct?.list_price
+                  ? itemssProduct?.list_price
+                  : itemsToAdd?.list_price,
+                description: itemssProduct?.description
+                  ? itemssProduct?.description
+                  : itemsToAdd?.description,
+                quantity: itemssProduct?.quantity
+                  ? itemssProduct?.quantity
+                  : itemsToAdd?.quantity,
+                adjusted_price: itemssProduct?.adjusted_price
+                  ? itemssProduct?.adjusted_price
+                  : itemsToAdd?.adjusted_price,
+                line_number: itemssProduct?.line_number
+                  ? itemssProduct?.line_number
+                  : itemsToAdd?.line_number,
                 organization: userInformation.organization,
               };
               finalLineItems?.push(obj1);
