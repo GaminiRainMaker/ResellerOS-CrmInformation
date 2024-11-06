@@ -137,20 +137,20 @@ const CrmAccount: React.FC = () => {
       icon: <PhoneIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
     },
-    {
-      key: 4,
-      primary: <div>{0}</div>,
-      secondry: 'Recents',
-      icon: <ClockIcon width={24} color={token?.colorWarning} />,
-      iconBg: token?.colorWarningBg,
-    },
-    {
-      key: 5,
-      primary: <div>{deletedData?.length}</div>,
-      secondry: 'Deleted',
-      icon: <TrashIcon width={24} color={token?.colorError} />,
-      iconBg: token?.colorErrorBg,
-    },
+    // {
+    //   key: 4,
+    //   primary: <div>{0}</div>,
+    //   secondry: 'Recents',
+    //   icon: <ClockIcon width={24} color={token?.colorWarning} />,
+    //   iconBg: token?.colorWarningBg,
+    // },
+    // {
+    //   key: 5,
+    //   primary: <div>{deletedData?.length}</div>,
+    //   secondry: 'Deleted',
+    //   icon: <TrashIcon width={24} color={token?.colorError} />,
+    //   iconBg: token?.colorErrorBg,
+    // },
   ];
 
   const ContactColumns = [

@@ -204,6 +204,22 @@ const CurrencyEditField: React.FC<EditableFiledsCommonInterface> = ({
               />
             </>
           )}
+           {CommonIndexOfUse?.user_fill && (
+            <>
+              {' '}
+              <Typography name="Body 4/Medium">User Fill Text</Typography>
+              <OsInput
+                style={{width: '100%'}}
+                placeholder="Label"
+                type="text"
+                defaultValue={CommonIndexOfUse?.userFillTextValue}
+                value={CommonIndexOfUse?.userFillTextValue}
+                onChange={(e: any) => {
+                  changeFieldValues(e?.target?.value, 'userFillTextValue');
+                }}
+              />
+            </>
+          )}
           {(NameofTheCurrentFiled === 'Checkbox' ||
             NameofTheCurrentFiled === 'Radio Button' ||
             NameofTheCurrentFiled === 'Toggle') && (
