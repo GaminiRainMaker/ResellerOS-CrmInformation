@@ -248,13 +248,14 @@ const OsUpload: React.FC<any> = ({
       const hasHyphen = /-/.test(str);
       return hasHyphen;
     }
-
     let requiredResult = resultantValues?.filter(
       (items: any) =>
-        items?.product_code &&
-        items?.product_code !== undefined &&
-        items?.product_code !== null &&
-        containsLetterAndNumber(items?.product_code),
+        (items?.product_code &&
+          items?.product_code !== undefined &&
+          items?.product_code !== null) ||
+        (items?.quantity &&
+          items?.quantity !== undefined &&
+          items?.quantity !== null),
     );
 
     return {
@@ -295,6 +296,7 @@ const OsUpload: React.FC<any> = ({
 
                   let mainItem = payload?.payload?.analyzeResult?.tables;
                   let globalArr: any = [];
+                  // console.log('35435324234', mainItem);
 
                   let resultTantArrr: any = [];
 
@@ -459,9 +461,12 @@ const OsUpload: React.FC<any> = ({
 
     let requiredResult = resultantValues?.filter(
       (items: any) =>
-        items?.description &&
-        items?.description !== undefined &&
-        items?.description !== null,
+        (items?.product_code &&
+          items?.product_code !== undefined &&
+          items?.product_code !== null) ||
+        (items?.quantity &&
+          items?.quantity !== undefined &&
+          items?.quantity !== null),
     );
 
     return {
