@@ -217,7 +217,6 @@ const UserManagement = () => {
         getSalesForceCrendenialsByOrgId({org_id: record?.org_id}),
       );
       if (res?.payload) {
-        console.log('payload65432', res?.payload);
         const credentials = {
           base_url: res.payload.base_url,
           consumer_key: res.payload.consumer_key,
