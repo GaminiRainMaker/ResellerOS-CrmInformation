@@ -357,8 +357,7 @@ const Partners: React.FC = () => {
       dataIndex: 'partner_program',
       key: 'partner_program',
       render: (text: string, record: any) => (
-        console.log('recordrecord', record),
-        (<CustomTextCapitalization text={record?.Partner?.partner} />)
+        <CustomTextCapitalization text={record?.Partner?.partner} />
       ),
     },
     {
@@ -492,8 +491,7 @@ const Partners: React.FC = () => {
       dataIndex: 'partner_program',
       key: 'partner_program',
       render: (text: string, record: any) => (
-        console.log('recordrecord', record),
-        (<CustomTextCapitalization text={record?.Partner?.partner} />)
+        <CustomTextCapitalization text={record?.Partner?.partner} />
       ),
     },
     {

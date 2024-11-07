@@ -25,7 +25,7 @@ import {
   insertDealReg,
   queryDealReg,
 } from '../../../../../redux/actions/dealReg';
-import {getAllPartnerandProgramApprovedForOrganizationSalesForce} from '../../../../../redux/actions/partner';
+import {getAllPartnerandProgramApprovedForOrganization, getAllPartnerandProgramApprovedForOrganizationSalesForce} from '../../../../../redux/actions/partner';
 import {
   createSalesforceDealreg,
   createSalesForcePartner,
@@ -78,15 +78,23 @@ const NewRegistrationForm: FC<any> = ({
     useState<any>();
 
   useEffect(() => {
-    dispatch(
-      getAllPartnerandProgramApprovedForOrganizationSalesForce({
-        organization: salesForceOrganization
-          ? salesForceOrganization
-          : userInformation?.organization,
-      }),
-    )?.then((payload: any) => {
-      setAllFilterPartnerData(payload?.payload);
-    });
+    if (salesForceOrganization) {
+      dispatch(
+        getAllPartnerandProgramApprovedForOrganizationSalesForce({
+          org_id: salesForceOrganization,
+        }),
+      )?.then((payload: any) => {
+        setAllFilterPartnerData(payload?.payload);
+      });
+    } else {
+      dispatch(
+        getAllPartnerandProgramApprovedForOrganization({
+          organization: userInformation?.organization,
+        }),
+      )?.then((payload: any) => {
+        setAllFilterPartnerData(payload?.payload);
+      });
+    }
   }, []);
 
   useEffect(() => {
