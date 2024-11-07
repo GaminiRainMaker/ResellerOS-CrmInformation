@@ -222,7 +222,7 @@ const UserManagement = () => {
           consumer_key: res.payload.consumer_key,
           consumer_secret: res.payload.consumer_secret,
           username: res.payload.username,
-          password:  res.payload.password,
+          password: res.payload.password,
         };
 
         const accessTokenRes = await dispatch(
@@ -247,9 +247,35 @@ const UserManagement = () => {
             token: accessTokenRes.payload.accessToken,
           };
 
-          await dispatch(createSalesForcePartner(partnerObj));
-          await dispatch(createSalesforcePartnerProgram(partnerProgramObj));
+          const partnerRes = await dispatch(
+            createSalesForcePartner(partnerObj),
+          );
+          if (Array.isArray(partnerRes?.payload)) {
+            const errorMessage =
+              partnerRes.payload[0]?.message ||
+              'Failed to create Salesforce partner';
+            notification.open({
+              message: 'Create Partner Error',
+              description: errorMessage,
+              type: 'error',
+            });
+            return;
+          }
 
+          const partnerProgramRes = await dispatch(
+            createSalesforcePartnerProgram(partnerProgramObj),
+          );
+          if (Array.isArray(partnerProgramRes?.payload)) {
+            const errorMessage =
+              partnerProgramRes.payload[0]?.message ||
+              'Failed to create Salesforce partner program';
+            notification.open({
+              message: 'Create Partner Program Error',
+              description: errorMessage,
+              type: 'error',
+            });
+            return;
+          }
           const assignPartnerProgramRes = await dispatch(
             insertAssignPartnerProgram(obj),
           );
@@ -292,7 +318,6 @@ const UserManagement = () => {
       partner_program_id: Data2?.program?.id,
       partner_program_name: Data2?.program?.name,
     };
-    console.log('finalData', finalData, selectedRecordData);
     if (finalData) {
       const obj = {
         organization: selectedRecordData?.organization,
