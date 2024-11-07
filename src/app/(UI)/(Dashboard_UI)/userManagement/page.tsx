@@ -152,7 +152,6 @@ const UserManagement = () => {
       key: 'is_salesforce',
       width: 173,
       render: (text: any, record: any) => {
-        console.log('recordrecord', record, text);
         return <Checkbox checked={text} />;
       },
     },
