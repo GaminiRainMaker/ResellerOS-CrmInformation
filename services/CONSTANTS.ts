@@ -339,5 +339,8 @@ export const API = {
     UpdateSalesForceSSOLogin: '/salesForceCredential/updateSalesForceSSOLogin',
     DeleteSalesForceCredentials:
       '/salesForceCredential/deleteSalesForceCredentials',
+    GetSalesForceCrendenialsByUsername:
+      '/salesForceCredential/getSalesForceCrendenialsByUsername',
+    GetSalesForceAccessToken: '/salesForceCredential/getSalesForceAccessToken',
   },
 };

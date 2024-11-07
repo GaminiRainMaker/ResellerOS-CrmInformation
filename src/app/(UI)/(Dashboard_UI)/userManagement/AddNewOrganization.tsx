@@ -29,17 +29,17 @@ const AddNewOrganization: FC<{
         <Col span={12}>
           <SelectFormItem
             label={
-              <Typography name="Body 4/Medium">Organization Email</Typography>
+              <Typography name="Body 4/Medium">Organization ID</Typography>
             }
-            name={'organization_email'}
+            name={'org_id'}
             rules={[
               {
                 required: true,
-                message: 'Organization Email is required!',
+                message: 'Organization ID is required!',
               },
             ]}
           >
-            <OsInput placeholder="Enter Organization Email" />
+            <OsInput placeholder="Enter Organization ID" />
           </SelectFormItem>
         </Col>
         <Col span={12}>

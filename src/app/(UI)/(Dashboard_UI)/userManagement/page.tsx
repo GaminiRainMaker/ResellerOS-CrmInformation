@@ -26,6 +26,10 @@ import React from 'react';
 import OsButton from '@/app/components/common/os-button';
 import AddNewOrganization from './AddNewOrganization';
 import {Checkbox} from '@/app/components/common/antd/Checkbox';
+import {
+  getSalesForceAccessToken,
+  getSalesForceCrendenialsByUsername,
+} from '../../../../../redux/actions/salesForceCredentials';
 
 const UserManagement = () => {
   const dispatch = useAppDispatch();
@@ -124,11 +128,11 @@ const UserManagement = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Organization Email
+          Organization ID
         </Typography>
       ),
-      dataIndex: 'organization_email',
-      key: 'organization_email',
+      dataIndex: 'org_id',
+      key: 'org_id',
       width: 173,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
@@ -199,20 +203,51 @@ const UserManagement = () => {
     emptyText: <EmptyContainer title="No Users" />,
   };
 
-  const onFinish = () => {
-    const Data = form?.getFieldsValue();
-
-    const obj = {
-      organization: selectedRecordData?.organization,
-      partner_program_id: Data?.partner_program_id,
-      is_approved: true,
-    };
-    dispatch(insertAssignPartnerProgram(obj)).then((d) => {
-      if (d?.payload) {
-        setShowPartnerProgramAssignModal(false);
-        form.resetFields();
+  const fetchSalesForceKey = (record: any) => {
+    dispatch(
+      getSalesForceCrendenialsByUsername({username: record?.email}),
+    ).then((res) => {
+      if (res?.payload) {
+        dispatch(getSalesForceAccessToken(res?.payload))?.then((res1) => {
+          if (res1?.payload) {
+            console.log('getSalesForceAccessToken', res1?.payload);
+          }
+        });
       }
     });
+  };
+
+  const onFinish = () => {
+    const Data = form?.getFieldsValue();
+    const Data2 = JSON.parse(Data?.partner_program_id);
+
+    const finalData = {
+      partner_id: Data2?.partner?.id,
+      partner_name: Data2?.partner?.name,
+      partner_program_id: Data2?.program?.id,
+      partner_program_name: Data2?.program?.name,
+    };
+    console.log('finalData', finalData, selectedRecordData);
+    if (finalData) {
+      const obj = {
+        organization: selectedRecordData?.organization,
+        org_id: selectedRecordData?.org_id,
+        partner_program_id: finalData?.partner_program_id,
+        is_approved: true,
+      };
+
+      dispatch(insertAssignPartnerProgram(obj))?.then((d) => {
+        if (d?.payload) {
+          setShowPartnerProgramAssignModal(false);
+          form.resetFields();
+        }
+      });
+
+      // if (selectedRecordData?.is_salesforce) {
+      //   console.log('selectedRecordData', selectedRecordData);
+      //   fetchSalesForceKey(selectedRecordData);
+      // }
+    }
   };
 
   const uniqueOrganization = Array?.from(
