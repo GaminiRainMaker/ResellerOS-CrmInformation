@@ -67,3 +67,29 @@ export const updateSalesForceSSOLogin = createAsyncThunk(
     }
   },
 );
+
+
+export const getSalesForceCrendenialsByOrgId = createAsyncThunk(
+  'salesforceCredentials/getSalesForceCrendenialsByOrgId',
+  async (data: any, thunkApi) => {
+    try {
+      const res =
+        await SALESFORCE_CREDENTIALS_API.getSalesForceCrendenialsByOrgId(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+export const getSalesForceAccessToken = createAsyncThunk(
+  'salesforceCredentials/getSalesForceAccessToken',
+  async (data: any, thunkApi) => {
+    try {
+      const res =
+        await SALESFORCE_CREDENTIALS_API.getSalesForceAccessToken(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
