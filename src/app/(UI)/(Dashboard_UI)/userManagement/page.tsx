@@ -30,6 +30,10 @@ import {
   getSalesForceAccessToken,
   getSalesForceCrendenialsByOrgId,
 } from '../../../../../redux/actions/salesForceCredentials';
+import {
+  createSalesForcePartner,
+  createSalesforcePartnerProgram,
+} from '../../../../../redux/actions/salesForce';
 
 const UserManagement = () => {
   const dispatch = useAppDispatch();
@@ -203,36 +207,80 @@ const UserManagement = () => {
     emptyText: <EmptyContainer title="No Users" />,
   };
 
-  const fetchSalesForceKey = (record: any, obj: any) => {
-    dispatch(getSalesForceCrendenialsByOrgId({org_id: record?.org_id})).then(
-      (res) => {
-        console.log('Credentialsssssss', res);
-        if (res?.payload) {
-          dispatch(getSalesForceAccessToken(res?.payload))?.then((res1) => {
-            if (res1?.payload) {
-              console.log('getSalesForceAccessToken', res1?.payload);
-            }
-          });
+  const fetchSalesForceKey = async (
+    record: any,
+    obj: any,
+    partnersData: any,
+  ) => {
+    try {
+      const res = await dispatch(
+        getSalesForceCrendenialsByOrgId({org_id: record?.org_id}),
+      );
+      if (res?.payload) {
+        console.log('payload65432', res?.payload);
+        const credentials = {
+          base_url: res.payload.base_url,
+          consumer_key: res.payload.consumer_key,
+          consumer_secret: res.payload.consumer_secret,
+          username: res.payload.username,
+          password:  res.payload.password,
+        };
 
-          // if (obj) {
-          //   dispatch(insertAssignPartnerProgram(obj))?.then((d) => {
-          //     if (d?.payload) {
-          //       setShowPartnerProgramAssignModal(false);
-          //       form.resetFields();
-          //     }
-          //   });
-          // }
+        const accessTokenRes = await dispatch(
+          getSalesForceAccessToken(credentials),
+        );
+        if (accessTokenRes?.payload) {
+          const partnerObj = {
+            data: {
+              Name: partnersData?.partner_name,
+              rosdealregai__External_Id__c: partnersData?.partner_id,
+            },
+            baseURL: accessTokenRes.payload.instanceUrl,
+            token: accessTokenRes.payload.accessToken,
+          };
+
+          const partnerProgramObj = {
+            data: {
+              Name: partnersData?.partner_program_name,
+              rosdealregai__External_Id__c: partnersData?.partner_program_id,
+            },
+            baseURL: accessTokenRes.payload.instanceUrl,
+            token: accessTokenRes.payload.accessToken,
+          };
+
+          await dispatch(createSalesForcePartner(partnerObj));
+          await dispatch(createSalesforcePartnerProgram(partnerProgramObj));
+
+          const assignPartnerProgramRes = await dispatch(
+            insertAssignPartnerProgram(obj),
+          );
+          if (assignPartnerProgramRes?.payload) {
+            setShowPartnerProgramAssignModal(false);
+            form.resetFields();
+          }
         } else {
-          notification?.open({
-            message:
-              'Salesforce credentials not found for the specified Org ID',
-            type: 'info',
+          notification.open({
+            message: 'Failed to get Salesforce access token',
+            type: 'error',
           });
-          setShowPartnerProgramAssignModal(false);
-          form.resetFields();
         }
-      },
-    );
+      } else {
+        notification.open({
+          message: 'Salesforce credentials not found for the specified Org ID',
+          type: 'info',
+        });
+        setShowPartnerProgramAssignModal(false);
+        form.resetFields();
+      }
+    } catch (error) {
+      console.error('Error in fetchSalesForceKey:', error);
+      notification.open({
+        message: 'An error occurred while processing Salesforce data',
+        type: 'error',
+      });
+      setShowPartnerProgramAssignModal(false);
+      form.resetFields();
+    }
   };
 
   const onFinish = () => {
@@ -255,7 +303,7 @@ const UserManagement = () => {
       };
 
       if (selectedRecordData?.is_salesforce) {
-        fetchSalesForceKey(selectedRecordData, obj);
+        fetchSalesForceKey(selectedRecordData, obj, finalData);
       } else {
         dispatch(insertAssignPartnerProgram(obj))?.then((d) => {
           if (d?.payload) {
