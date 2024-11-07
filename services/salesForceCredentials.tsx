@@ -19,8 +19,8 @@ export const SALESFORCE_CREDENTIALS_API = {
 
   deleteSalesForceCredentials: (data: any) =>
     post(API.SALESFORCE_CREDENTIALS.DeleteSalesForceCredentials, data) as Promise<AxiosResponse<any>>,
-  getSalesForceCrendenialsByUsername: (data: any) =>
-    post(API.SALESFORCE_CREDENTIALS.GetSalesForceCrendenialsByUsername, data) as Promise<AxiosResponse<any>>,
+  getSalesForceCrendenialsByOrgId: (data: any) =>
+    post(API.SALESFORCE_CREDENTIALS.GetSalesForceCrendenialsByOrgId, data) as Promise<AxiosResponse<any>>,
   getSalesForceAccessToken: (data: any) =>
     post(API.SALESFORCE_CREDENTIALS.GetSalesForceAccessToken, data) as Promise<AxiosResponse<any>>,
 };

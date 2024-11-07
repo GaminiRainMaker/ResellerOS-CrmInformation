@@ -69,12 +69,12 @@ export const updateSalesForceSSOLogin = createAsyncThunk(
 );
 
 
-export const getSalesForceCrendenialsByUsername = createAsyncThunk(
-  'salesforceCredentials/getSalesForceCrendenialsByUsername',
+export const getSalesForceCrendenialsByOrgId = createAsyncThunk(
+  'salesforceCredentials/getSalesForceCrendenialsByOrgId',
   async (data: any, thunkApi) => {
     try {
       const res =
-        await SALESFORCE_CREDENTIALS_API.getSalesForceCrendenialsByUsername(data);
+        await SALESFORCE_CREDENTIALS_API.getSalesForceCrendenialsByOrgId(data);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);

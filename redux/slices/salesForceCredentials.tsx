@@ -3,7 +3,7 @@ import {
   addSalesForceCredentials,
   deleteSalesForceCredentials,
   getSalesForceAccessToken,
-  getSalesForceCrendenialsByUsername,
+  getSalesForceCrendenialsByOrgId,
   queryAddSalesForceCredentials,
   updateSalesForceCredentialsId,
   updateSalesForceSSOLogin,
@@ -14,14 +14,14 @@ type SalesForceCredentials = {
   error: string | null;
   data: any;
   salesForceCredentials: any;
-  getSalesForceCrendenialsByUsernameData: any;
+  getSalesForceCrendenialsByOrgIdData: any;
 };
 const initialState: SalesForceCredentials = {
   loading: false,
   error: null,
   data: [],
   salesForceCredentials: [],
-  getSalesForceCrendenialsByUsernameData: {},
+  getSalesForceCrendenialsByOrgIdData: {},
 };
 
 const SalesForceCredentialsSlice = createSlice({
@@ -125,19 +125,19 @@ const SalesForceCredentialsSlice = createSlice({
           state.error = action.payload;
         },
       )
-      .addCase(getSalesForceCrendenialsByUsername.pending, (state) => {
+      .addCase(getSalesForceCrendenialsByOrgId.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        getSalesForceCrendenialsByUsername.fulfilled,
+        getSalesForceCrendenialsByOrgId.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.getSalesForceCrendenialsByUsernameData = action.payload;
+          state.getSalesForceCrendenialsByOrgIdData = action.payload;
         },
       )
       .addCase(
-        getSalesForceCrendenialsByUsername.rejected,
+        getSalesForceCrendenialsByOrgId.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

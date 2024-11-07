@@ -28,7 +28,7 @@ import AddNewOrganization from './AddNewOrganization';
 import {Checkbox} from '@/app/components/common/antd/Checkbox';
 import {
   getSalesForceAccessToken,
-  getSalesForceCrendenialsByUsername,
+  getSalesForceCrendenialsByOrgId,
 } from '../../../../../redux/actions/salesForceCredentials';
 
 const UserManagement = () => {
@@ -203,18 +203,36 @@ const UserManagement = () => {
     emptyText: <EmptyContainer title="No Users" />,
   };
 
-  const fetchSalesForceKey = (record: any) => {
-    dispatch(
-      getSalesForceCrendenialsByUsername({username: record?.email}),
-    ).then((res) => {
-      if (res?.payload) {
-        dispatch(getSalesForceAccessToken(res?.payload))?.then((res1) => {
-          if (res1?.payload) {
-            console.log('getSalesForceAccessToken', res1?.payload);
-          }
-        });
-      }
-    });
+  const fetchSalesForceKey = (record: any, obj: any) => {
+    dispatch(getSalesForceCrendenialsByOrgId({org_id: record?.org_id})).then(
+      (res) => {
+        console.log('Credentialsssssss', res);
+        if (res?.payload) {
+          dispatch(getSalesForceAccessToken(res?.payload))?.then((res1) => {
+            if (res1?.payload) {
+              console.log('getSalesForceAccessToken', res1?.payload);
+            }
+          });
+
+          // if (obj) {
+          //   dispatch(insertAssignPartnerProgram(obj))?.then((d) => {
+          //     if (d?.payload) {
+          //       setShowPartnerProgramAssignModal(false);
+          //       form.resetFields();
+          //     }
+          //   });
+          // }
+        } else {
+          notification?.open({
+            message:
+              'Salesforce credentials not found for the specified Org ID',
+            type: 'info',
+          });
+          setShowPartnerProgramAssignModal(false);
+          form.resetFields();
+        }
+      },
+    );
   };
 
   const onFinish = () => {
@@ -236,17 +254,16 @@ const UserManagement = () => {
         is_approved: true,
       };
 
-      dispatch(insertAssignPartnerProgram(obj))?.then((d) => {
-        if (d?.payload) {
-          setShowPartnerProgramAssignModal(false);
-          form.resetFields();
-        }
-      });
-
-      // if (selectedRecordData?.is_salesforce) {
-      //   console.log('selectedRecordData', selectedRecordData);
-      //   fetchSalesForceKey(selectedRecordData);
-      // }
+      if (selectedRecordData?.is_salesforce) {
+        fetchSalesForceKey(selectedRecordData, obj);
+      } else {
+        dispatch(insertAssignPartnerProgram(obj))?.then((d) => {
+          if (d?.payload) {
+            setShowPartnerProgramAssignModal(false);
+            form.resetFields();
+          }
+        });
+      }
     }
   };
 
