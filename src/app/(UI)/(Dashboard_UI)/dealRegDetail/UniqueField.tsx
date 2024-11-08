@@ -36,19 +36,21 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
   const [checkboxSelections, setCheckboxSelections] = useState<string[]>([]); // Store checkbox selections
   const [radioSelection, setRadioSelection] = useState<string | null>(null); // Store selected radio option
 
-  const handleCheckboxChange = (value: string) => {
+  const handleCheckboxChange = (value: string, label: string) => {
     // Deselect all checkboxes except the selected one
     const newSelections = checkboxSelections.includes(value)
       ? checkboxSelections.filter((v) => v !== value) // Deselect if already selected
       : [value]; // Only keep the currently selected checkbox
-
+    form.getFieldValue(label) || [];
     setCheckboxSelections(newSelections);
     setSelectedOption(newSelections[0]); // Set the selected option to the first checkbox selected
   };
 
-  const handleRadioChange = (e: any) => {
+  const handleRadioChange = (e: any, label: string) => {
     const value = e.target.value;
     setRadioSelection(value);
+    form.getFieldValue(label) || [];
+
     setSelectedOption(value); // Update selected option based on radio button selection
     setCheckboxSelections([]); // Clear checkbox selections when selecting a radio button
   };
@@ -122,8 +124,8 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                 <Checkbox
                   style={{width: '100%'}}
                   key={option}
-                  checked={checkboxSelections.includes(option)}
-                  onChange={() => handleCheckboxChange(option)}
+                  // checked={checkboxSelections.includes(option)}
+                  onChange={() => handleCheckboxChange(option, dateName)}
                 >
                   {option}
                 </Checkbox>
