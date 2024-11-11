@@ -363,6 +363,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     userfill: any,
     commonProps: any,
   ) => {
+    console.log('itemCon', itemCon);
     let convertedToCheckValue =
       'u_' +
       convertToSnakeCase(itemCon.label) +
@@ -385,7 +386,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
 
     const [selectedOption, setSelectedOption] = useState<string | null>(null); // Store the selected main option
     const [checkboxSelections, setCheckboxSelections] = useState<string[]>([]); // Store checkbox selections
-    const [radioSelection, setRadioSelection] = useState<string | null>(null); // Store selected radio option
+    const [radioSelection, setRadioSelection] = useState<any>(null); // Store selected radio option
 
     // Find the dependent field array based on the selected option
 
@@ -422,7 +423,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
       setSelectedOption(value); // Update selected option based on radio button selection
       setCheckboxSelections([]); // Clear checkbox selections when selecting a radio button
     };
-    // let findThe
 
     return (
       <>
@@ -453,27 +453,24 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           </CommonSelect>
         ) : itemCon.name === 'Checkbox' ? (
           <>
-            {itemCon?.labelOptions?.map((option) => (
-              <Checkbox
-                // value={finTheFiledActive?.valueOut}
-                style={{width: '100%'}}
-                key={option}
-                checked={finTheFiledActive?.valueOut?.includes(option)}
-                onChange={() => {
-                  handleCheckboxChange(option);
-                  commonUpdateTheDependentFileds(itemCon.label, option);
-                }}
-              >
-                {option}
-              </Checkbox>
-            ))}
+            <Checkbox.Group
+              onChange={(e: any) => {
+                handleCheckboxChange(e);
+              }}
+              value={finTheFiledActive?.valueOut}
+            >
+              {itemCon?.labelOptions?.map((option) => (
+                <Checkbox style={{width: '100%'}} key={option} value={option}>
+                  {option}
+                </Checkbox>
+              ))}
+            </Checkbox.Group>
           </>
         ) : itemCon.name === 'Radio Button' ? (
           <>
             <Radio.Group
               onChange={handleRadioChange}
               value={finTheFiledActive?.valueOut}
-              // value={radioSelection}
             >
               {itemCon?.labelOptions?.map((option) => (
                 <Radio style={{width: '100%'}} key={option} value={option}>
@@ -486,24 +483,26 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           <></>
         )}
         {/* Conditionally Render Dependent Field Based on Selection */}
-        {/* {selectedOption ||
+        {selectedOption ||
           radioSelection ||
-          (dependentField && ( */}
-        <>
-          {/* {console.log('dependentField123', dependentField)} */}
-          <Typography name="Body 4/Medium">{dependentField?.label}</Typography>
-          <CommonSelect
-            style={{width: '100%'}}
-            placeholder={`Select ${dependentField?.label}`}
-            allowClear
-            options={dependentField?.options.map((opt: any) => ({
-              label: opt,
-              value: opt,
-            }))}
-            {...commonProps}
-          />
-        </>
-        {/* ))} */}
+          (dependentField && (
+            <>
+              {/* {console.log('dependentField123', dependentField)} */}
+              <Typography name="Body 4/Medium">
+                {dependentField?.label}
+              </Typography>
+              <CommonSelect
+                style={{width: '100%'}}
+                placeholder={`Select ${dependentField?.label}`}
+                allowClear
+                options={dependentField?.options.map((opt: any) => ({
+                  label: opt,
+                  value: opt,
+                }))}
+                {...commonProps}
+              />
+            </>
+          ))}
       </>
     );
   };
