@@ -1,4 +1,3 @@
-import {Checkbox} from '@/app/components/common/antd/Checkbox';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Switch} from '@/app/components/common/antd/Switch';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
@@ -17,7 +16,9 @@ import dayjs from 'dayjs';
 import React, {useEffect, useState} from 'react';
 import {UniqueFieldsProps} from './dealReg.interface';
 import {useSearchParams} from 'next/navigation';
+import {Checkbox} from 'antd';
 import {Option} from 'antd/es/mentions';
+
 interface CheckboxState {
   [key: string]: boolean;
 }
@@ -74,6 +75,9 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     JSON.parse(data?.form_data[0]).flatMap((section: any) => section.content);
   const [uniqueTemplateData, setUniqueTemplateData] = useState<any>();
   const [radioValues, setRadioValues] = useState<{[key: string]: any}>({});
+  const [checkBoxValues, setCheckBoxValues] = useState<{[key: string]: any}>(
+    {},
+  );
 
   const getInputComponent = (
     itemCon: any,
@@ -105,268 +109,107 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
       (userfill ? '_userfill' : '');
 
     if (itemCon.dependentFiled) {
-      let convertedToCheckValue =
-        'u_' +
-        convertToSnakeCase(itemCon.label) +
-        '_' +
-        itemIndex +
-        activeKey +
-        (required ? '_required' : '') +
-        (userfill ? '_userfill' : '');
-
-      let originalValueSaved =
-        formData?.unique_form_data?.[convertedToCheckValue?.toString()];
-      // Find the dependent field array based on the selected option
-      let dependentField: any;
-      if (selectedOption || radioSelection) {
-        dependentField = itemCon?.dependentFiledArr.find(
-          (depField: any) => depField.id === (selectedOption || radioSelection), // Check both selections
-        );
-      } else {
-        dependentField = itemCon?.dependentFiledArr.find(
-          (depField: any) => depField.id === originalValueSaved, // Check both selections
-        );
-      }
-
-      console.log('23232323', originalValueSaved, dependentField);
-
-      return (
-        <>
-          {/* Render Main Field Based on the Type */}
-          {itemCon.name === 'Multi-Select' || itemCon.name === 'Drop Down' ? (
-            <CommonSelect
-              style={{width: '100%', marginBottom: '1rem'}}
-              placeholder="Select an option"
-              defaultValue={originalValueSaved}
-              onChange={(value) => {
-                setSelectedOption(value);
-                setCheckboxSelections([]); // Clear checkbox selections when selecting from dropdown
-                setRadioSelection(null); // Clear radio selection when selecting from dropdown
-              }}
-              allowClear
-            >
-              {itemCon?.options?.map((option: any) => (
-                <Option key={option} value={option}>
-                  {option}
-                </Option>
-              ))}
-            </CommonSelect>
-          ) : itemCon.name === 'Checkbox' ? (
-            <>
-              {itemCon?.labelOptions?.map((option: any) => (
-                <Checkbox
-                  value={originalValueSaved}
-                  style={{width: '100%'}}
-                  key={option}
-                  // checked={checkboxSelections.includes(option)}
-                  onChange={() => handleCheckboxChange(option, dateName)}
-                >
-                  {option}
-                </Checkbox>
-              ))}
-            </>
-          ) : itemCon.name === 'Radio Button' ? (
-            <>
-              <Radio.Group
-                // defaultValue={originalValueSaved}
-                onChange={(e: any) => {
-                  handleRadioChange(e);
-                }}
-                value={radioSelection}
-              >
-                {itemCon?.labelOptions?.map((option: any) => (
-                  <Radio
-                    // value={originalValueSaved}
-                    onChange={(e: any) => {
-                      console.log('23213123213', e?.target.value);
-
-                      handleRadioChangeFopForm(e?.target.value);
-                    }}
-                    style={{width: '100%'}}
-                    key={option}
-                    value={option}
-                  >
-                    {option}
-                  </Radio>
-                ))}
-              </Radio.Group>
-            </>
-          ) : (
-            <></>
-          )}
-          {/* Conditionally Render Dependent Field Based on Selection */}
-          {(((selectedOption || radioSelection) && dependentField) ||
-            originalValueSaved) && (
-            <>
-              <Typography name="Body 4/Medium">
-                {dependentField?.label}
-              </Typography>
-              <CommonSelect
-                style={{width: '100%'}}
-                placeholder={`Select ${dependentField?.label}`}
-                allowClear
-                onChange={(e) => {
-                  let dateNameDe =
-                    'u_' +
-                    convertToSnakeCase(dependentField?.label) +
-                    itemIndex +
-                    activeKey +
-                    (required ? '_required' : '') +
-                    (userfill ? '_userfill' : '');
-                  console.log('435324324', dateNameDe, e);
-                  form.setFieldValue(dateNameDe, e);
-                }}
-                options={dependentField?.options.map((opt: any) => ({
-                  label: opt,
-                  value: opt,
-                }))}
-                {...commonProps}
-              />
-            </>
-          )}
-        </>
+      renderDependentField(
+        itemCon,
+        itemIndex,
+        activeKey,
+        required,
+        userfill,
+        commonProps,
       );
-    }
+    } else {
+      switch (itemCon?.name) {
+        case 'Text':
+        case 'Email':
+        case 'Contact':
+        case 'Time':
+        case 'Date':
+        case 'Currency':
+          return (
+            <>
+              {itemCon?.name === 'Time' ? (
+                <TimePicker
+                  use12Hours={itemCon?.use12hours}
+                  format={itemCon?.timeformat}
+                  style={{width: '100%', height: '44px'}}
+                />
+              ) : itemCon?.name === 'Currency' ? (
+                <OsInput
+                  suffix={itemCon?.currency}
+                  type={itemCon?.type}
+                  {...commonProps}
+                />
+              ) : itemCon?.name === 'Date' ? (
+                <CommonDatePicker
+                  format="MMM D, YYYY"
+                  onChange={(date, dateString) => {
+                    form.setFieldValue(dateName, date);
+                    if (
+                      'onBlur' in commonProps &&
+                      typeof commonProps.onBlur === 'function'
+                    ) {
+                      commonProps.onBlur();
+                    }
+                  }}
+                />
+              ) : itemCon?.name === 'Email' ? (
+                <OsInput
+                  type="email"
+                  suffix={<MailOutlined />}
+                  {...commonProps}
+                />
+              ) : (
+                <OsInput type={itemCon?.type} {...commonProps} />
+              )}
+            </>
+          );
+        case 'Multi-Select':
+        case 'Drop Down':
+          const optionssMulti = itemCon?.options?.map((itemoo: any) => ({
+            label: itemoo,
+            value: itemoo,
+          }));
+          return (
+            <CommonSelect
+              allowClear
+              options={optionssMulti}
+              style={{width: '100%'}}
+              mode={itemCon?.type}
+              {...commonProps}
+            />
+          );
 
-    switch (itemCon?.name) {
-      case 'Text':
-      case 'Email':
-      case 'Contact':
-      case 'Time':
-      case 'Date':
-      case 'Currency':
-        return (
-          <>
-            {itemCon?.name === 'Time' ? (
-              <TimePicker
-                use12Hours={itemCon?.use12hours}
-                format={itemCon?.timeformat}
-                style={{width: '100%', height: '44px'}}
-              />
-            ) : itemCon?.name === 'Currency' ? (
-              <OsInput
-                suffix={itemCon?.currency}
-                type={itemCon?.type}
-                {...commonProps}
-              />
-            ) : itemCon?.name === 'Date' ? (
-              <CommonDatePicker
-                format="MMM D, YYYY"
-                onChange={(date, dateString) => {
-                  form.setFieldValue(dateName, date);
-                  if (
-                    'onBlur' in commonProps &&
-                    typeof commonProps.onBlur === 'function'
-                  ) {
-                    commonProps.onBlur();
-                  }
-                }}
-              />
-            ) : itemCon?.name === 'Email' ? (
-              <OsInput
-                type="email"
-                suffix={<MailOutlined />}
-                {...commonProps}
-              />
-            ) : (
-              <OsInput type={itemCon?.type} {...commonProps} />
-            )}
-          </>
-        );
-      case 'Multi-Select':
-      case 'Drop Down':
-        const optionssMulti = itemCon?.options?.map((itemoo: any) => ({
-          label: itemoo,
-          value: itemoo,
-        }));
-        return (
-          <CommonSelect
-            allowClear
-            options={optionssMulti}
-            style={{width: '100%'}}
-            mode={itemCon?.type}
-            {...commonProps}
-          />
-        );
-
-      case 'Toggle':
-        return (
-          <>
-            {itemCon?.name === 'Checkbox' || itemCon?.name === 'Toggle' ? (
-              itemCon?.labelOptions?.map(
-                (itemLabelOp: any, itemLabelIndex: number) => (
-                  <Col
-                    span={Math.floor(24 / itemCon?.columnRequired)}
-                    key={itemLabelIndex}
-                  >
-                    {itemCon?.name === 'Toggle' && (
-                      <>
-                        <Switch></Switch> {itemLabelOp}
-                      </>
-                    )}
-                  </Col>
-                ),
-              )
-            ) : (
-              <></>
-            )}
-          </>
-        );
-
-      case 'Checkbox':
-        return (
-          <>
-            {itemCon?.labelOptions?.map(
-              (itemLabelOp: any, itemLabelIndex: number) => {
-                const totalFloorValue = Math.floor(
-                  24 / itemCon?.columnRequired,
-                );
-
-                return (
-                  <ToggleColStyled span={totalFloorValue} key={itemLabelIndex}>
-                    <Checkbox
-                      value={itemLabelOp}
-                      {...commonProps}
-                      onChange={(e) => {
-                        const checked = e.target.checked;
-                        const currentValues =
-                          form.getFieldValue(dateName) || [];
-
-                        if (checked) {
-                          // Add the value if checked
-                          form.setFieldValue(dateName, [
-                            ...currentValues,
-                            itemLabelOp,
-                          ]);
-                        } else {
-                          // Remove the value if unchecked
-                          form.setFieldValue(
-                            dateName,
-                            currentValues.filter(
-                              (value: any) => value !== itemLabelOp,
-                            ),
-                          );
-                        }
-                      }}
+        case 'Toggle':
+          return (
+            <>
+              {itemCon?.name === 'Checkbox' || itemCon?.name === 'Toggle' ? (
+                itemCon?.labelOptions?.map(
+                  (itemLabelOp: any, itemLabelIndex: number) => (
+                    <Col
+                      span={Math.floor(24 / itemCon?.columnRequired)}
+                      key={itemLabelIndex}
                     >
-                      {itemLabelOp}
-                    </Checkbox>
-                  </ToggleColStyled>
-                );
-              },
-            )}
-          </>
-        );
+                      {itemCon?.name === 'Toggle' && (
+                        <>
+                          <Switch></Switch> {itemLabelOp}
+                        </>
+                      )}
+                    </Col>
+                  ),
+                )
+              ) : (
+                <></>
+              )}
+            </>
+          );
 
-      case 'Radio Button':
-        return (
-          <>
-            <Radio.Group
-              onChange={(e) => {
-                const value = e.target.value;
-                setRadioValues((prev) => ({
+        case 'Checkbox':
+          return (
+            <Checkbox.Group
+              onChange={(checkedValues: any) => {
+                setCheckBoxValues((prev) => ({
                   ...prev,
-                  [itemCon.label]: value,
+                  [itemCon.label]: checkedValues,
                 }));
                 form.setFieldValue(
                   'u_' +
@@ -375,13 +218,13 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                     activeKey +
                     (itemCon.required ? '_required' : '') +
                     (itemCon.user_fill ? '_userfill' : ''),
-                  value,
+                  checkedValues,
                 );
               }}
-              value={radioValues[itemCon.label]}
+              value={checkBoxValues[itemCon.label]}
             >
               {itemCon?.labelOptions?.map(
-                (itemLabelOp: any, itemLabelIndex: number) => {
+                (itemLabelOp: any, itemLabelIndex: any) => {
                   const totalFloorValue = Math.floor(
                     24 / itemCon?.columnRequired,
                   );
@@ -390,21 +233,203 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                       span={totalFloorValue}
                       key={itemLabelIndex}
                     >
-                      <Radio value={itemLabelOp} {...commonProps}>
+                      <Checkbox value={itemLabelOp} {...commonProps}>
                         {itemLabelOp}
-                      </Radio>
+                      </Checkbox>
                     </ToggleColStyled>
                   );
                 },
               )}
+            </Checkbox.Group>
+          );
+
+        case 'Radio Button':
+          return (
+            <>
+              <Radio.Group
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setRadioValues((prev) => ({
+                    ...prev,
+                    [itemCon.label]: value,
+                  }));
+                  form.setFieldValue(
+                    'u_' +
+                      convertToSnakeCase(itemCon.label) +
+                      '_' +
+                      activeKey +
+                      (itemCon.required ? '_required' : '') +
+                      (itemCon.user_fill ? '_userfill' : ''),
+                    value,
+                  );
+                }}
+                value={radioValues[itemCon.label]}
+              >
+                {itemCon?.labelOptions?.map(
+                  (itemLabelOp: any, itemLabelIndex: number) => {
+                    const totalFloorValue = Math.floor(
+                      24 / itemCon?.columnRequired,
+                    );
+                    return (
+                      <ToggleColStyled
+                        span={totalFloorValue}
+                        key={itemLabelIndex}
+                      >
+                        <Radio value={itemLabelOp} {...commonProps}>
+                          {itemLabelOp}
+                        </Radio>
+                      </ToggleColStyled>
+                    );
+                  },
+                )}
+              </Radio.Group>
+            </>
+          );
+        case 'Line Break':
+          return <StyledDivider />;
+        default:
+          return null;
+      }
+    }
+  };
+
+  const renderDependentField = (
+    itemCon: {
+      name: string;
+      label: string;
+      options: string[];
+      labelOptions: string[];
+      dependentFiledArr: {
+        id: string;
+        label: string;
+        options: string[];
+        type: string;
+      }[];
+    },
+    itemIndex: number,
+    activeKey: any,
+    required: boolean,
+    userfill: any,
+    commonProps: any,
+  ) => {
+    let convertedToCheckValue =
+      'u_' +
+      convertToSnakeCase(itemCon.label) +
+      '_' +
+      itemIndex +
+      activeKey +
+      (required ? '_required' : '') +
+      (userfill ? '_userfill' : '');
+
+    let originalValueSaved =
+      formData?.unique_form_data?.[convertedToCheckValue?.toString()];
+
+    console.log('originalValueSaved', originalValueSaved, itemCon);
+
+    const [selectedOption, setSelectedOption] = useState<string | null>(null); // Store the selected main option
+    const [checkboxSelections, setCheckboxSelections] = useState<string[]>([]); // Store checkbox selections
+    const [radioSelection, setRadioSelection] = useState<string | null>(null); // Store selected radio option
+
+    // Find the dependent field array based on the selected option
+
+    let dependentField: any;
+    if (selectedOption || radioSelection) {
+      dependentField = itemCon?.dependentFiledArr.find(
+        (depField: any) => depField.id === (selectedOption || radioSelection), // Check both selections
+      );
+    } else {
+      dependentField = itemCon?.dependentFiledArr.find(
+        (depField: any) => depField.id === originalValueSaved, // Check both selections
+      );
+    }
+
+    console.log('dependentField', dependentField);
+
+    const handleCheckboxChange = (value: string) => {
+      // Deselect all checkboxes except the selected one
+      const newSelections = checkboxSelections.includes(value)
+        ? checkboxSelections.filter((v) => v !== value) // Deselect if already selected
+        : [value]; // Only keep the currently selected checkbox
+
+      setCheckboxSelections(newSelections);
+      setSelectedOption(newSelections[0]); // Set the selected option to the first checkbox selected
+    };
+
+    const handleRadioChange = (e: any) => {
+      const value = e.target.value;
+      setRadioSelection(value);
+      setSelectedOption(value); // Update selected option based on radio button selection
+      setCheckboxSelections([]); // Clear checkbox selections when selecting a radio button
+    };
+
+    return (
+      <>
+        {/* Render Main Field Based on the Type */}
+        {itemCon.name === 'Multi-Select' || itemCon.name === 'Drop Down' ? (
+          <CommonSelect
+            style={{width: '100%', marginBottom: '1rem'}}
+            placeholder="Select an option"
+            onChange={(value) => {
+              setSelectedOption(value);
+              setCheckboxSelections([]); // Clear checkbox selections when selecting from dropdown
+              setRadioSelection(null); // Clear radio selection when selecting from dropdown
+            }}
+            allowClear
+          >
+            {/* {itemCon?.options?.map((option) => (
+              <Option key={option} value={option}>
+                {option}
+              </Option>
+            ))} */}
+          </CommonSelect>
+        ) : itemCon.name === 'Checkbox' ? (
+          <>
+            {itemCon?.labelOptions?.map((option) => (
+              <Checkbox
+                style={{width: '100%'}}
+                key={option}
+                checked={checkboxSelections.includes(option)}
+                onChange={() => handleCheckboxChange(option)}
+              >
+                {option}
+              </Checkbox>
+            ))}
+          </>
+        ) : itemCon.name === 'Radio Button' ? (
+          <>
+            <Radio.Group onChange={handleRadioChange} value={radioSelection}>
+              {itemCon?.labelOptions?.map((option) => (
+                <Radio style={{width: '100%'}} key={option} value={option}>
+                  {option}
+                </Radio>
+              ))}
             </Radio.Group>
           </>
-        );
-      case 'Line Break':
-        return <StyledDivider />;
-      default:
-        return null;
-    }
+        ) : (
+          <></>
+        )}
+
+        {/* Conditionally Render Dependent Field Based on Selection */}
+        {/* {selectedOption ||
+          radioSelection ||
+          (dependentField && ( */}
+        <>
+          {/* {console.log('dependentField123', dependentField)} */}
+          <Typography name="Body 4/Medium">{dependentField?.label}</Typography>
+          <CommonSelect
+            style={{width: '100%'}}
+            placeholder={`Select ${dependentField?.label}`}
+            allowClear
+            options={dependentField?.options.map((opt: any) => ({
+              label: opt,
+              value: opt,
+            }))}
+            {...commonProps}
+          />
+        </>
+        {/* ))} */}
+      </>
+    );
   };
 
   useEffect(() => {
@@ -466,6 +491,8 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
       });
     }
   }, [allContent]);
+
+  console.log('formData12345', formData?.unique_form_data);
 
   return (
     <Form
