@@ -36,6 +36,8 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
   const [selectedOption, setSelectedOption] = useState<string | null>(null); // Store the selected main option
   const [checkboxSelections, setCheckboxSelections] = useState<string[]>([]); // Store checkbox selections
   const [radioSelection, setRadioSelection] = useState<string | null>(null); // Store selected radio option
+  const [globalStateForDependentFields, setGlobalStateForDependentFields] =
+    useState<any>();
 
   const handleCheckboxChange = (value: string, label: string) => {
     // Deselect all checkboxes except the selected one
@@ -65,14 +67,47 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     console.log('2312321312', label);
     form.getFieldValue(label) || [];
   };
-
-  console.log('2312321312', selectedOption, radioSelection);
-
-  // For Dependent fields above
   const allContent =
     data?.form_data?.length > 0 &&
     data?.form_data?.[0] &&
     JSON.parse(data?.form_data[0]).flatMap((section: any) => section.content);
+  useEffect(() => {
+    let newArrForAllDependentFil: any = [];
+
+    if (allContent && allContent?.length > 0 && formData?.unique_form_data) {
+      allContent?.map((items: any, index: number) => {
+        let dependentField = items?.dependentFiledArr?.find(
+          (depField: any) =>
+            depField.id ===
+            formData?.unique_form_data?.[items?.label?.toString()], // Check both selections
+        );
+        let convertedToCheckValue =
+          'u_' +
+          convertToSnakeCase(items.label) +
+          '_' +
+          index +
+          activeKey +
+          (items?.required ? '_required' : '') +
+          (items?.userfill ? '_userfill' : '');
+
+        if (items?.dependentFiled) {
+          let newObj = {
+            idName: items?.label,
+            valueOut:
+              formData?.unique_form_data?.[convertedToCheckValue?.toString()],
+            valueIn:
+              formData?.unique_form_data?.[dependentField?.label?.toString()],
+          };
+          // convertedToCheckValue
+          newArrForAllDependentFil?.push(newObj);
+        }
+      });
+    }
+    console.log('sfrewrwerew', newArrForAllDependentFil);
+  }, [allContent, formData, JSON?.stringify(formData)]);
+
+  // For Dependent fields above
+
   const [uniqueTemplateData, setUniqueTemplateData] = useState<any>();
   const [radioValues, setRadioValues] = useState<{[key: string]: any}>({});
   const [checkBoxValues, setCheckBoxValues] = useState<{[key: string]: any}>(
