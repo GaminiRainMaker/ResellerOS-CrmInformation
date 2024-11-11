@@ -234,6 +234,8 @@ const DealRegCustomTabs = forwardRef<
 
   const onFinish = async () => {
     const commonFieldFormData = form.getFieldsValue();
+
+    console.log('34543532432423', commonFieldFormData);
     const commonFieldObject: any = {};
     const uniqueFieldObject: any = {};
     let finalCommonFieldObject: any = {};

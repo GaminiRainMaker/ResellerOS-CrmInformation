@@ -42,21 +42,32 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
       ? checkboxSelections.filter((v) => v !== value) // Deselect if already selected
       : [value]; // Only keep the currently selected checkbox
     form.getFieldValue(label) || [];
+
     setCheckboxSelections(newSelections);
     setSelectedOption(newSelections[0]); // Set the selected option to the first checkbox selected
   };
 
-  const handleRadioChange = (e: any, label: string) => {
+  const handleRadioChange = (e: any) => {
     const value = e.target.value;
+
     setRadioSelection(value);
-    form.getFieldValue(label) || [];
 
     setSelectedOption(value); // Update selected option based on radio button selection
     setCheckboxSelections([]); // Clear checkbox selections when selecting a radio button
   };
 
-  // For Dependent fields above
+  const handleRadioChangeFopForm = (label: any) => {
+    form.getFieldValue(label) || [];
+  };
 
+  const handleChangeForTheDependentMultu = (label: any) => {
+    console.log('2312321312', label);
+    form.getFieldValue(label) || [];
+  };
+
+  console.log('2312321312', selectedOption, radioSelection);
+
+  // For Dependent fields above
   const allContent =
     data?.form_data?.length > 0 &&
     data?.form_data?.[0] &&
@@ -94,10 +105,31 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
       (userfill ? '_userfill' : '');
 
     if (itemCon.dependentFiled) {
+      let convertedToCheckValue =
+        'u_' +
+        convertToSnakeCase(itemCon.label) +
+        '_' +
+        itemIndex +
+        activeKey +
+        (required ? '_required' : '') +
+        (userfill ? '_userfill' : '');
+
+      let originalValueSaved =
+        formData?.unique_form_data?.[convertedToCheckValue?.toString()];
       // Find the dependent field array based on the selected option
-      const dependentField = itemCon?.dependentFiledArr.find(
-        (depField: any) => depField.id === (selectedOption || radioSelection), // Check both selections
-      );
+      let dependentField: any;
+      if (selectedOption || radioSelection) {
+        dependentField = itemCon?.dependentFiledArr.find(
+          (depField: any) => depField.id === (selectedOption || radioSelection), // Check both selections
+        );
+      } else {
+        dependentField = itemCon?.dependentFiledArr.find(
+          (depField: any) => depField.id === originalValueSaved, // Check both selections
+        );
+      }
+
+      console.log('23232323', originalValueSaved, dependentField);
+
       return (
         <>
           {/* Render Main Field Based on the Type */}
@@ -105,6 +137,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
             <CommonSelect
               style={{width: '100%', marginBottom: '1rem'}}
               placeholder="Select an option"
+              defaultValue={originalValueSaved}
               onChange={(value) => {
                 setSelectedOption(value);
                 setCheckboxSelections([]); // Clear checkbox selections when selecting from dropdown
@@ -122,6 +155,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
             <>
               {itemCon?.labelOptions?.map((option: any) => (
                 <Checkbox
+                  value={originalValueSaved}
                   style={{width: '100%'}}
                   key={option}
                   // checked={checkboxSelections.includes(option)}
@@ -133,9 +167,25 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
             </>
           ) : itemCon.name === 'Radio Button' ? (
             <>
-              <Radio.Group onChange={handleRadioChange} value={radioSelection}>
+              <Radio.Group
+                // defaultValue={originalValueSaved}
+                onChange={(e: any) => {
+                  handleRadioChange(e);
+                }}
+                value={radioSelection}
+              >
                 {itemCon?.labelOptions?.map((option: any) => (
-                  <Radio style={{width: '100%'}} key={option} value={option}>
+                  <Radio
+                    // value={originalValueSaved}
+                    onChange={(e: any) => {
+                      console.log('23213123213', e?.target.value);
+
+                      handleRadioChangeFopForm(e?.target.value);
+                    }}
+                    style={{width: '100%'}}
+                    key={option}
+                    value={option}
+                  >
                     {option}
                   </Radio>
                 ))}
@@ -144,18 +194,29 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           ) : (
             <></>
           )}
-
           {/* Conditionally Render Dependent Field Based on Selection */}
-          {(selectedOption || radioSelection) && dependentField && (
+          {(((selectedOption || radioSelection) && dependentField) ||
+            originalValueSaved) && (
             <>
               <Typography name="Body 4/Medium">
-                {dependentField.label}
+                {dependentField?.label}
               </Typography>
               <CommonSelect
                 style={{width: '100%'}}
-                placeholder={`Select ${dependentField.label}`}
+                placeholder={`Select ${dependentField?.label}`}
                 allowClear
-                options={dependentField.options.map((opt: any) => ({
+                onChange={(e) => {
+                  let dateNameDe =
+                    'u_' +
+                    convertToSnakeCase(dependentField?.label) +
+                    itemIndex +
+                    activeKey +
+                    (required ? '_required' : '') +
+                    (userfill ? '_userfill' : '');
+                  console.log('435324324', dateNameDe, e);
+                  form.setFieldValue(dateNameDe, e);
+                }}
+                options={dependentField?.options.map((opt: any) => ({
                   label: opt,
                   value: opt,
                 }))}
@@ -364,7 +425,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           },
           {},
         );
-        console.log('initialValues', initialValues);
         form.setFieldsValue(initialValues);
       }
     }
