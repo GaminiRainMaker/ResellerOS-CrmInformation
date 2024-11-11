@@ -76,8 +76,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
       },
     );
     setGlobalStateForDependentFields(newUpdateArrr);
-
-    console.log('23432423423', label, value, newUpdateArrr);
   };
 
   const handleRadioChangeFopForm = (label: any) => {
@@ -121,7 +119,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
       });
     }
     setGlobalStateForDependentFields(newArrForAllDependentFil);
-  }, [allContent, formData, JSON?.stringify(formData)]);
+  }, [formData, JSON?.stringify(formData)]);
 
   // For Dependent fields above
 
@@ -408,7 +406,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     dependentField = itemCon?.dependentFiledArr.find(
       (depField: any) => depField.id === finTheFiledActive?.valueOut, // Check both selections
     );
-
     const handleCheckboxChange = (value: string) => {
       // Deselect all checkboxes except the selected one
       const newSelections = checkboxSelections.includes(value)
@@ -570,8 +567,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
       });
     }
   }, [allContent]);
-
-  console.log('formData12345', formData?.unique_form_data);
 
   return (
     <Form
