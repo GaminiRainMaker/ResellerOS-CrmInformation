@@ -6,30 +6,30 @@
 
 'use client';
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
+import {Col, Row} from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import Typography from '@/app/components/common/typography';
-import { getBase64 } from '@/app/utils/upload';
-import { MailOutlined } from '@ant-design/icons';
-import { PencilSquareIcon, UserCircleIcon } from '@heroicons/react/24/outline';
-import { Form, notification } from 'antd';
+import {getBase64} from '@/app/utils/upload';
+import {MailOutlined} from '@ant-design/icons';
+import {PencilSquareIcon, UserCircleIcon} from '@heroicons/react/24/outline';
+import {Form, notification} from 'antd';
 import _debounce from 'lodash/debounce';
-import { useCallback, useState } from 'react';
-import { insertbillingContact } from '../../../../../redux/actions/billingContact';
-import { getCustomerProfileById } from '../../../../../redux/actions/customer';
-import { uploadToAwsForUserImage } from '../../../../../redux/actions/upload';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
-import { setBillingContact } from '../../../../../redux/slices/billingAddress';
-import { setCustomerProfile } from '../../../../../redux/slices/customer';
-import { Checkbox } from '../antd/Checkbox';
-import { Divider } from '../antd/Divider';
-import { Space } from '../antd/Space';
+import {useCallback, useState} from 'react';
+import {insertbillingContact} from '../../../../../redux/actions/billingContact';
+import {getCustomerProfileById} from '../../../../../redux/actions/customer';
+import {uploadToAwsForUserImage} from '../../../../../redux/actions/upload';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {setBillingContact} from '../../../../../redux/slices/billingAddress';
+import {setCustomerProfile} from '../../../../../redux/slices/customer';
+import {Checkbox} from '../antd/Checkbox';
+import {Divider} from '../antd/Divider';
+import {Space} from '../antd/Space';
 import OsButton from '../os-button';
 import OsInput from '../os-input';
-import { SelectFormItem } from '../os-oem-select/oem-select-styled';
+import {SelectFormItem} from '../os-oem-select/oem-select-styled';
 import TableNameColumn from '../os-table/TableNameColumn';
-import { AddCustomertInterface } from './os-add-customer-interface';
-import { CustomerTabsStyle } from './styled-components';
+import {AddCustomertInterface} from './os-add-customer-interface';
+import {CustomerTabsStyle} from './styled-components';
 import {
   AlphabetsRegex,
   AlphabetsRegexWithSpecialChr,
@@ -54,8 +54,8 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
   customerData,
 }) => {
   const [token] = useThemeToken();
-  const { billingContact } = useAppSelector((state) => state.billingContact);
-  const { customerProfile } = useAppSelector((state) => state.customer);
+  const {billingContact} = useAppSelector((state) => state.billingContact);
+  const {customerProfile} = useAppSelector((state) => state.customer);
   const dispatch = useAppDispatch();
   const [editContactOIndex, setEditContactIndex] = useState<any>(null);
   const [editBillingAddress, setEditBillingAddress] = useState<Boolean>(false);
@@ -111,7 +111,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
       if (d?.payload && !drawer) {
         dispatch(setCustomerProfile(d?.payload));
       } else if (d?.payload) {
-        dispatch(getCustomerProfileById({ id: billingContact?.id })).then(
+        dispatch(getCustomerProfileById({id: billingContact?.id})).then(
           (payload: any) => {
             if (payload?.payload) {
               dispatch(
@@ -163,6 +163,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
   const debounceFn = useCallback(_debounce(handleNotification, 500), [
     billingContact,
   ]);
+
   return (
     <>
       {!drawer && (
@@ -190,7 +191,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
         onFinish={onFinish}
         form={form}
         requiredMark={false}
-        style={{ width: '100%', padding: drawer ? '' : '40px' }}
+        style={{width: '100%', padding: drawer ? '' : '40px'}}
         initialValues={{
           currency: '$', // Set default value here
         }}
@@ -215,16 +216,15 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
               }
               secondaryText={
                 <Typography name="Body 4/Regular">
-                  {drawer && `ID: ${customerData?.id ? customerData?.id : billingContact?.id}`}
+                  {drawer &&
+                    `ID: ${customerData?.id ? customerData?.id : billingContact?.id}`}
                 </Typography>
               }
               fallbackIcon={
                 drawer ? (
-                  `${customerData?.name
-                    ?.toString()
-                    ?.charAt(0)
-                    ?.toUpperCase() ??
-                  customerData?.name?.toString()?.charAt(0)?.toUpperCase()
+                  `${
+                    customerData?.name?.toString()?.charAt(0)?.toUpperCase() ??
+                    customerData?.name?.toString()?.charAt(0)?.toUpperCase()
                   }`
                 ) : (
                   <UserCircleIcon />
@@ -426,7 +426,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                   {!drawer && (
                     <Col span={24}>
                       <Checkbox
-                        style={{ marginRight: '10px' }}
+                        style={{marginRight: '10px'}}
                         onChange={(e) => {
                           if (e.target.checked) {
                             const data = form.getFieldsValue();
@@ -598,13 +598,21 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                               {item?.billing_role}
                                             </Typography>
                                           }
-                                          fallbackIcon={`${item?.billing_first_name ? item?.billing_first_name
-                                            ?.toString()
-                                            ?.charAt(0)
-                                            ?.toUpperCase() : ''}${item?.billing_last_name ? item?.billing_last_name
-                                              ?.toString()
-                                              ?.charAt(0)
-                                              ?.toUpperCase() : ''}`}
+                                          fallbackIcon={`${
+                                            item?.billing_first_name
+                                              ? item?.billing_first_name
+                                                  ?.toString()
+                                                  ?.charAt(0)
+                                                  ?.toUpperCase()
+                                              : ''
+                                          }${
+                                            item?.billing_last_name
+                                              ? item?.billing_last_name
+                                                  ?.toString()
+                                                  ?.charAt(0)
+                                                  ?.toUpperCase()
+                                              : ''
+                                          }`}
                                           iconBg="#1EB159"
                                           isNotification={false}
                                         />
@@ -612,7 +620,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                           {' '}
                                           <MailOutlined
                                             size={24}
-                                            style={{ marginRight: '5px' }}
+                                            style={{marginRight: '5px'}}
                                           />
                                           {item?.billing_email}
                                         </Typography>
@@ -623,7 +631,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                       <Row
                                         justify="center"
                                         align="middle"
-                                        style={{ height: '100%' }}
+                                        style={{height: '100%'}}
                                       >
                                         <PencilSquareIcon
                                           onClick={() => {
@@ -643,7 +651,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                             });
                                           }}
                                           width={24}
-                                          style={{ color: '#949494' }}
+                                          style={{color: '#949494'}}
                                         />
                                       </Row>
                                     </Col>
@@ -666,10 +674,10 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                           }}
                         >
                           <Row
-                            style={{ marginTop: '20px', width: '100%' }}
+                            style={{marginTop: '20px', width: '100%'}}
                             justify="space-between"
                           >
-                            <Col style={{ width: '47%' }}>
+                            <Col style={{width: '47%'}}>
                               <Typography name="Body 4/Regular">
                                 First Name
                               </Typography>
@@ -689,14 +697,14 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                               {errorFileds && (
                                 <>
                                   {!objectValuesForContact?.billing_first_name ? (
-                                    <div style={{ color: 'red' }}>
+                                    <div style={{color: 'red'}}>
                                       This filed is required!
                                     </div>
                                   ) : (
                                     !AlphabetsRegex?.test(
                                       objectValuesForContact?.billing_first_name,
                                     ) && (
-                                      <div style={{ color: 'red' }}>
+                                      <div style={{color: 'red'}}>
                                         Please enter vaild first name
                                       </div>
                                     )
@@ -704,7 +712,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                 </>
                               )}
                             </Col>
-                            <Col style={{ width: '47%' }}>
+                            <Col style={{width: '47%'}}>
                               <Typography name="Body 4/Regular">
                                 Last Name
                               </Typography>
@@ -741,10 +749,10 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                           </Row>
 
                           <Row
-                            style={{ marginTop: '20px', width: '100%' }}
+                            style={{marginTop: '20px', width: '100%'}}
                             justify="space-between"
                           >
-                            <Col style={{ width: '47%' }}>
+                            <Col style={{width: '47%'}}>
                               <Typography name="Body 4/Regular">
                                 Role
                               </Typography>
@@ -762,14 +770,14 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                               {errorFileds && (
                                 <>
                                   {!objectValuesForContact?.billing_role ? (
-                                    <div style={{ color: 'red' }}>
+                                    <div style={{color: 'red'}}>
                                       This filed is required!
                                     </div>
                                   ) : (
                                     !AlphabetsRegexWithSpecialChr?.test(
                                       objectValuesForContact?.billing_role,
                                     ) && (
-                                      <div style={{ color: 'red' }}>
+                                      <div style={{color: 'red'}}>
                                         Please enter vaild role
                                       </div>
                                     )
@@ -777,7 +785,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                 </>
                               )}
                             </Col>
-                            <Col style={{ width: '47%' }}>
+                            <Col style={{width: '47%'}}>
                               <Typography name="Body 4/Regular">
                                 Email
                               </Typography>
@@ -795,14 +803,14 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                               {errorFileds && (
                                 <>
                                   {!objectValuesForContact?.billing_email ? (
-                                    <div style={{ color: 'red' }}>
+                                    <div style={{color: 'red'}}>
                                       Please enter the email
                                     </div>
                                   ) : (
                                     !emailRegex?.test(
                                       objectValuesForContact?.billing_email,
                                     ) && (
-                                      <div style={{ color: 'red' }}>
+                                      <div style={{color: 'red'}}>
                                         Please enter vaild email
                                       </div>
                                     )
@@ -821,7 +829,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                 gutter={32}
                               >
                                 <OsButton
-                                  style={{ marginRight: '40px' }}
+                                  style={{marginRight: '40px'}}
                                   buttontype="PRIMARY"
                                   clickHandler={() => {
                                     setNewAddContact(false);
@@ -836,7 +844,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                 <Col>
                                   <OsButton
                                     buttontype="PRIMARY"
-                                    style={{ marginLeft: '40px' }}
+                                    style={{marginLeft: '40px'}}
                                     clickHandler={() => {
                                       if (
                                         !emailRegex?.test(
@@ -889,7 +897,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                     )}
                     {drawer && !newAddContact && !editBillingAddress && (
                       <Row
-                        style={{ marginTop: '20px' }}
+                        style={{marginTop: '20px'}}
                         onClick={() => {
                           setNewAddContact(true);
                           setErrorFileds(false);

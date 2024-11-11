@@ -36,6 +36,7 @@ import OsUpload from '../os-upload';
 import {AddQuoteInterface, FormattedData} from './types';
 import {queryLineItemSyncingForSalesForce} from '../../../../../redux/actions/LineItemSyncing';
 import {getUserByTokenAccess} from '../../../../../redux/actions/user';
+import ConverSationProcess from '@/app/(UI)/(Dashboard_UI)/admin/quote-AI/configuration/configuration-tabs/ConversationProcess';
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
@@ -175,8 +176,9 @@ const AddQuote: FC<AddQuoteInterface> = ({
           : [];
         let quoteItem = {};
         let quoteJson: any = [];
+        let result: any;
         for (let j = 0; j < nanoNetsResult?.length; j++) {
-          const result: any = nanoNetsResult[j];
+          result = nanoNetsResult[j];
           const predictions = result?.prediction?.filter((item: any) => item);
           // eslint-disable-next-line @typescript-eslint/no-loop-func
           predictions?.map((itemNew: any, predictionIndex: number) => {
@@ -210,28 +212,28 @@ const AddQuote: FC<AddQuoteInterface> = ({
               };
             }
           });
-          quoteObj = {
-            ...quoteItem,
-            nanonets_id: result?.id,
-            quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
-            pdf_url: newArrWithoutManual[i]?.pdf_url,
-            user_id: userInformation.id,
-            customer_id: customerId,
-            opportunity_id: opportunityId,
-            organization: userInformation.organization,
-            status: 'Drafts',
-            date: handleDate(),
-            quoteFileObj: [
-              {
-                file_name: newArrWithoutManual[i]?.file?.name,
-                pdf_url: newArrWithoutManual[i]?.pdf_url,
-                quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
-                nanonets_id: result?.id,
-                lineItems: lineItems.length > 0 ? lineItems : [],
-              },
-            ],
-          };
         }
+        quoteObj = {
+          ...quoteItem,
+          nanonets_id: result?.id,
+          quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
+          pdf_url: newArrWithoutManual[i]?.pdf_url,
+          user_id: userInformation.id,
+          customer_id: customerId,
+          opportunity_id: opportunityId,
+          organization: userInformation.organization,
+          status: 'Drafts',
+          date: handleDate(),
+          quoteFileObj: [
+            {
+              file_name: newArrWithoutManual[i]?.file?.name,
+              pdf_url: newArrWithoutManual[i]?.pdf_url,
+              quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
+              nanonets_id: result?.id,
+              lineItems: lineItems.length > 0 ? lineItems : [],
+            },
+          ],
+        };
         if (singleQuote || quoteId) {
           if (i === 0) {
             quotesArr.push(quoteObj);
@@ -343,11 +345,21 @@ const AddQuote: FC<AddQuoteInterface> = ({
                 product_id: itemsToAdd?.id,
                 product_code: itemsToAdd?.product_code,
                 line_amount: itemsToAdd?.line_amount,
-                list_price: itemsToAdd?.list_price,
-                description: itemsToAdd?.description,
-                quantity: itemsToAdd?.quantity,
-                adjusted_price: itemsToAdd?.adjusted_price,
-                line_number: itemsToAdd?.line_number,
+                list_price: itemssProduct?.list_price
+                  ? itemssProduct?.list_price
+                  : itemsToAdd?.list_price,
+                description: itemssProduct?.description
+                  ? itemssProduct?.description
+                  : itemsToAdd?.description,
+                quantity: itemssProduct?.quantity
+                  ? itemssProduct?.quantity
+                  : itemsToAdd?.quantity,
+                adjusted_price: itemssProduct?.adjusted_price
+                  ? itemssProduct?.adjusted_price
+                  : itemsToAdd?.adjusted_price,
+                line_number: itemssProduct?.line_number
+                  ? itemssProduct?.line_number
+                  : itemsToAdd?.line_number,
                 organization: userInformation.organization,
               };
               finalLineItems?.push(obj1);
@@ -570,6 +582,9 @@ const AddQuote: FC<AddQuoteInterface> = ({
       });
     }
 
+    // console.log('35324324234', newArrWithoutManual);
+    // return;
+
     try {
       setFinalLoading(true);
       setLoading(true);
@@ -585,8 +600,10 @@ const AddQuote: FC<AddQuoteInterface> = ({
           : [];
         let quoteItem = {};
         let quoteJson: any = [];
+        let result: any;
+
         for (let j = 0; j < nanoNetsResult?.length; j++) {
-          const result: any = nanoNetsResult[j];
+          result = nanoNetsResult[j];
           const predictions = result?.prediction?.filter((item: any) => item);
           // eslint-disable-next-line @typescript-eslint/no-loop-func
           predictions?.map((itemNew: any, predictionIndex: number) => {
@@ -620,29 +637,28 @@ const AddQuote: FC<AddQuoteInterface> = ({
               };
             }
           });
-
-          quoteObj = {
-            ...quoteItem,
-            nanonets_id: result?.id,
-            quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
-            pdf_url: newArrWithoutManual[i]?.pdf_url,
-            user_id: userInformation.id,
-            customer_id: customerId,
-            opportunity_id: opportunityId,
-            organization: userInformation.organization,
-            status: 'Drafts',
-            date: handleDate(),
-            quoteFileObj: [
-              {
-                file_name: newArrWithoutManual[i]?.file?.name,
-                pdf_url: newArrWithoutManual[i]?.pdf_url,
-                quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
-                nanonets_id: result?.id,
-                lineItems: lineItems.length > 0 ? lineItems : [],
-              },
-            ],
-          };
         }
+        quoteObj = {
+          ...quoteItem,
+          nanonets_id: result?.id,
+          quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
+          pdf_url: newArrWithoutManual[i]?.pdf_url,
+          user_id: userInformation.id,
+          customer_id: customerId,
+          opportunity_id: opportunityId,
+          organization: userInformation.organization,
+          status: 'Drafts',
+          date: handleDate(),
+          quoteFileObj: [
+            {
+              file_name: newArrWithoutManual[i]?.file?.name,
+              pdf_url: newArrWithoutManual[i]?.pdf_url,
+              quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
+              nanonets_id: result?.id,
+              lineItems: lineItems.length > 0 ? lineItems : [],
+            },
+          ],
+        };
         if (singleQuote || quoteId) {
           if (i === 0) {
             quotesArr.push(quoteObj);
@@ -657,7 +673,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
           quotesArr.push(quoteObj);
         }
       }
-
+      // console.log('3242342312', quotesArr);
+      // return;
       if (quotesArr.length > 0 && !quoteId) {
         for (let i = 0; i < quotesArr.length; i++) {
           let newObj = {
@@ -755,11 +772,21 @@ const AddQuote: FC<AddQuoteInterface> = ({
                 product_id: itemsToAdd?.id,
                 product_code: itemsToAdd?.product_code,
                 line_amount: itemsToAdd?.line_amount,
-                list_price: itemsToAdd?.list_price,
-                description: itemsToAdd?.description,
-                quantity: itemsToAdd?.quantity,
-                adjusted_price: itemsToAdd?.adjusted_price,
-                line_number: itemsToAdd?.line_number,
+                list_price: itemssProduct?.list_price
+                  ? itemssProduct?.list_price
+                  : itemsToAdd?.list_price,
+                description: itemssProduct?.description
+                  ? itemssProduct?.description
+                  : itemsToAdd?.description,
+                quantity: itemssProduct?.quantity
+                  ? itemssProduct?.quantity
+                  : itemsToAdd?.quantity,
+                adjusted_price: itemssProduct?.adjusted_price
+                  ? itemssProduct?.adjusted_price
+                  : itemsToAdd?.adjusted_price,
+                line_number: itemssProduct?.line_number
+                  ? itemssProduct?.line_number
+                  : itemsToAdd?.line_number,
                 organization: userInformation.organization,
               };
               finalLineItems?.push(obj1);

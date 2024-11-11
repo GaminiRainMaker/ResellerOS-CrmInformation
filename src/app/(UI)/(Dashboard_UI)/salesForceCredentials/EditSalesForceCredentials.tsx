@@ -1,11 +1,15 @@
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Switch} from '@/app/components/common/antd/Switch';
 import OsInput from '@/app/components/common/os-input';
+import OsInputPassword from '@/app/components/common/os-input/InputPassword';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
 import {FormInstance} from 'antd/lib';
+import Image from 'next/image';
 import {FC} from 'react';
+import eyeSlashIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye-slash.svg';
+import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
 
 const EditSalesForceCredentials: FC<{
   onFinish: any;
@@ -105,6 +109,44 @@ const EditSalesForceCredentials: FC<{
             ]}
           >
             <OsInput placeholder="Enter Base URL" />
+          </SelectFormItem>
+        </Col>
+        <Col span={24}>
+          <SelectFormItem
+            label={<Typography name="Body 4/Medium">Password</Typography>}
+            name={'password'}
+            // rules={
+            //   [
+            //     {
+            //       required: true,
+            //       message: 'Password is required!',
+            //     },
+            //   ]
+            // }
+          >
+            <OsInputPassword
+              iconRender={(visible) =>
+                visible ? (
+                  <Image
+                    src={eyeIcon}
+                    alt="eyeIcon"
+                    width={24}
+                    height={24}
+                    style={{cursor: 'pointer'}}
+                  />
+                ) : (
+                  <Image
+                    src={eyeSlashIcon}
+                    alt="eyeSlashIcon"
+                    width={24}
+                    height={24}
+                    style={{cursor: 'pointer'}}
+                  />
+                )
+              }
+              placeholder="Enter Password"
+              style={{width: '100%'}}
+            />
           </SelectFormItem>
         </Col>
       </Row>

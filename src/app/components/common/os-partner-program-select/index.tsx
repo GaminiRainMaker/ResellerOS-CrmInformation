@@ -40,20 +40,30 @@ const OsPartnerProgramSelect: FC<OsPartnerProgramSelectInterface> = ({
     let findIndexOfThePartner = allPartnerData?.findIndex(
       (item: any) => item?.id === partnerId,
     );
-    allPartnerData?.[findIndexOfThePartner]?.PartnerPrograms?.map(
-      (program: any) => {
-        if (
-          !program?.AssignPartnerProgram ||
-          (program?.AssignPartnerProgram &&
-            program?.AssignPartnerProgram?.is_approved === false)
-        ) {
-          partnerProgramsRequestOptions?.push({
-            label: <CustomTextCapitalization text={program?.partner_program} />,
-            value: program?.id,
-          });
-        }
-      },
-    );
+
+    const matchedPartner = allPartnerData?.[findIndexOfThePartner];
+
+    matchedPartner?.PartnerPrograms?.forEach((program: any) => {
+      if (
+        !program?.AssignPartnerProgram ||
+        (program?.AssignPartnerProgram &&
+          program?.AssignPartnerProgram?.is_approved === false)
+      ) {
+        partnerProgramsRequestOptions?.push({
+          label: <CustomTextCapitalization text={program?.partner_program} />,
+          value: JSON.stringify({
+            partner: {
+              id: matchedPartner?.id,
+              name: matchedPartner?.partner,
+            },
+            program: {
+              id: program?.id,
+              name: program?.partner_program,
+            },
+          }),
+        });
+      }
+    });
     setFinalProgramOptions(partnerProgramsRequestOptions);
   }, [allPartnerData, partnerId]);
 

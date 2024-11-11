@@ -2,6 +2,8 @@ import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
   addSalesForceCredentials,
   deleteSalesForceCredentials,
+  getSalesForceAccessToken,
+  getSalesForceCrendenialsByOrgId,
   queryAddSalesForceCredentials,
   updateSalesForceCredentialsId,
   updateSalesForceSSOLogin,
@@ -12,12 +14,14 @@ type SalesForceCredentials = {
   error: string | null;
   data: any;
   salesForceCredentials: any;
+  getSalesForceCrendenialsByOrgIdData: any;
 };
 const initialState: SalesForceCredentials = {
   loading: false,
   error: null,
   data: [],
   salesForceCredentials: [],
+  getSalesForceCrendenialsByOrgIdData: {},
 };
 
 const SalesForceCredentialsSlice = createSlice({
@@ -116,6 +120,41 @@ const SalesForceCredentialsSlice = createSlice({
       )
       .addCase(
         updateSalesForceSSOLogin.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getSalesForceCrendenialsByOrgId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getSalesForceCrendenialsByOrgId.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.getSalesForceCrendenialsByOrgIdData = action.payload;
+        },
+      )
+      .addCase(
+        getSalesForceCrendenialsByOrgId.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getSalesForceAccessToken.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getSalesForceAccessToken.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+        },
+      )
+      .addCase(
+        getSalesForceAccessToken.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
