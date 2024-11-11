@@ -228,52 +228,34 @@ const UserManagement = () => {
           getSalesForceAccessToken(credentials),
         );
         if (accessTokenRes?.payload) {
-          const partnerObj = {
+          const partnerAndProgramObj = {
             data: {
-              Name: partnersData?.partner_name,
-              rosdealregai__External_Id__c: partnersData?.partner_id,
+              Partner: {
+                Name: partnersData?.partner_name,
+                rosdealregai__External_Id__c: String(partnersData?.partner_id),
+              },
+              Partner_Program: {
+                Name: partnersData?.partner_program_name,
+                rosdealregai__External_Id__c: String(partnersData?.partner_id),
+                rosdealregai__Partner_LR__c: String(
+                  partnersData?.partner_program_id,
+                ),
+              },
             },
-            baseURL: accessTokenRes.payload.instanceUrl,
-            token: accessTokenRes.payload.accessToken,
+            baseURL: accessTokenRes?.payload?.instance_url,
+            token: accessTokenRes?.payload?.access_token,
           };
-
-          const partnerProgramObj = {
-            data: {
-              Name: partnersData?.partner_program_name,
-              rosdealregai__External_Id__c: partnersData?.partner_program_id,
-            },
-            baseURL: accessTokenRes.payload.instanceUrl,
-            token: accessTokenRes.payload.accessToken,
-          };
-
-          const partnerRes = await dispatch(
-            createSalesForcePartner(partnerObj),
+          const partnerRes: any = await dispatch(
+            createSalesForcePartner(partnerAndProgramObj),
           );
-          if (Array.isArray(partnerRes?.payload)) {
-            const errorMessage =
-              partnerRes.payload[0]?.message ||
-              'Failed to create Salesforce partner';
+
+          // Show notification if an error message exists
+          if (partnerRes?.ErrorMessage) {
             notification.open({
-              message: 'Create Partner Error',
-              description: errorMessage,
+              message: 'Create Partner and Partner Program Error',
+              description: partnerRes?.ErrorMessage,
               type: 'error',
             });
-            return;
-          }
-
-          const partnerProgramRes = await dispatch(
-            createSalesforcePartnerProgram(partnerProgramObj),
-          );
-          if (Array.isArray(partnerProgramRes?.payload)) {
-            const errorMessage =
-              partnerProgramRes.payload[0]?.message ||
-              'Failed to create Salesforce partner program';
-            notification.open({
-              message: 'Create Partner Program Error',
-              description: errorMessage,
-              type: 'error',
-            });
-            return;
           }
           const assignPartnerProgramRes = await dispatch(
             insertAssignPartnerProgram(obj),
