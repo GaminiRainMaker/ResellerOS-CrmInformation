@@ -160,6 +160,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
       (userfill ? '_userfill' : '');
 
     if (itemCon.dependentFiled) {
+      console.log('itemConitemCon', itemCon);
       return renderDependentField(
         itemCon,
         itemIndex,
@@ -388,42 +389,29 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     const [checkboxSelections, setCheckboxSelections] = useState<string[]>([]); // Store checkbox selections
     const [radioSelection, setRadioSelection] = useState<any>(null); // Store selected radio option
 
-    // Find the dependent field array based on the selected option
-
     let dependentField: any;
-    // if (selectedOption || radioSelection) {
-    //   dependentField = itemCon?.dependentFiledArr.find(
-    //     (depField: any) => depField.id === (selectedOption || radioSelection), // Check both selections
-    //   );
-    // } else {
-    //   dependentField = itemCon?.dependentFiledArr.find(
-    //     (depField: any) => depField.id === originalValueSaved, // Check both selections
-    //   );
-    // }
 
     let finTheFiledActive = globalStateForDependentFields?.find(
       (item: any) => item?.idName === itemCon?.label,
     );
+    console.log('finTheFiledActive', finTheFiledActive);
     dependentField = itemCon?.dependentFiledArr.find(
       (depField: any) => depField.id === finTheFiledActive?.valueOut, // Check both selections
     );
-    const handleCheckboxChange = (value: string) => {
-      // Deselect all checkboxes except the selected one
-      const newSelections = checkboxSelections.includes(value)
-        ? checkboxSelections.filter((v) => v !== value) // Deselect if already selected
-        : [value]; // Only keep the currently selected checkbox
+    // const handleCheckboxChange = (e: any) => {
+    //   const value = e?.target?.value;
+    //   setRadioSelection([]);
+    //   setSelectedOption(value);
+    //   setCheckboxSelections(value);
+    // };
 
-      setCheckboxSelections(newSelections);
-      setSelectedOption(newSelections[0]); // Set the selected option to the first checkbox selected
-    };
-
-    const handleRadioChange = (e: any) => {
-      const value = e.target.value;
-      setRadioSelection(value);
-      setSelectedOption(value); // Update selected option based on radio button selection
-      setCheckboxSelections([]); // Clear checkbox selections when selecting a radio button
-    };
-
+    // const handleRadioChange = (e: any) => {
+    //   const value = e.target.value;
+    //   setRadioSelection(value);
+    //   setSelectedOption(value);
+    //   setCheckboxSelections([]);
+    // };
+    console.log('selectedOption', selectedOption);
     return (
       <>
         {/* Render Main Field Based on the Type */}
@@ -432,16 +420,16 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
             style={{width: '100%', marginBottom: '1rem'}}
             placeholder="Select an option"
             value={finTheFiledActive?.valueOut}
-            onChange={(value) => {
-              commonUpdateTheDependentFileds(
-                itemCon.label,
-                value,
-                // newObjTORerender,
-              );
-              setSelectedOption(value);
-              setCheckboxSelections([]); // Clear checkbox selections when selecting from dropdown
-              setRadioSelection(null); // Clear radio selection when selecting from dropdown
-            }}
+            // onChange={(value) => {
+            //   commonUpdateTheDependentFileds(
+            //     itemCon.label,
+            //     value,
+            //     // newObjTORerender,
+            //   );
+            //   // setSelectedOption(value);
+            //   // setCheckboxSelections([]); // Clear checkbox selections when selecting from dropdown
+            //   // setRadioSelection(null); // Clear radio selection when selecting from dropdown
+            // }}
             allowClear
             {...commonProps}
           >
@@ -453,14 +441,14 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           </CommonSelect>
         ) : itemCon.name === 'Checkbox' ? (
           <>
-            <Checkbox.Group
-              onChange={(e: any) => {
-                handleCheckboxChange(e);
-              }}
-              value={finTheFiledActive?.valueOut}
-            >
+            <Checkbox.Group value={finTheFiledActive?.valueOut}>
               {itemCon?.labelOptions?.map((option) => (
-                <Checkbox style={{width: '100%'}} key={option} value={option}>
+                <Checkbox
+                  style={{width: '100%'}}
+                  key={option}
+                  value={option}
+                  {...commonProps}
+                >
                   {option}
                 </Checkbox>
               ))}
@@ -468,12 +456,14 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           </>
         ) : itemCon.name === 'Radio Button' ? (
           <>
-            <Radio.Group
-              onChange={handleRadioChange}
-              value={finTheFiledActive?.valueOut}
-            >
+            <Radio.Group value={finTheFiledActive?.valueOut}>
               {itemCon?.labelOptions?.map((option) => (
-                <Radio style={{width: '100%'}} key={option} value={option}>
+                <Radio
+                  style={{width: '100%'}}
+                  key={option}
+                  value={option}
+                  {...commonProps}
+                >
                   {option}
                 </Radio>
               ))}
@@ -487,7 +477,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           radioSelection ||
           (dependentField && (
             <>
-              {/* {console.log('dependentField123', dependentField)} */}
               <Typography name="Body 4/Medium">
                 {dependentField?.label}
               </Typography>
