@@ -68,7 +68,7 @@ function newQuoteMappingColumns(
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Quote PDF Document
+          Quote Document
         </Typography>
       ),
       dataIndex: 'quote_file_id',
@@ -238,7 +238,7 @@ function approvedQuoteMappingColumns(
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Quote PDF Document
+          Quote Document
         </Typography>
       ),
       dataIndex: 'quote_file_id',
@@ -396,7 +396,7 @@ function rejectQuoteMappingColumns(
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Quote PDF Document
+          Quote Document
         </Typography>
       ),
       dataIndex: 'quote_file_id',
