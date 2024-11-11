@@ -250,12 +250,13 @@ const UserManagement = () => {
           );
 
           // Show notification if an error message exists
-          if (partnerRes?.ErrorMessage) {
+          if (partnerRes?.payload?.ErrorMessage) {
             notification.open({
               message: 'Create Partner and Partner Program Error',
-              description: partnerRes?.ErrorMessage,
+              description: partnerRes?.payload?.ErrorMessage,
               type: 'error',
             });
+            return;
           }
           const assignPartnerProgramRes = await dispatch(
             insertAssignPartnerProgram(obj),
