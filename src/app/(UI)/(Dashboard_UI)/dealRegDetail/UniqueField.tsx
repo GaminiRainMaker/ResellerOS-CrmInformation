@@ -31,61 +31,14 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
 }) => {
   const searchParams = useSearchParams()!;
   const salesForceUrl = searchParams.get('instance_url');
-
-  // For Dependent fields
-  const [selectedOption, setSelectedOption] = useState<string | null>(null); // Store the selected main option
-  const [checkboxSelections, setCheckboxSelections] = useState<string[]>([]); // Store checkbox selections
-  const [radioSelection, setRadioSelection] = useState<string | null>(null); // Store selected radio option
   const [globalStateForDependentFields, setGlobalStateForDependentFields] =
     useState<any>();
-
-  const handleCheckboxChange = (value: string, label: string) => {
-    // Deselect all checkboxes except the selected one
-    const newSelections = checkboxSelections.includes(value)
-      ? checkboxSelections.filter((v) => v !== value) // Deselect if already selected
-      : [value]; // Only keep the currently selected checkbox
-    form.getFieldValue(label) || [];
-
-    setCheckboxSelections(newSelections);
-    setSelectedOption(newSelections[0]); // Set the selected option to the first checkbox selected
-  };
-
-  const handleRadioChange = (e: any) => {
-    const value = e.target.value;
-
-    setRadioSelection(value);
-
-    setSelectedOption(value); // Update selected option based on radio button selection
-    setCheckboxSelections([]); // Clear checkbox selections when selecting a radio button
-  };
-
-  const commonUpdateTheDependentFileds = (
-    label: any,
-    value: any,
-    // newObjTORerender: any,
-  ) => {
-    let newUpdateArrr = globalStateForDependentFields?.map(
-      (itemOuter: any, indexOuter: number) => {
-        if (itemOuter?.idName === label) {
-          return {
-            ...itemOuter,
-            valueOut: value,
-          };
-        }
-        return itemOuter;
-      },
-    );
-    setGlobalStateForDependentFields(newUpdateArrr);
-  };
-
-  const handleRadioChangeFopForm = (label: any) => {
-    form.getFieldValue(label) || [];
-  };
 
   const allContent =
     data?.form_data?.length > 0 &&
     data?.form_data?.[0] &&
     JSON.parse(data?.form_data[0]).flatMap((section: any) => section.content);
+
   useEffect(() => {
     let newArrForAllDependentFil: any = [];
 
@@ -160,7 +113,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
       (userfill ? '_userfill' : '');
 
     if (itemCon.dependentFiled) {
-      console.log('itemConitemCon', itemCon);
       return renderDependentField(
         itemCon,
         itemIndex,
@@ -386,7 +338,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
       formData?.unique_form_data?.[convertedToCheckValue?.toString()];
 
     const [selectedOption, setSelectedOption] = useState<string | null>(null); // Store the selected main option
-    const [checkboxSelections, setCheckboxSelections] = useState<string[]>([]); // Store checkbox selections
     const [radioSelection, setRadioSelection] = useState<any>(null); // Store selected radio option
 
     let dependentField: any;
@@ -398,19 +349,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     dependentField = itemCon?.dependentFiledArr.find(
       (depField: any) => depField.id === finTheFiledActive?.valueOut, // Check both selections
     );
-    // const handleCheckboxChange = (e: any) => {
-    //   const value = e?.target?.value;
-    //   setRadioSelection([]);
-    //   setSelectedOption(value);
-    //   setCheckboxSelections(value);
-    // };
 
-    // const handleRadioChange = (e: any) => {
-    //   const value = e.target.value;
-    //   setRadioSelection(value);
-    //   setSelectedOption(value);
-    //   setCheckboxSelections([]);
-    // };
     console.log('selectedOption', selectedOption);
     return (
       <>
