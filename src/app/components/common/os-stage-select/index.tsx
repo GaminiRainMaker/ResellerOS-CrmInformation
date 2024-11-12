@@ -18,7 +18,7 @@ const CommonStageSelect: FC<CommonStageSelectProps> = ({
   onChange,
   style,
   disabled,
-  placeholder = 'Select Stage',
+  placeholder = 'Select Status',
   ...rest
 }) => {
   const [token] = useThemeToken();
@@ -108,7 +108,7 @@ const CommonStageSelect: FC<CommonStageSelectProps> = ({
       textColor: `${token?.colorInfo}`,
       border: `${token?.colorInfo}`,
     },
-    'Drafts': {
+    Drafts: {
       color: `${token?.colorInfoBgHover}`,
       textColor: `${token?.colorInfo}`,
       border: `${token?.colorInfo}`,

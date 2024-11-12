@@ -175,8 +175,9 @@ const AddQuote: FC<AddQuoteInterface> = ({
           : [];
         let quoteItem = {};
         let quoteJson: any = [];
+        let result: any;
         for (let j = 0; j < nanoNetsResult?.length; j++) {
-          const result: any = nanoNetsResult[j];
+          result = nanoNetsResult[j];
           const predictions = result?.prediction?.filter((item: any) => item);
           // eslint-disable-next-line @typescript-eslint/no-loop-func
           predictions?.map((itemNew: any, predictionIndex: number) => {
@@ -210,28 +211,28 @@ const AddQuote: FC<AddQuoteInterface> = ({
               };
             }
           });
-          quoteObj = {
-            ...quoteItem,
-            nanonets_id: result?.id,
-            quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
-            pdf_url: newArrWithoutManual[i]?.pdf_url,
-            user_id: userInformation.id,
-            customer_id: customerId,
-            opportunity_id: opportunityId,
-            organization: userInformation.organization,
-            status: 'Drafts',
-            date: handleDate(),
-            quoteFileObj: [
-              {
-                file_name: newArrWithoutManual[i]?.file?.name,
-                pdf_url: newArrWithoutManual[i]?.pdf_url,
-                quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
-                nanonets_id: result?.id,
-                lineItems: lineItems.length > 0 ? lineItems : [],
-              },
-            ],
-          };
         }
+        quoteObj = {
+          ...quoteItem,
+          nanonets_id: result?.id,
+          quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
+          pdf_url: newArrWithoutManual[i]?.pdf_url,
+          user_id: userInformation.id,
+          customer_id: customerId,
+          opportunity_id: opportunityId,
+          organization: userInformation.organization,
+          status: 'Drafts',
+          date: handleDate(),
+          quoteFileObj: [
+            {
+              file_name: newArrWithoutManual[i]?.file?.name,
+              pdf_url: newArrWithoutManual[i]?.pdf_url,
+              quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
+              nanonets_id: result?.id,
+              lineItems: lineItems.length > 0 ? lineItems : [],
+            },
+          ],
+        };
         if (singleQuote || quoteId) {
           if (i === 0) {
             quotesArr.push(quoteObj);
@@ -569,7 +570,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
         }
       });
     }
-
     try {
       setFinalLoading(true);
       setLoading(true);
@@ -585,8 +585,9 @@ const AddQuote: FC<AddQuoteInterface> = ({
           : [];
         let quoteItem = {};
         let quoteJson: any = [];
+        let result: any;
         for (let j = 0; j < nanoNetsResult?.length; j++) {
-          const result: any = nanoNetsResult[j];
+          result = nanoNetsResult[j];
           const predictions = result?.prediction?.filter((item: any) => item);
           // eslint-disable-next-line @typescript-eslint/no-loop-func
           predictions?.map((itemNew: any, predictionIndex: number) => {
@@ -620,29 +621,29 @@ const AddQuote: FC<AddQuoteInterface> = ({
               };
             }
           });
-
-          quoteObj = {
-            ...quoteItem,
-            nanonets_id: result?.id,
-            quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
-            pdf_url: newArrWithoutManual[i]?.pdf_url,
-            user_id: userInformation.id,
-            customer_id: customerId,
-            opportunity_id: opportunityId,
-            organization: userInformation.organization,
-            status: 'Drafts',
-            date: handleDate(),
-            quoteFileObj: [
-              {
-                file_name: newArrWithoutManual[i]?.file?.name,
-                pdf_url: newArrWithoutManual[i]?.pdf_url,
-                quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
-                nanonets_id: result?.id,
-                lineItems: lineItems.length > 0 ? lineItems : [],
-              },
-            ],
-          };
         }
+
+        quoteObj = {
+          ...quoteItem,
+          nanonets_id: result?.id,
+          quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
+          pdf_url: newArrWithoutManual[i]?.pdf_url,
+          user_id: userInformation.id,
+          customer_id: customerId,
+          opportunity_id: opportunityId,
+          organization: userInformation.organization,
+          status: 'Drafts',
+          date: handleDate(),
+          quoteFileObj: [
+            {
+              file_name: newArrWithoutManual[i]?.file?.name,
+              pdf_url: newArrWithoutManual[i]?.pdf_url,
+              quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
+              nanonets_id: result?.id,
+              lineItems: lineItems.length > 0 ? lineItems : [],
+            },
+          ],
+        };
         if (singleQuote || quoteId) {
           if (i === 0) {
             quotesArr.push(quoteObj);
@@ -869,6 +870,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           latestestFIleId = payload?.payload?.id;
         });
       }
+
       if (countOfExportFiles > 0) {
         router.push(
           `/fileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${null}&quoteExist=false&manualFlow=true`,
@@ -924,6 +926,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
         );
       }
       setLoading(false);
+
       if (newArrWithManual?.length > 0) {
         if (countOfExportFiles > 0) {
           router.push(
