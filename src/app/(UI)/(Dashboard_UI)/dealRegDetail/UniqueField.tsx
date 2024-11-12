@@ -337,7 +337,11 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     let originalValueSaved =
       formData?.unique_form_data?.[convertedToCheckValue?.toString()];
 
-    const [selectedOption, setSelectedOption] = useState<string | null>(null); // Store the selected main option
+    const [selectedOption, setSelectedOption] = useState<string | null>(
+      originalValueSaved,
+    ); // Store the selected main option
+    const [dependentVal, setDependentVal] = useState<string | null>(null); // Store the selected main option
+
     const [radioSelection, setRadioSelection] = useState<any>(null); // Store selected radio option
 
     let dependentField: any;
@@ -349,7 +353,17 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     dependentField = itemCon?.dependentFiledArr.find(
       (depField: any) => depField.id === finTheFiledActive?.valueOut, // Check both selections
     );
+    let convertedToCheckDependentValue =
+      'u_' +
+      convertToSnakeCase(dependentField?.label) +
+      '_' +
+      itemIndex +
+      activeKey +
+      (required ? '_required' : '') +
+      (userfill ? '_userfill' : '');
 
+    let originalDependentValueSaved =
+      formData?.unique_form_data?.[convertedToCheckDependentValue?.toString()];
     console.log('selectedOption', selectedOption);
     return (
       <>
@@ -358,17 +372,11 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           <CommonSelect
             style={{width: '100%', marginBottom: '1rem'}}
             placeholder="Select an option"
-            value={finTheFiledActive?.valueOut}
-            // onChange={(value) => {
-            //   commonUpdateTheDependentFileds(
-            //     itemCon.label,
-            //     value,
-            //     // newObjTORerender,
-            //   );
-            //   // setSelectedOption(value);
-            //   // setCheckboxSelections([]); // Clear checkbox selections when selecting from dropdown
-            //   // setRadioSelection(null); // Clear radio selection when selecting from dropdown
-            // }}
+            value={selectedOption || originalValueSaved}
+            onChange={(value) => {
+              form.setFieldValue(convertedToCheckValue, value);
+              setSelectedOption(value);
+            }}
             allowClear
             {...commonProps}
           >
@@ -412,25 +420,53 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           <></>
         )}
         {/* Conditionally Render Dependent Field Based on Selection */}
-        {selectedOption ||
-          radioSelection ||
-          (dependentField && (
-            <>
+        {(selectedOption || radioSelection || originalValueSaved) && (
+          <SelectFormItem
+            name={
+              'u_' +
+              convertToSnakeCase(dependentField?.label) +
+              '_' +
+              itemIndex +
+              activeKey +
+              (required ? '_required' : '') +
+              (userfill ? '_userfill' : '')
+            }
+            label={
               <Typography name="Body 4/Medium">
                 {dependentField?.label}
               </Typography>
-              <CommonSelect
-                style={{width: '100%'}}
-                placeholder={`Select ${dependentField?.label}`}
-                allowClear
-                options={dependentField?.options.map((opt: any) => ({
-                  label: opt,
-                  value: opt,
-                }))}
-                {...commonProps}
-              />
-            </>
-          ))}
+            }
+            required={dependentField?.required}
+            rules={[
+              dependentField?.label === 'Email'
+                ? {
+                    type: 'email',
+                    message: 'Please enter a valid email address!',
+                  }
+                : {},
+              {
+                required: dependentField?.required,
+                message: 'This field is required!',
+              },
+            ]}
+          >
+            <CommonSelect
+              style={{width: '100%'}}
+              placeholder={`Select ${dependentField?.label}`}
+              allowClear
+              options={dependentField?.options.map((opt: any) => ({
+                label: opt,
+                value: opt,
+              }))}
+              value={dependentVal || originalDependentValueSaved}
+              onChange={(value) => {
+                form.setFieldValue(convertedToCheckDependentValue, value);
+                setDependentVal(value);
+              }}
+              {...commonProps}
+            />
+          </SelectFormItem>
+        )}
       </>
     );
   };
