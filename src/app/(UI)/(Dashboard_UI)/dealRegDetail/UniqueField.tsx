@@ -582,16 +582,25 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                 }
                 required={allContentItem.required}
                 rules={[
-                  allContentItem.label === 'Email'
-                    ? {
-                        type: 'email',
-                        message: 'Please enter a valid email address!',
-                      }
-                    : {},
-                  {
-                    required: allContentItem.required,
-                    message: 'This field is required!',
-                  },
+                  ...(allContentItem.label === 'Email'
+                    ? [
+                        {
+                          type: 'email' as const, // Ensures 'email' is treated as a specific literal type
+                          message: 'Please enter a valid email address!',
+                        },
+                        {
+                          required: true,
+                          message: 'This field is required!',
+                        },
+                      ]
+                    : allContentItem.required
+                    ? [
+                        {
+                          required: true,
+                          message: 'This field is required!',
+                        },
+                      ]
+                    : []),
                 ]}
               >
                 {getInputComponent(
