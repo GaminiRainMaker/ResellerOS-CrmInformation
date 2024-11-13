@@ -93,7 +93,7 @@ const Rebates: FC<any> = ({
 
         if (!groupedData[name]) {
           groupedData[name] = {
-            name,
+            name: name === 'Gp' ? 'GP' : name,
             description,
             type,
             QuoteLineItem: [],
