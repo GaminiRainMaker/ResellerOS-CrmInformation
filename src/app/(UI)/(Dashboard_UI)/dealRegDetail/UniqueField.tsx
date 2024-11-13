@@ -555,7 +555,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
               </Col>
             );
           }
-
           return (
             <Col
               span={allContentItem.name === 'Line Break' ? 24 : 12}
@@ -594,13 +593,13 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                         },
                       ]
                     : allContentItem.required
-                    ? [
-                        {
-                          required: true,
-                          message: 'This field is required!',
-                        },
-                      ]
-                    : []),
+                      ? [
+                          {
+                            required: true,
+                            message: 'This field is required!',
+                          },
+                        ]
+                      : []),
                 ]}
               >
                 {getInputComponent(
