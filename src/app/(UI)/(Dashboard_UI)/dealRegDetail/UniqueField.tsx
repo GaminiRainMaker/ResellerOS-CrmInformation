@@ -107,6 +107,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     const dateName =
       'u_' +
       convertToSnakeCase(itemCon.label) +
+      '_' +
       itemIndex +
       activeKey +
       (required ? '_required' : '') +
@@ -144,18 +145,26 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                   {...commonProps}
                 />
               ) : itemCon?.name === 'Date' ? (
-                <CommonDatePicker
-                  format="MMM D, YYYY"
-                  onChange={(date, dateString) => {
-                    form.setFieldValue(dateName, date);
-                    if (
-                      'onBlur' in commonProps &&
-                      typeof commonProps.onBlur === 'function'
-                    ) {
-                      commonProps.onBlur();
-                    }
-                  }}
-                />
+                <>
+                  <CommonDatePicker
+                    format="MMM D, YYYY"
+                    onChange={(date, dateString) => {
+                      // Check if date is valid using Day.js
+                      const parsedDate = date ? dayjs(date) : null;
+                      if (parsedDate && parsedDate.isValid()) {
+                        form.setFieldValue(dateName, parsedDate); // Store parsed date in the field
+                      } else {
+                        form.setFieldValue(dateName, null); // Clear the field if date is invalid
+                      }
+                      if (
+                        'onBlur' in commonProps &&
+                        typeof commonProps.onBlur === 'function'
+                      ) {
+                        commonProps.onBlur();
+                      }
+                    }}
+                  />
+                </>
               ) : itemCon?.name === 'Email' ? (
                 <OsInput
                   type="email"
@@ -478,7 +487,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
         setUniqueTemplateData(uniqueFormData);
         const initialValues = Object.keys(uniqueFormData).reduce(
           (acc: any, key) => {
-            if (key.includes('date')) {
+            if (/date/i.test(key)) {
               acc[key] = uniqueFormData[key]
                 ? dayjs(uniqueFormData[key])
                 : null;
