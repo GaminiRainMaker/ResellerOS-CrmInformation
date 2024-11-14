@@ -47,7 +47,6 @@ const Partners: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<number>(1);
   const [allPartnerData, setAllPartnerData] = useState<any>();
-  const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
   const [allPartnerAnalyticData, setAllAnalyticPartnerData] = useState<any>();
   const [formData, setformData] = useState<any>();
   const [partnerNewId, setPartnerNewId] = useState<any>();
@@ -1145,8 +1144,6 @@ const Partners: React.FC = () => {
           setPartnerNewId({});
           form.resetFields();
         }}
-        footer
-        footerPadding={30}
       />
 
       <OsModal

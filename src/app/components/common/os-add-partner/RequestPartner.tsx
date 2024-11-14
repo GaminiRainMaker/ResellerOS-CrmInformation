@@ -3,27 +3,27 @@
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import OsButton from '@/app/components/common/os-button';
 import Typography from '@/app/components/common/typography';
 import {mergeArrayWithObject} from '@/app/utils/base';
-import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {useEffect, useState} from 'react';
-import OsButton from '@/app/components/common/os-button';
 
+import {formatStatus} from '@/app/utils/CONSTANTS';
+import {useSearchParams} from 'next/navigation';
 import AddPartner from '.';
 import {insertAssignPartnerProgram} from '../../../../../redux/actions/assignPartnerProgram';
 import {getAllPartnerandProgramFilterDataForOrganizationOnly} from '../../../../../redux/actions/partner';
+import {upadteToRequestPartnerandprogramfromAmin} from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {Checkbox} from '../antd/Checkbox';
+import CustomTextCapitalization from '../hooks/CustomTextCapitalizationHook';
 import useDebounceHook from '../hooks/useDebounceHook';
 import AddPartnerProgram from '../os-add-partner-program';
+import OsInput from '../os-input';
 import OsModal from '../os-modal';
 import {SelectFormItem} from '../os-oem-select/oem-select-styled';
-import CommonSelect from '../os-select';
 import {RequestPartnerInterface} from './os-add-partner.interface';
-import CustomTextCapitalization from '../hooks/CustomTextCapitalizationHook';
-import OsInput from '../os-input';
-import {upadteToRequestPartnerandprogramfromAmin} from '../../../../../redux/actions/partnerProgram';
-import {formatStatus} from '@/app/utils/CONSTANTS';
 
 const RequestPartner: React.FC<RequestPartnerInterface> = ({
   form,
@@ -37,6 +37,8 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
   setShowModal,
 }) => {
   const [token] = useThemeToken();
+  const searchParams = useSearchParams()!;
+  const salesForceUrl = searchParams.get('instance_url');
   const [addPartnerform] = Form.useForm();
   const [addPartnerProgram] = Form.useForm();
   const dispatch = useAppDispatch();
@@ -58,6 +60,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
     useState<boolean>(false);
   const [openAddProgramModal, setOpenAddProgramModal] =
     useState<boolean>(false);
+  const [dealerRelationShip, setDealerRelationShip] = useState<boolean>(false);
   const [query, setQuery] = useState<{
     partner: string | null;
     program: string | null;
@@ -73,13 +76,14 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
       partner_program_id: partnerProgramNewId?.value,
       type: 'approve',
       valueUpdate: false,
+      dealer_relationship: salesForceUrl ? dealerRelationShip : false,
     };
 
     dispatch(upadteToRequestPartnerandprogramfromAmin(data));
     setPartnerNewId({});
     setPartnerProgramNewId({});
     setShowModal(false);
-    getPartnerData();
+    getPartnerData && getPartnerData();
   };
 
   useEffect(() => {
@@ -104,7 +108,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
         await dispatch(insertAssignPartnerProgram(partnerObj));
       }
       form?.resetFields();
-      getPartnerData();
+      getPartnerData && getPartnerData();
       setGetTheData(true);
 
       setRequestPartnerLoading(false);
@@ -119,7 +123,11 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
   };
 
   useEffect(() => {
-    dispatch(getAllPartnerandProgramFilterDataForOrganizationOnly(searchQuery));
+    if (!salesForceUrl) {
+      dispatch(
+        getAllPartnerandProgramFilterDataForOrganizationOnly(searchQuery),
+      );
+    }
   }, [searchQuery]);
 
   useEffect(() => {
@@ -220,11 +228,6 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
                     {' '}
                     + Add New Partner
                   </Typography>
-                  // <OsButton
-                  //   clickHandler={() => setOpenAddPartnerModal(true)}
-                  //   text="Request Partner"
-                  //   buttontype="SECONDARY"
-                  // />
                 )}
               </SelectFormItem>
             </Col>
@@ -254,28 +257,39 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
                     {' '}
                     + Add New Program Partner
                   </Typography>
-                  // <OsButton
-                  //   disabled={!partnerNewId?.value}
-                  //   clickHandler={() => setOpenAddProgramModal(true)}
-                  //   text="Request Partner"
-                  //   buttontype="SECONDARY"
-                  // />
                 )}
               </SelectFormItem>
             </Col>
           </Row>
+
+          {salesForceUrl && (
+            <Row
+              style={{
+                marginTop: '40px',
+              }}
+            >
+              <Space size={15}>
+                <Checkbox
+                  onChange={(e) => {
+                    setDealerRelationShip(e?.target?.checked);
+                  }}
+                />
+                <Typography name="Body 4/Medium">
+                  Do you have authorized dealer relationship with these
+                  entities?
+                </Typography>
+              </Space>
+            </Row>
+          )}
         </Form>
         <div
-          // direction="vertical"
           style={{
             display: 'flex',
             justifyContent: 'end',
             width: '100%',
-            // background: 'red',
           }}
         >
           <OsButton
-            // style={{float: 'right'}}
             text="Request"
             buttontype="PRIMARY"
             clickHandler={requestForNewPartnerAndPartnerProgram}

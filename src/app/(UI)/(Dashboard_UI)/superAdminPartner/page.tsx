@@ -27,7 +27,7 @@ import {
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
-import {Checkbox, Form, notification} from 'antd';
+import {Form, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {updateAssignPartnerProgramById} from '../../../../../redux/actions/assignPartnerProgram';
@@ -51,6 +51,7 @@ import {Switch} from '@/app/components/common/antd/Switch';
 import React from 'react';
 import OsInput from '@/app/components/common/os-input';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
+import {Checkbox} from '@/app/components/common/antd/Checkbox';
 
 export interface SeparatedData {
   [partnerId: number]: {
@@ -221,7 +222,6 @@ const SuperAdminPartner: React.FC = () => {
     };
     await dispatch(updatePartnerProgramById(obj));
   };
-  console.log('34543543543534', rejectedRecord, rejectReason);
   const updateRequest = async (
     type: boolean,
     id: number,
@@ -395,7 +395,7 @@ const SuperAdminPartner: React.FC = () => {
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
-      width: 200,
+      width: 250,
     },
     {
       title: (
@@ -419,6 +419,17 @@ const SuperAdminPartner: React.FC = () => {
     //   dataIndex: 'organization',
     //   key: 'organization',
     // },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Dealer Relationship
+        </Typography>
+      ),
+      dataIndex: 'dealer_relationship',
+      key: 'dealer_relationship',
+      render: (text: boolean) => <Checkbox checked={text} disabled />,
+      width: 200,
+    },
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -725,6 +736,17 @@ const SuperAdminPartner: React.FC = () => {
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Dealer Relationship
+        </Typography>
+      ),
+      dataIndex: 'dealer_relationship',
+      key: 'dealer_relationship',
+
+      render: (text: boolean) => <Checkbox checked={text} disabled />,
     },
 
     {
