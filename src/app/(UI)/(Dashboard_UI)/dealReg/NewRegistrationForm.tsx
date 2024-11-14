@@ -914,7 +914,7 @@ const NewRegistrationForm: FC<any> = ({
         )}
       </Form>
 
-      <Row justify={salesForceUrl || formStep === 1 ? 'space-between' : 'end'}>
+      <Row justify={formStep === 1 ? 'space-between' : 'end'}>
         {formStep === 1 && (
           <OsButton
             text="Back"
@@ -924,26 +924,28 @@ const NewRegistrationForm: FC<any> = ({
             }}
           />
         )}
-        <OsButton
-          text={
-            formStep === 0 && !isDealRegDetail && !salesForceUrl
-              ? 'Save & Next'
-              : isDealRegDetail || salesForceUrl
-                ? 'Save'
-                : 'Save & Continue'
-          }
-          buttontype="PRIMARY"
-          clickHandler={form.submit}
-        />
-        {salesForceUrl && (
+        <Space size={20}>
           <OsButton
-            text={'Request Partner'}
-            buttontype="SECONDARY"
-            clickHandler={() => {
-              setOpenReponseModal(true);
-            }}
+            text={
+              formStep === 0 && !isDealRegDetail && !salesForceUrl
+                ? 'Save & Next'
+                : isDealRegDetail || salesForceUrl
+                  ? 'Save'
+                  : 'Save & Continue'
+            }
+            buttontype="PRIMARY"
+            clickHandler={form.submit}
           />
-        )}
+          {salesForceUrl && (
+            <OsButton
+              text={'Request Partner'}
+              buttontype="SECONDARY"
+              clickHandler={() => {
+                setOpenReponseModal(true);
+              }}
+            />
+          )}
+        </Space>
       </Row>
 
       <OsModal
