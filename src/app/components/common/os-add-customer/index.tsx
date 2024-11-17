@@ -35,6 +35,8 @@ import {
   AlphabetsRegexWithSpecialChr,
   emailRegex,
 } from '@/app/utils/base';
+import CommonSelect from '../os-select';
+import {contactIndustryOption} from '@/app/utils/CONSTANTS';
 
 const AddCustomer: React.FC<AddCustomertInterface> = ({
   drawer,
@@ -283,7 +285,10 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                   label={<Typography name="Body 4/Medium">Industry</Typography>}
                   name="industry"
                 >
-                  <OsInput placeholder="Enter here" />
+                  <CommonSelect
+                    style={{width: '100%'}}
+                    options={contactIndustryOption}
+                  />
                 </SelectFormItem>
               </Col>
               <Col span={drawer ? 24 : 12}>
@@ -330,12 +335,6 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                         </Typography>
                       }
                       name="shiping_address_line"
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Address Line is required!',
-                        },
-                      ]}
                     >
                       <OsInput placeholder="Enter here" />
                     </SelectFormItem>
@@ -377,10 +376,6 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                       }
                       name="shiping_pin_code"
                       rules={[
-                        {
-                          required: true,
-                          message: 'Zip Code is required!',
-                        },
                         {
                           pattern: /^[0-9]{5}$/,
                           message:
@@ -466,12 +461,6 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                         </Typography>
                       }
                       name="billing_address_line"
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Address Line is required!',
-                        },
-                      ]}
                     >
                       <OsInput placeholder="Enter here" />
                     </SelectFormItem>
@@ -513,10 +502,6 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                       }
                       name="billing_pin_code"
                       rules={[
-                        {
-                          required: true,
-                          message: 'Zip Code is required!',
-                        },
                         {
                           pattern: /^[0-9]{5}$/,
                           message:
@@ -728,23 +713,6 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                   });
                                 }}
                               />
-                              {/* {errorFileds && (
-                                <>
-                                  {!objectValuesForContact?.billing_last_name ? (
-                                    <div style={{ color: 'red' }}>
-                                      This filed is required!
-                                    </div>
-                                  ) : (
-                                    !AlphabetsRegex?.test(
-                                      objectValuesForContact?.billing_last_name,
-                                    ) && (
-                                      <div style={{ color: 'red' }}>
-                                        Please enter vaild last name
-                                      </div>
-                                    )
-                                  )}
-                                </>
-                              )} */}
                             </Col>
                           </Row>
 

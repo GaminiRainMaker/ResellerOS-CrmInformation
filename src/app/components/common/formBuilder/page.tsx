@@ -567,6 +567,7 @@ const FormBuilderMain: React.FC<any> = ({
                                 <>
                                   <CommonDatePicker
                                     format={itemCon?.dateformat}
+                                    placeholder={itemCon?.dateformat}
                                     // value={newDateeDaTa}
                                     onChange={(e: any) => {
                                       if (pathnameForFlow) {

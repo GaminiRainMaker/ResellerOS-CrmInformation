@@ -369,6 +369,7 @@ const UserManagement = () => {
       password: `${dataa?.user_name}@123`,
       is_admin: true,
       master_admin: true,
+      is_salesforce: dataa?.org_id ? true : false,
     };
     dispatch(createNewOrganization(obj))?.then((res) => {
       if (res?.payload) {
