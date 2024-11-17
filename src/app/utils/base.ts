@@ -1853,13 +1853,24 @@ export function concatenateAfterFirstWithSpace(inputString: any) {
 }
 
 export const convertToSnakeCase = (input: string): string => {
-  return (
-    input &&
-    input
-      ?.toLowerCase()
-      ?.replace(/(?:\s+|[^a-z0-9\/])/g, '_') // Replace spaces and non-alphanumeric characters with underscores, except slashes
-      ?.replace(/\/+/g, '/')
-  ); // Preserve slashes as they are
+  // Match any punctuation marks at the end of the string (e.g., "?" or ".")
+  const punctuation = /[.?]$/;
+
+  // Safely check for a match and get the punctuation (if any)
+  const endingPunctuation = input?.match(punctuation)?.[0] ?? '';
+
+  // Remove punctuation from the input temporarily
+  const cleanInput = input?.replace(punctuation, '');
+
+  // Convert to snake case and add an underscore only if punctuation is absent
+  const result = cleanInput
+    ?.replace(/([a-z0-9])([A-Z])/g, '$1_$2') // Handle camelCase and PascalCase
+    ?.replace(/\s+/g, '_') // Replace spaces with underscores
+    ?.replace(/[^a-zA-Z0-9_]/g, '') // Remove non-alphanumeric characters except underscores
+    ?.replace(/_+/g, '_') // Remove multiple consecutive underscores
+    ?.replace(/^_+|_+$/g, ''); // Remove leading and trailing underscores
+
+  return endingPunctuation ? result + endingPunctuation : result;
 };
 
 export const radioValidator = (data: any, value: any, form: FormInstance) => {
@@ -1991,22 +2002,24 @@ dayjs.extend(timezone);
  * @returns {string} Formatted date in UTC or user's timezone.
  */
 export const handleDate = (
-    date: string | Date | null = null,
-    toUserTimezone: boolean = false,
-    format: string = 'MM/DD/YYYY | HH:mm'
+  date: string | Date | null = null,
+  toUserTimezone: boolean = false,
+  format: string = 'MM/DD/YYYY | HH:mm',
 ): string => {
-    const userTimeZone = dayjs.tz.guess();
+  const userTimeZone = dayjs.tz.guess();
 
-    if (toUserTimezone) {
-        // Convert stored UTC date to user's timezone with specified format
-        return dayjs.utc(date).tz(userTimeZone).format(format);
-    } else {
-        // Save the current date or provided date in UTC with specified format
-        return dayjs(date || new Date()).utc().format();
-    }
+  if (toUserTimezone) {
+    // Convert stored UTC date to user's timezone with specified format
+    return dayjs.utc(date).tz(userTimeZone).format(format);
+  } else {
+    // Save the current date or provided date in UTC with specified format
+    return dayjs(date || new Date())
+      .utc()
+      .format();
+  }
 };
 
-export function convertToNumber(variable :any) {
+export function convertToNumber(variable: any) {
   const num = Number(variable);
   return isNaN(num) ? 0 : num;
 }

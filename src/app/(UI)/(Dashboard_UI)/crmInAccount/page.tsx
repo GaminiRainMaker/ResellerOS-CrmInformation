@@ -335,7 +335,7 @@ const CrmInformation: React.FC = () => {
               deleteIds && deleteIds?.length > 0 && setShowModalDelete(true);
             } else {
               notification?.open({
-                message: 'Please select the account first.',
+                message: 'Please select the Account you want to delete.',
                 type: 'info',
               });
             }
@@ -445,7 +445,7 @@ const CrmInformation: React.FC = () => {
         <Row
           justify="space-between"
           style={{
-            padding: '36px 24px',
+            padding: '20px 24px',
             background: token?.colorBgContainer,
             borderRadius: '12px',
           }}

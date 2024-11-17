@@ -30,9 +30,13 @@ import {
 } from './quoteMappingColumns';
 import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
-import {formatStatus, quoteLineItemColumnForSync} from '@/app/utils/CONSTANTS';
+import {
+  formatStatus,
+  quoteLineItemColumnForSync,
+  quoteLineItemColumnForSyncFOrSalesFporceUpdatedOnce,
+} from '@/app/utils/CONSTANTS';
 import CommonSelect from '@/app/components/common/os-select';
-import { handleDate } from '@/app/utils/base';
+import {handleDate} from '@/app/utils/base';
 
 const QuoteMappings = () => {
   const dispatch = useAppDispatch();
@@ -58,6 +62,7 @@ const QuoteMappings = () => {
   const searchQuery = useDebounceHook(query, 500);
   const [manualRecord, setManualRecord] = useState<any>();
   const [showSyncModal, setShowSyncModal] = useState<boolean>(false);
+  const [showError, setShowError] = useState<boolean>(false);
 
   useEffect(() => {
     dispatch(queryLineItemSyncing(searchQuery));
@@ -95,16 +100,48 @@ const QuoteMappings = () => {
       setSelectedId(selectedRowKeys);
     },
   };
-
+  useEffect(() => {
+    if (
+      manualRecord?.quote_header &&
+      manualRecord?.quote_header !== '' &&
+      manualRecord?.pdf_header &&
+      manualRecord?.pdf_header !== ''
+    ) {
+      setShowError(false);
+    }
+  }, [showError, manualRecord, JSON?.stringify(manualRecord)]);
   const addNewSyncingManually = async () => {
     let newObj = {...manualRecord};
+    if (
+      !newObj?.quote_header ||
+      newObj?.quote_header === '' ||
+      !newObj?.pdf_header ||
+      newObj?.pdf_header === ''
+    ) {
+      setShowError(true);
+      return;
+    }
     dispatch(addLineItemSyncingManualy(newObj))?.then((payload: any) => {
-      setManualRecord({});
-      setShowSyncModal(false);
       if (payload?.payload) {
-        dispatch(queryLineItemSyncing(searchQuery));
+        setManualRecord({});
+        notification?.open({
+          message: 'Quote mapping added successfully',
+          type: 'success',
+        });
+        setShowSyncModal(false);
+        if (payload?.payload) {
+          dispatch(queryLineItemSyncing(searchQuery));
+        }
+        setActiveTab(2);
+      } else {
+        setManualRecord({});
+        setShowSyncModal(false);
+
+        notification?.open({
+          message: 'Combination for lineItem syncing already exist!',
+          type: 'error',
+        });
       }
-      setActiveTab(2);
     });
   };
   const superAdmintabItems = [
@@ -466,19 +503,46 @@ const QuoteMappings = () => {
                       }}
                     />
                   </Row>
+                  {showError &&
+                    (!manualRecord?.pdf_header ||
+                      manualRecord?.pdf_header === '') && (
+                      <div
+                        style={{
+                          display: 'flex',
+                          // justifyContent: 'center',
+                          color: 'red',
+                          marginLeft: '2px',
+                        }}
+                      >
+                        This filed is required!
+                      </div>
+                    )}
                 </Col>
 
                 <Col>
                   <Row style={{marginTop: '6px'}}>
                     {manualRecord?.is_salesforce ? (
-                      <OsInput
-                        value={formatStatus(manualRecord?.quote_header)}
-                        onChange={(e: any) => {
+                      <CommonSelect
+                        onChange={(e) => {
+                          setManualRecord({...manualRecord, quote_header: e});
+                        }}
+                        allowClear
+                        onClear={() => {
                           setManualRecord({
                             ...manualRecord,
-                            quote_header: e?.target?.value,
+                            quote_header: '',
                           });
                         }}
+                        defaultValue={formatStatus(
+                          manualRecord?.quote_header?.toString()?.toUpperCase(),
+                        )}
+                        // value={formatStatus(
+                        //   newLabel?.label?.toString()?.toUpperCase(),
+                        // )}
+                        style={{width: '250px'}}
+                        options={
+                          quoteLineItemColumnForSyncFOrSalesFporceUpdatedOnce
+                        }
                       />
                     ) : (
                       <CommonSelect
@@ -503,6 +567,20 @@ const QuoteMappings = () => {
                       />
                     )}
                   </Row>
+                  {showError &&
+                    (!manualRecord?.quote_header ||
+                      manualRecord?.quote_header === '') && (
+                      <div
+                        style={{
+                          display: 'flex',
+                          // justifyContent: 'center',
+                          color: 'red',
+                          marginLeft: '2px',
+                        }}
+                      >
+                        This filed is required!
+                      </div>
+                    )}
                 </Col>
               </Row>
 

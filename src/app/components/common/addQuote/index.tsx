@@ -36,6 +36,7 @@ import OsUpload from '../os-upload';
 import {AddQuoteInterface, FormattedData} from './types';
 import {queryLineItemSyncingForSalesForce} from '../../../../../redux/actions/LineItemSyncing';
 import {getUserByTokenAccess} from '../../../../../redux/actions/user';
+import ConverSationProcess from '@/app/(UI)/(Dashboard_UI)/admin/quote-AI/configuration/configuration-tabs/ConversationProcess';
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
@@ -344,11 +345,21 @@ const AddQuote: FC<AddQuoteInterface> = ({
                 product_id: itemsToAdd?.id,
                 product_code: itemsToAdd?.product_code,
                 line_amount: itemsToAdd?.line_amount,
-                list_price: itemsToAdd?.list_price,
-                description: itemsToAdd?.description,
-                quantity: itemsToAdd?.quantity,
-                adjusted_price: itemsToAdd?.adjusted_price,
-                line_number: itemsToAdd?.line_number,
+                list_price: itemssProduct?.list_price
+                  ? itemssProduct?.list_price
+                  : itemsToAdd?.list_price,
+                description: itemssProduct?.description
+                  ? itemssProduct?.description
+                  : itemsToAdd?.description,
+                quantity: itemssProduct?.quantity
+                  ? itemssProduct?.quantity
+                  : itemsToAdd?.quantity,
+                adjusted_price: itemssProduct?.adjusted_price
+                  ? itemssProduct?.adjusted_price
+                  : itemsToAdd?.adjusted_price,
+                line_number: itemssProduct?.line_number
+                  ? itemssProduct?.line_number
+                  : itemsToAdd?.line_number,
                 organization: userInformation.organization,
               };
               finalLineItems?.push(obj1);
@@ -622,7 +633,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
             }
           });
         }
-
         quoteObj = {
           ...quoteItem,
           nanonets_id: result?.id,
@@ -658,7 +668,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
           quotesArr.push(quoteObj);
         }
       }
-
+      // console.log('3242342312', quotesArr);
+      // return;
       if (quotesArr.length > 0 && !quoteId) {
         for (let i = 0; i < quotesArr.length; i++) {
           let newObj = {
@@ -756,11 +767,21 @@ const AddQuote: FC<AddQuoteInterface> = ({
                 product_id: itemsToAdd?.id,
                 product_code: itemsToAdd?.product_code,
                 line_amount: itemsToAdd?.line_amount,
-                list_price: itemsToAdd?.list_price,
-                description: itemsToAdd?.description,
-                quantity: itemsToAdd?.quantity,
-                adjusted_price: itemsToAdd?.adjusted_price,
-                line_number: itemsToAdd?.line_number,
+                list_price: itemssProduct?.list_price
+                  ? itemssProduct?.list_price
+                  : itemsToAdd?.list_price,
+                description: itemssProduct?.description
+                  ? itemssProduct?.description
+                  : itemsToAdd?.description,
+                quantity: itemssProduct?.quantity
+                  ? itemssProduct?.quantity
+                  : itemsToAdd?.quantity,
+                adjusted_price: itemssProduct?.adjusted_price
+                  ? itemssProduct?.adjusted_price
+                  : itemsToAdd?.adjusted_price,
+                line_number: itemssProduct?.line_number
+                  ? itemssProduct?.line_number
+                  : itemsToAdd?.line_number,
                 organization: userInformation.organization,
               };
               finalLineItems?.push(obj1);

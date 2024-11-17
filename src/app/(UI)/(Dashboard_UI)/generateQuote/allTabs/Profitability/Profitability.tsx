@@ -166,7 +166,7 @@ const Profitablity: FC<any> = ({
           if (!groupedData[name]) {
             groupedData[name] = {
               bundleId: bundleId || null,
-              name: name,
+              name: name === 'Gp' ? 'GP': name,
               description: description || '',
               quantity: quantity || '',
               type: type,
@@ -244,7 +244,6 @@ const Profitablity: FC<any> = ({
       ),
       ...arrayData,
     ];
-
     setFinalData(finalData);
     let newArrForPaggination: any = [];
 

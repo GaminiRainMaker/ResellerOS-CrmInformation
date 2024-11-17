@@ -320,76 +320,6 @@ const DealRegCustomTabs = forwardRef<
         submitted_date: finalDealReg?.submitted_date,
         status: finalDealReg?.status,
       };
-      const outputForQuniqueFileds = Object.entries(finalUniqueFieldObject).map(
-        ([key, value]) => {
-          const baseKey = key
-            .split(/(\d+)/)[0]
-            .replace(/^u_/, '')
-            .replace(/_/g, ' ');
-          const userfill = key.endsWith('userfill');
-          const required = key.includes('required');
-
-          return {
-            [baseKey]: value,
-            userfill,
-            required,
-          };
-        },
-      );
-
-      const outputFoCommonFileds = Object.entries(finalCommonFieldObject).map(
-        ([key, value]) => {
-          const baseKey = key
-            .split(/(\d+)/)[0]
-            .replace(/^c_/, '')
-            .replace(/_/g, ' ');
-          const userfill = key.endsWith('userfill');
-          const required = key.includes('required');
-
-          return {
-            [baseKey]: value,
-            userfill,
-            required,
-          };
-        },
-      );
-      let allFiledObj = [
-        {
-          key: 'Response details',
-          value: [
-            {
-              partner_approval_id: finalDealReg?.partner_approval_id,
-              userfill: false,
-              required: false,
-            },
-            {
-              partner_deal_id: finalDealReg?.partner_deal_id,
-              userfill: false,
-              required: false,
-            },
-            {
-              expiration_date: finalDealReg?.expiration_date,
-              userfill: false,
-              required: false,
-            },
-            {
-              submitted_date: finalDealReg?.submitted_date,
-              userfill: false,
-              required: false,
-            },
-            {status: finalDealReg?.status, userfill: false, required: false},
-          ],
-        },
-        {
-          key: 'Unique Fields',
-          value: outputForQuniqueFileds,
-        },
-        {
-          key: 'Common Fileds',
-          value: outputFoCommonFileds,
-        },
-      ];
-
       const newObj = {
         common_form_data: [JSON.stringify(finalCommonFieldObject)],
         unique_form_data: [JSON.stringify(finalUniqueFieldObject)],
@@ -403,7 +333,6 @@ const DealRegCustomTabs = forwardRef<
         expiration_date: finalDealReg?.expiration_date,
         submitted_date: finalDealReg?.submitted_date,
         status: finalDealReg?.status,
-        form_data_all: JSON?.stringify(allFiledObj),
         percentage: tabPercentage,
       };
 

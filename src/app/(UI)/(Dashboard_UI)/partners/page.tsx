@@ -47,7 +47,6 @@ const Partners: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<number>(1);
   const [allPartnerData, setAllPartnerData] = useState<any>();
-  const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
   const [allPartnerAnalyticData, setAllAnalyticPartnerData] = useState<any>();
   const [formData, setformData] = useState<any>();
   const [partnerNewId, setPartnerNewId] = useState<any>();
@@ -357,8 +356,7 @@ const Partners: React.FC = () => {
       dataIndex: 'partner_program',
       key: 'partner_program',
       render: (text: string, record: any) => (
-        console.log('recordrecord', record),
-        (<CustomTextCapitalization text={record?.Partner?.partner} />)
+        <CustomTextCapitalization text={record?.Partner?.partner} />
       ),
     },
     {
@@ -492,8 +490,7 @@ const Partners: React.FC = () => {
       dataIndex: 'partner_program',
       key: 'partner_program',
       render: (text: string, record: any) => (
-        console.log('recordrecord', record),
-        (<CustomTextCapitalization text={record?.Partner?.partner} />)
+        <CustomTextCapitalization text={record?.Partner?.partner} />
       ),
     },
     {
@@ -1147,8 +1144,6 @@ const Partners: React.FC = () => {
           setPartnerNewId({});
           form.resetFields();
         }}
-        footer
-        footerPadding={30}
       />
 
       <OsModal

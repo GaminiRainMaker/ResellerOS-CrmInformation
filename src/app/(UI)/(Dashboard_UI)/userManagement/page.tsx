@@ -26,6 +26,14 @@ import React from 'react';
 import OsButton from '@/app/components/common/os-button';
 import AddNewOrganization from './AddNewOrganization';
 import {Checkbox} from '@/app/components/common/antd/Checkbox';
+import {
+  getSalesForceAccessToken,
+  getSalesForceCrendenialsByOrgId,
+} from '../../../../../redux/actions/salesForceCredentials';
+import {
+  createSalesForcePartner,
+  createSalesforcePartnerProgram,
+} from '../../../../../redux/actions/salesForce';
 
 const UserManagement = () => {
   const dispatch = useAppDispatch();
@@ -124,11 +132,11 @@ const UserManagement = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Organization Email
+          Organization ID
         </Typography>
       ),
-      dataIndex: 'organization_email',
-      key: 'organization_email',
+      dataIndex: 'org_id',
+      key: 'org_id',
       width: 173,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
@@ -144,7 +152,6 @@ const UserManagement = () => {
       key: 'is_salesforce',
       width: 173,
       render: (text: any, record: any) => {
-        console.log('recordrecord', record, text);
         return <Checkbox checked={text} />;
       },
     },
@@ -199,20 +206,119 @@ const UserManagement = () => {
     emptyText: <EmptyContainer title="No Users" />,
   };
 
-  const onFinish = () => {
-    const Data = form?.getFieldsValue();
+  const fetchSalesForceKey = async (
+    record: any,
+    obj: any,
+    partnersData: any,
+  ) => {
+    try {
+      const res = await dispatch(
+        getSalesForceCrendenialsByOrgId({org_id: record?.org_id}),
+      );
+      if (res?.payload) {
+        const credentials = {
+          base_url: res.payload.base_url,
+          consumer_key: res.payload.consumer_key,
+          consumer_secret: res.payload.consumer_secret,
+          username: res.payload.username,
+          password: res.payload.password,
+        };
 
-    const obj = {
-      organization: selectedRecordData?.organization,
-      partner_program_id: Data?.partner_program_id,
-      is_approved: true,
-    };
-    dispatch(insertAssignPartnerProgram(obj)).then((d) => {
-      if (d?.payload) {
+        const accessTokenRes = await dispatch(
+          getSalesForceAccessToken(credentials),
+        );
+        if (accessTokenRes?.payload) {
+          const partnerAndProgramObj = {
+            data: {
+              Partner: {
+                Name: partnersData?.partner_name,
+                rosdealregai__External_Id__c: String(partnersData?.partner_id),
+              },
+              Partner_Program: {
+                Name: partnersData?.partner_program_name,
+                rosdealregai__External_Id__c: String(partnersData?.partner_id),
+                rosdealregai__Partner_LR__c: String(
+                  partnersData?.partner_program_id,
+                ),
+              },
+            },
+            baseURL: accessTokenRes?.payload?.instance_url,
+            token: accessTokenRes?.payload?.access_token,
+          };
+          const partnerRes: any = await dispatch(
+            createSalesForcePartner(partnerAndProgramObj),
+          );
+
+          // Show notification if an error message exists
+          if (partnerRes?.payload?.ErrorMessage) {
+            notification.open({
+              message: 'Create Partner and Partner Program Error',
+              description: partnerRes?.payload?.ErrorMessage,
+              type: 'error',
+            });
+            return;
+          }
+          const assignPartnerProgramRes = await dispatch(
+            insertAssignPartnerProgram(obj),
+          );
+          if (assignPartnerProgramRes?.payload) {
+            setShowPartnerProgramAssignModal(false);
+            form.resetFields();
+          }
+        } else {
+          notification.open({
+            message: 'Failed to get Salesforce access token',
+            type: 'error',
+          });
+        }
+      } else {
+        notification.open({
+          message: 'Salesforce credentials not found for the specified Org ID',
+          type: 'info',
+        });
         setShowPartnerProgramAssignModal(false);
         form.resetFields();
       }
-    });
+    } catch (error) {
+      console.error('Error in fetchSalesForceKey:', error);
+      notification.open({
+        message: 'An error occurred while processing Salesforce data',
+        type: 'error',
+      });
+      setShowPartnerProgramAssignModal(false);
+      form.resetFields();
+    }
+  };
+
+  const onFinish = () => {
+    const Data = form?.getFieldsValue();
+    const Data2 = JSON.parse(Data?.partner_program_id);
+
+    const finalData = {
+      partner_id: Data2?.partner?.id,
+      partner_name: Data2?.partner?.name,
+      partner_program_id: Data2?.program?.id,
+      partner_program_name: Data2?.program?.name,
+    };
+    if (finalData) {
+      const obj = {
+        organization: selectedRecordData?.organization,
+        org_id: selectedRecordData?.org_id,
+        partner_program_id: finalData?.partner_program_id,
+        is_approved: true,
+      };
+
+      if (selectedRecordData?.is_salesforce) {
+        fetchSalesForceKey(selectedRecordData, obj, finalData);
+      } else {
+        dispatch(insertAssignPartnerProgram(obj))?.then((d) => {
+          if (d?.payload) {
+            setShowPartnerProgramAssignModal(false);
+            form.resetFields();
+          }
+        });
+      }
+    }
   };
 
   const uniqueOrganization = Array?.from(
@@ -263,6 +369,7 @@ const UserManagement = () => {
       password: `${dataa?.user_name}@123`,
       is_admin: true,
       master_admin: true,
+      is_salesforce: dataa?.org_id ? true : false,
     };
     dispatch(createNewOrganization(obj))?.then((res) => {
       if (res?.payload) {

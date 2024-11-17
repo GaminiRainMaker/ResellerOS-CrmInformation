@@ -18,7 +18,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import CommonSelect from '../os-select';
 import {AddPartnerInterface} from './os-add-partner.interface';
-import {usePathname} from 'next/navigation';
+import {usePathname, useSearchParams} from 'next/navigation';
 
 const AddPartner: React.FC<AddPartnerInterface> = ({
   form,
@@ -35,10 +35,11 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
   setPartnerNewId,
 }) => {
   const [token] = useThemeToken();
-
+  const searchParams = useSearchParams()!;
   const pathname = usePathname();
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
+  const salesForceUrl = searchParams.get('instance_url');
   useEffect(() => {
     form?.resetFields();
     if (updateTheObject) {
@@ -69,6 +70,9 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
       }
       if (!userInformation?.Admin) {
         partnerObj.admin_request = false;
+      }
+      if (salesForceUrl) {
+        partnerObj.admin_request = true;
       }
       await dispatch(insertPartner(partnerObj)).then((d: any) => {
         if (d?.payload) {

@@ -8,13 +8,16 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import RequestPartner from '@/app/components/common/os-add-partner/RequestPartner';
 import OsButton from '@/app/components/common/os-button';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import OsContactSelect from '@/app/components/common/os-contact-select';
 import OsCustomerSelect from '@/app/components/common/os-customer-select';
+import OsModal from '@/app/components/common/os-modal';
 import OsOpportunitySelect from '@/app/components/common/os-opportunity-select';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
+import {handleDate} from '@/app/utils/base';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {usePathname, useRouter, useSearchParams} from 'next/navigation';
@@ -25,15 +28,13 @@ import {
   insertDealReg,
   queryDealReg,
 } from '../../../../../redux/actions/dealReg';
-import {getAllPartnerandProgramApprovedForOrganizationSalesForce} from '../../../../../redux/actions/partner';
 import {
-  createSalesforceDealreg,
-  createSalesForcePartner,
-  createSalesforcePartnerProgram,
-} from '../../../../../redux/actions/salesForce';
+  getAllPartnerandProgramApprovedForOrganization,
+  getAllPartnerandProgramApprovedForOrganizationSalesForce,
+} from '../../../../../redux/actions/partner';
+import {createSalesforceDealreg} from '../../../../../redux/actions/salesForce';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {CollapseSpaceStyle} from '../dealRegDetail/styled-component';
-import {handleDate} from '@/app/utils/base';
 
 const NewRegistrationForm: FC<any> = ({
   isDealRegDetail = false,
@@ -46,7 +47,6 @@ const NewRegistrationForm: FC<any> = ({
   const getOpportunityId = Number(searchParams.get('opportunityId'));
   const getContactId = Number(searchParams.get('contactId'));
   const getCustomerId = Number(searchParams.get('customerId'));
-
   const salesForceUrl = searchParams.get('instance_url');
   const salesForceKey = searchParams.get('key');
   const salesForceOrganization = searchParams.get('org');
@@ -77,16 +77,30 @@ const NewRegistrationForm: FC<any> = ({
   const [allAddedPartnerProgramIDs, setAllAddedPartnerProgramIDs] =
     useState<any>();
 
+  const [openReponseModal, setOpenReponseModal] = useState<boolean>(false);
+  const [requestPartnerLoading, setRequestPartnerLoading] =
+    useState<boolean>(false);
+  const [partnerNewId, setPartnerNewId] = useState<any>();
+  const [partnerProgramNewId, setPartnerProgramNewId] = useState<any>();
+
   useEffect(() => {
-    dispatch(
-      getAllPartnerandProgramApprovedForOrganizationSalesForce({
-        organization: salesForceOrganization
-          ? salesForceOrganization
-          : userInformation?.organization,
-      }),
-    )?.then((payload: any) => {
-      setAllFilterPartnerData(payload?.payload);
-    });
+    if (salesForceOrganization) {
+      dispatch(
+        getAllPartnerandProgramApprovedForOrganizationSalesForce({
+          org_id: salesForceOrganization,
+        }),
+      )?.then((payload: any) => {
+        setAllFilterPartnerData(payload?.payload);
+      });
+    } else {
+      dispatch(
+        getAllPartnerandProgramApprovedForOrganization({
+          organization: userInformation?.organization,
+        }),
+      )?.then((payload: any) => {
+        setAllFilterPartnerData(payload?.payload);
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -910,18 +924,55 @@ const NewRegistrationForm: FC<any> = ({
             }}
           />
         )}
-        <OsButton
-          text={
-            formStep === 0 && !isDealRegDetail && !salesForceUrl
-              ? 'Save & Next'
-              : isDealRegDetail || salesForceUrl
-                ? 'Save'
-                : 'Save & Continue'
-          }
-          buttontype="PRIMARY"
-          clickHandler={form.submit}
-        />
+        <Space size={20}>
+          <OsButton
+            text={
+              formStep === 0 && !isDealRegDetail && !salesForceUrl
+                ? 'Save & Next'
+                : isDealRegDetail || salesForceUrl
+                  ? 'Save'
+                  : 'Save & Continue'
+            }
+            buttontype="PRIMARY"
+            clickHandler={form.submit}
+          />
+          {salesForceUrl && (
+            <OsButton
+              text={'Request Partner'}
+              buttontype="SECONDARY"
+              clickHandler={() => {
+                setOpenReponseModal(true);
+              }}
+            />
+          )}
+        </Space>
       </Row>
+
+      <OsModal
+        loading={requestPartnerLoading}
+        body={
+          <RequestPartner
+            form={form}
+            setOpen={setOpenReponseModal}
+            setRequestPartnerLoading={setRequestPartnerLoading}
+            setPartnerNewId={setPartnerNewId}
+            partnerNewId={partnerNewId}
+            partnerProgramNewId={partnerProgramNewId}
+            setPartnerProgramNewId={setPartnerProgramNewId}
+            setShowModal={setOpenReponseModal}
+          />
+        }
+        width={700}
+        open={openReponseModal}
+        onCancel={() => {
+          setOpenReponseModal((p) => !p);
+          setPartnerProgramNewId({});
+          setPartnerNewId({});
+          // form.resetFields();
+        }}
+        footer
+        footerPadding={30}
+      />
     </>
   );
 };

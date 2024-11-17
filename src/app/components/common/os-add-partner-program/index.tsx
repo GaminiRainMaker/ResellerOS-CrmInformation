@@ -17,7 +17,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {AddPartnerInterface} from '../os-add-partner/os-add-partner.interface';
 import OsPartnerSelect from '../os-partner-select';
-import {usePathname} from 'next/navigation';
+import {usePathname, useSearchParams} from 'next/navigation';
 import OsButton from '../os-button';
 import CommonSelect from '../os-select';
 
@@ -35,9 +35,12 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
+  const searchParams = useSearchParams()!;
   const pathname = usePathname();
   const {userInformation} = useAppSelector((state) => state.user);
   const [partnerValue, setPartnerValue] = useState<number>();
+
+  const salesForceUrl = searchParams.get('instance_url');
 
   useEffect(() => {
     form?.resetFields();
@@ -71,8 +74,11 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
       if (pathname === '/superAdminPartner') {
         partnerProgramObj.admin_approved = true;
       }
-      if (!userInformation?.Admin) {
+      if (!userInformation?.Admin ) {
         partnerProgramObj.admin_request = false;
+      }
+      if (salesForceUrl) {
+        partnerProgramObj.admin_request = true;
       }
       dispatch(insertPartnerProgram(partnerProgramObj)).then((d: any) => {
         if (d?.payload) {
@@ -152,7 +158,7 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
         >
           {!partnerId && (
             <OsPartnerSelect
-            // drawer
+              // drawer
               name="partner"
               // form={form}
               setPartnerValue={setPartnerValue}

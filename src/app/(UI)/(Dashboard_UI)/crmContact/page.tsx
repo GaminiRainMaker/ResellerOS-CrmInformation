@@ -336,7 +336,7 @@ const CrmAccount: React.FC = () => {
         <Row
           justify="space-between"
           style={{
-            padding: '36px 24px',
+            padding: '20px 24px',
             background: token?.colorBgContainer,
             borderRadius: '12px',
           }}

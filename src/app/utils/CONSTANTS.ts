@@ -120,6 +120,42 @@ export const quoteLineItemColumnForSync = [
   {value: 'description', label: 'DESCRIPTION'},
 ];
 
+export const quoteLineItemColumnForSyncFOrSalesFporceUpdatedOnce = [
+  {value: 'rosquoteai__CLINTYPE__c', label: 'CLIN Type'},
+  {value: 'rosquoteai__DISCOUNTCLASS__c', label: 'Discount Class'},
+  {value: 'rosquoteai__MAFLAG__c', label: 'MA Flag'},
+  {value: 'rosquoteai__MODELNAME__c', label: 'Model Name'},
+  {value: 'rosquoteai__Availability__c', label: 'Availability'},
+  {value: 'rosquoteai__Cost__c', label: 'Cost'},
+  {value: 'rosquoteai__Country_of_Origin__c', label: 'Country of Origin'},
+  {value: 'rosquoteai__Description__c', label: 'Description'},
+  {value: 'rosquoteai__DISCOUNTSUBCLASS__c', label: 'Discount Sub Class'},
+  {value: 'rosquoteai__End_Date__c', label: 'End Date'},
+  {value: 'rosquoteai__Energy_Star_Flag__c', label: 'Energy Star Flag'},
+  {value: 'rosquoteai__EOLDATE__c', label: 'EOL Date'},
+  {value: 'rosquoteai__EPEAT_Flag__c', label: 'EPEAT Flag'},
+  {value: 'rosquoteai__GSA_Price__c', label: 'GSA Price'},
+  {value: 'rosquoteai__LineNumber__c', label: 'Line Number'},
+  {value: 'rosquoteai__MSRP__c', label: 'MSRP'},
+  {value: 'rosquoteai__Notes__c', label: 'Notes'},
+  {value: 'rosstarter__OEM__c', label: 'OEM'},
+  {value: 'rosquoteai__Product_Code__c', label: 'Product Code'},
+  {value: 'rosquoteai__Product_Grouping__c', label: 'Product Grouping'},
+  {value: 'rosquoteai__Product_Name__c', label: 'Product Name'},
+  {value: 'rosquoteai__Product_Type__c', label: 'Product Type'},
+  {value: 'Quantity', label: 'Quantity'},
+  {value: 'rosquoteai__Quote_Number__c', label: 'Quote Number'},
+  {value: 'rosquoteai__SCRMFLAG__c', label: 'SCRM Flag'},
+  {value: 'rosquoteai__Serial__c', label: 'Serial #'},
+  {value: 'rosquoteai__Service_Duration__c', label: 'Service Duration'},
+  {value: 'rosquoteai__SS_Part__c', label: 'SS Part'},
+  {value: 'rosquoteai__Start_Date__c', label: 'Start Date'},
+  {value: 'rosquoteai__TAA_Flag__c', label: 'TAA Flag'},
+  {value: 'rosquoteai__Unit_Price__c', label: 'Unit Price'},
+  {value: 'rosstarter__Vendor_Disti__c', label: 'Vendor Disti'},
+];
+
+
 export const SaleForceQuoteLineItemColumnSync = [
   {label: 'Line Number', value: 'line_number'},
   {label: 'MPN', value: 'mpn'},
@@ -768,4 +804,131 @@ export const PartnerOptions = [
     label: 'Industry',
     value: 'industry',
   },
-]
+];
+
+export const contactIndustryOption = [
+  {
+    label: 'Agriculture',
+    value: 'Agriculture',
+  },
+  {
+    label: 'Apparel',
+    value: 'Apparel',
+  },
+  {
+    label: 'Banking',
+    value: 'Banking',
+  },
+  {
+    label: 'Biotechnology',
+    value: 'Biotechnology',
+  },
+  {
+    label: 'Chemicals',
+    value: 'Chemicals',
+  },
+  {
+    label: 'Communications',
+    value: 'Communications',
+  },
+  {
+    label: 'Construction',
+    value: 'Construction',
+  },
+  {
+    label: 'Consulting',
+    value: 'Consulting',
+  },
+  {
+    label: 'Education',
+    value: 'Education',
+  },
+  {
+    label: 'Electronics',
+    value: 'Electronics',
+  },
+  {
+    label: 'Energy',
+    value: 'Energy',
+  },
+  {
+    label: 'Engineering',
+    value: 'Engineering',
+  },
+  {
+    label: 'Environmental',
+    value: 'Environmental',
+  },
+  {
+    label: 'Finance',
+    value: 'Finance',
+  },
+  {
+    label: 'Food & Beverage',
+    value: 'Food & Beverage',
+  },
+  {
+    label: 'Government',
+    value: 'Government',
+  },
+  {
+    label: 'Healthcare',
+    value: 'Healthcare',
+  },
+  {
+    label: 'Hospitality',
+    value: 'Hospitality',
+  },
+  {
+    label: 'Insurance',
+    value: 'Insurance',
+  },
+  {
+    label: 'Machinery',
+    value: 'Machinery',
+  },
+  {
+    label: 'Manufacturing',
+    value: 'Manufacturing',
+  },
+  {
+    label: 'Media',
+    value: 'Media',
+  },
+  {
+    label: 'Not For Profit',
+    value: 'Not For Profit',
+  },
+  {
+    label: 'Recreation',
+    value: 'Recreation',
+  },
+  {
+    label: 'Retail',
+    value: 'Retail',
+  },
+  {
+    label: 'Shipping',
+    value: 'Shipping',
+  },
+  {
+    label: 'Technology',
+    value: 'Technology',
+  },
+  {
+    label: 'Telecommunications',
+    value: 'Telecommunications',
+  },
+  {
+    label: 'Transportation',
+    value: 'Transportation',
+  },
+  {
+    label: 'Utilities',
+    value: 'Utilities',
+  },
+  {
+    label: 'Other',
+    value: 'Other',
+  },
+];

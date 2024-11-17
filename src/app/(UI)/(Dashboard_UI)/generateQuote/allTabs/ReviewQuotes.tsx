@@ -208,7 +208,8 @@ const ReviewQuotes: FC<any> = ({
         const value = text ? useRemoveDollarAndCommahook(text) : 0;
         return (
           <Typography name="Body 4/Medium">
-            {`${abbreviate(Number(value ?? 0))}`}
+            {convertToNumber(value)}
+            {/* {`${abbreviate(Number(value ?? 0))}`} */}
           </Typography>
         );
       },
@@ -223,7 +224,8 @@ const ReviewQuotes: FC<any> = ({
         const value = useRemoveDollarAndCommahook(text ? text : 0);
         return (
           <Typography name="Body 4/Medium">
-            {text === null ? 0.0 : `${abbreviate(value ?? 0.0)}`}
+            {convertToNumber(value)}
+            {/* {text === null ? 0.0 : `${abbreviate(value ?? 0.0)}`} */}
           </Typography>
         );
       },
