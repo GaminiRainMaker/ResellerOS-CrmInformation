@@ -6,11 +6,13 @@ export const SelectStyled = styled(Select)`
   height: 48px;
   & .ant-select-selector {
     border-radius: 12px;
-    border:none !important;
+    border: none !important;
   }
   border-radius: 12px;
   border: 1px solid var(--foundation-neutrals-black-n-70, #a3a3a3);
-
+  &.ant-select-selector {
+    border: none !important;
+  }
   &.ant-select-open {
     .rotate {
       -moz-transform: rotate(0deg);

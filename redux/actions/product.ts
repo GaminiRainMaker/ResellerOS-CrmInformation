@@ -97,12 +97,11 @@ export const getBulkProductIsExisting = createAsyncThunk(
   },
 );
 
-
 export const getAllProductForContract = createAsyncThunk(
   'product/getAllProductForContract',
-  async (data, thunkApi) => {
+  async (data: any, thunkApi) => {
     try {
-      const res = await PRODUCT_API.getAllProductContract();
+      const res = await PRODUCT_API.getAllProductContract(data);
       return res.data;
     } catch (error: any) {
       return thunkApi.rejectWithValue(error?.message);

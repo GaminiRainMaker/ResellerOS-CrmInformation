@@ -896,6 +896,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           latestestFIleId = payload?.payload?.id;
         });
       }
+
       if (countOfExportFiles > 0) {
         router.push(
           `/fileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${null}&quoteExist=false&manualFlow=true`,
@@ -951,6 +952,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
         );
       }
       setLoading(false);
+
       if (newArrWithManual?.length > 0) {
         if (countOfExportFiles > 0) {
           router.push(

@@ -22,6 +22,8 @@ export const PRODUCT_API = {
     patch(API.PRODUCT.DeleteById, data) as Promise<AxiosResponse<any>>,
   updateProductById: (data: any) =>
     patch(API.PRODUCT.UpdateProductById, data) as Promise<AxiosResponse<any>>,
-  getAllProductContract: () =>
-    get(API.PRODUCT.ProductForContract) as Promise<AxiosResponse<[]>>,
+  getAllProductContract: (data: any) =>
+    post(API.PRODUCT.ProductForContract, data) as Promise<AxiosResponse<any>>,
+  // getAllProductContract: (data: any) =>
+  //   post(API.PRODUCT.ProductForContract, data) as Promise<AxiosResponse<[]>>,
 };
