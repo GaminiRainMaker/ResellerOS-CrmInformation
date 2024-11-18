@@ -606,6 +606,7 @@ const QuoteMappings = () => {
         // open={true}
         onCancel={() => {
           setShowSyncModal((p) => !p);
+          setShowError(false);
         }}
       />
     </>
