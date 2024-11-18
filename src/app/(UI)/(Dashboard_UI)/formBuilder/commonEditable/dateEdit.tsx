@@ -2,17 +2,17 @@
 /* eslint-disable no-lonely-if */
 /* eslint-disable no-unsafe-optional-chaining */
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Switch } from '@/app/components/common/antd/Switch';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Switch} from '@/app/components/common/antd/Switch';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import { DatePicker, Form } from 'antd';
+import {DatePicker, Form} from 'antd';
 import React from 'react';
-import { EditableFiledsCommonInterface } from '../formBuilder.interface';
-import { CollapseSpaceStyle } from '../../dealRegDetail/styled-component';
+import {EditableFiledsCommonInterface} from '../formBuilder.interface';
+import {CollapseSpaceStyle} from '../../dealRegDetail/styled-component';
 
 const EditFiledDetailsForDate: React.FC<EditableFiledsCommonInterface> = ({
   sectionIndex,
@@ -246,18 +246,18 @@ const EditFiledDetailsForDate: React.FC<EditableFiledsCommonInterface> = ({
                     cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
                       ?.type
                   }
-                  style={{ width: '100%' }}
+                  style={{width: '100%'}}
                   options={
                     NameofTheCurrentFiled === 'Multi-Select'
                       ? [
-                        { label: 'Mutiple', value: 'multiple' },
-                        { label: 'Single', value: 'tag' },
-                      ]
+                          {label: 'Mutiple', value: 'multiple'},
+                          {label: 'Single', value: 'tag'},
+                        ]
                       : [
-                        { label: 'Text', value: 'text' },
-                        { label: 'Number', value: 'number' },
-                        { label: 'Email', value: 'email' },
-                      ]
+                          {label: 'Text', value: 'text'},
+                          {label: 'Number', value: 'number'},
+                          {label: 'Email', value: 'email'},
+                        ]
                   }
                 />
               </Form.Item>
@@ -313,28 +313,28 @@ const EditFiledDetailsForDate: React.FC<EditableFiledsCommonInterface> = ({
                 NameofTheCurrentFiled === 'Toggle') &&
                 index !== 2) ||
                 NameofTheCurrentFiled !== 'Checkbox') && (
-                  <Row style={{ width: '100%' }}>
-                    <Col
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        width: '100%',
-                        marginBottom: '25px',
+                <Row style={{width: '100%'}}>
+                  <Col
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      width: '100%',
+                      marginBottom: '25px',
+                    }}
+                  >
+                    <Typography name="Body 4/Medium">
+                      {itemOption?.name}
+                    </Typography>
+                    <Switch
+                      onChange={(e: any) => {
+                        changeFieldValues(e, itemOption?.changeValue);
                       }}
-                    >
-                      <Typography name="Body 4/Medium">
-                        {itemOption?.name}
-                      </Typography>
-                      <Switch
-                        onChange={(e: any) => {
-                          changeFieldValues(e, itemOption?.changeValue);
-                        }}
-                        defaultChecked={itemOption?.value}
-                        checked={itemOption?.value}
-                      />
-                    </Col>
-                  </Row>
-                )}
+                      defaultChecked={itemOption?.value}
+                      checked={itemOption?.value}
+                    />
+                  </Col>
+                </Row>
+              )}
             </>
           ))}
           {CommonIndexOfUse?.hintext && (
@@ -342,7 +342,7 @@ const EditFiledDetailsForDate: React.FC<EditableFiledsCommonInterface> = ({
               {' '}
               <Typography name="Body 4/Medium">Hint Text</Typography>
               <OsInput
-                style={{ width: '100%' }}
+                style={{width: '100%'}}
                 placeholder="Label"
                 type="text"
                 defaultValue={CommonIndexOfUse?.hintTextValue}
@@ -353,7 +353,7 @@ const EditFiledDetailsForDate: React.FC<EditableFiledsCommonInterface> = ({
               />
             </>
           )}
-           {CommonIndexOfUse?.user_fill && (
+          {CommonIndexOfUse?.user_fill && (
             <>
               {' '}
               <Typography name="Body 4/Medium">User Fill Text</Typography>
@@ -372,24 +372,24 @@ const EditFiledDetailsForDate: React.FC<EditableFiledsCommonInterface> = ({
           {(NameofTheCurrentFiled === 'Checkbox' ||
             NameofTheCurrentFiled === 'Radio Button' ||
             NameofTheCurrentFiled === 'Toggle') && (
-              <>
-                {' '}
-                <Typography name="Body 4/Medium">No Of Columns</Typography>
-                <OsInput
-                  style={{ width: '100%' }}
-                  placeholder="Label"
-                  type="number"
-                  defaultValue={CommonIndexOfUse?.columnRequired}
-                  value={CommonIndexOfUse?.columnRequired}
-                  onChange={(e: any) => {
-                    // changeFieldValues(e?.target?.value, 'columnRequired');
-                    if (e?.target?.value > 0) {
-                      changeFieldValues(e?.target?.value, 'columnRequired');
-                    }
-                  }}
-                />
-              </>
-            )}
+            <>
+              {' '}
+              <Typography name="Body 4/Medium">No Of Columns</Typography>
+              <OsInput
+                style={{width: '100%'}}
+                placeholder="Label"
+                type="number"
+                defaultValue={CommonIndexOfUse?.columnRequired}
+                value={CommonIndexOfUse?.columnRequired}
+                onChange={(e: any) => {
+                  // changeFieldValues(e?.target?.value, 'columnRequired');
+                  if (e?.target?.value > 0) {
+                    changeFieldValues(e?.target?.value, 'columnRequired');
+                  }
+                }}
+              />
+            </>
+          )}
         </Form>
       ),
     },
@@ -411,13 +411,13 @@ const EditFiledDetailsForDate: React.FC<EditableFiledsCommonInterface> = ({
               changeFieldValues(e, 'dateformat');
             }}
             defaultValue={CommonIndexOfUse?.dateformat}
-            style={{ width: '100%', marginBottom: '20px' }}
+            style={{width: '100%', marginBottom: '20px'}}
             options={[
-              { label: 'mm/dd/yyyy', value: 'mm/dd/yyyy' },
-              { label: 'YYYY-MM-DD', value: 'YYYY-MM-DD' },
-              { label: 'MM/DD/YYYY', value: 'MM/DD/YYYY' },
-              { label: 'MMM D, YYYY', value: 'MMM D, YYYY' },
-              { label: 'Day, month, year', value: 'Day, month, year' },
+              {label: 'MMM D,YYYY', value: 'MMM D,YYYY'},
+              {label: 'YYYY-MM-DD', value: 'YYYY-MM-DD'},
+              {label: 'MM/DD/YYYY', value: 'MM/DD/YYYY'},
+              {label: 'MMM D, YYYY', value: 'MMM D, YYYY'},
+              {label: 'Day, month, year', value: 'Day, month, year'},
             ]}
           />
           <Form.Item
@@ -431,19 +431,19 @@ const EditFiledDetailsForDate: React.FC<EditableFiledsCommonInterface> = ({
                 changeFieldValues(e, 'weekStartOn');
               }}
               value={CommonIndexOfUse?.weekStartOn}
-              style={{ width: '100%' }}
+              style={{width: '100%'}}
               options={[
-                { label: 'Sunday', value: 'sunday' },
-                { label: 'Monday', value: 'monday' },
-                { label: 'Tuesday', value: 'tuesday' },
-                { label: 'Wednesday', value: 'wednesday' },
-                { label: 'Thursday', value: 'thursday' },
-                { label: 'Friday', value: 'friday' },
-                { label: 'Saturday', value: 'saturday' },
+                {label: 'Sunday', value: 'sunday'},
+                {label: 'Monday', value: 'monday'},
+                {label: 'Tuesday', value: 'tuesday'},
+                {label: 'Wednesday', value: 'wednesday'},
+                {label: 'Thursday', value: 'thursday'},
+                {label: 'Friday', value: 'friday'},
+                {label: 'Saturday', value: 'saturday'},
               ]}
             />
           </Form.Item>
-          <Row style={{ width: '100%' }}>
+          <Row style={{width: '100%'}}>
             <Col
               style={{
                 display: 'flex',

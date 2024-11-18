@@ -201,7 +201,7 @@ export const formbuildernewObject = (newItem: string) => {
       requiredLabel: true,
       hintext: false,
       hintTextValue: '',
-      dateformat: 'mm/dd/yyyy',
+      dateformat: 'MMM D,YYYY',
       weekStartOn: 'sunday',
       StartDate: '',
       enddate: '',
