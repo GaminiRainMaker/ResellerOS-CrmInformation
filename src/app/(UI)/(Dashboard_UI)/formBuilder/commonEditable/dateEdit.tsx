@@ -414,6 +414,7 @@ const EditFiledDetailsForDate: React.FC<EditableFiledsCommonInterface> = ({
             style={{width: '100%', marginBottom: '20px'}}
             options={[
               {label: 'MMM D,YYYY', value: 'MMM D,YYYY'},
+              {label: 'mm/dd/yyyy', value: 'mm/dd/yyyy'},
               {label: 'YYYY-MM-DD', value: 'YYYY-MM-DD'},
               {label: 'MM/DD/YYYY', value: 'MM/DD/YYYY'},
               {label: 'MMM D, YYYY', value: 'MMM D, YYYY'},
