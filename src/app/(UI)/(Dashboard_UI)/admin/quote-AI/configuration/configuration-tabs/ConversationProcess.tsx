@@ -82,7 +82,7 @@ const ConverSationProcess = () => {
                 }}
               />
               <Typography name="Body 2/Medium">
-                Advanced Excel Processing
+                Advanced Excel/Pdf Files Processing
               </Typography>
             </Space>
           )}

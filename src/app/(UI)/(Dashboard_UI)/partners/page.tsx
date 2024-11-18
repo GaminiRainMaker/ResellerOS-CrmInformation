@@ -55,6 +55,7 @@ const Partners: React.FC = () => {
   const [disableRequest, setDisableRequest] = useState<any>([]);
   const [partnerOptions, setPartnerOptions] = useState<any>();
   const [partnerProgramOptions, setPartnerProgramOptions] = useState<any>();
+  const [disableButton, setDisableButton] = useState<boolean>(false);
 
   const [queryDataa, setQueryData] = useState<{
     partnerQuery: string;
@@ -460,7 +461,6 @@ const Partners: React.FC = () => {
       type: typeOn,
       id: record?.AssignPartnerProgram?.id,
     };
-    return;
     await dispatch(updateForTheResellerRequest(obj));
 
     getPartnerData();
@@ -618,7 +618,7 @@ const Partners: React.FC = () => {
       const newObj: any = {
         title: (
           <Typography name="Body 4/Medium" className="dragHandler">
-            {activeTab === 1 ? 'Partner Program Status' : 'Action'}
+            {activeTab === 1 ? '' : 'Action'}
           </Typography>
         ),
         dataIndex: 'Action',
@@ -629,8 +629,18 @@ const Partners: React.FC = () => {
               <OsButton
                 buttontype="PRIMARY"
                 text="Request"
-                disabled={disableRequest?.includes(record?.id) ? true : false}
+                disabled={
+                  disableButton || disableRequest?.includes(record?.id)
+                    ? true
+                    : false
+                }
                 clickHandler={() => {
+                  let allIds = [...disableRequest];
+                  allIds?.push(record?.id);
+                  // setDisableButton(true);
+                  // setDisableRequest(allIds);
+                  // console.log('435433242', allIds);
+                  // return;
                   handleAddNewAssignedPartnerProgramRequest(
                     record?.id,
                     userData,
@@ -676,7 +686,13 @@ const Partners: React.FC = () => {
     } else {
       setPartnerProgramColumns(PartnerProgramColumns);
     }
-  }, [activeTab, userData]);
+  }, [
+    activeTab,
+    userData,
+    disableRequest,
+    JSON?.stringify(disableRequest),
+    disableButton,
+  ]);
 
   console.log('allPartnerDataallPartnerData', allPartnerData);
   const [allTabItem, setAllTabItem] = useState<any>();
