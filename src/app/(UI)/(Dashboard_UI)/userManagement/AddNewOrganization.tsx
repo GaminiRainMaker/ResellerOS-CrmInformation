@@ -15,6 +15,9 @@ const AddNewOrganization: FC<{
   onFinish: any;
 }> = ({form, onFinish}) => {
   const [activeKey, setActiveKey] = useState<string>('1');
+  const onChange = (key: string) => {
+    setActiveKey(key);
+  };
 
   return (
     <>
@@ -26,17 +29,11 @@ const AddNewOrganization: FC<{
       >
         <OsTabs
           defaultActiveKey="1"
+          onChange={onChange}
           items={[
             {
               label: (
-                <Typography
-                  name="Body 4/Regular"
-                  onClick={() => {
-                    setActiveKey('1');
-                  }}
-                >
-                  ResellersOS Org
-                </Typography>
+                <Typography name="Body 4/Regular">ResellersOS Org</Typography>
               ),
               key: '1',
 
@@ -52,7 +49,7 @@ const AddNewOrganization: FC<{
                       name={'email'}
                       rules={[
                         {
-                          required: true,
+                          required: activeKey === '1' ? true : false,
                           message: 'Email is required!',
                         },
                         {
@@ -76,7 +73,7 @@ const AddNewOrganization: FC<{
                       name={'user_name'}
                       rules={[
                         {
-                          required: true,
+                          required: activeKey === '1' ? true : false,
                           message: 'Username is required!',
                         },
                         {
@@ -93,14 +90,7 @@ const AddNewOrganization: FC<{
             },
             {
               label: (
-                <Typography
-                  name="Body 4/Regular"
-                  onClick={() => {
-                    setActiveKey('2');
-                  }}
-                >
-                  Salesforce Org
-                </Typography>
+                <Typography name="Body 4/Regular">Salesforce Org</Typography>
               ),
               key: '2',
               children: (
@@ -134,10 +124,10 @@ const AddNewOrganization: FC<{
                           Master Email
                         </Typography>
                       }
-                      name={'email'}
+                      name={'salesforce_email'}
                       rules={[
                         {
-                          required: true,
+                          required: activeKey === '2' ? true : false,
                           message: 'Email is required!',
                         },
                         {
@@ -158,10 +148,10 @@ const AddNewOrganization: FC<{
                           Master Username
                         </Typography>
                       }
-                      name={'user_name'}
+                      name={'salesforce_user_name'}
                       rules={[
                         {
-                          required: true,
+                          required: activeKey === '2' ? true : false,
                           message: 'Username is required!',
                         },
                         {
