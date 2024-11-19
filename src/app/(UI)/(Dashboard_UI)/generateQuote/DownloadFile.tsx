@@ -128,7 +128,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
       (item: any) => item?.doc_key === data?.key,
     );
 
-    console.log('3453534', findTheItem);
+    console.log('3453534', objectForSyncingValues);
     let resultValues: any = {};
     let lineItemsArray: any = [];
     if (

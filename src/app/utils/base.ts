@@ -1166,7 +1166,7 @@ export const getFormattedValuesForBundlesOnly = (
             quantity: items?.quantity,
             product_code: items?.product_code,
             description: items?.description,
-            line_amount: items?.line_amount,
+            line_amount: items?.unit_price,
             list_price: items?.list_price,
             organization: objectForSyncingValues?.distributor_name
               ? objectForSyncingValues?.distributor_name
@@ -1209,6 +1209,8 @@ export const getFormattedValuesForBundlesOnly = (
 export const getFormattedValuesForLineItems = (objectForSyncingValues: any) => {
   let finArrr: any = [];
 
+  console.log('4564353453', objectForSyncingValues);
+
   if (
     objectForSyncingValues &&
     objectForSyncingValues?.QuoteLineItems?.length > 0
@@ -1224,7 +1226,7 @@ export const getFormattedValuesForLineItems = (objectForSyncingValues: any) => {
         quantity: items?.quantity,
         product_code: items?.product_code,
         description: items?.description,
-        line_amount: items?.line_amount,
+        line_amount: items?.unit_price,
         list_price: items?.list_price,
         organization: objectForSyncingValues?.distributor_name
           ? objectForSyncingValues?.distributor_name
@@ -1264,7 +1266,7 @@ export const getFormattedValuesForWithAndWithoutBundles = (
             quantity: items?.quantity,
             product_code: items?.product_code,
             description: items?.description,
-            line_amount: items?.line_amount,
+            line_amount: items?.unit_price,
             list_price: items?.list_price,
             organization: objectForSyncingValues?.distributor_name
               ? objectForSyncingValues?.distributor_name
@@ -1325,7 +1327,7 @@ export const getFormattedValuesForWithAndWithoutBundles = (
         quantity: items?.quantity,
         product_code: items?.product_code,
         description: items?.description,
-        line_amount: items?.line_amount,
+        line_amount: items?.unit_price,
         list_price: items?.list_price,
         organization: objectForSyncingValues?.distributor_name
           ? objectForSyncingValues?.distributor_name
@@ -1372,7 +1374,7 @@ export const getFormattedValuesForWithAndWithoutBundlesForExcelFile = (
         quantity: items?.quantity,
         product_code: items?.product_code,
         description: items?.description,
-        line_amount: items?.line_amount,
+        line_amount: items?.unit_price,
         list_price: items?.list_price,
         organization: objectForSyncingValues?.distributor_name
           ? objectForSyncingValues?.distributor_name
@@ -1407,7 +1409,7 @@ export const getFormattedValuesForWithAndWithoutBundlesForExcelFile = (
             quantity: items?.quantity,
             product_code: items?.product_code,
             description: items?.description,
-            line_amount: items?.line_amount,
+            line_amount: items?.unit_price,
             list_price: items?.list_price,
             organization: objectForSyncingValues?.distributor_name
               ? objectForSyncingValues?.distributor_name
