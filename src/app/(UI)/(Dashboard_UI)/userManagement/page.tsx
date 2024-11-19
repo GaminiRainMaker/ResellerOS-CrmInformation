@@ -343,7 +343,9 @@ const UserManagement = () => {
 
   const createNewOrganizationUser = () => {
     const dataa = newOrganizationFormData.getFieldsValue();
-    const stringIn = dataa?.email?.split('@');
+    const stringIn = dataa?.org_id
+      ? dataa?.salesforce_email?.split('@')
+      : dataa?.email?.split('@');
     const newcheck = stringIn?.[1]?.split('.');
     const checkss = [
       'gmail',
@@ -369,8 +371,19 @@ const UserManagement = () => {
       password: `${dataa?.user_name}@123`,
       is_admin: true,
       master_admin: true,
-      is_salesforce: dataa?.org_id ? true : false,
     };
+    if (dataa?.org_id) {
+      obj = {
+        organization: organizationValue,
+        password: `${dataa?.user_name}@123`,
+        is_admin: true,
+        master_admin: true,
+        is_salesforce: true,
+        org_id: dataa?.org_id,
+        email: dataa?.salesforce_email,
+        user_name: dataa?.salesforce_user_name,
+      };
+    }
     dispatch(createNewOrganization(obj))?.then((res) => {
       if (res?.payload) {
         dispatch(getAdminUserOfAllOrganization(searchQuery));
