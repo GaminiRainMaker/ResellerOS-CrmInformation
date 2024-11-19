@@ -236,10 +236,10 @@ const UserManagement = () => {
               },
               Partner_Program: {
                 Name: partnersData?.partner_program_name,
-                rosdealregai__External_Id__c: String(partnersData?.partner_id),
-                rosdealregai__Partner_LR__c: String(
+                rosdealregai__External_Id__c: String(
                   partnersData?.partner_program_id,
                 ),
+                rosdealregai__Partner_LR__c: String(partnersData?.partner_id),
               },
             },
             baseURL: accessTokenRes?.payload?.instance_url,
