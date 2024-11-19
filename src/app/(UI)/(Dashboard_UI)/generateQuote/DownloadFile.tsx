@@ -167,6 +167,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
       }
     });
 
+    console.log('435435343242', lineItemsArray);
     for (let key in formattedData) {
       if (objectForSyncingValues[formattedData[key]]) {
         resultValues[key] = objectForSyncingValues[formattedData[key]];
