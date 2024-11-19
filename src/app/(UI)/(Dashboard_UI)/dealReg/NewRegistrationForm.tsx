@@ -32,7 +32,10 @@ import {
   getAllPartnerandProgramApprovedForOrganization,
   getAllPartnerandProgramApprovedForOrganizationSalesForce,
 } from '../../../../../redux/actions/partner';
-import {createSalesforceDealreg} from '../../../../../redux/actions/salesForce';
+import {
+  createSalesforceDealreg,
+  createSalesForcePartner,
+} from '../../../../../redux/actions/salesForce';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {CollapseSpaceStyle} from '../dealRegDetail/styled-component';
 
@@ -431,6 +434,58 @@ const NewRegistrationForm: FC<any> = ({
         }));
       }
       if (salesForceUrl) {
+        // Map partner and partner program data
+        const createPartnerAndProgram = newData
+          ?.filter((item: any) => item?.type === 'Self Registered')
+          .map((item: any) => ({
+            Partner: {
+              Name: item?.partner_name,
+              rosdealregai__External_Id__c: String(item?.partner_id),
+            },
+            Partner_Program: {
+              Name: item?.partner_program_name,
+              rosdealregai__External_Id__c: String(item?.partner_program_id),
+              rosdealregai__Partner_LR__c: String(item?.partner_id),
+            },
+          }));
+
+        // Create partners and partner programs
+        if (createPartnerAndProgram?.length) {
+          // Collect responses individually with enhanced error handling
+          const partnerRes: any[] = [];
+          for (const partner of createPartnerAndProgram) {
+            try {
+              const response = await dispatch(
+                createSalesForcePartner({
+                  baseURL: `https://${salesForceUrl}`,
+                  token: salesForceKey,
+                  data: partner,
+                }),
+              );
+              partnerRes.push(response);
+            } catch (error: any) {
+              notification.error({
+                message: 'Error Creating Partner',
+                description: `Failed to create partner or partner program: ${error.message}`,
+              });
+              // Optionally break out if needed
+              // break;
+            }
+          }
+
+          // Check if any response contains an error message
+          const errorResponse = partnerRes.find(
+            (res: any) => res?.payload?.ErrorMessage,
+          );
+          if (errorResponse) {
+            notification.error({
+              message: 'Create Partner and Partner Program Error',
+              description: errorResponse.payload.ErrorMessage,
+            });
+            return; // Stop execution on error
+          }
+        }
+
         const dealRegArray = newData?.map((item: any) => ({
           rosdealregai__Opportunity__c: salesForceOppId,
           rosdealregai__Partner__r: {
