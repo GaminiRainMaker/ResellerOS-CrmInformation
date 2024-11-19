@@ -166,18 +166,20 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
         formattedData[item.preVal] = item.newVal;
       }
     });
+    let sortedLineItems = lineItemsArray?.sort((a: any, b: any) => {
+      return a.Id - b.Id;
+    });
 
-    console.log('435435343242', lineItemsArray);
     for (let key in formattedData) {
       if (objectForSyncingValues[formattedData[key]]) {
         resultValues[key] = objectForSyncingValues[formattedData[key]];
       }
     }
-    resultValues.quotelineitem = lineItemsArray;
+    resultValues.quotelineitem = sortedLineItems;
 
     if (findTheItem?.type_of_file === 'Line Items Only') {
       let totalExtendedPrice: any = 0;
-      lineItemsArray?.forEach((items: any) => {
+      sortedLineItems?.forEach((items: any) => {
         totalExtendedPrice += Number(items?.list_price);
       });
       resultValues.extended_price = totalExtendedPrice;
