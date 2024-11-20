@@ -1,21 +1,16 @@
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable @typescript-eslint/indent */
-/* eslint-disable consistent-return */
-/* eslint-disable array-callback-return */
-/* eslint-disable react/no-array-index-key */
-
 'use client';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import Typography from '@/app/components/common/typography';
+import {contactIndustryOption} from '@/app/utils/CONSTANTS';
 import {getBase64} from '@/app/utils/upload';
 import {MailOutlined} from '@ant-design/icons';
 import {PencilSquareIcon, UserCircleIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
+import {useForm} from 'antd/es/form/Form';
 import _debounce from 'lodash/debounce';
 import {useCallback, useState} from 'react';
-import {insertbillingContact} from '../../../../../redux/actions/billingContact';
 import {getCustomerProfileById} from '../../../../../redux/actions/customer';
 import {uploadToAwsForUserImage} from '../../../../../redux/actions/upload';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -24,72 +19,36 @@ import {setCustomerProfile} from '../../../../../redux/slices/customer';
 import {Checkbox} from '../antd/Checkbox';
 import {Divider} from '../antd/Divider';
 import {Space} from '../antd/Space';
-import OsButton from '../os-button';
+import AddContact from '../os-add-contact';
 import OsInput from '../os-input';
+import OsModal from '../os-modal';
 import {SelectFormItem} from '../os-oem-select/oem-select-styled';
+import CommonSelect from '../os-select';
 import TableNameColumn from '../os-table/TableNameColumn';
-import {AddCustomertInterface} from './os-add-customer-interface';
 import {CustomerTabsStyle} from './styled-components';
 import {
-  AlphabetsRegex,
-  AlphabetsRegexWithSpecialChr,
-  emailRegex,
-} from '@/app/utils/base';
-import CommonSelect from '../os-select';
-import {contactIndustryOption} from '@/app/utils/CONSTANTS';
+  getAllbillingContact,
+  insertbillingContact,
+} from '../../../../../redux/actions/billingContact';
 
-const AddCustomer: React.FC<AddCustomertInterface> = ({
+const AddCustomer: React.FC<any> = ({
   drawer,
   form,
   onFinish,
-  objectValuesForContact,
-  setObjectValueForContact,
   contactDetail,
-  setContactDetail,
   setActiveKeyForTabs,
   activeKeyForTabs,
-  setNewAddContact,
-  newAddContact,
-  errorFileds,
-  setErrorFileds,
-  getCustomers,
   customerData,
+  setContactDetail,
 }) => {
   const [token] = useThemeToken();
+  const [contactForm] = useForm();
   const {billingContact} = useAppSelector((state) => state.billingContact);
   const {customerProfile} = useAppSelector((state) => state.customer);
   const dispatch = useAppDispatch();
-  const [editContactOIndex, setEditContactIndex] = useState<any>(null);
-  const [editBillingAddress, setEditBillingAddress] = useState<Boolean>(false);
-  // const [errorFileds, setErrorFileds] = useState<boolean>(false);
-  const updateValues = (type: string, indexofupdate: number) => {
-    const newArrOfContact: any =
-      contactDetail?.length > 0 ? [...contactDetail] : [];
-
-    if (type === 'update') {
-      newArrOfContact[indexofupdate] = objectValuesForContact;
-    } else {
-      newArrOfContact?.push(objectValuesForContact);
-    }
-
-    const newBillingObject: any = {
-      ...objectValuesForContact,
-      customer_id: customerData ? customerData?.id : billingContact?.id,
-    };
-
-    if (newBillingObject) {
-      dispatch(insertbillingContact(newBillingObject));
-    }
-    setContactDetail(newArrOfContact);
-    setObjectValueForContact({});
-    setEditBillingAddress(false);
-    setEditContactIndex(null);
-    setErrorFileds(false);
-    setNewAddContact(false);
-    if (getCustomers) {
-      getCustomers();
-    }
-  };
+  const [showContactModal, setShowContactModal] = useState<boolean>(false);
+  const [contactLoading, setContactLoading] = useState<boolean>(false);
+  const [contactRecordData, setcontactRecordData] = useState<any>();
 
   const uploadImagesToBackend = async (newFileList: any, index: any) => {
     if (newFileList) {
@@ -166,6 +125,33 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
     billingContact,
   ]);
 
+  const createContact = () => {
+    setContactLoading(true);
+    const contactData = contactForm.getFieldsValue();
+    const finalDAta = {
+      ...contactData,
+      customer_id: contactRecordData?.customer_id ?? customerData?.id,
+      id: contactRecordData?.customer_id ? contactRecordData?.id : null,
+    };
+    dispatch(insertbillingContact(finalDAta))?.then((d: any) => {
+      if (d?.payload) {
+        contactForm.resetFields();
+        dispatch(getAllbillingContact('')).then((res) => {
+          if (res?.payload) {
+            setContactDetail(
+              res?.payload?.filter(
+                (data: any) => data?.customer_id === customerData?.id,
+              ),
+            );
+          }
+        });
+        setShowContactModal(false);
+        setcontactRecordData('');
+        setContactLoading(false);
+      }
+    });
+  };
+
   return (
     <>
       {!drawer && (
@@ -195,7 +181,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
         requiredMark={false}
         style={{width: '100%', padding: drawer ? '' : '40px'}}
         initialValues={{
-          currency: '$', // Set default value here
+          currency: '$',
         }}
       >
         <Row justify="space-between">
@@ -312,13 +298,13 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
         <Divider />
         <CustomerTabsStyle
           defaultActiveKey="1"
-          activeKey={activeKeyForTabs?.toString()}
+          activeKey={activeKeyForTabs}
           items={[
             {
               label: (
                 <div
                   onClick={() => {
-                    setActiveKeyForTabs && setActiveKeyForTabs(1);
+                    setActiveKeyForTabs && setActiveKeyForTabs('1');
                   }}
                 >
                   Shipping Address
@@ -409,7 +395,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
               label: (
                 <div
                   onClick={() => {
-                    setActiveKeyForTabs && setActiveKeyForTabs(2);
+                    setActiveKeyForTabs && setActiveKeyForTabs('2');
                   }}
                 >
                   Billing Address
@@ -425,7 +411,6 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                         onChange={(e) => {
                           if (e.target.checked) {
                             const data = form.getFieldsValue();
-
                             form.setFieldsValue({
                               billing_address_line: data?.shiping_address_line,
                               billing_city: data?.shiping_city,
@@ -535,7 +520,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
               label: (
                 <div
                   onClick={() => {
-                    setActiveKeyForTabs && setActiveKeyForTabs(3);
+                    setActiveKeyForTabs && setActiveKeyForTabs('3');
                   }}
                 >
                   Contact
@@ -544,353 +529,195 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
               key: '3',
               children: (
                 <>
-                  <Row>
-                    <Row
-                      style={{
-                        display: 'flex',
-                        marginTop: '10px',
-                        width: '100%',
-                      }}
-                    >
-                      {drawer && (
-                        <>
-                          {' '}
-                          {contactDetail?.map((item: any, index: number) => {
-                            if (editContactOIndex !== index) {
-                              return (
-                                <Col key={item?.key} span={24}>
-                                  <Row
-                                    key={index}
-                                    style={{
-                                      background: '#F6F7F8',
-                                      padding: '12px',
-                                      borderRadius: '12px',
-                                      margin: '5px',
-                                    }}
-                                    justify="space-between"
-                                  >
-                                    <Col>
-                                      <Space direction="vertical" size={12}>
-                                        <TableNameColumn
-                                          primaryText={
-                                            <Typography name="Body 3/Regular">
-                                              {item?.billing_first_name}{' '}
-                                              {item?.billing_last_name}
-                                            </Typography>
-                                          }
-                                          secondaryText={
-                                            <Typography name="Body 4/Regular">
-                                              {item?.billing_role}
-                                            </Typography>
-                                          }
-                                          fallbackIcon={`${
-                                            item?.billing_first_name
-                                              ? item?.billing_first_name
-                                                  ?.toString()
-                                                  ?.charAt(0)
-                                                  ?.toUpperCase()
-                                              : ''
-                                          }${
-                                            item?.billing_last_name
-                                              ? item?.billing_last_name
-                                                  ?.toString()
-                                                  ?.charAt(0)
-                                                  ?.toUpperCase()
-                                              : ''
-                                          }`}
-                                          iconBg="#1EB159"
-                                          isNotification={false}
-                                        />
-                                        <Typography name="Body 4/Regular">
-                                          {' '}
-                                          <MailOutlined
-                                            size={24}
-                                            style={{marginRight: '5px'}}
-                                          />
-                                          {item?.billing_email}
-                                        </Typography>
-                                      </Space>
-                                    </Col>
-                                    <Col>
-                                      {' '}
-                                      <Row
-                                        justify="center"
-                                        align="middle"
-                                        style={{height: '100%'}}
-                                      >
-                                        <PencilSquareIcon
-                                          onClick={() => {
-                                            setEditBillingAddress(true);
-                                            setEditContactIndex(index);
-                                            setObjectValueForContact({
-                                              ...objectValuesForContact,
-                                              billing_email:
-                                                item?.billing_email,
-                                              billing_last_name:
-                                                item?.billing_last_name,
-                                              billing_first_name:
-                                                item?.billing_first_name,
-                                              billing_role: item?.billing_role,
-                                              billing_id: item?.id,
-                                              id: item?.id,
-                                            });
-                                          }}
-                                          width={24}
-                                          style={{color: '#949494'}}
-                                        />
-                                      </Row>
-                                    </Col>
-                                  </Row>
-                                </Col>
-                              );
-                            }
-                          })}
-                        </>
-                      )}
+                  {!drawer ? (
+                    <Row gutter={[16, 16]}>
+                      <Col span={12}>
+                        <SelectFormItem
+                          label={
+                            <Typography name="Body 4/Medium">
+                              First Name
+                            </Typography>
+                          }
+                          name="billing_first_name"
+                        >
+                          <OsInput placeholder="First Name" />
+                        </SelectFormItem>
+                      </Col>
+                      <Col span={12}>
+                        <SelectFormItem
+                          label={
+                            <Typography name="Body 4/Medium">
+                              Last Name
+                            </Typography>
+                          }
+                          name="billing_last_name"
+                        >
+                          <OsInput placeholder="Last Name" />
+                        </SelectFormItem>
+                      </Col>
+                      <Col span={12}>
+                        <SelectFormItem
+                          label={
+                            <Typography name="Body 4/Medium">Role</Typography>
+                          }
+                          name="billing_role"
+                        >
+                          <OsInput placeholder="Enter Role" />
+                        </SelectFormItem>
+                      </Col>
+                      <Col span={12}>
+                        <SelectFormItem
+                          rules={[
+                            {
+                              pattern:
+                                /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                              message: 'Please enter valid email.',
+                            },
+                          ]}
+                          label={
+                            <Typography name="Body 4/Medium">Email</Typography>
+                          }
+                          name="billing_email"
+                        >
+                          <OsInput placeholder="Enter Email" />
+                        </SelectFormItem>
+                      </Col>
                     </Row>
-                    {(editBillingAddress || !drawer || newAddContact) && (
-                      <>
+                  ) : (
+                    <>
+                      {contactDetail?.map((item: any, index: number) => {
+                        return (
+                          <Col key={item?.key} span={24}>
+                            <Row
+                              key={index}
+                              style={{
+                                background: '#F6F7F8',
+                                padding: '12px',
+                                borderRadius: '12px',
+                                margin: '5px',
+                              }}
+                              justify="space-between"
+                            >
+                              <Col>
+                                <Space direction="vertical" size={12}>
+                                  <TableNameColumn
+                                    primaryText={
+                                      <Typography name="Body 3/Regular">
+                                        {item?.billing_first_name}{' '}
+                                        {item?.billing_last_name}
+                                      </Typography>
+                                    }
+                                    secondaryText={
+                                      <Typography name="Body 4/Regular">
+                                        {item?.billing_role}
+                                      </Typography>
+                                    }
+                                    fallbackIcon={`${
+                                      item?.billing_first_name
+                                        ? item?.billing_first_name
+                                            ?.toString()
+                                            ?.charAt(0)
+                                            ?.toUpperCase()
+                                        : ''
+                                    }${
+                                      item?.billing_last_name
+                                        ? item?.billing_last_name
+                                            ?.toString()
+                                            ?.charAt(0)
+                                            ?.toUpperCase()
+                                        : ''
+                                    }`}
+                                    iconBg="#1EB159"
+                                    isNotification={false}
+                                  />
+                                  <Typography name="Body 4/Regular">
+                                    {' '}
+                                    <MailOutlined
+                                      size={24}
+                                      style={{marginRight: '5px'}}
+                                    />
+                                    {item?.billing_email}
+                                  </Typography>
+                                </Space>
+                              </Col>
+                              <Col>
+                                {' '}
+                                <Row
+                                  justify="center"
+                                  align="middle"
+                                  style={{height: '100%'}}
+                                >
+                                  <PencilSquareIcon
+                                    onClick={() => {
+                                      contactForm.setFieldsValue({
+                                        billing_email: item?.billing_email,
+                                        billing_last_name:
+                                          item?.billing_last_name,
+                                        billing_first_name:
+                                          item?.billing_first_name,
+                                        billing_role: item?.billing_role,
+                                        billing_id: item?.id,
+                                        id: item?.id,
+                                      });
+                                      setcontactRecordData(item);
+                                      setShowContactModal(true);
+                                    }}
+                                    width={24}
+                                    style={{color: '#949494'}}
+                                  />
+                                </Row>
+                              </Col>
+                            </Row>
+                          </Col>
+                        );
+                      })}
+
+                      {drawer && (
                         <Row
-                          style={{
-                            background: drawer ? '#F6F7F8' : '',
-                            borderRadius: drawer ? '5px' : '',
-                            padding: drawer ? '10px' : '',
-                            marginTop: drawer ? '10px' : '',
+                          style={{marginTop: '20px'}}
+                          onClick={() => {
+                            setShowContactModal(true);
                           }}
                         >
-                          <Row
-                            style={{marginTop: '20px', width: '100%'}}
-                            justify="space-between"
+                          <Typography
+                            name="Body 3/Bold"
+                            color="#3DA5D9"
+                            cursor="pointer"
                           >
-                            <Col style={{width: '47%'}}>
-                              <Typography name="Body 4/Regular">
-                                First Name
-                              </Typography>
-
-                              <OsInput
-                                placeholder="First Name"
-                                value={
-                                  objectValuesForContact?.billing_first_name
-                                }
-                                onChange={(e) => {
-                                  setObjectValueForContact({
-                                    ...objectValuesForContact,
-                                    billing_first_name: e.target.value,
-                                  });
-                                }}
-                              />
-                              {errorFileds && (
-                                <>
-                                  {!objectValuesForContact?.billing_first_name ? (
-                                    <div style={{color: 'red'}}>
-                                      This filed is required!
-                                    </div>
-                                  ) : (
-                                    !AlphabetsRegex?.test(
-                                      objectValuesForContact?.billing_first_name,
-                                    ) && (
-                                      <div style={{color: 'red'}}>
-                                        Please enter vaild first name
-                                      </div>
-                                    )
-                                  )}
-                                </>
-                              )}
-                            </Col>
-                            <Col style={{width: '47%'}}>
-                              <Typography name="Body 4/Regular">
-                                Last Name
-                              </Typography>
-                              <OsInput
-                                placeholder="Last Name"
-                                value={
-                                  objectValuesForContact?.billing_last_name
-                                }
-                                onChange={(e) => {
-                                  setObjectValueForContact({
-                                    ...objectValuesForContact,
-                                    billing_last_name: e.target.value,
-                                  });
-                                }}
-                              />
-                            </Col>
-                          </Row>
-
-                          <Row
-                            style={{marginTop: '20px', width: '100%'}}
-                            justify="space-between"
-                          >
-                            <Col style={{width: '47%'}}>
-                              <Typography name="Body 4/Regular">
-                                Role
-                              </Typography>
-
-                              <OsInput
-                                placeholder="Role"
-                                value={objectValuesForContact?.billing_role}
-                                onChange={(e) => {
-                                  setObjectValueForContact({
-                                    ...objectValuesForContact,
-                                    billing_role: e.target.value,
-                                  });
-                                }}
-                              />
-                              {errorFileds && (
-                                <>
-                                  {!objectValuesForContact?.billing_role ? (
-                                    <div style={{color: 'red'}}>
-                                      This filed is required!
-                                    </div>
-                                  ) : (
-                                    !AlphabetsRegexWithSpecialChr?.test(
-                                      objectValuesForContact?.billing_role,
-                                    ) && (
-                                      <div style={{color: 'red'}}>
-                                        Please enter vaild role
-                                      </div>
-                                    )
-                                  )}
-                                </>
-                              )}
-                            </Col>
-                            <Col style={{width: '47%'}}>
-                              <Typography name="Body 4/Regular">
-                                Email
-                              </Typography>
-
-                              <OsInput
-                                placeholder="Email"
-                                value={objectValuesForContact?.billing_email}
-                                onChange={(e) => {
-                                  setObjectValueForContact({
-                                    ...objectValuesForContact,
-                                    billing_email: e.target.value,
-                                  });
-                                }}
-                              />
-                              {errorFileds && (
-                                <>
-                                  {!objectValuesForContact?.billing_email ? (
-                                    <div style={{color: 'red'}}>
-                                      Please enter the email
-                                    </div>
-                                  ) : (
-                                    !emailRegex?.test(
-                                      objectValuesForContact?.billing_email,
-                                    ) && (
-                                      <div style={{color: 'red'}}>
-                                        Please enter vaild email
-                                      </div>
-                                    )
-                                  )}
-                                </>
-                              )}
-                            </Col>
-                            {drawer && (
-                              <Row
-                                style={{
-                                  marginTop: '20px',
-                                  width: '100%',
-                                  display: 'flex',
-                                  justifyContent: 'end',
-                                }}
-                                gutter={32}
-                              >
-                                <OsButton
-                                  style={{marginRight: '40px'}}
-                                  buttontype="PRIMARY"
-                                  clickHandler={() => {
-                                    setNewAddContact(false);
-
-                                    if (editBillingAddress) {
-                                      updateValues('update', editContactOIndex);
-                                      setEditBillingAddress(false);
-                                    }
-                                  }}
-                                  text={'Cancel'}
-                                />
-                                <Col>
-                                  <OsButton
-                                    buttontype="PRIMARY"
-                                    style={{marginLeft: '40px'}}
-                                    clickHandler={() => {
-                                      if (
-                                        !emailRegex?.test(
-                                          objectValuesForContact?.billing_email,
-                                        ) ||
-                                        !objectValuesForContact?.billing_email ||
-                                        !objectValuesForContact?.billing_first_name ||
-                                        // !objectValuesForContact?.billing_last_name ||
-                                        !objectValuesForContact?.billing_role ||
-                                        !AlphabetsRegex?.test(
-                                          objectValuesForContact?.billing_first_name,
-                                        ) ||
-                                        // !AlphabetsRegex?.test(
-                                        //   objectValuesForContact?.billing_last_name,
-                                        // ) ||
-                                        !AlphabetsRegexWithSpecialChr?.test(
-                                          objectValuesForContact?.billing_role,
-                                        )
-                                      ) {
-                                        setErrorFileds(true);
-                                        return;
-                                      }
-                                      if (
-                                        objectValuesForContact?.customer_id ||
-                                        editBillingAddress
-                                      ) {
-                                        updateValues(
-                                          'update',
-                                          editContactOIndex,
-                                        );
-                                      } else {
-                                        updateValues('add', editContactOIndex);
-                                      }
-                                    }}
-                                    text={
-                                      editBillingAddress === true
-                                        ? 'Update'
-                                        : 'Add'
-                                    }
-                                  />
-                                </Col>
-                              </Row>
-                            )}
-                          </Row>
-                          {/* {drawer && (
-            
-                  )} */}
+                            + Add New Contact
+                          </Typography>
                         </Row>
-                      </>
-                    )}
-                    {drawer && !newAddContact && !editBillingAddress && (
-                      <Row
-                        style={{marginTop: '20px'}}
-                        onClick={() => {
-                          setNewAddContact(true);
-                          setErrorFileds(false);
-                          // setObjectValueForContact({
-                          //   billing_email: '',
-                          //   billing_last_name: '',
-                          //   billing_first_name: '',
-                          //   billing_role: '',
-                          //   customer_id: billingContact?.id,
-                          // });
-                        }}
-                      >
-                        <Typography name="Body 3/Bold" color="#3DA5D9">
-                          {' '}
-                          + Add New Contact
-                        </Typography>
-                      </Row>
-                    )}
-                  </Row>
+                      )}
+                    </>
+                  )}
                 </>
               ),
             },
           ]}
         />
       </Form>
+
+      <OsModal
+        loading={contactLoading}
+        body={
+          <AddContact
+            form={contactForm}
+            onFinish={createContact}
+            customerValue={contactRecordData?.customer_id}
+            isDealregForm={true}
+          />
+        }
+        width={700}
+        open={showContactModal}
+        onCancel={() => {
+          setShowContactModal(false);
+          contactForm.resetFields();
+          setcontactRecordData('');
+        }}
+        onOk={contactForm.submit}
+        primaryButtonText={'Save'}
+        footerPadding={20}
+      />
     </>
   );
 };

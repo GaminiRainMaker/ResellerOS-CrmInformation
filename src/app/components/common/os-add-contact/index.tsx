@@ -67,12 +67,6 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
             <SelectFormItem
               label={<Typography name="Body 4/Medium">First Name</Typography>}
               name="billing_first_name"
-              rules={[
-                {
-                  required: true,
-                  message: 'First Name is required!',
-                },
-              ]}
             >
               <OsInput placeholder="Enter Text" />
             </SelectFormItem>
@@ -80,6 +74,12 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
 
           <Col span={12}>
             <SelectFormItem
+              rules={[
+                {
+                  required: true,
+                  message: 'Last Name is required!',
+                },
+              ]}
               label={<Typography name="Body 4/Medium">Last Name</Typography>}
               name="billing_last_name"
             >
@@ -109,10 +109,6 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
                 {
                   pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
                   message: 'Please enter valid email.',
-                },
-                {
-                  required: true,
-                  message: 'Email is required!',
                 },
               ]}
             >
