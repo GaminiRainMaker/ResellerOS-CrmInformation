@@ -635,6 +635,7 @@ const OsUpload: React.FC<any> = ({
           beforeUpload={beforeUpload}
           showUploadList={false}
           multiple
+          accept=".pdf,.xlsx"
         >
           <FolderArrowDownIcon width={24} color={token?.colorInfoBorder} />
           <Typography
