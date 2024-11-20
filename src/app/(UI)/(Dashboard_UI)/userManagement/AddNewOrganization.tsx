@@ -19,6 +19,64 @@ const AddNewOrganization: FC<{
     setActiveKey(key);
   };
 
+  const validateEmail = (_: any, value: string) => {
+    if (!value) {
+      return Promise.reject(new Error('Email is required.'));
+    }
+
+    // Check for invalid starting character
+    if (/^\./.test(value)) {
+      return Promise.reject(new Error('Email cannot start with a dot.'));
+    }
+
+    // Check for consecutive dots
+    if (/\.\./.test(value)) {
+      return Promise.reject(
+        new Error('Email cannot contain consecutive dots.'),
+      );
+    }
+
+    // Check for invalid domain characters
+    const domainPart = value.split('@')[1];
+    if (domainPart && !/^[a-zA-Z0-9+-.]+$/.test(domainPart)) {
+      return Promise.reject(
+        new Error('Domain name contains invalid characters.'),
+      );
+    }
+
+    // Check for invalid domain (starting or ending with a hyphen)
+    if (/(@|\.)-/.test(value) || /-\./.test(value)) {
+      return Promise.reject(
+        new Error('Domain name cannot start or end with a hyphen.'),
+      );
+    }
+
+    // Check for missing TLD
+    if (!/\.[a-zA-Z]{2,}$/.test(value)) {
+      return Promise.reject(
+        new Error('Domain must have a valid TLD (e.g., .com).'),
+      );
+    }
+
+    // Check for consecutive hyphens in the domain
+    if (/@[a-zA-Z0-9.-]*--/.test(value)) {
+      return Promise.reject(
+        new Error('Domain name cannot contain consecutive hyphens.'),
+      );
+    }
+
+    // Validate overall structure using regex
+    const emailRegex =
+      /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~](?!.*\.\.)[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~]{0,63}@[a-zA-Z0-9+](?:[a-zA-Z0-9-+]*[a-zA-Z0-9])?(\.[a-zA-Z]{2,})+$/;
+
+    if (!emailRegex.test(value)) {
+      return Promise.reject(new Error('Invalid email format.'));
+    }
+
+    // If all checks pass
+    return Promise.resolve();
+  };
+
   return (
     <>
       <Form
@@ -125,17 +183,7 @@ const AddNewOrganization: FC<{
                         </Typography>
                       }
                       name={'salesforce_email'}
-                      rules={[
-                        {
-                          required: activeKey === '2' ? true : false,
-                          message: 'Email is required!',
-                        },
-                        {
-                          pattern:
-                            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                          message: 'Please enter valid email.',
-                        },
-                      ]}
+                      rules={[{validator: validateEmail}]}
                     >
                       <OsInput placeholder="Enter Email" />
                     </SelectFormItem>
@@ -155,8 +203,9 @@ const AddNewOrganization: FC<{
                           message: 'Username is required!',
                         },
                         {
-                          pattern: /^[a-zA-Z0-9 ]*$/,
-                          message: 'Special characters are not allowed!',
+                          pattern:
+                            /^(?!\s)[a-zA-Z0-9][a-zA-Z0-9\s]*$|^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~](?!.*\.\.)[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~]{0,63}@[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z]{2,})+$/,
+                          message: 'Please enter a valid username or email.',
                         },
                       ]}
                     >
