@@ -298,7 +298,7 @@ const AddCustomer: React.FC<any> = ({
         <Divider />
         <CustomerTabsStyle
           defaultActiveKey="1"
-          activeKey={activeKeyForTabs}
+          activeKey={activeKeyForTabs ?? '1'}
           items={[
             {
               label: (
