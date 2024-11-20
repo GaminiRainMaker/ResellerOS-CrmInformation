@@ -46,7 +46,19 @@ function newQuoteMappingColumns(
       dataIndex: 'quote_header',
       key: 'quote_header',
       width: 220,
-      render: (text: string) => <CustomTextCapitalization text={text} />,
+      render: (text: string) => (
+        <CustomTextCapitalization
+          text={
+            text === 'product_code'
+              ? 'SKU'
+              : text === 'adjusted_price'
+                ? 'Cost'
+                : text === 'list_price'
+                  ? 'MSRP'
+                  : text
+          }
+        />
+      ),
     },
     {
       title: (
@@ -201,7 +213,19 @@ function approvedQuoteMappingColumns(
       dataIndex: 'quote_header',
       key: 'quote_header',
       width: 220,
-      render: (text: string) => <CustomTextCapitalization text={text} />,
+      render: (text: string) => (
+        <CustomTextCapitalization
+          text={
+            text === 'product_code'
+              ? 'SKU'
+              : text === 'adjusted_price'
+                ? 'Cost'
+                : text === 'list_price'
+                  ? 'MSRP'
+                  : text
+          }
+        />
+      ),
     },
     {
       title: (
@@ -359,7 +383,19 @@ function rejectQuoteMappingColumns(
       dataIndex: 'quote_header',
       key: 'quote_header',
       width: 220,
-      render: (text: string) => <CustomTextCapitalization text={text} />,
+      render: (text: string) => (
+        <CustomTextCapitalization
+          text={
+            text === 'product_code'
+              ? 'SKU'
+              : text === 'adjusted_price'
+                ? 'Cost'
+                : text === 'list_price'
+                  ? 'MSRP'
+                  : text
+          }
+        />
+      ),
     },
     {
       title: (
