@@ -70,7 +70,7 @@ const CrmInformation: React.FC = () => {
   const [objectValuesForContact, setObjectValueForContact] = useState<any>();
   const [contactDetail, setContactDetail] = useState<any>();
   const [shipppingAddress, setShippingAddress] = useState<any>();
-  const [activeKeyForTabs, setActiveKeyForTabs] = useState<any>(1);
+  const [activeKeyForTabs, setActiveKeyForTabs] = useState<string>('1');
   const [newAddContact, setNewAddContact] = useState<Boolean>(false);
   const {loading, filteredData, customerProfile} = useAppSelector(
     (state) => state.customer,
@@ -365,17 +365,8 @@ const CrmInformation: React.FC = () => {
   };
 
   const onFinish = async () => {
-    if (
-      !emailRegex?.test(objectValuesForContact?.billing_email) ||
-      !objectValuesForContact?.billing_email ||
-      !objectValuesForContact?.billing_first_name ||
-      // !objectValuesForContact?.billing_last_name ||
-      !objectValuesForContact?.billing_role ||
-      !AlphabetsRegex?.test(objectValuesForContact?.billing_first_name) ||
-      // !AlphabetsRegex?.test(objectValuesForContact?.billing_last_name) ||
-      !AlphabetsRegexWithSpecialChr?.test(objectValuesForContact?.billing_role)
-    ) {
-      setErrorFileds(true);
+    if (activeKeyForTabs < '3') {
+      setActiveKeyForTabs((Number(activeKeyForTabs) + 1)?.toString());
       return;
     }
     const FormData = form.getFieldsValue();
@@ -404,7 +395,7 @@ const CrmInformation: React.FC = () => {
 
       form.resetFields();
       setShowModal(false);
-      setActiveKeyForTabs(1);
+      setActiveKeyForTabs('1');
     } catch (error) {
       console.log(error);
       form.resetFields();
@@ -580,19 +571,8 @@ const CrmInformation: React.FC = () => {
           <AddCustomer
             form={form}
             onFinish={onFinish}
-            objectValuesForContact={objectValuesForContact}
-            setObjectValueForContact={setObjectValueForContact}
-            contactDetail={contactDetail}
-            setContactDetail={setContactDetail}
-            shipppingAddress={shipppingAddress}
-            setShippingAddress={setShippingAddress}
             setActiveKeyForTabs={setActiveKeyForTabs}
             activeKeyForTabs={activeKeyForTabs}
-            setNewAddContact={setNewAddContact}
-            newAddContact={newAddContact}
-            errorFileds={errorFileds}
-            setErrorFileds={setErrorFileds}
-            customerData={editRecordData}
           />
         }
         width={700}
@@ -600,15 +580,10 @@ const CrmInformation: React.FC = () => {
         onCancel={() => {
           setShowModal((p) => !p);
           form.resetFields();
-          setObjectValueForContact({});
-          setActiveKeyForTabs(1);
+          setActiveKeyForTabs('1');
         }}
         onOk={form.submit}
-        fourthButtonfunction={() => {
-          setActiveKeyForTabs(activeKeyForTabs + 1);
-        }}
-        fourthButtonText={activeKeyForTabs === 3 ? '' : 'Next'}
-        primaryButtonText={activeKeyForTabs === 3 ? 'Save' : ''}
+        primaryButtonText={activeKeyForTabs === '3' ? 'Save' : 'Next'}
         footerPadding={20}
       />
 
@@ -618,11 +593,7 @@ const CrmInformation: React.FC = () => {
         onClose={() => {
           setShowDrawer((p: boolean) => !p);
           form.resetFields();
-          dispatch(setBillingContact({}));
-          setObjectValueForContact({});
-          setActiveKeyForTabs(1);
-          setObjectValueForContact({});
-          setNewAddContact(false);
+          setActiveKeyForTabs('1');
         }}
         open={showDrawer}
         width={450}
@@ -639,20 +610,11 @@ const CrmInformation: React.FC = () => {
           form={form}
           onFinish={updateCustomerDetails}
           drawer
-          objectValuesForContact={objectValuesForContact}
-          setObjectValueForContact={setObjectValueForContact}
-          contactDetail={contactDetail}
-          setContactDetail={setContactDetail}
-          shipppingAddress={shipppingAddress}
-          setShippingAddress={setShippingAddress}
           setActiveKeyForTabs={setActiveKeyForTabs}
           activeKeyForTabs={activeKeyForTabs}
-          setNewAddContact={setNewAddContact}
-          newAddContact={newAddContact}
-          errorFileds={errorFileds}
-          setErrorFileds={setErrorFileds}
-          getCustomers={getCustomers}
+          contactDetail={contactDetail}
           customerData={editRecordData}
+          setContactDetail={setContactDetail}
         />
       </OsDrawer>
 
