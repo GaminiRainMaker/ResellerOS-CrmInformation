@@ -15,6 +15,7 @@ import {Option} from 'antd/lib/mentions';
 import {useSearchParams} from 'next/navigation';
 import AddPartner from '.';
 import {
+  addAssignPartnerProgramSalesForce,
   getAllOrgApprovedDataSalesForce,
   insertAssignPartnerProgram,
 } from '../../../../../redux/actions/assignPartnerProgram';
@@ -75,6 +76,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
   const [openAddProgramModal, setOpenAddProgramModal] =
     useState<boolean>(false);
   const [dealerRelationShip, setDealerRelationShip] = useState<boolean>(false);
+  const [requestLoading, setRequestLoading] = useState<boolean>(false);
   const [query, setQuery] = useState<{
     partner: string | null;
     program: string | null;
@@ -86,15 +88,27 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
   const searchQuery = useDebounceHook(query, 400);
 
   const requestForNewPartnerAndPartnerProgram = async () => {
+    setRequestLoading(true);
     if (activetab === '1' && salesForceUrl) {
       const selectedData = rows.map((row) => ({
         partner_program_id: row.program,
         admin_request: true,
         new_request: false,
-        userResquest: true,
         organization: salesForceOrgId,
       }));
-      console.log('selectedData', selectedData);
+      // Call the API for each object in selectedData
+      for (const data of selectedData) {
+        try {
+          await dispatch(addAssignPartnerProgramSalesForce(data)); // API call for each data object
+          console.log('Successfully assigned partner program:', data);
+          setShowModal(false);
+          setRequestLoading(false);
+        } catch (error) {
+          setShowModal(false);
+          setRequestLoading(false);
+          console.error('Error assigning partner program:', error);
+        }
+      }
     } else {
       let data = {
         partner_id: partnerNewId?.value,
@@ -107,6 +121,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
       setPartnerNewId({});
       setPartnerProgramNewId({});
       setShowModal(false);
+      setRequestLoading(false);
       getPartnerData && getPartnerData();
     }
   };
@@ -444,65 +459,87 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
                   ),
                   key: '2',
                   children: (
-                    <Row justify="space-between" gutter={[24, 24]}>
-                      <Col sm={24} md={12}>
-                        <SelectFormItem
-                          label={
-                            <Typography name="Body 4/Medium">
-                              Partner
-                            </Typography>
-                          }
-                        >
-                          {partnerNewId?.value ? (
-                            <OsInput
-                              disabled
-                              style={{width: '70%'}}
-                              value={formatStatus(partnerNewId?.name)}
-                            />
-                          ) : (
-                            <Typography
-                              name="Body 3/Regular"
-                              color={token?.colorLinkHover}
-                              onClick={() => setOpenAddPartnerModal(true)}
-                            >
-                              {' '}
-                              + Add New Partner
-                            </Typography>
-                          )}
-                        </SelectFormItem>
-                      </Col>
+                    <>
+                      <Row justify="space-between" gutter={[24, 24]}>
+                        <Col sm={24} md={12}>
+                          <SelectFormItem
+                            label={
+                              <Typography name="Body 4/Medium">
+                                Partner
+                              </Typography>
+                            }
+                          >
+                            {partnerNewId?.value ? (
+                              <OsInput
+                                disabled
+                                style={{width: '70%'}}
+                                value={formatStatus(partnerNewId?.name)}
+                              />
+                            ) : (
+                              <Typography
+                                name="Body 3/Regular"
+                                color={token?.colorLinkHover}
+                                onClick={() => setOpenAddPartnerModal(true)}
+                              >
+                                {' '}
+                                + Add New Partner
+                              </Typography>
+                            )}
+                          </SelectFormItem>
+                        </Col>
 
-                      <Col sm={24} md={12}>
-                        <SelectFormItem
-                          label={
-                            <Typography name="Body 4/Medium">
-                              Partner Program
-                            </Typography>
-                          }
+                        <Col sm={24} md={12}>
+                          <SelectFormItem
+                            label={
+                              <Typography name="Body 4/Medium">
+                                Partner Program
+                              </Typography>
+                            }
+                          >
+                            {partnerProgramNewId?.value ? (
+                              <OsInput
+                                disabled
+                                style={{width: '70%'}}
+                                value={formatStatus(partnerProgramNewId?.name)}
+                              />
+                            ) : (
+                              <Typography
+                                name="Body 3/Regular"
+                                color={token?.colorLinkHover}
+                                onClick={() => {
+                                  if (partnerNewId?.value) {
+                                    setOpenAddProgramModal(true);
+                                  }
+                                }}
+                              >
+                                {' '}
+                                + Add New Program Partner
+                              </Typography>
+                            )}
+                          </SelectFormItem>
+                        </Col>
+                      </Row>
+
+                      {salesForceUrl && (
+                        <Row
+                          style={{
+                            marginTop: '40px',
+                          }}
                         >
-                          {partnerProgramNewId?.value ? (
-                            <OsInput
-                              disabled
-                              style={{width: '70%'}}
-                              value={formatStatus(partnerProgramNewId?.name)}
-                            />
-                          ) : (
-                            <Typography
-                              name="Body 3/Regular"
-                              color={token?.colorLinkHover}
-                              onClick={() => {
-                                if (partnerNewId?.value) {
-                                  setOpenAddProgramModal(true);
-                                }
+                          <Space size={15}>
+                            <Checkbox
+                              onChange={(e) => {
+                                setDealerRelationShip(e?.target?.checked);
                               }}
-                            >
-                              {' '}
-                              + Add New Program Partner
+                            />
+                            <Typography name="Body 4/Medium">
+                              Do you have authorized dealer relationship with
+                              these entities?
                             </Typography>
-                          )}
-                        </SelectFormItem>
-                      </Col>
-                    </Row>
+                          </Space>
+                        </Row>
+                      )}
+                    </>
                   ),
                 },
               ]}
@@ -564,26 +601,6 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
               </Col>
             </Row>
           )}
-
-          {salesForceUrl && (
-            <Row
-              style={{
-                marginTop: '40px',
-              }}
-            >
-              <Space size={15}>
-                <Checkbox
-                  onChange={(e) => {
-                    setDealerRelationShip(e?.target?.checked);
-                  }}
-                />
-                <Typography name="Body 4/Medium">
-                  Do you have authorized dealer relationship with these
-                  entities?
-                </Typography>
-              </Space>
-            </Row>
-          )}
         </Form>
         <div
           style={{
@@ -592,8 +609,8 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
             width: '100%',
           }}
         >
-          {/* handleSave */}
           <OsButton
+            loading={requestLoading}
             text="Request"
             buttontype="PRIMARY"
             clickHandler={requestForNewPartnerAndPartnerProgram}

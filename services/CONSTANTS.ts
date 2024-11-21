@@ -272,6 +272,8 @@ export const API = {
       '/assignPartnerProgram/updateForTheResellerRequest',
       GetAllOrgApprovedDataSalesForce:
       '/assignPartnerProgram/getAllOrgApprovedDataSalesForce',
+      AddAssignPartnerProgramSalesForce:
+      '/assignPartnerProgram/addAssignPartnerProgramSalesForce',
   },
   ATTRIBUTE_SECTION: {
     INDEX: '/attributeSection',
