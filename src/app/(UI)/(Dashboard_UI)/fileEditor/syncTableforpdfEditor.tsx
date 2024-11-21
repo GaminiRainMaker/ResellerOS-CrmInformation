@@ -299,9 +299,10 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     updatedData?.map((items: any) => {
       let findThevalue = lineItemSyncingData?.find(
         (itemInn: any) =>
-          itemInn?.pdf_header === items?.pdf_header &&
-          itemInn?.quote_header === items?.quote_header &&
-          (itemInn?.status === 'Pending' || itemInn?.status === 'Approved'),
+          itemInn?.pdf_header === items?.pdf_header?.toString()?.toLowerCase(),
+        //  &&
+        // itemInn?.quote_header === items?.quote_header &&
+        // (itemInn?.status === 'Pending' || itemInn?.status === 'Approved'),
       );
       if (!findThevalue) {
         updatedArrForAddingLineItemSync?.push(items);
@@ -329,9 +330,12 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       NewupdatedData?.map((items: any) => {
         let findThevalue = lineItemSyncingData?.find(
           (itemInn: any) =>
-            itemInn?.pdf_header === items?.pdf_header &&
-            itemInn?.quote_header === items?.quote_header &&
-            (itemInn?.status === 'Pending' || itemInn?.status === 'Approved'),
+            itemInn?.pdf_header ===
+              items?.pdf_header?.toString()?.toLowerCase &&
+            itemInn?.is_salesforce,
+          // &&
+          //   itemInn?.quote_header === items?.quote_header &&
+          //   (itemInn?.status === 'Pending' || itemInn?.status === 'Approved'),
         );
         if (!findThevalue) {
           updatedArrForAddingLineItemSync?.push(items);

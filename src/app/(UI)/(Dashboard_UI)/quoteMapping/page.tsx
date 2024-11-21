@@ -121,6 +121,7 @@ const QuoteMappings = () => {
       setShowError(true);
       return;
     }
+
     dispatch(addLineItemSyncingManualy(newObj))?.then((payload: any) => {
       if (payload?.payload) {
         setManualRecord({});
@@ -498,7 +499,9 @@ const QuoteMappings = () => {
                       onChange={(e: any) => {
                         setManualRecord({
                           ...manualRecord,
-                          pdf_header: e?.target?.value,
+                          pdf_header: e?.target?.value
+                            ?.toString()
+                            ?.toLowerCase(),
                         });
                       }}
                     />
