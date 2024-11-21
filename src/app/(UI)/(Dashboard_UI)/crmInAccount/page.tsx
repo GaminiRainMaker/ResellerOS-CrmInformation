@@ -31,11 +31,6 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import CommonTable from '@/app/components/common/os-table/CommonTable';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import {
-  AlphabetsRegex,
-  AlphabetsRegexWithSpecialChr,
-  emailRegex,
-} from '@/app/utils/base';
 import {Form, MenuProps, notification} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
@@ -379,20 +374,23 @@ const CrmInformation: React.FC = () => {
           customer_id: data?.payload?.id,
         };
         const newBillingObject: any = {
-          ...objectValuesForContact,
           customer_id: data?.payload?.id,
+          billing_first_name: FormData?.billing_first_name,
+          billing_email: FormData?.billing_email,
+          billing_role: FormData?.billing_role,
+          billing_last_name: FormData?.billing_last_name,
+          billing_state: FormData?.billing_state,
         };
         if (newAddressObj) {
           await dispatch(insertAddAddress(newAddressObj));
         }
-        if (objectValuesForContact?.billing_first_name && newBillingObject) {
+        if (FormData?.billing_last_name && newBillingObject) {
           await dispatch(insertbillingContact(newBillingObject));
         }
         await dispatch(setCustomerProfile(''));
         await dispatch(queryCustomer(searchQuery));
         await dispatch(queryContact(''));
       });
-
       form.resetFields();
       setShowModal(false);
       setActiveKeyForTabs('1');

@@ -199,7 +199,7 @@ const AddCustomer: React.FC<any> = ({
               secondaryTextColor={token?.colorPrimary}
               primaryText={
                 <Typography name="Body 4/Regular">
-                  {billingContact?.name}
+                  {drawer && billingContact?.name}
                 </Typography>
               }
               secondaryText={
