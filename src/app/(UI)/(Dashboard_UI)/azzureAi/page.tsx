@@ -93,6 +93,33 @@ const EditorFile = () => {
     }
     setUploadedFileDataColumn(updateLineItemColumnArr);
   }, [UploadedFileData]);
+
+  const mapNewArrMappedValues = (newArr: any, newMapped: any) => {
+    let result: any = [];
+
+    // Iterate over each mapping in newMapped
+    newMapped.forEach((mapping: any) => {
+      // Find the row in newArr that contains the preVal
+      let index = newArr.findIndex((item: any) => item[0] === mapping.preVal);
+
+      if (index !== -1) {
+        // Find the first non-null value in the row at the given index
+        let value = newArr[index].find(
+          (item: any, idx: number) => item !== null && idx !== 0,
+        ); // Avoid the first column (key column)
+
+        if (value !== undefined) {
+          // Create a new object with the newVal as key and the value as value
+          let obj: any = {};
+          obj[mapping.newVal] = value;
+          result.push(obj);
+        }
+      }
+    });
+
+    return result;
+  };
+
   const beforeUpload = async (file: File) => {
     const obj: any = {...file};
     let pathUsedToUpload = file?.type?.split('.')?.includes('spreadsheetml')
@@ -186,6 +213,28 @@ const EditorFile = () => {
                   }
 
                   // Slice the array from the found index
+                  let quoteHeaderChecks = payload?.payload?.slice(
+                    0,
+                    bestRowIndex ? bestRowIndex : 20,
+                  );
+                  let newMapped = [
+                    {preVal: 'Quote #', newVal: 'quote_no'},
+                    {preVal: 'Quote Date', newVal: 'quote_date'},
+                    {preVal: 'Expiration Date', newVal: 'expiration_date'},
+                    {preVal: 'Payment Terms', newVal: 'payment_terms'},
+                    {preVal: 'Distributor', newVal: 'distributor'},
+                  ];
+
+                  let mappedQuoteHeaders = mapNewArrMappedValues(
+                    quoteHeaderChecks,
+                    newMapped,
+                  );
+                  console.log(
+                    '32432432',
+                    quoteHeaderChecks,
+                    mappedQuoteHeaders,
+                  );
+
                   let result =
                     indexFrom > 0
                       ? payload?.payload?.slice(bestRowIndex + 1, indexFrom - 1)

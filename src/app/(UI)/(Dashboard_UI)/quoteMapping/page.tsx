@@ -454,7 +454,7 @@ const QuoteMappings = () => {
                       align="center"
                       name="Body 2/Medium"
                     >
-                      Your Pdf Header Name
+                      File Line Item Header Label{' '}
                     </Typography>
                   </Row>
                 </Col>
@@ -467,23 +467,12 @@ const QuoteMappings = () => {
                       align="center"
                       name="Body 2/Medium"
                     >
-                      Your Quote Header Name
+                      Quote Line Item Field Name
                     </Typography>
                   </Row>
                 </Col>
               </Row>
-              <Row style={{marginLeft: '30px'}}>
-                <Checkbox
-                  style={{marginRight: '10px'}}
-                  onChange={(e) => {
-                    setManualRecord({
-                      ...manualRecord,
-                      is_salesforce: e.target.checked,
-                    });
-                  }}
-                />{' '}
-                <Typography name="Body 3/Regular">Is Salesforce</Typography>
-              </Row>
+
               <Row
                 style={{
                   display: 'flex',
@@ -582,6 +571,18 @@ const QuoteMappings = () => {
                       </div>
                     )}
                 </Col>
+              </Row>
+              <Row style={{marginLeft: '30px'}}>
+                <Checkbox
+                  style={{marginRight: '10px'}}
+                  onChange={(e) => {
+                    setManualRecord({
+                      ...manualRecord,
+                      is_salesforce: e.target.checked,
+                    });
+                  }}
+                />{' '}
+                <Typography name="Body 3/Regular">Is Salesforce</Typography>
               </Row>
 
               <Row
