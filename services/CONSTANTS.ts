@@ -3,6 +3,7 @@ export const API = {
     INDEX: '/auth',
     VERIFY: '/auth/verify',
     SEND_EMAIL: '/auth/sendNewUserEmail',
+    SendPartnerRequestEmail: '/auth/sendPartnerRequestEmail',
     Send_Forgot_Password_Email: '/auth/sendForgotPasswordEmail',
     Contact_Sales: '/auth/contactSales',
     salesforceFileGet: '/auth/getSalesForceDataa',

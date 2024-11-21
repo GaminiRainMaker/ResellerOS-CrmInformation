@@ -74,6 +74,17 @@ export const sendNewUserEmail = createAsyncThunk(
     }
   },
 );
+export const sendPartnerRequestEmail = createAsyncThunk(
+  'auth/sendPartnerRequestEmail',
+  async (data: any, thunkApi) => {
+    try {
+      const res: any = await AUTH_API.sendPartnerRequestEmail(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
 export const sendForgotPasswordEmail = createAsyncThunk(
   'auth/sendForgotPasswordEmail',
   async (data: any, thunkApi) => {

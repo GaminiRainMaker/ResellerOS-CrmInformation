@@ -35,6 +35,7 @@ import {SelectFormItem} from '../os-oem-select/oem-select-styled';
 import CommonSelect from '../os-select';
 import OsTabs from '../os-tabs';
 import {RequestPartnerInterface} from './os-add-partner.interface';
+import {sendPartnerRequestEmail} from '../../../../../redux/actions/auth';
 
 const RequestPartner: React.FC<RequestPartnerInterface> = ({
   form,
@@ -91,15 +92,25 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
     setRequestLoading(true);
     if (activetab === '1' && salesForceUrl) {
       const selectedData = rows.map((row) => ({
-        partner_program_id: row.program,
         admin_request: true,
         new_request: false,
         organization: salesForceOrgId,
+        partner_program_id: JSON.parse(row?.program)?.id,
+        program_name: JSON.parse(row?.program)?.partner_program,
       }));
       // Call the API for each object in selectedData
       for (const data of selectedData) {
         try {
-          await dispatch(addAssignPartnerProgramSalesForce(data)); // API call for each data object
+          await dispatch(addAssignPartnerProgramSalesForce(data))?.then((d) => {
+            if (d?.payload) {
+              dispatch(
+                sendPartnerRequestEmail({
+                  organizationName: data?.organization,
+                  programName: data?.program_name,
+                }),
+              );
+            }
+          });
           console.log('Successfully assigned partner program:', data);
           setShowModal(false);
           setRequestLoading(false);
@@ -392,7 +403,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
                                       return (
                                         <Option
                                           key={program?.id}
-                                          value={program?.id}
+                                          value={JSON.stringify(program)}
                                         >
                                           <CustomTextCapitalization
                                             text={program?.partner_program}
