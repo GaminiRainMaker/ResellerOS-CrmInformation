@@ -14,6 +14,7 @@ import {
   runSalesForceBot,
   sendForgotPasswordEmail,
   sendNewUserEmail,
+  sendPartnerRequestEmail,
   signUpAuth,
   verifyAuth,
 } from '../actions/auth';
@@ -78,6 +79,24 @@ const authSlice = createSlice({
       )
       .addCase(
         sendNewUserEmail.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(sendPartnerRequestEmail.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        sendPartnerRequestEmail.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          // state.data = action.payload;
+        },
+      )
+      .addCase(
+        sendPartnerRequestEmail.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

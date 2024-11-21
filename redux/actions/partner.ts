@@ -166,3 +166,14 @@ export const getAllPartnerById = createAsyncThunk(
     }
   },
 );
+export const getAllPartnerandProgramApprovedDataSalesForce = createAsyncThunk(
+  'partner/getAllPartnerandProgramApprovedDataSalesForce',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await PARTNER_API.getAllPartnerandProgramApprovedDataSalesForce();
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

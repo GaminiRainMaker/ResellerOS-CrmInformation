@@ -7,6 +7,8 @@ import {
   deleteAssignPartnerProgram,
   getAssignPartnerProgramByOrganization,
   updateForTheResellerRequest,
+  getAllOrgApprovedDataSalesForce,
+  addAssignPartnerProgramSalesForce,
 } from '../actions/assignPartnerProgram';
 
 type AssignPartnerProgramState = {
@@ -117,6 +119,42 @@ const assignPartnerProgramSlice = createSlice({
       )
       .addCase(
         updateForTheResellerRequest.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getAllOrgApprovedDataSalesForce.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getAllOrgApprovedDataSalesForce.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          // state.data = action.payload;
+        },
+      )
+      .addCase(
+        getAllOrgApprovedDataSalesForce.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(addAssignPartnerProgramSalesForce.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        addAssignPartnerProgramSalesForce.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          // state.data = action.payload;
+        },
+      )
+      .addCase(
+        addAssignPartnerProgramSalesForce.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

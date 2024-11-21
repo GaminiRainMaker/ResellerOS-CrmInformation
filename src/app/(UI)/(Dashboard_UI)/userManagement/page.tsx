@@ -1,9 +1,11 @@
 'use client';
 
+import {Checkbox} from '@/app/components/common/antd/Checkbox';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import OsButton from '@/app/components/common/os-button';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
@@ -15,25 +17,19 @@ import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {insertAssignPartnerProgram} from '../../../../../redux/actions/assignPartnerProgram';
+import {createSalesForcePartner} from '../../../../../redux/actions/salesForce';
+import {
+  getSalesForceAccessToken,
+  getSalesForceCrendenialsByOrgId,
+} from '../../../../../redux/actions/salesForceCredentials';
 import {
   createNewOrganization,
   getAdminUserOfAllOrganization,
 } from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setAllResellerRecord} from '../../../../../redux/slices/user';
-import AssignPartnerProgram from './AssignPartnerProgram';
-import React from 'react';
-import OsButton from '@/app/components/common/os-button';
 import AddNewOrganization from './AddNewOrganization';
-import {Checkbox} from '@/app/components/common/antd/Checkbox';
-import {
-  getSalesForceAccessToken,
-  getSalesForceCrendenialsByOrgId,
-} from '../../../../../redux/actions/salesForceCredentials';
-import {
-  createSalesForcePartner,
-  createSalesforcePartnerProgram,
-} from '../../../../../redux/actions/salesForce';
+import AssignPartnerProgram from './AssignPartnerProgram';
 
 const UserManagement = () => {
   const dispatch = useAppDispatch();
@@ -302,7 +298,9 @@ const UserManagement = () => {
     };
     if (finalData) {
       const obj = {
-        organization: selectedRecordData?.organization,
+        organization: selectedRecordData?.is_salesforce
+          ? selectedRecordData?.org_id
+          : selectedRecordData?.organization,
         org_id: selectedRecordData?.org_id,
         partner_program_id: finalData?.partner_program_id,
         is_approved: true,

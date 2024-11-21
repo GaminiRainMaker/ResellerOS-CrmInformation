@@ -3,6 +3,7 @@ export const API = {
     INDEX: '/auth',
     VERIFY: '/auth/verify',
     SEND_EMAIL: '/auth/sendNewUserEmail',
+    SendPartnerRequestEmail: '/auth/sendPartnerRequestEmail',
     Send_Forgot_Password_Email: '/auth/sendForgotPasswordEmail',
     Contact_Sales: '/auth/contactSales',
     salesforceFileGet: '/auth/getSalesForceDataa',
@@ -215,6 +216,7 @@ export const API = {
     upadteRequestForOrgNewPartnerApproval:
       'partner/upadteRequestForOrgNewPartnerApproval',
     GetAllPartnerById: 'partner/getAllPartnerById',
+    GetAllPartnerandProgramApprovedDataSalesForce: 'partner/getAllPartnerandProgramApprovedDataSalesForce',
   },
   PARTNER_PROGRAM: {
     INDEX: '/partnerProgram',
@@ -269,6 +271,10 @@ export const API = {
       '/assignPartnerProgram/updateAssignPartnerProgramById',
     updateForTheResellerRequest:
       '/assignPartnerProgram/updateForTheResellerRequest',
+      GetAllOrgApprovedDataSalesForce:
+      '/assignPartnerProgram/getAllOrgApprovedDataSalesForce',
+      AddAssignPartnerProgramSalesForce:
+      '/assignPartnerProgram/addAssignPartnerProgramSalesForce',
   },
   ATTRIBUTE_SECTION: {
     INDEX: '/attributeSection',
