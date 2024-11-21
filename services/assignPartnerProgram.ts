@@ -9,6 +9,8 @@ export const ASSIGN_PARTNER_PROGRAM_API = {
   post: (data: any) => post(API.ASSIGN_PARTNER_PROGRAM.INDEX, data),
   updateForTheResellerRequest: (data: any) =>
     post(API.ASSIGN_PARTNER_PROGRAM.updateForTheResellerRequest, data),
+  getAllOrgApprovedDataSalesForce: (data: any) =>
+    post(API.ASSIGN_PARTNER_PROGRAM.GetAllOrgApprovedDataSalesForce, data),
 
   query: (data: any) =>
     post(API.ASSIGN_PARTNER_PROGRAM.QUERY, data) as Promise<AxiosResponse<[]>>,

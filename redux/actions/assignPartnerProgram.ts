@@ -63,3 +63,15 @@ export const updateForTheResellerRequest = createAsyncThunk(
     }
   },
 );
+export const getAllOrgApprovedDataSalesForce = createAsyncThunk(
+  'assignPartnerProgram/getAllOrgApprovedDataSalesForce',
+  async (data: any, thunkApi) => {
+    try {
+      const res =
+        await ASSIGN_PARTNER_PROGRAM_API.getAllOrgApprovedDataSalesForce(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

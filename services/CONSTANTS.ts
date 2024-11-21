@@ -215,6 +215,7 @@ export const API = {
     upadteRequestForOrgNewPartnerApproval:
       'partner/upadteRequestForOrgNewPartnerApproval',
     GetAllPartnerById: 'partner/getAllPartnerById',
+    GetAllPartnerandProgramApprovedDataSalesForce: 'partner/getAllPartnerandProgramApprovedDataSalesForce',
   },
   PARTNER_PROGRAM: {
     INDEX: '/partnerProgram',
@@ -269,6 +270,8 @@ export const API = {
       '/assignPartnerProgram/updateAssignPartnerProgramById',
     updateForTheResellerRequest:
       '/assignPartnerProgram/updateForTheResellerRequest',
+      GetAllOrgApprovedDataSalesForce:
+      '/assignPartnerProgram/getAllOrgApprovedDataSalesForce',
   },
   ATTRIBUTE_SECTION: {
     INDEX: '/attributeSection',
