@@ -48,7 +48,7 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
   const [shipppingAddress, setShippingAddress] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
   const [errorFileds, setErrorFileds] = useState<boolean>(false);
-  const [activeKeyForTabs, setActiveKeyForTabs] = useState<any>(1);
+  const [activeKeyForTabs, setActiveKeyForTabs] = useState<any>('1');
 
   useEffect(() => {
     const customerOptionData =
@@ -71,17 +71,8 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
 
   const onFinish = async () => {
     const FormData = form1?.getFieldsValue();
-    if (
-      !emailRegex?.test(objectValuesForContact?.billing_email) ||
-      !objectValuesForContact?.billing_email ||
-      !objectValuesForContact?.billing_first_name ||
-      // !objectValuesForContact?.billing_last_name ||
-      !objectValuesForContact?.billing_role ||
-      !AlphabetsRegex?.test(objectValuesForContact?.billing_first_name) ||
-      // !AlphabetsRegex?.test(objectValuesForContact?.billing_last_name) ||
-      !AlphabetsRegexWithSpecialChr?.test(objectValuesForContact?.billing_role)
-    ) {
-      setErrorFileds(true);
+    if (activeKeyForTabs < '3') {
+      setActiveKeyForTabs((Number(activeKeyForTabs) + 1)?.toString());
       return;
     }
     try {
@@ -128,7 +119,7 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
         dispatch(setCustomerProfile(''));
       });
       setLoading(false);
-      setActiveKeyForTabs(1);
+      setActiveKeyForTabs('1');
       form1?.resetFields();
       setOpen(false);
     } catch (error) {
@@ -190,16 +181,8 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
           <AddCustomer
             form={form1}
             onFinish={onFinish}
-            objectValuesForContact={objectValuesForContact}
-            setObjectValueForContact={setObjectValueForContact}
-            contactDetail={contactDetail}
-            setContactDetail={setContactDetail}
-            shipppingAddress={shipppingAddress}
-            setShippingAddress={setShippingAddress}
             setActiveKeyForTabs={setActiveKeyForTabs}
             activeKeyForTabs={activeKeyForTabs}
-            errorFileds={errorFileds}
-            setErrorFileds={setErrorFileds}
           />
         }
         width={700}
@@ -207,13 +190,10 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
         onCancel={() => {
           setOpen((p) => !p);
           form1?.resetFields();
+          setActiveKeyForTabs('1');
         }}
         onOk={form1?.submit}
-        fourthButtonfunction={() => {
-          setActiveKeyForTabs(activeKeyForTabs + 1);
-        }}
-        fourthButtonText={activeKeyForTabs === 3 ? '' : 'Next'}
-        primaryButtonText={activeKeyForTabs === 3 ? 'Save' : ''}
+        primaryButtonText={activeKeyForTabs === '3' ? 'Save' : 'Next'}
         footerPadding={20}
       />
     </>

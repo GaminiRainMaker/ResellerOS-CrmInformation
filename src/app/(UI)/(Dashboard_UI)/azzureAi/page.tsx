@@ -93,6 +93,35 @@ const EditorFile = () => {
     }
     setUploadedFileDataColumn(updateLineItemColumnArr);
   }, [UploadedFileData]);
+
+  const mapNewArrMappedValues = (newArr: any, newMapped: any) => {
+    let result: any = [];
+
+    // Iterate over each mapping in newMapped
+    newMapped.forEach((mapping:any) => {
+      // Check each sub-array in newArr to see if it contains the preVal
+      newArr.forEach((arr:any) => {
+          if (arr.includes(mapping.preVal)) {
+              // Get the index of the preVal
+              const index = arr.indexOf(mapping.preVal);
+              // Loop through the rest of the array to find the next non-null value
+              for (let i = index + 1; i < arr.length; i++) {
+                  if (arr[i] !== null) {
+                      // Add the new key-value pair to the result
+                      let obj:any = {};
+                      obj[mapping.newVal] = arr[i];
+                      result.push(obj);
+                      break; // Exit the loop after finding the first non-null value
+                  }
+              }
+          }
+      });
+  });
+  
+
+    return result;
+  };
+
   const beforeUpload = async (file: File) => {
     const obj: any = {...file};
     let pathUsedToUpload = file?.type?.split('.')?.includes('spreadsheetml')
@@ -186,6 +215,33 @@ const EditorFile = () => {
                   }
 
                   // Slice the array from the found index
+                  let quoteHeaderChecks = payload?.payload?.slice(
+                    0,
+                    bestRowIndex ? bestRowIndex : 20,
+                  );
+                  let newMapped = [
+                    {preVal: 'Quote #', newVal: 'quote_no'},
+                    {preVal: 'Quote Date', newVal: 'quote_date'},
+                    {preVal: 'Expiration Date', newVal: 'expiration_date'},
+                    {preVal: 'Payment Terms', newVal: 'payment_terms'},
+                    {preVal: 'Distributor', newVal: 'distributor'},
+                    {preVal: 'QUOTE NO:', newVal: 'quote_no'},
+                    {preVal: 'QUOTE DATE:', newVal: 'quote_date'},
+                    {preVal: 'QUOTE EXPIRES:', newVal: 'expiration_date'},
+                    {preVal: 'SHIPPING:', newVal: 'payment_terms'},
+                    {preVal: 'TOTAL PRICE:', newVal: 'distributor'},
+                  ];
+
+                  let mappedQuoteHeaders = mapNewArrMappedValues(
+                    quoteHeaderChecks,
+                    newMapped,
+                  );
+                  console.log(
+                    '32432432',
+                    quoteHeaderChecks,
+                    mappedQuoteHeaders,
+                  );
+
                   let result =
                     indexFrom > 0
                       ? payload?.payload?.slice(bestRowIndex + 1, indexFrom - 1)

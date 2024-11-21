@@ -3,24 +3,24 @@
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import AddCustomer from '@/app/components/common/os-add-customer';
 import OsButton from '@/app/components/common/os-button';
-import { OsContactCard } from '@/app/components/common/os-card/OsContactCard';
+import {OsContactCard} from '@/app/components/common/os-card/OsContactCard';
 import OsDrawer from '@/app/components/common/os-drawer';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import ProfileCard from '@/app/components/common/os-profile-card';
 import Typography from '@/app/components/common/typography';
-import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { Form } from 'antd';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
-import { updateAddress } from '../../../../../redux/actions/address';
+import {PencilSquareIcon, TrashIcon} from '@heroicons/react/24/outline';
+import {Form} from 'antd';
+import {useRouter, useSearchParams} from 'next/navigation';
+import {useState} from 'react';
+import {updateAddress} from '../../../../../redux/actions/address';
 import {
   deleteCustomers,
   getCustomerBYId,
   updateCustomer,
 } from '../../../../../redux/actions/customer';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
-import { setBillingContact } from '../../../../../redux/slices/billingAddress';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {setBillingContact} from '../../../../../redux/slices/billingAddress';
 
 const DetailCard = () => {
   const [token] = useThemeToken();
@@ -28,7 +28,7 @@ const DetailCard = () => {
   const searchParams = useSearchParams()!;
   const getCustomerID = searchParams && searchParams.get('id');
   const [form] = Form.useForm();
-  const { customerDataById: customerData } = useAppSelector(
+  const {customerDataById: customerData} = useAppSelector(
     (state) => state.customer,
   );
   const [showAllContactModal, setShowAllContactModal] =
@@ -41,7 +41,7 @@ const DetailCard = () => {
   const [shipppingAddress, setShippingAddress] = useState<any>();
   const [showDrawer, setShowDrawer] = useState<boolean>(false);
   const [errorFileds, setErrorFileds] = useState<boolean>(false);
-  const [activeKeyForTabs, setActiveKeyForTabs] = useState<any>(1);
+  const [activeKeyForTabs, setActiveKeyForTabs] = useState<any>('1');
   const [newAddContact, setNewAddContact] = useState<Boolean>(false);
 
   const contactCardData = [
@@ -117,7 +117,7 @@ const DetailCard = () => {
   ];
 
   const deleteSelectedIds = async () => {
-    const data = { Ids: deleteIds };
+    const data = {Ids: deleteIds};
     await dispatch(deleteCustomers(data));
     router.push(`/crmInAccount`);
     setDeleteIds([]);
@@ -127,9 +127,9 @@ const DetailCard = () => {
   const updateCustomerDetails = async () => {
     const FormData = form.getFieldsValue();
     await dispatch(
-      updateAddress({ ...FormData, shipping_id: shipppingAddress?.id }),
+      updateAddress({...FormData, shipping_id: shipppingAddress?.id}),
     );
-    await dispatch(updateCustomer({ ...FormData, id: getCustomerID }));
+    await dispatch(updateCustomer({...FormData, id: getCustomerID}));
     dispatch(getCustomerBYId(getCustomerID));
 
     setShowDrawer(false);
@@ -171,13 +171,13 @@ const DetailCard = () => {
         onClose={() => {
           setShowDrawer(false);
           setObjectValueForContact({});
-          setActiveKeyForTabs(1);
+          setActiveKeyForTabs('1');
         }}
         open={showDrawer}
         width={450}
         footer={
           <OsButton
-            btnStyle={{ width: '100%' }}
+            btnStyle={{width: '100%'}}
             buttontype="PRIMARY"
             text="Update Changes"
             clickHandler={form.submit}
@@ -188,20 +188,11 @@ const DetailCard = () => {
           form={form}
           onFinish={updateCustomerDetails}
           drawer
-          objectValuesForContact={objectValuesForContact}
-          setObjectValueForContact={setObjectValueForContact}
-          contactDetail={contactDetail}
-          setContactDetail={setContactDetail}
-          shipppingAddress={shipppingAddress}
-          setShippingAddress={setShippingAddress}
           setActiveKeyForTabs={setActiveKeyForTabs}
           activeKeyForTabs={activeKeyForTabs}
-          setNewAddContact={setNewAddContact}
-          newAddContact={newAddContact}
-          errorFileds={errorFileds}
-          setErrorFileds={setErrorFileds}
+          contactDetail={contactDetail}
           customerData={customerData}
-          getCustomers={getCustomer}
+          setContactDetail={setContactDetail}
         />
       </OsDrawer>
     </>
