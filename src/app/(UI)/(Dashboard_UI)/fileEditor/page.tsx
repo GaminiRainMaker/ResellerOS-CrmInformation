@@ -767,6 +767,8 @@ const EditorFile = () => {
   const mergeTableData = (quoteItemsData: any) => {
     const flattenedArray = quoteItemsData?.flat();
 
+    console.log('2343242', flattenedArray);
+
     const uniqueKeys = Array.from(
       new Set(flattenedArray.flatMap((obj: any) => Object.keys(obj))),
     );
@@ -796,8 +798,9 @@ const EditorFile = () => {
       // Iterate over each key-value pair in the object
       for (const [key, value] of Object.entries(obj)) {
         // Remove special characters (e.g., periods, spaces) from the key
+        // Issue with inconsistent row with data value solution
         const cleanedKey: any = key.replace(/[^\w]/g, '');
-        cleanedObj[cleanedKey] = value;
+        cleanedObj[key.replace(/\.$/, '')] = value;
       }
       return cleanedObj;
     }

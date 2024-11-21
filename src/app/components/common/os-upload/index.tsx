@@ -207,7 +207,9 @@ const OsUpload: React.FC<any> = ({
                   let syncedHeaderValue = headerKeys
                     .map((item: any, index: number) => {
                       const match = lineItemSyncingData.find(
-                        (obj: any) => obj.pdf_header === item,
+                        (obj: any) =>
+                          obj.pdf_header ===
+                          item?.toString()?.toLowerCase().replace(/\.$/, ''),
                       );
                       // if (item === null) {
                       //   return `emptyHeader${index}`;
@@ -225,6 +227,7 @@ const OsUpload: React.FC<any> = ({
                   //   syncedHeaderValue,
                   //   requiredOutput,
                   // );
+
                   resultantValues = requiredOutput.map((row: any) => {
                     let obj: any = {};
                     syncedHeaderValue.forEach((header: any, index: any) => {

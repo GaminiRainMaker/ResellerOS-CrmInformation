@@ -171,7 +171,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         item?.label
           ?.toString()
           ?.toLowerCase()
-          ?.includes(mergeItem?.toLowerCase()),
+          ?.includes(mergeItem?.toLowerCase().replace(/\.$/, '')),
       );
 
       const NewFilterOptionForAdminAproved = ApprovedQuoteMappingData?.find(
@@ -179,7 +179,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           item?.pdf_header
             ?.toString()
             ?.toLowerCase()
-            ?.includes(mergeItem?.toLowerCase()),
+            ?.includes(mergeItem?.toLowerCase().replace(/\.$/, '')),
       );
 
       if (NewFilterOption || NewFilterOptionForAdminAproved) {
@@ -280,7 +280,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         ?.filter((item: DataItem) => item.newVal !== '')
         .map(
           ({preVal, newVal}: DataItem): UpdatedDataItem => ({
-            pdf_header: preVal,
+            pdf_header: preVal?.toString()?.toLowerCase(),
             quote_header: newVal,
             status: 'Pending',
             date: handleDate(),
@@ -785,6 +785,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   useEffect(() => {
     handleChange();
   }, [syncedNewValue]);
+
+  console.log('23532432432', mergedValue);
   return (
     <>
       <GlobalLoader loading={nanonetsLoading}>

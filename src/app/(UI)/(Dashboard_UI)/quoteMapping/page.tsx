@@ -111,7 +111,12 @@ const QuoteMappings = () => {
     }
   }, [showError, manualRecord, JSON?.stringify(manualRecord)]);
   const addNewSyncingManually = async () => {
-    let newObj = {...manualRecord};
+    let newObj = {
+      ...manualRecord,
+      is_salesforce: manualRecord?.is_salesforce
+        ? manualRecord?.is_salesforce
+        : false,
+    };
     if (
       !newObj?.quote_header ||
       newObj?.quote_header === '' ||
@@ -139,7 +144,7 @@ const QuoteMappings = () => {
         setShowSyncModal(false);
 
         notification?.open({
-          message: 'Combination for lineItem syncing already exist!',
+          message: 'Combination already exist for this  File Line Item Header!',
           type: 'error',
         });
       }
@@ -245,7 +250,8 @@ const QuoteMappings = () => {
       dispatch(updateLineItemSyncing(obj)).then((d) => {
         if (d?.payload === undefined) {
           notification?.open({
-            message: 'Combination already exist!',
+            message:
+              'Combination already exist for this  File Line Item Header!',
             type: 'error',
           });
           return;
@@ -490,7 +496,8 @@ const QuoteMappings = () => {
                           ...manualRecord,
                           pdf_header: e?.target?.value
                             ?.toString()
-                            ?.toLowerCase(),
+                            ?.toLowerCase()
+                            .replace(/\.$/, ''),
                         });
                       }}
                     />
