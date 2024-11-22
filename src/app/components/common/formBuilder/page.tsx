@@ -159,6 +159,8 @@ const FormBuilderMain: React.FC<any> = ({
     setCartItems(temp);
   };
 
+  console.log('ktufhj', cartItems);
+
   // save reference for dragItem and dragOverItem
   const dragItem = React.useRef<any>(null);
   const dragOverItem = React.useRef<any>(null);

@@ -137,6 +137,8 @@ export const formbuildernewObject = (newItem: string) => {
   if (newItem === 'Table') {
     newObjAddedon = {
       name: newItem,
+      customFieldName: 'Name',
+
       label: 'Label',
       required: false,
       user_fill: false,
@@ -163,6 +165,8 @@ export const formbuildernewObject = (newItem: string) => {
   } else if (newItem === 'Multi-Select' || newItem === 'Drop Down') {
     newObjAddedon = {
       name: newItem,
+      customFieldName: 'Name',
+
       label: 'Label',
       type: 'multiple',
       user_fill: false,
@@ -177,10 +181,13 @@ export const formbuildernewObject = (newItem: string) => {
   } else if (newItem === 'Line Break') {
     newObjAddedon = {
       name: newItem,
+      customFieldName: 'Name',
     };
   } else if (newItem === 'Time') {
     newObjAddedon = {
       name: newItem,
+      customFieldName: 'Name',
+
       label: 'Label',
       user_fill: false,
       type: 'Time',
@@ -194,6 +201,8 @@ export const formbuildernewObject = (newItem: string) => {
   } else if (newItem === 'Date') {
     newObjAddedon = {
       name: newItem,
+      customFieldName: 'Name',
+
       label: 'Label',
       user_fill: false,
       type: 'Date',
@@ -209,6 +218,8 @@ export const formbuildernewObject = (newItem: string) => {
   } else if (newItem === 'Contact') {
     newObjAddedon = {
       name: newItem,
+      customFieldName: 'Name',
+
       label: 'Label',
       type: 'number',
       required: false,
@@ -221,6 +232,8 @@ export const formbuildernewObject = (newItem: string) => {
   } else if (newItem === 'Currency') {
     newObjAddedon = {
       name: newItem,
+      customFieldName: 'Name',
+
       label: 'Label',
       user_fill: false,
       type: 'text',
@@ -234,6 +247,8 @@ export const formbuildernewObject = (newItem: string) => {
   } else if (newItem === 'Radio Button' || newItem === 'Toggle') {
     newObjAddedon = {
       name: newItem,
+      customFieldName: 'Name',
+
       label: 'Label',
       type: 'multiple',
       required: false,
@@ -248,6 +263,7 @@ export const formbuildernewObject = (newItem: string) => {
   } else if (newItem === 'Text Content') {
     newObjAddedon = {
       name: newItem,
+      customFieldName: 'Name',
 
       sectionTitle: 'Section Title',
       Alignemnt: 'left',
@@ -256,6 +272,8 @@ export const formbuildernewObject = (newItem: string) => {
   } else if (newItem === 'Checkbox') {
     newObjAddedon = {
       name: newItem,
+      customFieldName: 'Name',
+
       placeholdertext: 'placeholder text',
       labelOptions: [],
       user_fill: false,
@@ -271,6 +289,8 @@ export const formbuildernewObject = (newItem: string) => {
   } else if (newItem === 'Text' || newItem === 'Email') {
     newObjAddedon = {
       name: newItem,
+      customFieldName: 'Name',
+
       label: 'Label',
       type: 'text',
       required: false,
@@ -282,10 +302,12 @@ export const formbuildernewObject = (newItem: string) => {
   } else if (newItem === 'Attachment') {
     newObjAddedon = {
       pdfUrl: null,
+
       required: false,
       user_fill: false,
       type: 'Attachment',
       name: newItem,
+      customFieldName: 'Name',
     };
   }
   return newObjAddedon;

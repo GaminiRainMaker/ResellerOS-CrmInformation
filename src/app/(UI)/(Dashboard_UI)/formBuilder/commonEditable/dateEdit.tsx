@@ -226,6 +226,18 @@ const EditFiledDetailsForDate: React.FC<EditableFiledsCommonInterface> = ({
               </Form.Item>
             </Col>
             <Col sm={24}>
+              <Typography name="Body 4/Medium">Change Name</Typography>
+              <OsInput
+                style={{width: '100%', marginBottom: '20px'}}
+                placeholder="name"
+                defaultValue={CommonIndexOfUse?.customFieldName}
+                value={CommonIndexOfUse?.customFieldName}
+                onChange={(e: any) => {
+                  changeFieldValues(e?.target?.value, 'customFieldName');
+                }}
+              />
+            </Col>
+            <Col sm={24}>
               <Form.Item
                 label={<Typography name="Body 4/Medium">Field Type</Typography>}
                 name="no_of_columns"

@@ -362,7 +362,7 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
       ),
     },
   ];
-
+  console.log('345435343242', CommonIndexOfUse?.customFieldName);
   const QuickSetupItemsForCheckBox = [
     {
       key: '1',
@@ -387,6 +387,16 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
               }}
             />
           </Form.Item>
+          <Typography name="Body 4/Medium">Change Name</Typography>
+          <OsInput
+            style={{width: '100%', marginBottom: '20px'}}
+            placeholder="name"
+            defaultValue={CommonIndexOfUse?.customFieldName}
+            value={CommonIndexOfUse?.customFieldName}
+            onChange={(e: any) => {
+              changeFieldValues(e?.target?.value, 'customFieldName');
+            }}
+          />
           {NameofTheCurrentFiled === 'Radio Button' ? (
             <></>
           ) : (
@@ -497,7 +507,7 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
               />
             </>
           )}
-           {CommonIndexOfUse?.user_fill && (
+          {CommonIndexOfUse?.user_fill && (
             <>
               {' '}
               <Typography name="Body 4/Medium">User Fill Text</Typography>
