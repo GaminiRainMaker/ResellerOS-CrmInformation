@@ -4,31 +4,55 @@
 
 'use client';
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
+import {Col, Row} from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
-import { OsCard } from '@/app/components/common/os-card';
+import {OsCard} from '@/app/components/common/os-card';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import DetailAnalyticCard from '@/app/components/common/os-table/DetailAnalyticCard';
 import Typography from '@/app/components/common/typography';
-import { CheckCircleIcon, TagIcon } from '@heroicons/react/24/outline';
+import {
+  CheckCircleIcon,
+  PencilSquareIcon,
+  TagIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline';
 
+import {Space} from '@/app/components/common/antd/Space';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
+import AddAddress from '@/app/components/common/os-add-address';
+import OsButton from '@/app/components/common/os-button';
+import OsDrawer from '@/app/components/common/os-drawer';
 import EmptyContainer from '@/app/components/common/os-empty-container';
-import { formatDate, getResultedValue } from '@/app/utils/base';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
-import { getCustomerBYId } from '../../../../../redux/actions/customer';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
-import { setBillingContact } from '../../../../../redux/slices/billingAddress';
+import OsModal from '@/app/components/common/os-modal';
+import {formatDate, getResultedValue} from '@/app/utils/base';
+import {Form, message} from 'antd';
+import {useRouter, useSearchParams} from 'next/navigation';
+import {useEffect, useState} from 'react';
+import {
+  deleteAddress,
+  insertAddAddress,
+} from '../../../../../redux/actions/address';
+import {getCustomerBYId} from '../../../../../redux/actions/customer';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {setBillingContact} from '../../../../../redux/slices/billingAddress';
 import DetailCard from './DetailCard';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 
 const AccountDetails = () => {
   const [token] = useThemeToken();
   const router = useRouter();
-  const { abbreviate } = useAbbreviationHook(0);
-  const { loading, customerDataById: customerData } = useAppSelector(
+  const {abbreviate} = useAbbreviationHook(0);
+  const [showAddressModal, setShowAddressModal] = useState<boolean>(false);
+  const [showDrawer, setShowDrawer] = useState<boolean>(false);
+  const [isSaveAndCreate, setIsSaveAndCreate] = useState<boolean>(false);
+  const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
+  const [deleteIds, setDeleteIds] = useState<any>();
+  const [activeKey, setActiveKey] = useState<string>('1');
+  const [recordId, setRecordId] = useState<any>();
+  const [form] = Form.useForm();
+  const {loading, customerDataById: customerData} = useAppSelector(
     (state) => state.customer,
   );
   const dispatch = useAppDispatch();
@@ -170,7 +194,7 @@ const AccountDetails = () => {
       key: 'status',
       width: 187,
       render: (text: string, record: any) => (
-        <span style={{ display: 'flex', justifyContent: 'center' }}>
+        <span style={{display: 'flex', justifyContent: 'center'}}>
           <OsStatusWrapper value={text} />
         </span>
       ),
@@ -225,7 +249,7 @@ const AccountDetails = () => {
       key: 'stages',
       width: 130,
       render: (text: string) => (
-        <span style={{ display: 'flex', justifyContent: 'center' }}>
+        <span style={{display: 'flex', justifyContent: 'center'}}>
           <OsStatusWrapper value={text} />
         </span>
       ),
@@ -234,6 +258,234 @@ const AccountDetails = () => {
 
   const locale = {
     emptyText: <EmptyContainer title="No Data" />,
+  };
+
+  const Addresscolumns = [
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Shipping Address Line
+        </Typography>
+      ),
+      dataIndex: 'shiping_address_line',
+      key: 'shiping_address_line',
+      width: 250,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Shipping City
+        </Typography>
+      ),
+      dataIndex: 'shiping_city',
+      key: 'shiping_city',
+      width: 187,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Shipping State
+        </Typography>
+      ),
+      dataIndex: 'shiping_state',
+      key: 'shiping_state',
+      width: 187,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Shipping Zip Code
+        </Typography>
+      ),
+      dataIndex: 'shiping_pin_code',
+      key: 'shiping_pin_code',
+      width: 187,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Shipping Country
+        </Typography>
+      ),
+      dataIndex: 'shiping_country',
+      key: 'shiping_country',
+      width: 187,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Billing Address Line
+        </Typography>
+      ),
+      dataIndex: 'billing_address_line',
+      key: 'billing_address_line',
+      width: 187,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Billing City
+        </Typography>
+      ),
+      dataIndex: 'billing_city',
+      key: 'billing_city',
+      width: 187,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Billing State
+        </Typography>
+      ),
+      dataIndex: 'billing_state',
+      key: 'billing_state',
+      width: 187,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Billing Zip Code
+        </Typography>
+      ),
+      dataIndex: 'billing_pin_code',
+      key: 'billing_pin_code',
+      width: 187,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Billing Country
+        </Typography>
+      ),
+      dataIndex: 'billing_country',
+      key: 'billing_country',
+      width: 187,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: 'Actions',
+      dataIndex: 'actions',
+      key: 'actions',
+      width: 94,
+      render: (text: string, record: any) => (
+        <Space size={18}>
+          <PencilSquareIcon
+            height={24}
+            width={24}
+            color={token.colorInfoBorder}
+            style={{cursor: 'pointer'}}
+            onClick={() => {
+              setRecordId(record?.id);
+              form.setFieldsValue({
+                billing_address_line: record?.billing_address_line,
+                billing_city: record?.billing_city,
+                billing_state: record?.billing_state,
+                billing_pin_code: record?.billing_pin_code,
+                billing_country: record?.billing_country,
+                shiping_address_line: record?.shiping_address_line,
+                shiping_city: record?.shiping_city,
+                shiping_state: record?.shiping_state,
+                shiping_pin_code: record?.shiping_pin_code,
+                shiping_country: record?.shiping_country,
+                shipping_id: record?.id,
+                name: record?.name,
+                currency: record?.currency,
+                industry: record?.industry,
+                website: record?.website,
+              });
+              setShowDrawer(true);
+            }}
+          />
+          <TrashIcon
+            height={24}
+            width={24}
+            color={token.colorError}
+            style={{cursor: 'pointer'}}
+            onClick={() => {
+              setShowModalDelete(true);
+              setDeleteIds(record?.id);
+            }}
+          />
+        </Space>
+      ),
+    },
+  ];
+
+  const onFinish = () => {
+    const addressData = form.getFieldsValue();
+    if (activeKey < '2' && showAddressModal) {
+      setActiveKey((Number(activeKey) + 1)?.toString());
+      return;
+    }
+    const isAllFieldsUndefined = Object.values(addressData)?.every(
+      (value) => value === undefined || value === '',
+    );
+
+    if (isAllFieldsUndefined) {
+      message.error(
+        'Empty record: The address fields cannot be saved with undefined values.',
+      );
+      return;
+    }
+    const newAddressObj: any = {
+      ...addressData,
+      customer_id: getCustomerID,
+      id: recordId,
+    };
+    if (newAddressObj) {
+      dispatch(insertAddAddress(newAddressObj)).then((res) => {
+        if (res?.payload) {
+          dispatch(getCustomerBYId(getCustomerID));
+          if (!isSaveAndCreate) {
+            setShowAddressModal(false);
+          }
+          form.resetFields();
+          setActiveKey('1');
+          setShowDrawer(false);
+          setRecordId('');
+        }
+      });
+    }
+  };
+
+  const deleteSelectedIds = async () => {
+    const data = {id: deleteIds};
+    dispatch(deleteAddress({id: deleteIds})).then((res) => {
+      if (res?.payload) {
+        dispatch(getCustomerBYId(getCustomerID));
+      }
+    });
+    setDeleteIds([]);
+    setShowModalDelete(false);
   };
 
   return (
@@ -245,7 +497,7 @@ const AccountDetails = () => {
           <DetailCard />
         </Col>
         <Col xs={24} sm={16} md={16} lg={18}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+          <div style={{display: 'flex', flexDirection: 'column', gap: 24}}>
             <Row justify="space-between" gutter={[16, 16]}>
               {analyticsData?.map((item: any) => (
                 <Col xs={24} sm={24} md={24} lg={10} xl={8} xxl={8}>
@@ -259,6 +511,27 @@ const AccountDetails = () => {
               ))}
             </Row>
 
+            <Row justify="space-between" align="middle">
+              <Col>
+                <Typography name="Heading 3/Medium">Address</Typography>
+              </Col>
+              <Col>
+                <OsButton
+                  text="Add Address"
+                  buttontype="PRIMARY"
+                  clickHandler={() => setShowAddressModal(true)}
+                />
+              </Col>
+            </Row>
+
+            <OsCard>
+              <OsTable
+                loading={loading}
+                columns={Addresscolumns}
+                dataSource={customerData?.Addresses}
+                locale={locale}
+              />
+            </OsCard>
             <Row justify="start">
               <Typography name="Heading 3/Medium">Opportunities</Typography>
             </Row>
@@ -288,6 +561,81 @@ const AccountDetails = () => {
           </div>
         </Col>
       </Row>
+
+      <OsModal
+        loading={loading}
+        thirdLoading={loading}
+        title="Create Address"
+        destroyOnClose
+        body={
+          <AddAddress
+            form={form}
+            activeKey={activeKey}
+            setActiveKey={setActiveKey}
+            onFinish={onFinish}
+          />
+        }
+        width={800}
+        open={showAddressModal}
+        onCancel={() => {
+          setShowAddressModal(false);
+          form.resetFields();
+          setActiveKey('1');
+        }}
+        primaryButtonText={activeKey === '2' ? 'Save' : 'Next'}
+        thirdButtonText={activeKey === '2' ? 'Save & New' : ''}
+        onOk={() => {
+          form.submit();
+          setIsSaveAndCreate(false);
+        }}
+        thirdButtonfunction={() => {
+          form.submit();
+          setIsSaveAndCreate(true);
+        }}
+        bodyPadding={30}
+      />
+
+      <OsDrawer
+        loading={loading}
+        title={
+          <Typography name="Body 1/Regular" color="#0D0D0D">
+            Update Address
+          </Typography>
+        }
+        placement="right"
+        onClose={() => {
+          setShowDrawer(false);
+          form.resetFields();
+        }}
+        open={showDrawer}
+        width={450}
+        footer={
+          <OsButton
+            btnStyle={{width: '100%'}}
+            buttontype="PRIMARY"
+            text="Update Changes"
+            clickHandler={form.submit}
+          />
+        }
+      >
+        <AddAddress
+          form={form}
+          activeKey={activeKey}
+          setActiveKey={setActiveKey}
+          onFinish={onFinish}
+          drawer
+        />
+      </OsDrawer>
+
+      <DeleteModal
+        loading={loading}
+        setShowModalDelete={setShowModalDelete}
+        setDeleteIds={setDeleteIds}
+        showModalDelete={showModalDelete}
+        deleteSelectedIds={deleteSelectedIds}
+        heading="Delete Address?"
+        description={'Are you sure you want to delete this address?'}
+      />
     </>
   );
 };
