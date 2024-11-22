@@ -98,26 +98,25 @@ const EditorFile = () => {
     let result: any = [];
 
     // Iterate over each mapping in newMapped
-    newMapped.forEach((mapping:any) => {
+    newMapped.forEach((mapping: any) => {
       // Check each sub-array in newArr to see if it contains the preVal
-      newArr.forEach((arr:any) => {
-          if (arr.includes(mapping.preVal)) {
-              // Get the index of the preVal
-              const index = arr.indexOf(mapping.preVal);
-              // Loop through the rest of the array to find the next non-null value
-              for (let i = index + 1; i < arr.length; i++) {
-                  if (arr[i] !== null) {
-                      // Add the new key-value pair to the result
-                      let obj:any = {};
-                      obj[mapping.newVal] = arr[i];
-                      result.push(obj);
-                      break; // Exit the loop after finding the first non-null value
-                  }
-              }
+      newArr.forEach((arr: any) => {
+        if (arr.includes(mapping.preVal)) {
+          // Get the index of the preVal
+          const index = arr.indexOf(mapping.preVal);
+          // Loop through the rest of the array to find the next non-null value
+          for (let i = index + 1; i < arr.length; i++) {
+            if (arr[i] !== null) {
+              // Add the new key-value pair to the result
+              let obj: any = {};
+              obj[mapping.newVal] = arr[i];
+              result.push(obj);
+              break; // Exit the loop after finding the first non-null value
+            }
           }
+        }
       });
-  });
-  
+    });
 
     return result;
   };
@@ -220,16 +219,16 @@ const EditorFile = () => {
                     bestRowIndex ? bestRowIndex : 20,
                   );
                   let newMapped = [
-                    {preVal: 'Quote #', newVal: 'quote_no'},
-                    {preVal: 'Quote Date', newVal: 'quote_date'},
-                    {preVal: 'Expiration Date', newVal: 'expiration_date'},
-                    {preVal: 'Payment Terms', newVal: 'payment_terms'},
-                    {preVal: 'Distributor', newVal: 'distributor'},
-                    {preVal: 'QUOTE NO:', newVal: 'quote_no'},
-                    {preVal: 'QUOTE DATE:', newVal: 'quote_date'},
-                    {preVal: 'QUOTE EXPIRES:', newVal: 'expiration_date'},
-                    {preVal: 'SHIPPING:', newVal: 'payment_terms'},
-                    {preVal: 'TOTAL PRICE:', newVal: 'distributor'},
+                    {preVal: 'Quote #', newVal: 'Quote #'},
+                    {preVal: 'Quote Date', newVal: 'Quote Date'},
+                    {preVal: 'Expiration Date', newVal: 'Expiration Date'},
+                    {preVal: 'Payment Terms', newVal: 'Payment Terms'},
+                    {preVal: 'Distributor', newVal: 'Distributor'},
+                    {preVal: 'QUOTE NO:', newVal: 'QUOTE NO:'},
+                    {preVal: 'QUOTE DATE:', newVal: 'QUOTE DATE:'},
+                    {preVal: 'QUOTE EXPIRES:', newVal: 'QUOTE EXPIRES:'},
+                    {preVal: 'SHIPPING:', newVal: 'SHIPPING:'},
+                    {preVal: 'TOTAL PRICE:', newVal: 'TOTAL PRICE:'},
                   ];
 
                   let mappedQuoteHeaders = mapNewArrMappedValues(
