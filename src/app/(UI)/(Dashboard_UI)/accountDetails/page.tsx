@@ -417,10 +417,7 @@ const AccountDetails = () => {
                 shiping_pin_code: record?.shiping_pin_code,
                 shiping_country: record?.shiping_country,
                 shipping_id: record?.id,
-                name: record?.name,
-                currency: record?.currency,
-                industry: record?.industry,
-                website: record?.website,
+                is_default_address: record?.is_default_address,
               });
               setShowDrawer(true);
             }}
@@ -478,7 +475,6 @@ const AccountDetails = () => {
   };
 
   const deleteSelectedIds = async () => {
-    const data = {id: deleteIds};
     dispatch(deleteAddress({id: deleteIds})).then((res) => {
       if (res?.payload) {
         dispatch(getCustomerBYId(getCustomerID));
@@ -606,6 +602,7 @@ const AccountDetails = () => {
         onClose={() => {
           setShowDrawer(false);
           form.resetFields();
+          setActiveKey('1');
         }}
         open={showDrawer}
         width={450}

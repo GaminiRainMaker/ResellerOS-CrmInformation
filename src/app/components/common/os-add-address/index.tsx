@@ -7,6 +7,7 @@ import Typography from '../typography';
 import OsInput from '../os-input';
 import {Checkbox} from '../antd/Checkbox';
 import {OsAddAddressInterface} from './os-add-address.interface';
+import {Space} from '../antd/Space';
 
 const AddAddress: FC<OsAddAddressInterface> = ({
   form,
@@ -121,36 +122,53 @@ const AddAddress: FC<OsAddAddressInterface> = ({
             ),
             key: '2',
             children: (
-              <Row gutter={[16, 16]}>
-                <Col span={24}>
-                  <Checkbox
-                    style={{marginRight: '10px'}}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        const data = form.getFieldsValue();
-                        form.setFieldsValue({
-                          billing_address_line: data?.shiping_address_line,
-                          billing_city: data?.shiping_city,
-                          billing_state: data?.shiping_state,
-                          billing_pin_code: data?.shiping_pin_code,
-                          billing_country: data?.shiping_country,
-                          bill_preVale: true,
-                        });
-                      } else {
-                        form.resetFields([
-                          'billing_address_line',
-                          'billing_city',
-                          'billing_state',
-                          'billing_pin_code',
-                          'billing_country',
-                          'bill_preVale',
-                        ]);
-                      }
-                    }}
-                  />
-                  <Typography name="Body 3/Regular">
-                    Same as Shipping Address
-                  </Typography>
+              <Row gutter={[16, 16]} justify={'space-between'}>
+                {!drawer && (
+                  <Col span={drawer ? 24 : 12}>
+                    <Space align="start">
+                      <Checkbox
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            const data = form.getFieldsValue();
+                            form.setFieldsValue({
+                              billing_address_line: data?.shiping_address_line,
+                              billing_city: data?.shiping_city,
+                              billing_state: data?.shiping_state,
+                              billing_pin_code: data?.shiping_pin_code,
+                              billing_country: data?.shiping_country,
+                              bill_preVale: true,
+                            });
+                          } else {
+                            form.resetFields([
+                              'billing_address_line',
+                              'billing_city',
+                              'billing_state',
+                              'billing_pin_code',
+                              'billing_country',
+                              'bill_preVale',
+                            ]);
+                          }
+                        }}
+                      />
+                      <Typography name="Body 3/Regular">
+                        Same as Shipping Address
+                      </Typography>
+                    </Space>
+                  </Col>
+                )}
+                <Col span={drawer ? 24 : 12}>
+                  <Space align="start">
+                    <SelectFormItem
+                      label=""
+                      valuePropName="checked"
+                      name="is_default_address"
+                    >
+                      <Checkbox style={{paddingBottom: '10px'}} />
+                    </SelectFormItem>
+                    <Typography name="Body 3/Regular">
+                      Is this the default address?
+                    </Typography>
+                  </Space>
                 </Col>
 
                 <Col span={24}>
