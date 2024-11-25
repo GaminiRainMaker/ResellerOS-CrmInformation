@@ -441,6 +441,7 @@ const NewRegistrationForm: FC<any> = ({
             Partner: {
               Name: item?.partner_name,
               rosdealregai__External_Id__c: String(item?.partner_id),
+              rosstarter__Status__c: 'Active',
             },
             Partner_Program: {
               Name: item?.partner_program_name,

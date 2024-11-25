@@ -142,6 +142,8 @@ export const API = {
   },
   ADDRESS: {
     INDEX: '/address',
+    GetAddressByCustomerId: '/address/getAddressByCustomerId',
+    DeleteAddress: '/address/deleteAddress',
   },
   ATTACHMENTDOCUMENT: {
     INDEX: '/AttachmentDocument',
