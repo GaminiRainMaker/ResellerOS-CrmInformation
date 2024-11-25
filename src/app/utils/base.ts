@@ -960,17 +960,23 @@ export const getLineItemsWithNonRepitive = (arrayValue: any) => {
 
     let finIndexForAlreadyPushed = checkAlreadyExist?.findIndex(
       (checkExistItem: any) =>
-        checkExistItem?.product_code?.replace(/\s/g, '') ===
-        itemsPro?.product_code?.replace(/\s/g, ''),
+        itemsPro?.product_code &&
+        itemsPro?.product_code !== null &&
+        itemsPro?.product_code !== undefined &&
+        checkExistItem?.product_code?.toString()?.replace(/\s/g, '') ===
+          itemsPro?.product_code?.toString()?.replace(/\s/g, ''),
     );
     let nulllProductAdded: boolean = false;
 
     if (finIndexForAlreadyPushed === -1 && !nulllProductAdded) {
       newArrValues?.push({
         ...itemsPro,
-        product_code: itemsPro?.product_code
-          ? itemsPro?.product_code?.replace(/\s/g, '')
-          : 'NEWCODE0123',
+        product_code:
+          itemsPro?.product_code &&
+          itemsPro?.product_code !== null &&
+          itemsPro?.product_code !== undefined
+            ? itemsPro?.product_code?.toString()?.replace(/\s/g, '')
+            : 'NEWCODE0123',
       });
     }
     if (!itemsPro?.product_code) {
@@ -1000,11 +1006,17 @@ export const getValuesOFLineItemsThoseNotAddedBefore = (
   for (let i = 0; i < lineItem?.length; i++) {
     let allLineItems = lineItem[i];
     let productCode = allLineItems?.product_code
-      ? allLineItems?.product_code.replace(/\s/g, '')
+      ? allLineItems?.product_code &&
+        allLineItems?.product_code !== null &&
+        allLineItems?.product_code !== undefined &&
+        allLineItems?.product_code?.toString()?.replace(/\s/g, '')
       : 'NEWCODE0123';
     let finIndexOfItem = allProductCodeDataa?.findIndex(
       (itemIndex: any) =>
-        itemIndex?.product_code?.replace(/\s/g, '') === productCode,
+        itemIndex?.product_code &&
+        itemIndex?.product_code !== null &&
+        itemIndex?.product_code !== undefined &&
+        itemIndex?.product_code?.toString()?.replace(/\s/g, '') === productCode,
     );
     if (finIndexOfItem === -1) {
       newInsertionData?.push(allLineItems);
@@ -2014,6 +2026,7 @@ export const updateSalesForceData = async (
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import {Ubuntu_Condensed} from 'next/font/google';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);

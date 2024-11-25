@@ -258,7 +258,7 @@ const EditorFile = () => {
                   let headerKeys = payload?.payload[bestRowIndex]?.filter(
                     (items: any) => items !== null,
                   );
-                  let modifiedArr = headerKeys.map((item: any) =>
+                  let modifiedArr = headerKeys?.map((item: any) =>
                     item.replace(/\s+/g, '').replace(/[.]/g, ''),
                   );
                   // replace the syncing valueesss ========================

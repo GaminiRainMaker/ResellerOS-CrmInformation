@@ -3,7 +3,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {convertFileToBase64, sendDataToNanonets} from '@/app/utils/base';
 import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
-import {Form, message} from 'antd';
+import {Form, message, notification} from 'antd';
 import React, {useEffect, useState} from 'react';
 import {getQuotesByExistingQuoteFilter} from '../../../../../redux/actions/quote';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -112,6 +112,7 @@ const OsUpload: React.FC<any> = ({
                       newArrCheck?.push(resultString);
                     });
                   }
+
                   const normalize = (str: any) => {
                     return str
                       ?.toString()
@@ -180,15 +181,24 @@ const OsUpload: React.FC<any> = ({
 
                   let requiredOutput = result
                     ?.map((subArray: any) =>
-                      subArray.filter((item: any) => item !== null),
+                      subArray.filter(
+                        (item: any) =>
+                          item !== null &&
+                          item !== undefined &&
+                          item?.toString()?.toLowerCase() !== 'om',
+                      ),
                     )
                     .filter((subArray: any) => subArray.length > 0);
                   // let headerKeys: any = payload?.payload[bestRowIndex];
 
                   let headerKeys: any = [];
                   payload?.payload[bestRowIndex]?.filter((items: any) => {
-                    if (!headerKeys?.includes(items)) {
-                      headerKeys?.push(items);
+                    if (
+                      !headerKeys?.includes(items) &&
+                      items !== undefined &&
+                      items !== null
+                    ) {
+                      headerKeys?.push(items?.trim());
                     }
                   });
 
@@ -242,7 +252,12 @@ const OsUpload: React.FC<any> = ({
         );
       })
       .catch((error: any) => {
-        message.error('Error converting file to base64', error);
+        console.log('324342', error);
+        notification?.open({
+          message: 'Error converting file to base64',
+          type: 'error',
+        });
+        // message.error('Error converting file to base64', error);
       });
 
     function containsLetterAndNumber(str: string): boolean {
@@ -594,7 +609,6 @@ const OsUpload: React.FC<any> = ({
       ) {
         if (obj?.file?.type.includes('spreadsheetml')) {
           const dataa = await beforeUploadDataForExcel(obj?.file);
-          console.log('43534324324', dataa);
 
           obj = {...obj, ...dataa};
         } else {

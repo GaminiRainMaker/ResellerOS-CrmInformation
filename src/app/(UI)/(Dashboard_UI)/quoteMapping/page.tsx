@@ -614,9 +614,7 @@ const QuoteMappings = () => {
                             quote_header: '',
                           });
                         }}
-                        defaultValue={formatStatus(
-                          manualRecord?.quote_header?.toString()?.toUpperCase(),
-                        )}
+                        value={manualRecord?.quote_header}
                         // value={formatStatus(
                         //   newLabel?.label?.toString()?.toUpperCase(),
                         // )}
@@ -637,9 +635,7 @@ const QuoteMappings = () => {
                             quote_header: '',
                           });
                         }}
-                        defaultValue={formatStatus(
-                          manualRecord?.quote_header?.toString()?.toUpperCase(),
-                        )}
+                        value={manualRecord?.quote_header}
                         // value={formatStatus(
                         //   newLabel?.label?.toString()?.toUpperCase(),
                         // )}
@@ -671,6 +667,7 @@ const QuoteMappings = () => {
                     setManualRecord({
                       ...manualRecord,
                       is_salesforce: e.target.checked,
+                      quote_header: '',
                     });
                   }}
                 />{' '}

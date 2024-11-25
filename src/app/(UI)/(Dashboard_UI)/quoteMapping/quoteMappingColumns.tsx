@@ -5,6 +5,7 @@ import OsStatusWrapper from '@/app/components/common/os-status';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import {formatDate, handleDate} from '@/app/utils/base';
+import {formatStatus} from '@/app/utils/CONSTANTS';
 import {CheckIcon, XMarkIcon} from '@heroicons/react/24/outline';
 import {Checkbox, GlobalToken} from 'antd';
 import {SetStateAction} from 'react';
@@ -34,7 +35,18 @@ function newQuoteMappingColumns(
       key: 'pdf_header',
       width: 173,
       render: (text: string) => (
-        <Typography name="Body 4/Regular">{text}</Typography>
+        <Typography name="Body 4/Regular">
+          {' '}
+          {formatStatus(
+            text === 'product_code'
+              ? 'SKU'
+              : text === 'adjusted_price'
+                ? 'Cost'
+                : text === 'list_price'
+                  ? 'MSRP'
+                  : text,
+          )}
+        </Typography>
       ),
     },
     {
@@ -201,7 +213,18 @@ function approvedQuoteMappingColumns(
       key: 'pdf_header',
       width: 173,
       render: (text: string) => (
-        <Typography name="Body 4/Regular">{text}</Typography>
+        <Typography name="Body 4/Regular">
+          {' '}
+          {formatStatus(
+            text === 'product_code'
+              ? 'SKU'
+              : text === 'adjusted_price'
+                ? 'Cost'
+                : text === 'list_price'
+                  ? 'MSRP'
+                  : text,
+          )}
+        </Typography>
       ),
     },
     {
@@ -371,7 +394,17 @@ function rejectQuoteMappingColumns(
       key: 'pdf_header',
       width: 173,
       render: (text: string) => (
-        <Typography name="Body 4/Regular">{text}</Typography>
+        <Typography name="Body 4/Regular">
+          {formatStatus(
+            text === 'product_code'
+              ? 'SKU'
+              : text === 'adjusted_price'
+                ? 'Cost'
+                : text === 'list_price'
+                  ? 'MSRP'
+                  : text,
+          )}
+        </Typography>
       ),
     },
     {
