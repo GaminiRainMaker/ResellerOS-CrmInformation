@@ -679,6 +679,7 @@ const FormBuilderMain: React.FC<any> = ({
                           itemCon?.dependentFiledArr?.find(
                             (items: any) => items?.id === PropertSelected,
                           );
+
                         return (
                           <>
                             {' '}
@@ -760,7 +761,12 @@ const FormBuilderMain: React.FC<any> = ({
                               >
                                 {!previewFile && (
                                   <ItemName
-                                    itemName={`${itemCon?.name}-Dependent-Select`}
+                                    itemName={
+                                      dependentDataaForIndex?.user_fill &&
+                                      itemCon?.dependentFiled
+                                        ? 'Text Filed-Dependent-Select'
+                                        : `${itemCon?.name}-Dependent-Select`
+                                    }
                                     cartItems={cartItems}
                                     ItemConindex={ItemConindex}
                                     Sectidx={Sectidx}
@@ -787,28 +793,34 @@ const FormBuilderMain: React.FC<any> = ({
                                   )}
                                 </Typography>
                                 <SectionDivStyled1>
-                                  <CommonSelect
-                                    disabled={PropertSelected === null}
-                                    options={dependentDataaForIndex?.options?.map(
-                                      (items: any) => {
-                                        return {label: items, value: items};
-                                      },
-                                    )}
-                                    style={{
-                                      width: '100%',
-                                    }}
-                                    mode={dependentDataaForIndex?.type}
-                                    defaultValue={itemCon?.value}
-                                    onChange={(e: any) => {
-                                      if (pathnameForFlow) {
-                                        updateTheValues(
-                                          e,
-                                          Sectidx,
-                                          ItemConindex,
-                                        );
-                                      }
-                                    }}
-                                  />
+                                  {dependentDataaForIndex?.user_fill &&
+                                  dependentDataaForIndex ? (
+                                    <OsInput />
+                                  ) : (
+                                    <CommonSelect
+                                      disabled={PropertSelected === null}
+                                      options={dependentDataaForIndex?.options?.map(
+                                        (items: any) => {
+                                          return {label: items, value: items};
+                                        },
+                                      )}
+                                      style={{
+                                        width: '100%',
+                                      }}
+                                      mode={dependentDataaForIndex?.type}
+                                      defaultValue={itemCon?.value}
+                                      onChange={(e: any) => {
+                                        if (pathnameForFlow) {
+                                          updateTheValues(
+                                            e,
+                                            Sectidx,
+                                            ItemConindex,
+                                          );
+                                        }
+                                      }}
+                                    />
+                                  )}
+
                                   {item?.content?.length - 1 === ItemConindex &&
                                     !previewFile && (
                                       <OsButton

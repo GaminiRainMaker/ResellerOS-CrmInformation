@@ -659,7 +659,7 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
       </Row>
 
       <OsModal
-        title="Create Nested Component"
+        title=""
         bodyPadding={22}
         body={
           <>

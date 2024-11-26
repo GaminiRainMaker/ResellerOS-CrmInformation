@@ -107,13 +107,29 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
       return sectItem;
     });
 
-    // const CommonIndexOfUsedd =
-    //   newTempArr?.[sectionIndex || 0]?.content?.[contentIndex || 0];
-    // setCommonIndexOfUse(CommonIndexOfUsedd);
-    // console.log('35432432432', newTempArr);
     setCartItems(newTempArr);
   };
 
+  const removeTheDependentArr = () => {
+    const newTempArr = cartItems.map((sectItem: any, sectioIndex: number) => {
+      if (sectioIndex === sectionIndex) {
+        return {
+          ...sectItem,
+          content: sectItem.content.map((contItem: any, contInde: number) => {
+            if (contInde === contentIndex) {
+              return {
+                ...contItem,
+                ['dependentFiledArr']: [],
+              };
+            }
+            return contItem;
+          }),
+        };
+      }
+      return sectItem;
+    });
+    setCartItems(newTempArr);
+  };
   const addnewOptions = (nameOptions: any) => {
     const tempvalue: any = [...cartItems];
 
@@ -125,8 +141,25 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
       'dependentFiledArr'
     ]?.[activeIndexForDependent || 0]?.['options']?.pop();
     changeFieldValues(false, 'dependentFiled');
-
-    setCartItems(tempvalue);
+    const newTempArr = tempvalue.map((sectItem: any, sectioIndex: number) => {
+      if (sectioIndex === sectionIndex) {
+        return {
+          ...sectItem,
+          content: sectItem.content.map((contItem: any, contInde: number) => {
+            if (contInde === contentIndex) {
+              return {
+                ...contItem,
+                ['dependentFiledArr']: [],
+                ['dependentFiled']: false,
+              };
+            }
+            return contItem;
+          }),
+        };
+      }
+      return sectItem;
+    });
+    setCartItems(newTempArr);
   };
 
   const addnewOptionsForDependent = (nameOptions: any) => {
@@ -610,8 +643,8 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
         });
         return;
       } else {
-        changeFieldValues(checked, 'dependentFiled');
-        let newArrayForAdding: any;
+        // changeFieldValues(true, 'dependentFiled');
+        let newArrayForAdding: any = [];
         cartItems?.[sectionIndex || 0]?.content?.[
           contentIndex || 0
         ]?.options?.map((items: any) => {
@@ -627,10 +660,36 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
             options: [],
           };
           newObj.id = items;
-          cartItems?.[sectionIndex || 0]?.content?.[
-            contentIndex || 0
-          ]?.dependentFiledArr?.push(newObj);
+          newArrayForAdding?.push(newObj);
         });
+
+        const newTempArr = cartItems.map(
+          (sectItem: any, sectioIndex: number) => {
+            if (sectioIndex === sectionIndex) {
+              return {
+                ...sectItem,
+                content: sectItem.content.map(
+                  (contItem: any, contInde: number) => {
+                    if (contInde === contentIndex) {
+                      return {
+                        ...contItem,
+                        ['dependentFiledArr']: newArrayForAdding,
+                        ['dependentFiled']: true,
+                      };
+                    }
+                    return contItem;
+                  },
+                ),
+              };
+            }
+            return sectItem;
+          },
+        );
+
+        setCartItems(newTempArr);
+        // cartItems?.[sectionIndex || 0]?.content?.[
+        //   contentIndex || 0
+        // ]?.dependentFiledArr?.push(newObj);
         setTimeout(() => {
           setOpenModalForDependentFiled(true);
         }, 100);
@@ -677,7 +736,12 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
             <Checkbox
               checked={CommonIndexOfUse?.dependentFiled}
               onChange={(e: any) => {
-                openModalFordependentFileds(e?.target?.checked);
+                if (e?.target?.checked) {
+                  openModalFordependentFileds(e?.target?.checked);
+                } else {
+                  removeTheDependentArr();
+                  changeFieldValues(false, 'dependentFiled');
+                }
               }}
             />
           </div>
@@ -779,7 +843,27 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
                           </Typography>
                         </div>
                       </div>
-
+                      <div
+                        style={{
+                          marginTop: '10px',
+                          display: 'flex',
+                          justifyContent: 'end',
+                        }}
+                      >
+                        {' '}
+                        <Typography name="Body 3/Regular">
+                          User Fill{' '}
+                          <Switch
+                            disabled={
+                              activeIndexForDependent === index ? false : true
+                            }
+                            value={items?.user_fill}
+                            onChange={(e) => {
+                              changeFieldValuesForDependent(e, 'user_fill');
+                            }}
+                          />
+                        </Typography>
+                      </div>
                       <div
                         style={{
                           marginTop: '10px',
@@ -787,133 +871,92 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
                       >
                         {' '}
                         <Typography name="Body 4/Medium">Field Type</Typography>
-                        <CommonSelect
-                          disabled={
-                            activeIndexForDependent === index ? false : true
-                          }
-                          onChange={(e: any) => {
-                            changeFieldValuesForDependent(e, 'type');
-                          }}
-                          defaultValue={
-                            cartItems?.[sectionIndex || 0]?.content?.[
-                              contentIndex || 0
-                            ]?.type
-                          }
-                          value={items?.type}
-                          style={{width: '100%'}}
-                          options={[
-                            {label: 'Mutiple', value: 'multiple'},
-                            {label: 'Single', value: 'tag'},
-                          ]}
-                        />
-                      </div>
-                      <Row
-                        style={{
-                          marginTop: '10px',
-                          width: '100%',
-                        }}
-                      >
-                        <OsCollapseStyleForAdmin
-                          key={index}
-                          defaultActiveKey={['1']}
-                          style={{width: '100%', padding: '10px'}}
-                          bordered={false}
-                          // expandIcon={true}
-                        >
-                          <Panel
-                            header={
-                              <Typography
-                                name="Body 2/Medium"
-                                color={token?.colorInfo}
-                              >
-                                Edit Choices
-                              </Typography>
-                            }
-                            key="1"
-                            showArrow={false}
-                          >
+                        {items?.user_fill ? (
+                          <>
                             {' '}
-                            <>
-                              {' '}
-                              <div
-                                style={{marginBottom: '10px', width: '100%'}}
-                              >
+                            <OsInput style={{width: '70%'}} disabled={true} />
+                          </>
+                        ) : (
+                          <CommonSelect
+                            disabled={
+                              activeIndexForDependent === index ? false : true
+                            }
+                            onChange={(e: any) => {
+                              changeFieldValuesForDependent(e, 'type');
+                            }}
+                            defaultValue={
+                              cartItems?.[sectionIndex || 0]?.content?.[
+                                contentIndex || 0
+                              ]?.type
+                            }
+                            value={items?.type}
+                            style={{width: '100%'}}
+                            options={[
+                              {label: 'Mutiple', value: 'multiple'},
+                              {label: 'Single', value: 'tag'},
+                            ]}
+                          />
+                        )}
+                      </div>
+                      {!items?.user_fill && (
+                        <Row
+                          style={{
+                            marginTop: '10px',
+                            width: '100%',
+                          }}
+                        >
+                          <OsCollapseStyleForAdmin
+                            key={index}
+                            defaultActiveKey={['1']}
+                            style={{width: '100%', padding: '10px'}}
+                            bordered={false}
+                            // expandIcon={true}
+                          >
+                            <Panel
+                              header={
                                 <Typography
-                                  name="Body 3/Bold"
-                                  color={token?.colorLink}
-                                  onClick={() =>
-                                    addnewOptionsForDependent(
-                                      'dependentFiledArr',
-                                    )
-                                  }
-                                  cursor="pointer"
-                                  style={{cursor: 'pointer'}}
+                                  name="Body 2/Medium"
+                                  color={token?.colorInfo}
                                 >
-                                  + Add New
+                                  Edit Choices
                                 </Typography>
-                              </div>{' '}
-                              <Form layout="vertical">
-                                <div>
-                                  {cartItems?.[sectionIndex || 0]?.content?.[
-                                    contentIndex || 0
-                                  ]?.dependentFiledArr?.[
-                                    index || 0
-                                  ]?.options?.map(
-                                    (itemOption: any, indexOp: number) => (
-                                      <Row style={{width: '100%'}}>
-                                        <Col
-                                          key={indexOp}
-                                          className="list-item"
-                                          draggable
-                                          onDragStart={(e) => {
-                                            dragItem.current = indexOp;
-                                          }}
-                                          onDragEnter={(e) => {
-                                            dragOverItem.current = indexOp;
-                                          }}
-                                          onDragEnd={() =>
-                                            handleSortForDependent(
-                                              'dependentFiledArr',
-                                            )
-                                          }
-                                          onDragOver={(e) => e.preventDefault()}
-                                          style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            width: '100%',
-                                            marginBottom: '25px',
-                                            gap: '12px',
-                                          }}
-                                        >
-                                          {/* <div>{itemOption}</div> */}
-                                          <OsInput
-                                            key={indexOp}
-                                            // defaultValue={itemOption}
-                                            value={itemOption}
-                                            onChange={(e: any) => {
-                                              changeFiellOptionsValueForDependent(
-                                                e?.target?.value,
-                                                indexOp,
-                                                'dependentFiledArr',
-                                              );
-                                            }}
-                                          />{' '}
-                                          <TrashIcon
-                                            color="#EB445A"
-                                            width={35}
-                                            onClick={() =>
-                                              deleteOptionForDependent(
-                                                indexOp,
-                                                'dependentFiledArr',
-                                              )
-                                            }
-                                          />{' '}
-                                          <ArrowsPointingOutIcon
-                                            color="#2364AA"
-                                            width={35}
+                              }
+                              key="1"
+                              showArrow={false}
+                            >
+                              {' '}
+                              <>
+                                {' '}
+                                <div
+                                  style={{marginBottom: '10px', width: '100%'}}
+                                >
+                                  <Typography
+                                    name="Body 3/Bold"
+                                    color={token?.colorLink}
+                                    onClick={() =>
+                                      addnewOptionsForDependent(
+                                        'dependentFiledArr',
+                                      )
+                                    }
+                                    cursor="pointer"
+                                    style={{cursor: 'pointer'}}
+                                  >
+                                    + Add New
+                                  </Typography>
+                                </div>{' '}
+                                <Form layout="vertical">
+                                  <div>
+                                    {cartItems?.[sectionIndex || 0]?.content?.[
+                                      contentIndex || 0
+                                    ]?.dependentFiledArr?.[
+                                      index || 0
+                                    ]?.options?.map(
+                                      (itemOption: any, indexOp: number) => (
+                                        <Row style={{width: '100%'}}>
+                                          <Col
                                             key={indexOp}
                                             className="list-item"
-                                            // draggable
+                                            draggable
                                             onDragStart={(e) => {
                                               dragItem.current = indexOp;
                                             }}
@@ -928,17 +971,69 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
                                             onDragOver={(e) =>
                                               e.preventDefault()
                                             }
-                                          />
-                                        </Col>
-                                      </Row>
-                                    ),
-                                  )}
-                                </div>
-                              </Form>
-                            </>
-                          </Panel>
-                        </OsCollapseStyleForAdmin>
-                      </Row>
+                                            style={{
+                                              display: 'flex',
+                                              justifyContent: 'space-between',
+                                              width: '100%',
+                                              marginBottom: '25px',
+                                              gap: '12px',
+                                            }}
+                                          >
+                                            {/* <div>{itemOption}</div> */}
+                                            <OsInput
+                                              key={indexOp}
+                                              // defaultValue={itemOption}
+                                              value={itemOption}
+                                              onChange={(e: any) => {
+                                                changeFiellOptionsValueForDependent(
+                                                  e?.target?.value,
+                                                  indexOp,
+                                                  'dependentFiledArr',
+                                                );
+                                              }}
+                                            />{' '}
+                                            <TrashIcon
+                                              color="#EB445A"
+                                              width={35}
+                                              onClick={() =>
+                                                deleteOptionForDependent(
+                                                  indexOp,
+                                                  'dependentFiledArr',
+                                                )
+                                              }
+                                            />{' '}
+                                            <ArrowsPointingOutIcon
+                                              color="#2364AA"
+                                              width={35}
+                                              key={indexOp}
+                                              className="list-item"
+                                              // draggable
+                                              onDragStart={(e) => {
+                                                dragItem.current = indexOp;
+                                              }}
+                                              onDragEnter={(e) => {
+                                                dragOverItem.current = indexOp;
+                                              }}
+                                              onDragEnd={() =>
+                                                handleSortForDependent(
+                                                  'dependentFiledArr',
+                                                )
+                                              }
+                                              onDragOver={(e) =>
+                                                e.preventDefault()
+                                              }
+                                            />
+                                          </Col>
+                                        </Row>
+                                      ),
+                                    )}
+                                  </div>
+                                </Form>
+                              </>
+                            </Panel>
+                          </OsCollapseStyleForAdmin>
+                        </Row>
+                      )}
                     </Col>
                   );
                 })}

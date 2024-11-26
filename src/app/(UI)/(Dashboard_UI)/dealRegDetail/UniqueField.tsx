@@ -460,21 +460,40 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
               },
             ]}
           >
-            <CommonSelect
-              style={{width: '100%'}}
-              placeholder={`Select ${dependentField?.label}`}
-              allowClear
-              options={dependentField?.options.map((opt: any) => ({
-                label: opt,
-                value: opt,
-              }))}
-              value={dependentVal || originalDependentValueSaved}
-              onChange={(value) => {
-                form.setFieldValue(convertedToCheckDependentValue, value);
-                setDependentVal(value);
-              }}
-              {...commonProps}
-            />
+            {dependentField?.user_fill ? (
+              <>
+                <OsInput
+                  style={{width: '100%'}}
+                  placeholder={`Select ${dependentField?.label}`}
+                  allowClear
+                  value={dependentVal || originalDependentValueSaved}
+                  onChange={(e) => {
+                    form.setFieldValue(
+                      convertedToCheckDependentValue,
+                      e?.target?.value,
+                    );
+                    setDependentVal(e?.target?.value);
+                  }}
+                  {...commonProps}
+                />
+              </>
+            ) : (
+              <CommonSelect
+                style={{width: '100%'}}
+                placeholder={`Select ${dependentField?.label}`}
+                allowClear
+                options={dependentField?.options.map((opt: any) => ({
+                  label: opt,
+                  value: opt,
+                }))}
+                value={dependentVal || originalDependentValueSaved}
+                onChange={(value) => {
+                  form.setFieldValue(convertedToCheckDependentValue, value);
+                  setDependentVal(value);
+                }}
+                {...commonProps}
+              />
+            )}
           </SelectFormItem>
         )}
       </>
