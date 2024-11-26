@@ -42,7 +42,7 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
     const CommonIndexOfUsedd =
       cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0];
     setCommonIndexOfUse(CommonIndexOfUsedd);
-  }, [cartItems, JSON?.stringify(cartItems)]);
+  }, [cartItems, JSON?.stringify(cartItems), sectionIndex, contentIndex]);
 
   const [activeIndexForDependent, setActiveIndexForDendent] =
     useState<number>(0);
@@ -68,6 +68,7 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
       return sectItem;
     });
 
+    console.log('32432432423', newTempArr);
     // const CommonIndexOfUsedd =
     //   newTempArr?.[sectionIndex || 0]?.content?.[contentIndex || 0];
     // setCommonIndexOfUse(CommonIndexOfUsedd);
@@ -411,7 +412,7 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
       ),
     },
   ];
-
+  console.log('23432423', CommonIndexOfUse);
   const QuickSetupItems = [
     {
       key: '1',
@@ -449,7 +450,7 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
               <OsInput
                 style={{width: '100%', marginBottom: '20px'}}
                 placeholder="name"
-                defaultValue={CommonIndexOfUse?.customFieldName}
+                // value={CommonIndexOfUse?.customFieldName}
                 value={CommonIndexOfUse?.customFieldName}
                 onChange={(e: any) => {
                   changeFieldValues(e?.target?.value, 'customFieldName');

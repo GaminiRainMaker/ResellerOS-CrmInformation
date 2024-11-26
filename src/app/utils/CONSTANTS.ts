@@ -122,10 +122,6 @@ export const quoteLineItemColumnForSync = [
 
 export const quoteLineItemColumnForSyncFOrSalesFporceUpdatedOnce = [
   {
-    value: 'rosquoteai__Vendor_Quote__c',
-    label: 'Vendor Quote',
-  },
-  {
     value: 'rosquoteai__EPEAT_Flag__c',
     label: 'EPEAT Flag',
   },
@@ -158,10 +154,6 @@ export const quoteLineItemColumnForSyncFOrSalesFporceUpdatedOnce = [
     label: 'Excel Bundle Name',
   },
   {
-    value: 'rosquoteai__File_Name__c',
-    label: 'File Name',
-  },
-  {
     value: 'rosquoteai__GSA_Price__c',
     label: 'GSA Price',
   },
@@ -185,14 +177,7 @@ export const quoteLineItemColumnForSyncFOrSalesFporceUpdatedOnce = [
     value: 'rosquoteai__MSRP__c',
     label: 'MSRP',
   },
-  {
-    value: 'rosquoteai__Manual__c',
-    label: 'Manual',
-  },
-  {
-    value: 'rosquoteai__Model_Id__c',
-    label: 'Model Id',
-  },
+
   {
     value: 'rosquoteai__Notes__c',
     label: 'Notes',
@@ -201,14 +186,7 @@ export const quoteLineItemColumnForSyncFOrSalesFporceUpdatedOnce = [
     value: 'rosquoteai__OEM_LR__c',
     label: 'OEM',
   },
-  {
-    value: 'rosquoteai__OEM_Name__c',
-    label: 'OEM Name',
-  },
-  {
-    value: 'rosquoteai__OEM__c',
-    label: 'OEM',
-  },
+
   {
     value: 'rosquoteai__Open_Market__c',
     label: 'Open Market',
@@ -217,10 +195,7 @@ export const quoteLineItemColumnForSyncFOrSalesFporceUpdatedOnce = [
     value: 'rosquoteai__Original_Line_Number__c',
     label: 'Original Line Number',
   },
-  {
-    value: 'rosquoteai__Page_Id__c',
-    label: 'Page Id',
-  },
+
   {
     value: 'rosquoteai__Price__c',
     label: 'Price',
@@ -238,16 +213,8 @@ export const quoteLineItemColumnForSyncFOrSalesFporceUpdatedOnce = [
     label: 'Quantity',
   },
   {
-    value: 'rosquoteai__SF_File_Id__c',
-    label: 'SF File Id',
-  },
-  {
     value: 'rosquoteai__SS_Part__c',
     label: 'SS Part',
-  },
-  {
-    value: 'rosquoteai__Select_OEM_Distributor__c',
-    label: 'Select OEM/Distributor',
   },
   {
     value: 'rosquoteai__Serial_Number__c',
@@ -266,56 +233,10 @@ export const quoteLineItemColumnForSyncFOrSalesFporceUpdatedOnce = [
     label: 'TD#',
   },
   {
-    value: 'rosquoteai__Use_for_Training__c',
-    label: 'Use for Training',
-  },
-  {
     value: 'rosquoteai__Vendor_Disti_LR__c',
     label: 'Vendor/Disti',
   },
-  {
-    value: 'rosquoteai__Vendor_Disti_Name__c',
-    label: 'Vendor/Disti Name',
-  },
-  {
-    value: 'rosquoteai__Vendor_Disti__c',
-    label: 'Vendor/Disti',
-  },
 ];
-// [
-//   {value: 'rosquoteai__CLINTYPE__c', label: 'CLIN Type'},
-//   {value: 'rosquoteai__DISCOUNTCLASS__c', label: 'Discount Class'},
-//   {value: 'rosquoteai__MAFLAG__c', label: 'MA Flag'},
-//   {value: 'rosquoteai__MODELNAME__c', label: 'Model Name'},
-//   {value: 'rosquoteai__Availability__c', label: 'Availability'},
-//   {value: 'rosquoteai__Cost__c', label: 'Cost'},
-//   {value: 'rosquoteai__Country_of_Origin__c', label: 'Country of Origin'},
-//   {value: 'rosquoteai__Description__c', label: 'Description'},
-//   {value: 'rosquoteai__DISCOUNTSUBCLASS__c', label: 'Discount Sub Class'},
-//   {value: 'rosquoteai__End_Date__c', label: 'End Date'},
-//   {value: 'rosquoteai__Energy_Star_Flag__c', label: 'Energy Star Flag'},
-//   {value: 'rosquoteai__EOLDATE__c', label: 'EOL Date'},
-//   {value: 'rosquoteai__EPEAT_Flag__c', label: 'EPEAT Flag'},
-//   {value: 'rosquoteai__GSA_Price__c', label: 'GSA Price'},
-//   {value: 'rosquoteai__LineNumber__c', label: 'Line Number'},
-//   {value: 'rosquoteai__MSRP__c', label: 'MSRP'},
-//   {value: 'rosquoteai__Notes__c', label: 'Notes'},
-//   {value: 'rosstarter__OEM__c', label: 'OEM'},
-//   {value: 'rosquoteai__Product_Code__c', label: 'Product Code'},
-//   {value: 'rosquoteai__Product_Grouping__c', label: 'Product Grouping'},
-//   {value: 'rosquoteai__Product_Name__c', label: 'Product Name'},
-//   {value: 'rosquoteai__Product_Type__c', label: 'Product Type'},
-//   {value: 'Quantity', label: 'Quantity'},
-//   {value: 'rosquoteai__Quote_Number__c', label: 'Quote Number'},
-//   {value: 'rosquoteai__SCRMFLAG__c', label: 'SCRM Flag'},
-//   {value: 'rosquoteai__Serial__c', label: 'Serial #'},
-//   {value: 'rosquoteai__Service_Duration__c', label: 'Service Duration'},
-//   {value: 'rosquoteai__SS_Part__c', label: 'SS Part'},
-//   {value: 'rosquoteai__Start_Date__c', label: 'Start Date'},
-//   {value: 'rosquoteai__TAA_Flag__c', label: 'TAA Flag'},
-//   {value: 'rosquoteai__Unit_Price__c', label: 'Unit Price'},
-//   {value: 'rosstarter__Vendor_Disti__c', label: 'Vendor Disti'},
-// ];
 
 export const SaleForceQuoteLineItemColumnSync = [
   {label: 'Line Number', value: 'line_number'},
