@@ -143,10 +143,12 @@ const EditorFile = () => {
     searchValue: string;
     asserType: boolean;
     salesforce: boolean;
+    lifeboatsalesforce:boolean;
   }>({
     searchValue: '',
     asserType: false,
     salesforce: salesForceUrl ? true : false,
+    lifeboatsalesforce:salesForceUrl ? true : false,
   });
 
   const getQuoteFileByIdForFormulads = async () => {

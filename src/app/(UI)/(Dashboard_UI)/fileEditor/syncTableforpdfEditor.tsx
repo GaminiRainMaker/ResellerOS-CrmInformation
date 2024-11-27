@@ -332,13 +332,17 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           (itemInn: any) =>
             itemInn?.pdf_header ===
               items?.pdf_header?.toString()?.toLowerCase &&
-            itemInn?.is_salesforce,
+            itemInn?.is_salesforce &&
+            itemInn?.life_boat_salesforce,
           // &&
           //   itemInn?.quote_header === items?.quote_header &&
           //   (itemInn?.status === 'Pending' || itemInn?.status === 'Approved'),
         );
         if (!findThevalue) {
-          updatedArrForAddingLineItemSync?.push(items);
+          updatedArrForAddingLineItemSyncFOrSales?.push({
+            ...items,
+            life_boat_salesforce: true,
+          });
         }
       });
 

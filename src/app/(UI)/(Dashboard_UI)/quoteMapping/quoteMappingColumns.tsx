@@ -128,6 +128,22 @@ function newQuoteMappingColumns(
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
+          Life Boat Salesforce
+        </Typography>
+      ),
+      dataIndex: 'life_boat_salesforce',
+      key: 'life_boat_salesforce',
+      width: 173,
+      render: (text: string, record: any) => (
+        <Checkbox
+          disabled
+          checked={record?.life_boat_salesforce ? true : false}
+        />
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
           Status
         </Typography>
       ),
@@ -321,6 +337,22 @@ function approvedQuoteMappingColumns(
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
+          Life Boat Salesforce
+        </Typography>
+      ),
+      dataIndex: 'life_boat_salesforce',
+      key: 'life_boat_salesforce',
+      width: 173,
+      render: (text: string, record: any) => (
+        <Checkbox
+          disabled
+          checked={record?.life_boat_salesforce ? true : false}
+        />
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
           Status
         </Typography>
       ),
@@ -496,6 +528,22 @@ function rejectQuoteMappingColumns(
       width: 173,
       render: (text: string, record: any) => (
         <Checkbox disabled checked={record?.is_salesforce ? true : false} />
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Life Boat Salesforce
+        </Typography>
+      ),
+      dataIndex: 'life_boat_salesforce',
+      key: 'life_boat_salesforce',
+      width: 173,
+      render: (text: string, record: any) => (
+        <Checkbox
+          disabled
+          checked={record?.life_boat_salesforce ? true : false}
+        />
       ),
     },
     {
