@@ -1038,7 +1038,7 @@ export const getValuesOFLineItemsThoseNotAddedBefore = (
 
 // Helper functions to encode/decode base64
 const base64ToArrayBuffer = (base64: string): ArrayBuffer => {
-  const binaryString = window?.atob(base64);
+  const binaryString = window.atob(base64); // Decode base64
   const bytes = new Uint8Array(binaryString.length);
   for (let i = 0; i < binaryString.length; i++) {
     bytes[i] = binaryString.charCodeAt(i);
@@ -1047,31 +1047,32 @@ const base64ToArrayBuffer = (base64: string): ArrayBuffer => {
 };
 
 const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
-  const bytes = new Uint8Array(buffer);
+  const bytes = new Uint8Array(buffer); // Convert ArrayBuffer to Uint8Array
   let binary = '';
   for (let i = 0; i < bytes.byteLength; i++) {
     binary += String.fromCharCode(bytes[i]);
   }
-  return window.btoa(binary);
+  return window.btoa(binary); // Encode to base64
 };
 
-// Ensure key is 16 or 32 bytes long
+// Ensure key is 16 or 32 bytes long for AES-GCM
 const getKey = (key: string): Uint8Array => {
-  let keyBytes = new TextEncoder().encode(key);
+  // Ensure consistent input formatting
+  const sanitizedKey = key.replace(/^"|"$/g, '').replace(/;$/, ''); // Remove quotes and trailing semicolon
+  const keyBytes = new TextEncoder().encode(sanitizedKey);
+  if (keyBytes.length === 16 || keyBytes.length === 32) return keyBytes; // Valid key length
   if (keyBytes.length < 16) {
-    keyBytes = new Uint8Array([
+    return new Uint8Array([
       ...keyBytes,
       ...new Uint8Array(16 - keyBytes.length),
-    ]);
-  } else if (keyBytes.length > 16 && keyBytes.length < 32) {
-    keyBytes = new Uint8Array([
+    ]); // Pad to 16 bytes
+  } else if (keyBytes.length < 32) {
+    return new Uint8Array([
       ...keyBytes,
       ...new Uint8Array(32 - keyBytes.length),
-    ]);
-  } else if (keyBytes.length > 32) {
-    keyBytes = keyBytes.slice(0, 32);
+    ]); // Pad to 32 bytes
   }
-  return keyBytes;
+  return keyBytes.slice(0, 32); // Trim to 32 bytes
 };
 
 // Encrypt function
@@ -1079,25 +1080,32 @@ export const encrypt = async (
   text: string,
   key: string,
 ): Promise<{iv: string; data: string}> => {
-  const enc = new TextEncoder();
-  const encoded = enc.encode(text);
-  const cryptoKey = await crypto.subtle.importKey(
-    'raw',
-    getKey(key),
-    {name: 'AES-GCM'},
-    false,
-    ['encrypt'],
-  );
-  const iv = crypto.getRandomValues(new Uint8Array(12));
-  const encrypted = await crypto.subtle.encrypt(
-    {name: 'AES-GCM', iv},
-    cryptoKey,
-    encoded,
-  );
-  return {
-    iv: arrayBufferToBase64(iv as any),
-    data: arrayBufferToBase64(encrypted),
-  };
+  try {
+    const encoder = new TextEncoder();
+    const encodedText = encoder.encode(text); // Encode plain text
+    const cryptoKey = await crypto.subtle.importKey(
+      'raw',
+      getKey(key),
+      {name: 'AES-GCM'},
+      false,
+      ['encrypt'],
+    );
+
+    const iv = crypto.getRandomValues(new Uint8Array(12)); // AES-GCM requires a 12-byte IV
+    const encrypted = await crypto.subtle.encrypt(
+      {name: 'AES-GCM', iv},
+      cryptoKey,
+      encodedText,
+    );
+
+    return {
+      iv: arrayBufferToBase64(iv.buffer), // Pass the `ArrayBuffer` from the `Uint8Array`
+      data: arrayBufferToBase64(encrypted), // `encrypted` is already an `ArrayBuffer`
+    };
+  } catch (error) {
+    console.error('Encryption error:', error);
+    throw error;
+  }
 };
 
 // Decrypt function
@@ -1106,20 +1114,31 @@ export const decrypt = async (
   key: string,
   iv: string,
 ): Promise<string> => {
-  const cryptoKey = await crypto.subtle.importKey(
-    'raw',
-    getKey(key),
-    {name: 'AES-GCM'},
-    false,
-    ['decrypt'],
-  );
-  const decrypted = await crypto.subtle.decrypt(
-    {name: 'AES-GCM', iv: base64ToArrayBuffer(iv)},
-    cryptoKey,
-    base64ToArrayBuffer(encrypted),
-  );
-  const dec = new TextDecoder();
-  return dec.decode(decrypted);
+  try {
+    console.log('Decrypt Input:', {encrypted, key, iv});
+
+    const cryptoKey = await crypto.subtle.importKey(
+      'raw',
+      getKey(key),
+      {name: 'AES-GCM'},
+      false,
+      ['decrypt'],
+    );
+
+    const decrypted = await crypto.subtle.decrypt(
+      {
+        name: 'AES-GCM',
+        iv: base64ToArrayBuffer(iv), // Decode base64 IV
+      },
+      cryptoKey,
+      base64ToArrayBuffer(encrypted), // Decode base64 encrypted data
+    );
+
+    return new TextDecoder().decode(decrypted); // Decode decrypted text
+  } catch (error) {
+    console.error('Decryption error:', error);
+    throw error;
+  }
 };
 
 export const getContractStatus = (
