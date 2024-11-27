@@ -1115,8 +1115,6 @@ export const decrypt = async (
   iv: string,
 ): Promise<string> => {
   try {
-    console.log('Decrypt Input:', {encrypted, key, iv});
-
     const cryptoKey = await crypto.subtle.importKey(
       'raw',
       getKey(key),
@@ -1124,7 +1122,6 @@ export const decrypt = async (
       false,
       ['decrypt'],
     );
-
     const decrypted = await crypto.subtle.decrypt(
       {
         name: 'AES-GCM',
