@@ -62,16 +62,18 @@ const EditorFile = () => {
 
   const [lineItemSyncingData, setLineItemSyncingData] = useState<any>();
 
+
   const [query, setQuery] = useState<{
     searchValue: string;
     asserType: boolean;
     salesforce: boolean;
+    lifeboatsalesforce: boolean;
   }>({
     searchValue: '',
     asserType: false,
     salesforce: false,
+    lifeboatsalesforce: false,
   });
-
   useEffect(() => {
     dispatch(queryLineItemSyncingForSalesForce(query))?.then((payload: any) => {
       let approvedOne = payload?.payload?.filter(
@@ -133,7 +135,8 @@ const EditorFile = () => {
         obj.name = file?.name;
         dispatch(pathUsedToUpload({document: base64String})).then(
           (payload: any) => {
-            const doc_url = payload?.payload?.data?.Location;
+            // const doc_url = payload?.payload?.data?.Location;
+            const doc_url = payload?.payload?.data;
             let pathToGo =
               excelFile === 'true' ? fetchAndParseExcel : getPDFFileData;
             let objName = excelFile === 'true' ? 'Url' : 'pdfUrl';
@@ -273,7 +276,7 @@ const EditorFile = () => {
                         .toLowerCase();
 
                       // Find the matching quoteHeader
-                      const match = lineItemSyncingData.find(
+                      const match = lineItemSyncingData?.find(
                         (obj: any) =>
                           obj.pdf_header.toLowerCase().substring(0, 4) ===
                           cleanedItem,

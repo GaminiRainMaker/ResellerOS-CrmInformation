@@ -83,10 +83,12 @@ const AddQuote: FC<AddQuoteInterface> = ({
     searchValue: string;
     asserType: boolean;
     salesforce: boolean;
+    lifeboatsalesforce: boolean;
   }>({
     searchValue: '',
     asserType: false,
     salesforce: false,
+    lifeboatsalesforce: false,
   });
   useEffect(() => {
     if (existingQuoteId || existingGenerateQuoteId) {
