@@ -93,11 +93,13 @@ const EditorFile = () => {
   const [query, setQuery] = useState<{
     searchValue: string;
     asserType: boolean;
+    lifeboatsalesforce: boolean;
     salesforce: boolean;
   }>({
     searchValue: '',
     asserType: salesFOrceAccoutFlow === 'true' ? true : false,
     salesforce: salesForceUrl ? true : false,
+    lifeboatsalesforce: salesForceUrl ? true : false,
   });
   const addNewLine = () => {
     let newArr = [

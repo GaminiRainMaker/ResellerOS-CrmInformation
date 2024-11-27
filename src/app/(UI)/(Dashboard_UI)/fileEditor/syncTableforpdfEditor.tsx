@@ -131,6 +131,11 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     lineItemSyncingData?.filter(
       (LineItemSyncingItem: any) => LineItemSyncingItem?.status === 'Approved',
     );
+
+  console.log(
+    'ApprovedQuoteMappingDataApprovedQuoteMappingData',
+    ApprovedQuoteMappingData,
+  );
   const [syncTableQuoteLItemValues, setSyncTableQuoteLItemValues] =
     useState<any>(
       SaleQuoteId
