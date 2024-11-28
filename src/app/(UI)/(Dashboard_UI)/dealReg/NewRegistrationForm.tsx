@@ -38,6 +38,9 @@ import {
 } from '../../../../../redux/actions/salesForce';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {CollapseSpaceStyle} from '../dealRegDetail/styled-component';
+import jsforce, {Connection} from 'jsforce';
+import {getConnection} from '@/app/utils/saleforce';
+import {getAccount, getAccount123, getOpportunity} from '../salesforce/action';
 
 const NewRegistrationForm: FC<any> = ({
   isDealRegDetail = false,
@@ -47,6 +50,7 @@ const NewRegistrationForm: FC<any> = ({
   const [token] = useThemeToken();
   const router = useRouter();
   const searchParams = useSearchParams()!;
+
   const getOpportunityId = Number(searchParams.get('opportunityId'));
   const getContactId = Number(searchParams.get('contactId'));
   const getCustomerId = Number(searchParams.get('customerId'));
@@ -57,6 +61,7 @@ const NewRegistrationForm: FC<any> = ({
   const salesForceContactId = searchParams.get('contactId');
   const salesForceCustomerId = searchParams.get('customerId');
   const salesForceUserId = searchParams.get('user_id');
+
   let pathname = usePathname();
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
@@ -77,12 +82,16 @@ const NewRegistrationForm: FC<any> = ({
     useState<boolean>(false);
   const [partnerNewId, setPartnerNewId] = useState<any>();
   const [partnerProgramNewId, setPartnerProgramNewId] = useState<any>();
+  const {isCanvas, data, signedRequest, isDecryptedRecord} = useAppSelector(
+    (state) => state.canvas,
+  );
 
   useEffect(() => {
-    if (salesForceOrganization) {
+    if (isCanvas) {
       dispatch(
         getAllPartnerandProgramApprovedForOrganizationSalesForce({
-          org_id: salesForceOrganization,
+          // org_id: data?.context?.organization?.organizationId,
+          org_id: '00DHs000003TxAm',
         }),
       )?.then((payload: any) => {
         setAllFilterPartnerData(payload?.payload);
@@ -518,8 +527,34 @@ const NewRegistrationForm: FC<any> = ({
     }
   };
 
+  const getdata = async () => {
+    console.log('datadatadatadata', data);
+    // const partnerProgram = await getAccount123(
+    //   signedRequest,
+    //   data?.client?.instanceUrl as string,
+    //   data?.context?.organization?.organizationId as string,
+    // );
+    const account = await getAccount(
+      signedRequest,
+      data?.client?.instanceUrl as string,
+    );
+    const opportunity = await getOpportunity(
+      signedRequest,
+      data?.client?.instanceUrl as string,
+    );
+
+    console.log('account', account, opportunity, 'opportunity');
+  };
+
+  console.log('partnerOptions', partnerOptions);
+
   return (
     <>
+      <OsButton
+        text="GetOrgPartner"
+        buttontype="PRIMARY"
+        clickHandler={getdata}
+      />
       <Form
         name="dynamic_form_nest_item"
         onFinish={registeredFormFinishCurrent}

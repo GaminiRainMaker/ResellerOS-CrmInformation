@@ -54,7 +54,6 @@ const DealReg: React.FC = () => {
   const searchQuery = useDebounceHook(query, 500);
   const [statusValue, setStatusValue] = useState<string>('All');
 
-  console.log('isCanvas123456', isCanvas);
 
   const dealRegFormColumns = [
     {
@@ -398,10 +397,10 @@ const DealReg: React.FC = () => {
   );
 
   useEffect(() => {
-    if (salesForceUrl) {
+    if (isCanvas) {
       setShowModal(true);
     }
-  }, [salesForceUrl, isCanvas]);
+  }, [isCanvas]);
 
   return (
     <>

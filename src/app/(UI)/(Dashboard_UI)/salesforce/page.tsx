@@ -8,7 +8,12 @@ import {getAccount} from './action';
 import {SignedRequest} from '../../../../../types/salesforce';
 import {useRouter} from 'next/navigation';
 import {useAppDispatch} from '../../../../../redux/hook';
-import {setIsCanvas} from '../../../../../redux/slices/canvas';
+import {
+  setIsCanvas,
+  setCanvas,
+  setNewSignedRequest,
+  setDecryptedData,
+} from '../../../../../redux/slices/canvas';
 
 export default function Salesforce() {
   const router = useRouter();
@@ -29,13 +34,18 @@ export default function Salesforce() {
     if (signedRequest) {
       const part = signedRequest.split('.')[1];
       setDecrypted(globalThis.JSON.parse(Sfdc.canvas.decode(part)));
-      router.replace('/dealReg');
       dispatch(setIsCanvas(true));
+      dispatch(setCanvas(globalThis.JSON.parse(Sfdc.canvas.decode(part))));
+      dispatch(setNewSignedRequest(signedRequest));
+      dispatch(
+        setDecryptedData(globalThis.JSON.parse(Sfdc.canvas.decode(part))),
+      );
+      router.replace('/dealReg');
     }
   }, [signedRequest]);
 
   const handleGetAccount = async () => {
-    console.log('get account:', signedRequest);
+    console.log('get account:', signedRequest, decrypted);
     if (signedRequest) {
       const accounts = await getAccount(
         signedRequest,
