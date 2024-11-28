@@ -144,6 +144,19 @@ const AttachmentEditFileds: React.FC<EditableFiledsCommonInterface> = ({
           {' '}
           <Col sm={24}>
             {' '}
+            <Typography name="Body 4/Medium">Change Label</Typography>
+            <OsInput
+              style={{width: '100%', marginBottom: '20px'}}
+              placeholder="name"
+              defaultValue={CommonIndexOfUse?.label}
+              value={CommonIndexOfUse?.label}
+              onChange={(e: any) => {
+                changeFieldValues(e?.target?.value, 'label');
+              }}
+            />
+          </Col>{' '}
+          <Col sm={24}>
+            {' '}
             <Typography name="Body 4/Medium">Change Name</Typography>
             <OsInput
               style={{width: '100%', marginBottom: '20px'}}
