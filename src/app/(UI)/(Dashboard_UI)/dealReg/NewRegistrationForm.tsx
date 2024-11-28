@@ -57,7 +57,6 @@ const NewRegistrationForm: FC<any> = ({
   const salesForceContactId = searchParams.get('contactId');
   const salesForceCustomerId = searchParams.get('customerId');
   const salesForceUserId = searchParams.get('user_id');
-
   let pathname = usePathname();
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
@@ -66,20 +65,13 @@ const NewRegistrationForm: FC<any> = ({
   const [customerValue, setCustomerValue] = useState<number>();
   const [registeredPartnerData, setRegisteredPartnerData] = useState<any>();
   const [addressData, setAddressData] = useState<any>();
-  const [partnerProgramOptions, setPartnerProgrramOptions] = useState();
-  const [partnerProgramOptionsForSelf, setPartnerProgrramOptionsForSelf] =
-    useState();
-
   const [selefPartnerOptions, setSelfPartnerOptions] = useState<any>();
   const [partnerOptions, setPartnerOptions] = useState<any>();
-  const [choosenIdProgram, setChoosedIdProgram] = useState<any>();
   const [regesteriedPartner, setRegesteriedPartner] = useState<any>();
   const [selfRegesteriedPartner, setSelfRegesteriedPartner] = useState<any>();
   const [errorForAll, setErrorForAll] = useState<boolean>();
-
   const [allAddedPartnerProgramIDs, setAllAddedPartnerProgramIDs] =
     useState<any>();
-
   const [openReponseModal, setOpenReponseModal] = useState<boolean>(false);
   const [requestPartnerLoading, setRequestPartnerLoading] =
     useState<boolean>(false);
@@ -151,46 +143,6 @@ const NewRegistrationForm: FC<any> = ({
     setSelfPartnerOptions(selfPartnerOptions);
   }, [allPartnerFilterData, dataForTheObjects?.registeredPartners]);
 
-  const findPartnerProgramsForSelfById = (chosenId: number) => {
-    const filteredData = allPartnerFilterData?.AllPartnerForSelf?.filter(
-      (item: any) => item?.id === chosenId,
-    );
-
-    if (filteredData) {
-      let partnerPrograms: any = [];
-      filteredData?.[0]?.PartnerPrograms?.map((program: any) => {
-        if (!allAddedPartnerProgramIDs?.includes(program?.id)) {
-          partnerPrograms?.push({
-            label: <CustomTextCapitalization text={program?.partner_program} />,
-            value: program?.id,
-          });
-        }
-      });
-      setPartnerProgrramOptionsForSelf(partnerPrograms);
-    }
-  };
-  const onHitDeleteTheObjectForSelf = () => {
-    findPartnerProgramsForSelfById(choosenIdProgram);
-  };
-
-  const findPartnerProgramsById = (chosenId: number) => {
-    const filteredData = allPartnerFilterData?.AllPartner?.filter(
-      (item: any) => item?.id === chosenId,
-    );
-
-    if (filteredData) {
-      let partnerPrograms: any = [];
-      filteredData?.[0]?.PartnerPrograms?.map((program: any) => {
-        if (!allAddedPartnerProgramIDs?.includes(program?.id)) {
-          partnerPrograms?.push({
-            label: <CustomTextCapitalization text={program?.partner_program} />,
-            value: program?.id,
-          });
-        }
-      });
-      setPartnerProgrramOptions(partnerPrograms);
-    }
-  };
   const deleteAddedRow = (index: number, typeOfReges: string) => {
     // selfRegesteriedPartner, setSelfRegesteriedPartner
     let newArr =
@@ -325,8 +277,6 @@ const NewRegistrationForm: FC<any> = ({
     } else {
       setRegesteriedPartner(newUpdatedArrr);
     }
-
-    // optionsForProgram
   };
 
   const registeredFormFinishCurrent = async () => {

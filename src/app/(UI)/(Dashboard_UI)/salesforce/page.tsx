@@ -5,13 +5,17 @@
 import OsButton from '@/app/components/common/os-button';
 import {useEffect, useState} from 'react';
 import {getAccount} from './action';
-import { SignedRequest } from '../../../../../types/salesforce';
+import {SignedRequest} from '../../../../../types/salesforce';
+import {useRouter} from 'next/navigation';
+import {useAppDispatch} from '../../../../../redux/hook';
+import {setIsCanvas} from '../../../../../redux/slices/canvas';
 
 export default function Salesforce() {
+  const router = useRouter();
   const [signedRequest, setSignedRequest] = useState<string | null>(null);
   const [decrypted, setDecrypted] = useState<SignedRequest | null>(null);
-
   const [accountDetails, setAccountDetails] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     globalThis.Sfdc.canvas.client.refreshSignedRequest((data) => {
@@ -25,6 +29,8 @@ export default function Salesforce() {
     if (signedRequest) {
       const part = signedRequest.split('.')[1];
       setDecrypted(globalThis.JSON.parse(Sfdc.canvas.decode(part)));
+      router.replace('/dealReg');
+      dispatch(setIsCanvas(true));
     }
   }, [signedRequest]);
 

@@ -11,6 +11,8 @@ export default function CanvasRedirect() {
     if (isCanvas) {
       console.log('isCanvas', isCanvas);
       router.replace('/salesforce');
+    } else {
+      router.replace('/login');
     }
   }, [router]);
 

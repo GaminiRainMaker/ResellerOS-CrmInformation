@@ -18,22 +18,19 @@ import Typography from '@/app/components/common/typography';
 import {formatDate, handleDate} from '@/app/utils/base';
 import {
   ArrowTopRightOnSquareIcon,
-  MinusCircleIcon,
   MinusIcon,
-  PlusCircleIcon,
   PlusIcon,
 } from '@heroicons/react/24/outline';
 import {TabsProps} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {queryDealReg} from '../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {SeparatedData} from '../dealRegDetail/dealReg.interface';
 import NewRegistrationForm from './NewRegistrationForm';
 import DealRegAnalytics from './dealRegAnalytics';
 import {StyledTable} from './styled-components';
-import React from 'react';
 
 const DealReg: React.FC = () => {
   const [token] = useThemeToken();
@@ -43,10 +40,10 @@ const DealReg: React.FC = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [deleteIds, setDeleteIds] = useState<any>();
-  const {data: DealRegData, loading: dealLoading} = useAppSelector(
+  const {data: DealRegData} = useAppSelector(
     (state) => state.dealReg,
   );
+  const {isCanvas} = useAppSelector((state) => state.canvas);
   const {userInformation} = useAppSelector((state) => state.user);
   const [finalDealRegData, setFinalDealRegData] = useState<any>();
   const [query, setQuery] = useState<{
@@ -57,11 +54,7 @@ const DealReg: React.FC = () => {
   const searchQuery = useDebounceHook(query, 500);
   const [statusValue, setStatusValue] = useState<string>('All');
 
-  const rowSelection = {
-    onChange: (selectedRowKeys: any) => {
-      setDeleteIds(selectedRowKeys);
-    },
-  };
+  console.log('isCanvas123456', isCanvas);
 
   const dealRegFormColumns = [
     {
@@ -177,19 +170,6 @@ const DealReg: React.FC = () => {
     },
   ];
   const DealRegColumns = [
-    // {
-    //   title: (
-    //     <Typography name="Body 4/Medium" className="dragHandler">
-    //       Registration Forms
-    //     </Typography>
-    //   ),
-    //   dataIndex: 'title',
-    //   key: 'title',
-    //   width: 266,
-    //   render: (text: string) => (
-    //     <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-    //   ),
-    // },
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -408,7 +388,7 @@ const DealReg: React.FC = () => {
   ];
 
   useEffect(() => {
-    if (!salesForceUrl) {
+    if (!isCanvas) {
       dispatch(queryDealReg(searchQuery));
     }
   }, [searchQuery]);
@@ -421,7 +401,7 @@ const DealReg: React.FC = () => {
     if (salesForceUrl) {
       setShowModal(true);
     }
-  }, [salesForceUrl]);
+  }, [salesForceUrl, isCanvas]);
 
   return (
     <>
@@ -511,12 +491,12 @@ const DealReg: React.FC = () => {
         open={showModal}
         onOk={() => {}}
         onCancel={() => {
-          if (!salesForceUrl) {
+          if (!salesForceUrl || !isCanvas) {
             setShowModal((p) => !p);
           }
         }}
         footer={false}
-        isSalesForce={!salesForceUrl}
+        isSalesForce={!salesForceUrl || !isCanvas}
       />
     </>
   );
