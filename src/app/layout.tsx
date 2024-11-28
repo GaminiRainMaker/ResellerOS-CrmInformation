@@ -5,6 +5,8 @@ import './globals.css';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import Providers from './Provider';
 import theme from './style/theme';
+import NextScript from 'next/script';
+import CanvasRedirect from './CanvasRedirect';
 
 const jakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -26,7 +28,13 @@ export default async function RootLayout({
     <ConfigProvider theme={theme}>
       <html lang="en">
         <body className={`${jakartaSans.variable}`}>
+          <CanvasRedirect /> {/* Include the client-side logic */}
           <Providers>{children}</Providers>
+          {/* Only load the Canvas script if in Salesforce Canvas */}
+          <NextScript
+            src="/canvas-all.js"
+            strategy="beforeInteractive"
+          />
         </body>
       </html>
     </ConfigProvider>

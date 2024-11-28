@@ -16,9 +16,9 @@ export default function DashboardLayout({
   return (
     <>
       <Layout style={{minHeight: '90vh'}}>
-        <CustomHeader />
+        {pathname !== '/salesforce' && <CustomHeader />}
         <Layout>
-          <SideBar />
+          {pathname !== '/salesforce' && <SideBar />}
           <Content
             style={{padding: pathname === '/formBuilder' ? '0px' : '12px'}}
           >
