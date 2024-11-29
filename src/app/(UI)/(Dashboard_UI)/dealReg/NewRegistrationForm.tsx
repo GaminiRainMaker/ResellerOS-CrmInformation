@@ -38,7 +38,7 @@ import {
 } from '../../../../../redux/actions/salesForce';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {CollapseSpaceStyle} from '../dealRegDetail/styled-component';
-import jsforce from 'jsforce';
+import {getAccount} from '../salesforceqwertyu/action';
 
 const NewRegistrationForm: FC<any> = ({
   isDealRegDetail = false,
@@ -48,17 +48,9 @@ const NewRegistrationForm: FC<any> = ({
   const [token] = useThemeToken();
   const router = useRouter();
   const searchParams = useSearchParams()!;
-
   const getOpportunityId = Number(searchParams.get('opportunityId'));
   const getContactId = Number(searchParams.get('contactId'));
   const getCustomerId = Number(searchParams.get('customerId'));
-  const salesForceUrl = searchParams.get('instance_url');
-  const salesForceKey = searchParams.get('key');
-  const salesForceOrganization = searchParams.get('org');
-  const salesForceOppId = searchParams.get('oppId');
-  const salesForceContactId = searchParams.get('contactId');
-  const salesForceCustomerId = searchParams.get('customerId');
-  const salesForceUserId = searchParams.get('user_id');
 
   let pathname = usePathname();
   const dispatch = useAppDispatch();
@@ -82,6 +74,22 @@ const NewRegistrationForm: FC<any> = ({
   const [partnerProgramNewId, setPartnerProgramNewId] = useState<any>();
   const {isCanvas, data, signedRequest, isDecryptedRecord} = useAppSelector(
     (state) => state.canvas,
+  );
+  // Destructuring the main object
+  const {userId, client, context} = isDecryptedRecord as any;
+  const {instanceUrl: salesForceinstanceUrl, oauthToken: salesForceToken} =
+    client;
+  const {organization, environment} = context;
+  const {parameters} = environment;
+  const {recordId: salesForceOpportunityId} = parameters;
+  const {organizationId} = organization;
+
+  console.log(
+    {userId},
+    {salesForceOpportunityId},
+    {salesForceinstanceUrl},
+    {salesForceToken},
+    {organizationId},
   );
 
   useEffect(() => {
@@ -354,13 +362,13 @@ const NewRegistrationForm: FC<any> = ({
       selfRegisteredPartners: selfRegesteriedPartner,
       registeredPartners: regesteriedPartner,
     };
-    if (formStep === 0 && !isDealRegDetail && !salesForceUrl) {
+    if (formStep === 0 && !isDealRegDetail && !isCanvas) {
       setRegisteredPartnerData(data);
       setFormStep(1);
     } else if (
       (registeredPartnerData && formStep === 1) ||
       (data && isDealRegDetail) ||
-      (data && salesForceUrl)
+      (data && isCanvas)
     ) {
       let newData: any;
       if (isDealRegDetail) {
@@ -375,7 +383,7 @@ const NewRegistrationForm: FC<any> = ({
           user_id: userInformation?.id,
           date: handleDate(),
         }));
-      } else if (salesForceUrl) {
+      } else if (isCanvas) {
         newData = combinedData?.map((obj: any) => ({
           ...obj,
         }));
@@ -390,7 +398,7 @@ const NewRegistrationForm: FC<any> = ({
           date: handleDate(),
         }));
       }
-      if (salesForceUrl) {
+      if (isCanvas) {
         // Map partner and partner program data
         const createPartnerAndProgram = newData
           ?.filter((item: any) => item?.type === 'Self Registered')
@@ -415,8 +423,8 @@ const NewRegistrationForm: FC<any> = ({
             try {
               const response = await dispatch(
                 createSalesForcePartner({
-                  baseURL: `https://${salesForceUrl}`,
-                  token: salesForceKey,
+                  baseURL: salesForceinstanceUrl,
+                  token: salesForceToken,
                   data: partner,
                 }),
               );
@@ -445,7 +453,7 @@ const NewRegistrationForm: FC<any> = ({
         }
 
         const dealRegArray = newData?.map((item: any) => ({
-          rosdealregai__Opportunity__c: salesForceOppId,
+          rosdealregai__Opportunity__c: salesForceOpportunityId,
           rosdealregai__Partner__r: {
             rosdealregai__External_Id__c: item?.partner_id,
           },
@@ -454,12 +462,13 @@ const NewRegistrationForm: FC<any> = ({
           },
         }));
         try {
+          console.log('New console');
           const dealRegResponses = await Promise.all(
             dealRegArray?.map(async (dealreg: any) => {
               const response = await dispatch(
                 createSalesforceDealreg({
-                  baseURL: salesForceUrl,
-                  token: salesForceKey,
+                  baseURL: isDecryptedRecord?.client?.instanceUrl,
+                  token: isDecryptedRecord?.client?.oauthToken,
                   data: dealreg,
                 }),
               );
@@ -485,7 +494,8 @@ const NewRegistrationForm: FC<any> = ({
           window.history.replaceState(
             null,
             '',
-            `/dealRegDetail?opportunityId=${salesForceOppId}&instance_url=${salesForceUrl}&key=${salesForceKey}&customerId=${salesForceCustomerId}&contactId=${salesForceContactId}&user_id=${salesForceUserId}`,
+            // `/dealRegDetail?opportunityId=${salesForceOpportunityId}&instance_url=${salesForceinstanceUrl}&key=${salesForceToken}&customerId=${salesForceCustomerId}&contactId=${salesForceContactId}&user_id=${userId}`,
+            `/dealRegDetail?opportunityId=${salesForceOpportunityId}&user_id=${userId}`,
           );
           location?.reload();
         } catch (error: any) {
@@ -525,50 +535,17 @@ const NewRegistrationForm: FC<any> = ({
     }
   };
 
-  const getdata = async () => {};
   const funhandler = async () => {
     try {
-      // console.log(
-      //   'signedRequest',
-      //   signedRequest,
-      //   isDecryptedRecord?.client?.instanceUrl,
-      // );
+      console.log('signedRequest', signedRequest, isDecryptedRecord);
 
-      const oauth2 = {
-        redirectUri: 'https://localhost:3000/auth/salesforce',
-      };
-      const conn = await new jsforce.Connection({
-        oauth2,
-        signedRequest,
-        instanceUrl: isDecryptedRecord?.client?.instanceUrl as string,
-      });
-
-      console.log('connconnconnconn', conn);
-      const accounts = await conn
-      .sobject('Contact')
-      .find({}, ['Id', 'Name', 'FirstName']); // "fields" argument is omitted
-
-      console.log('accounts', accounts);
-
-      // if (isDecryptedRecord?.client?.instanceUrl) {
-      //   const conn = await getConnection({
-      //     signedRequest: signedRequest,
-      //     instanceUrl: isDecryptedRecord?.client?.instanceUrl,
-      //   });
-
-      //   console.log('Connection established:', conn);
-
-      //   // Make sure the connection is valid before querying
-      //   if (conn) {
-      //     const opportunities = await conn
-      //       .sobject('Opportunity') // Replace with the name of the object you want to query
-      //       .find({}, ['Id', 'Name', 'StageName', 'CloseDate']); // Specify fields you need
-
-      //     console.log('opportunities:', opportunities);
-      //   } else {
-      //     console.log('Failed to establish connection.');
-      //   }
-      // }
+      if (signedRequest) {
+        const accounts = await getAccount(
+          signedRequest,
+          isDecryptedRecord?.client?.instanceUrl as string,
+        );
+        console.log('accountsaccounts', accounts);
+      }
     } catch (error) {
       console.error('Error occurred while fetching accounts:', error);
     }
@@ -996,16 +973,16 @@ const NewRegistrationForm: FC<any> = ({
         <Space size={20}>
           <OsButton
             text={
-              formStep === 0 && !isDealRegDetail && !salesForceUrl
+              formStep === 0 && !isDealRegDetail && !isCanvas
                 ? 'Save & Next'
-                : isDealRegDetail || salesForceUrl
+                : isDealRegDetail || isCanvas
                   ? 'Save'
                   : 'Save & Continue'
             }
             buttontype="PRIMARY"
             clickHandler={form.submit}
           />
-          {salesForceUrl && (
+          {isCanvas && (
             <OsButton
               text={'Request Partner'}
               buttontype="SECONDARY"

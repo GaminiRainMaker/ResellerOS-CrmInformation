@@ -1,4 +1,3 @@
-// lib/salesforceConnection.ts
 import jsforce, { Connection, OAuth2 } from 'jsforce';
 
 interface ConnectionParams {
@@ -6,7 +5,7 @@ interface ConnectionParams {
   instanceUrl: string;
 }
 
-let conn: Connection | null = null; // Singleton instance of the connection
+let conn: Connection | null = null;
 
 export const createConnection = async ({ signedRequest, instanceUrl }: ConnectionParams): Promise<Connection> => {
   if (!conn) {

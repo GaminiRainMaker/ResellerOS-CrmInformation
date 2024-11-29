@@ -23,7 +23,7 @@ import {
 } from '@heroicons/react/24/outline';
 import {TabsProps} from 'antd';
 import {Option} from 'antd/es/mentions';
-import {useRouter, useSearchParams} from 'next/navigation';
+import {useRouter} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
 import {queryDealReg} from '../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -34,9 +34,7 @@ import {StyledTable} from './styled-components';
 
 const DealReg: React.FC = () => {
   const [token] = useThemeToken();
-  const searchParams = useSearchParams()!;
   const [activeTab, setActiveTab] = useState<any>('1');
-  const salesForceUrl = searchParams.get('instance_url');
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -53,6 +51,7 @@ const DealReg: React.FC = () => {
   });
   const searchQuery = useDebounceHook(query, 500);
   const [statusValue, setStatusValue] = useState<string>('All');
+  
 
 
   const dealRegFormColumns = [
@@ -490,12 +489,12 @@ const DealReg: React.FC = () => {
         open={showModal}
         onOk={() => {}}
         onCancel={() => {
-          if (!salesForceUrl || !isCanvas) {
+          if (!isCanvas) {
             setShowModal((p) => !p);
           }
         }}
         footer={false}
-        isSalesForce={!salesForceUrl || !isCanvas}
+        isSalesForce={!isCanvas}
       />
     </>
   );
