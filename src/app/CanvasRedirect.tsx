@@ -22,15 +22,19 @@ const CanvasRedirectWrapper = ({children}: Props) => {
       globalThis.Sfdc.canvas.client.refreshSignedRequest((data) => {
         console.log({data});
         if (data?.payload?.auxiliary?.appApprovalType === 'ADMIN_APPROVED') {
-          console.log('ADMIN_APPROVED');
           const sr = data.payload.response;
           const part = sr.split('.')[1];
           dispatch(setNewSignedRequest(sr));
           dispatch(
             setDecryptedData(globalThis.JSON.parse(Sfdc.canvas.decode(part))),
           );
+          console.log(
+            'ADMIN_APPROVED',
+            globalThis.JSON.parse(Sfdc.canvas.decode(part)),
+          );
           dispatch(setIsCanvas(true));
           router.replace('/dealReg');
+          //location for route
         }
       });
 
