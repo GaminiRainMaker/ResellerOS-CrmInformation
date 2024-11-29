@@ -23,6 +23,9 @@ import {EditableFiledsCommonInterface} from '../formBuilder.interface';
 import OsModal from '@/app/components/common/os-modal';
 import {Panel} from '@/app/components/common/antd/Collapse';
 import {OsCollapseStyleForAdmin} from '@/app/components/common/os-collapse/styled-components';
+import OsButton from '@/app/components/common/os-button';
+import {Just_Another_Hand} from 'next/font/google';
+import AddMappedOptionsForFormBuilder from '../addMappedOptions';
 
 const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
   sectionIndex,
@@ -35,6 +38,7 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
   const [token] = useThemeToken();
   const [openModalForDependentFiled, setOpenModalForDependentFiled] =
     useState<boolean>(false);
+  const [openMappedModal, setOpenMappedModal] = useState<boolean>(false);
 
   const [CommonIndexOfUse, setCommonIndexOfUse] = useState<any>();
 
@@ -68,7 +72,6 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
       return sectItem;
     });
 
-    console.log('32432432423', newTempArr);
     // const CommonIndexOfUsedd =
     //   newTempArr?.[sectionIndex || 0]?.content?.[contentIndex || 0];
     // setCommonIndexOfUse(CommonIndexOfUsedd);
@@ -412,7 +415,6 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
       ),
     },
   ];
-  console.log('23432423', CommonIndexOfUse);
   const QuickSetupItems = [
     {
       key: '1',
@@ -713,6 +715,30 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
           <OsCollapseAdmin items={OptionsItems} />
         </CollapseSpaceStyle>
       </Row>
+
+      <Row
+        style={{
+          background: '#E9F0F7',
+          padding: '15px',
+          width: '90%',
+          margin: '10px',
+          borderRadius: '10px',
+          display: 'flex',
+          justifyContent: 'center',
+
+          // border: '1px solid #2364AA',
+        }}
+      >
+        <Typography
+          name="Body 3/Medium"
+          onClick={() => {
+            setOpenMappedModal(true);
+          }}
+        >
+          Add Mapped Options
+        </Typography>
+      </Row>
+
       <Row>
         <CollapseSpaceStyle size={24} direction="vertical">
           <OsCollapseAdmin items={editChoicesOptions} />
@@ -1047,6 +1073,28 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
         // open={true}
         onCancel={() => {
           setOpenModalForDependentFiled(false);
+        }}
+      />
+
+      <OsModal
+        title="Add Mapped Otions "
+        bodyPadding={22}
+        body={
+          <AddMappedOptionsForFormBuilder
+            sectionIndex={sectionIndex}
+            cartItems={cartItems}
+            contentIndex={contentIndex}
+            setCartItems={setCartItems}
+            selectedColumnIndex={selectedColumnIndex}
+            setOpenMappedModal={setOpenMappedModal}
+            typeOfFILE={'select'}
+          />
+        }
+        width={500}
+        open={openMappedModal}
+        // open={true}
+        onCancel={() => {
+          setOpenMappedModal(false);
         }}
       />
     </>

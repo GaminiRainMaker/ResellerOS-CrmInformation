@@ -19,6 +19,7 @@ import {CollapseSpaceStyle} from '../../dealRegDetail/styled-component';
 import OsModal from '@/app/components/common/os-modal';
 import {Panel} from '@/app/components/common/antd/Collapse';
 import {OsCollapseStyleForAdmin} from '@/app/components/common/os-collapse/styled-components';
+import AddMappedOptionsForFormBuilder from '../addMappedOptions';
 
 const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
   sectionIndex,
@@ -34,6 +35,7 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
     useState<boolean>(false);
   const [activeIndexForDependent, setActiveIndexForDendent] =
     useState<number>(0);
+  const [openMappedModal, setOpenMappedModal] = useState<boolean>(false);
 
   const [CommonIndexOfUse, setCommonIndexOfUse] = useState<any>();
 
@@ -611,6 +613,29 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
           <OsCollapseAdmin items={OptionsItems} />
         </CollapseSpaceStyle>
       </Row>
+
+      <Row
+        style={{
+          background: '#E9F0F7',
+          padding: '15px',
+          width: '90%',
+          margin: '10px',
+          borderRadius: '10px',
+          display: 'flex',
+          justifyContent: 'center',
+
+          // border: '1px solid #2364AA',
+        }}
+      >
+        <Typography
+          name="Body 3/Medium"
+          onClick={() => {
+            setOpenMappedModal(true);
+          }}
+        >
+          Add Mapped Options
+        </Typography>
+      </Row>
       <Row>
         <CollapseSpaceStyle size={24} direction="vertical">
           <OsCollapseAdmin items={editChoicesOptionsForCheckBox} />
@@ -911,6 +936,28 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
         // open={true}
         onCancel={() => {
           setOpenModalForDependentFiled(false);
+        }}
+      />
+
+      <OsModal
+        title="Add Mapped Otions "
+        bodyPadding={22}
+        body={
+          <AddMappedOptionsForFormBuilder
+            sectionIndex={sectionIndex}
+            cartItems={cartItems}
+            contentIndex={contentIndex}
+            setCartItems={setCartItems}
+            selectedColumnIndex={selectedColumnIndex}
+            setOpenMappedModal={setOpenMappedModal}
+            typeOfFILE={'Checkbox'}
+          />
+        }
+        width={500}
+        open={openMappedModal}
+        // open={true}
+        onCancel={() => {
+          setOpenMappedModal(false);
         }}
       />
     </>

@@ -1,13 +1,14 @@
 import {FormInstance} from 'antd';
 
 export interface FormBuilderInterFace {
-  isOpenDrawer: boolean;
+  isOpenDrawer?: boolean;
   setIsOpenDrawer?: (B: Boolean) => void;
+  setOpenMappedModal?: (B: Boolean) => void;
   sectionIndex?: number | string;
   contentIndex?: number | string;
   setCartItems?: any;
   cartItems?: any;
-  form: FormInstance;
+  form?: FormInstance;
   typeFiled?: string;
   setColumnData?: any;
   columnData?: any;

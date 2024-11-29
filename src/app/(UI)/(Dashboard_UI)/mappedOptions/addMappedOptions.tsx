@@ -83,6 +83,8 @@ const AddMappedOptions: React.FC<any> = ({
       values_option: JSON?.stringify(optionsData),
     };
     await dispatch(insertMappedOptions(newObj));
+    setNameOfOption('');
+    setOptionsData([]);
     getllMappedOption();
     setAddNewOptionModal(false);
   };
