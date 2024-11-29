@@ -8,7 +8,6 @@ import {
   setIsCanvas,
   setNewSignedRequest,
 } from '../../redux/slices/canvas';
-import {SignedRequest} from '../../types/salesforce';
 
 interface Props {
   children: ReactNode;
@@ -17,8 +16,6 @@ interface Props {
 const CanvasRedirectWrapper = ({children}: Props) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-
-
   useEffect(() => {
     const isCanvas = window.location !== window.parent.location;
     if (isCanvas) {

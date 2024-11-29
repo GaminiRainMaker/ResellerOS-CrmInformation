@@ -1,7 +1,3 @@
-/* eslint-disable no-nested-ternary */
-/* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-disable no-restricted-syntax */
-
 'use client';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
@@ -38,7 +34,6 @@ import {
 } from '../../../../../redux/actions/salesForce';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {CollapseSpaceStyle} from '../dealRegDetail/styled-component';
-import {getAccount} from '../salesforceqwertyu/action';
 
 const NewRegistrationForm: FC<any> = ({
   isDealRegDetail = false,
@@ -72,11 +67,9 @@ const NewRegistrationForm: FC<any> = ({
     useState<boolean>(false);
   const [partnerNewId, setPartnerNewId] = useState<any>();
   const [partnerProgramNewId, setPartnerProgramNewId] = useState<any>();
-  const {isCanvas, data, signedRequest, isDecryptedRecord} = useAppSelector(
-    (state) => state.canvas,
-  );
+  const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
   // Destructuring the main object
-  const {userId, client, context} = isDecryptedRecord as any;
+  const {client, context} = isDecryptedRecord as any;
   const {instanceUrl: salesForceinstanceUrl, oauthToken: salesForceToken} =
     client;
   const {organization, environment} = context;
@@ -84,19 +77,11 @@ const NewRegistrationForm: FC<any> = ({
   const {recordId: salesForceOpportunityId} = parameters;
   const {organizationId} = organization;
 
-  console.log(
-    {userId},
-    {salesForceOpportunityId},
-    {salesForceinstanceUrl},
-    {salesForceToken},
-    {organizationId},
-  );
-
   useEffect(() => {
     if (isCanvas) {
       dispatch(
         getAllPartnerandProgramApprovedForOrganizationSalesForce({
-          // org_id: data?.context?.organization?.organizationId,
+          // org_id: organizationId,
           org_id: '00DHs000003TxAm',
         }),
       )?.then((payload: any) => {
@@ -491,13 +476,7 @@ const NewRegistrationForm: FC<any> = ({
             message: 'Success',
             description: 'Dealreg form created successfully.',
           });
-          window.history.replaceState(
-            null,
-            '',
-            // `/dealRegDetail?opportunityId=${salesForceOpportunityId}&instance_url=${salesForceinstanceUrl}&key=${salesForceToken}&customerId=${salesForceCustomerId}&contactId=${salesForceContactId}&user_id=${userId}`,
-            `/dealRegDetail?opportunityId=${salesForceOpportunityId}&user_id=${userId}`,
-          );
-          location?.reload();
+          router.replace('/dealRegDetail');
         } catch (error: any) {
           notification.error({
             message: 'Error',
