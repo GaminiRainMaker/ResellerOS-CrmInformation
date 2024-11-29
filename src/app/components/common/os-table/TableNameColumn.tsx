@@ -5,12 +5,12 @@
 import { CustomUpload } from '@/app/(UI)/(Dashboard_UI)/layouts/Header';
 import ImgCrop from 'antd-img-crop';
 import { FC } from 'react';
-import { Avatar } from '../antd/Avatar';
 import { Space } from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
 import { AvatarStyled } from './styled-components';
 import OsButton from '../os-button';
+import { Avatar } from 'antd';
 
 const TableNameColumn: FC<any> = ({
   logo,

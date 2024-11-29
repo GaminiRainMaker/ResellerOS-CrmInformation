@@ -15,8 +15,8 @@ const AnalyticCardSkeleton: FC = () => (
       justify="space-between"
     >
       {React.Children.toArray(
-        [...Array(5)].map((i) => (
-          <Col key={i}>
+        [...Array(5)].map((_, i) => (
+          <Col key={`col-${i}`}>
             <Skeleton
               active
               key={i}

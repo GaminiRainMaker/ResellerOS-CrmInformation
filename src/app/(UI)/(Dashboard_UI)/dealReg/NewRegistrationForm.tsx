@@ -38,9 +38,7 @@ import {
 } from '../../../../../redux/actions/salesForce';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {CollapseSpaceStyle} from '../dealRegDetail/styled-component';
-import jsforce, {Connection} from 'jsforce';
-import {getConnection} from '@/app/utils/saleforce';
-import {getAccount, getAccount123, getOpportunity} from '../salesforce/action';
+import jsforce from 'jsforce';
 
 const NewRegistrationForm: FC<any> = ({
   isDealRegDetail = false,
@@ -527,23 +525,53 @@ const NewRegistrationForm: FC<any> = ({
     }
   };
 
-  const getdata = async () => {
-    console.log('datadatadatadata', data);
-    // const partnerProgram = await getAccount123(
-    //   signedRequest,
-    //   data?.client?.instanceUrl as string,
-    //   data?.context?.organization?.organizationId as string,
-    // );
-    const account = await getAccount(
-      signedRequest,
-      data?.client?.instanceUrl as string,
-    );
-    const opportunity = await getOpportunity(
-      signedRequest,
-      data?.client?.instanceUrl as string,
-    );
+  const getdata = async () => {};
+  const funhandler = async () => {
+    try {
+      // console.log(
+      //   'signedRequest',
+      //   signedRequest,
+      //   isDecryptedRecord?.client?.instanceUrl,
+      // );
 
-    console.log('account', account, opportunity, 'opportunity');
+      const oauth2 = {
+        redirectUri: 'https://localhost:3000/auth/salesforce',
+      };
+      const conn = await new jsforce.Connection({
+        oauth2,
+        signedRequest,
+        instanceUrl: isDecryptedRecord?.client?.instanceUrl as string,
+      });
+
+      console.log('connconnconnconn', conn);
+      const accounts = await conn
+      .sobject('Contact')
+      .find({}, ['Id', 'Name', 'FirstName']); // "fields" argument is omitted
+
+      console.log('accounts', accounts);
+
+      // if (isDecryptedRecord?.client?.instanceUrl) {
+      //   const conn = await getConnection({
+      //     signedRequest: signedRequest,
+      //     instanceUrl: isDecryptedRecord?.client?.instanceUrl,
+      //   });
+
+      //   console.log('Connection established:', conn);
+
+      //   // Make sure the connection is valid before querying
+      //   if (conn) {
+      //     const opportunities = await conn
+      //       .sobject('Opportunity') // Replace with the name of the object you want to query
+      //       .find({}, ['Id', 'Name', 'StageName', 'CloseDate']); // Specify fields you need
+
+      //     console.log('opportunities:', opportunities);
+      //   } else {
+      //     console.log('Failed to establish connection.');
+      //   }
+      // }
+    } catch (error) {
+      console.error('Error occurred while fetching accounts:', error);
+    }
   };
 
   console.log('partnerOptions', partnerOptions);
@@ -553,7 +581,7 @@ const NewRegistrationForm: FC<any> = ({
       <OsButton
         text="GetOrgPartner"
         buttontype="PRIMARY"
-        clickHandler={getdata}
+        clickHandler={funhandler}
       />
       <Form
         name="dynamic_form_nest_item"

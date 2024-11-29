@@ -11,6 +11,7 @@ export async function getAccount(signedRequest: string, instanceUrl: string) {
     signedRequest,
     instanceUrl,
   });
+  console.log('Connnn123', conn);
   const accounts = await conn
     .sobject('Contact')
     .find({}, ['Id', 'Name', 'FirstName']); // "fields" argument is omitted

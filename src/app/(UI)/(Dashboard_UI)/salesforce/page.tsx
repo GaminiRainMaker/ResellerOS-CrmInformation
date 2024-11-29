@@ -26,23 +26,38 @@ export default function Salesforce() {
     globalThis.Sfdc.canvas.client.refreshSignedRequest((data) => {
       console.log({data});
       const sr = data.payload.response;
+      const part = sr.split('.')[1];
+      dispatch(setNewSignedRequest(sr));
       setSignedRequest(sr);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (signedRequest) {
-      const part = signedRequest.split('.')[1];
       setDecrypted(globalThis.JSON.parse(Sfdc.canvas.decode(part)));
-      dispatch(setIsCanvas(true));
-      dispatch(setCanvas(globalThis.JSON.parse(Sfdc.canvas.decode(part))));
-      dispatch(setNewSignedRequest(signedRequest));
       dispatch(
         setDecryptedData(globalThis.JSON.parse(Sfdc.canvas.decode(part))),
       );
-      router.replace('/dealReg');
-    }
-  }, [signedRequest]);
+      console.log(
+        'srsrsrsr',
+        sr,
+        globalThis.JSON.parse(Sfdc.canvas.decode(part)),
+      );
+      if (data.payload.response) {
+        dispatch(setIsCanvas(true));
+        router.replace('/dealReg');
+      }
+    });
+  }, []);
+
+  // useEffect(() => {
+  //   if (signedRequest) {
+  //     const part = signedRequest.split('.')[1];
+  //     setDecrypted(globalThis.JSON.parse(Sfdc.canvas.decode(part)));
+  //     dispatch(setIsCanvas(true));
+  //     dispatch(setCanvas(globalThis.JSON.parse(Sfdc.canvas.decode(part))));
+  //     dispatch(setNewSignedRequest(signedRequest));
+  //     dispatch(
+  //       setDecryptedData(globalThis.JSON.parse(Sfdc.canvas.decode(part))),
+  //     );
+  //     router.replace('/dealReg');
+  //   }
+  // }, [signedRequest]);
 
   const handleGetAccount = async () => {
     console.log('get account:', signedRequest, decrypted);
