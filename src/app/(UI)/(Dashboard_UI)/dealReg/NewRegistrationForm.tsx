@@ -535,31 +535,8 @@ const NewRegistrationForm: FC<any> = ({
     }
   };
 
-  const funhandler = async () => {
-    try {
-      console.log('signedRequest', signedRequest, isDecryptedRecord);
-
-      if (signedRequest) {
-        const accounts = await getAccount(
-          signedRequest,
-          isDecryptedRecord?.client?.instanceUrl as string,
-        );
-        console.log('accountsaccounts', accounts);
-      }
-    } catch (error) {
-      console.error('Error occurred while fetching accounts:', error);
-    }
-  };
-
-  console.log('partnerOptions', partnerOptions);
-
   return (
     <>
-      <OsButton
-        text="GetOrgPartner"
-        buttontype="PRIMARY"
-        clickHandler={funhandler}
-      />
       <Form
         name="dynamic_form_nest_item"
         onFinish={registeredFormFinishCurrent}
