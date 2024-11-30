@@ -1,7 +1,7 @@
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import OsButton from '@/app/components/common/os-button';
@@ -9,23 +9,23 @@ import OsDropdown from '@/app/components/common/os-dropdown';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
 import Typography from '@/app/components/common/typography';
-import {PlusIcon} from '@heroicons/react/24/outline';
-import {MenuProps} from 'antd';
+import { PlusIcon } from '@heroicons/react/24/outline';
+import { MenuProps } from 'antd';
 import Form from 'antd/es/form';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useRef, useState} from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import {
   dealRegFormScript,
   getDealRegByOpportunityId,
   updateDealRegStatus,
 } from '../../../../../redux/actions/dealReg';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import {
   setDealReg,
   setOpenDealRegDrawer,
 } from '../../../../../redux/slices/dealReg';
 import NewRegistrationForm from '../dealReg/NewRegistrationForm';
-import DealRegCustomTabs, {DealRegCustomTabsHandle} from './DealRegCustomTabs';
+import DealRegCustomTabs, { DealRegCustomTabsHandle } from './DealRegCustomTabs';
 import ElectronBot from './ElectronBot';
 import SubmitDealRegForms from './SubmitDealRegForms';
 

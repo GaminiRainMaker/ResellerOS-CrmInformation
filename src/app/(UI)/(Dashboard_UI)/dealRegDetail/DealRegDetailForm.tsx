@@ -11,7 +11,6 @@ import {setOpenDealRegDrawer} from '../../../../../redux/slices/dealReg';
 import CommonFields from './CommonField';
 import ResponseDetailForm from './ResponseDetailForm';
 import UniqueFields from './UniqueField';
-import {useSearchParams} from 'next/navigation';
 
 const DealRegDetailForm: FC<any> = ({
   data,
@@ -21,8 +20,7 @@ const DealRegDetailForm: FC<any> = ({
   formData,
 }) => {
   const [token] = useThemeToken();
-  const searchParams = useSearchParams()!;
-  const salesForceUrl = searchParams.get('instance_url');
+  const {isCanvas} = useAppSelector((state) => state.canvas);
 
   const dispatch = useAppDispatch();
   const {openDealRegDrawer} = useAppSelector((state) => state.dealReg);
@@ -82,7 +80,7 @@ const DealRegDetailForm: FC<any> = ({
 
   return (
     <>
-      {!salesForceUrl && (
+      {!isCanvas && (
         <Space
           style={{
             width: '100%',

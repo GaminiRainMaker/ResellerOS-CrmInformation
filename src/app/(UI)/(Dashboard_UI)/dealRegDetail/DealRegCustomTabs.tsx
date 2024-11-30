@@ -71,17 +71,17 @@ const DealRegCustomTabs = forwardRef<
     client;
   const {organization, environment} = context;
   const {parameters} = environment;
-  const {recordId: salesForceOpportunityId} = parameters;
+  const {'006Hs00001lIPCaIAO': salesForceOpportunityId} = parameters;
   const {organizationId} = organization;
 
-  // console.log(
-  //   {isDecryptedRecord},
-  //   {userId},
-  //   {salesForceOpportunityId},
-  //   {salesForceinstanceUrl},
-  //   {salesForceToken},
-  //   {organizationId},
-  // );
+  console.log(
+    {isDecryptedRecord},
+    // {userId},
+    // {salesForceOpportunityId},
+    // {salesForceinstanceUrl},
+    // {salesForceToken},
+    // {organizationId},
+  );
 
   useEffect(() => {
     if (getDealRegId && DealRegData && DealRegData.length > 0 && !isCanvas) {
@@ -99,9 +99,10 @@ const DealRegCustomTabs = forwardRef<
       const obj = {
         baseURL: salesForceinstanceUrl,
         token: salesForceToken,
-        opportunityId: salesForceOpportunityId,
+        opportunityId: '006Hs00001lIPCaIAO',
       };
-      if (salesForceOpportunityId && salesForceinstanceUrl && salesForceToken) {
+      // if (salesForceOpportunityId && salesForceinstanceUrl && salesForceToken) {
+      if ( salesForceinstanceUrl && salesForceToken) {
         try {
           const res: any = await dispatch(
             getSalesForceDealregByOpportunityId(obj),
@@ -441,6 +442,7 @@ const DealRegCustomTabs = forwardRef<
   useImperativeHandle(ref, () => ({
     onFinish,
   }));
+  console.log({tabItems});
 
   return (
     <CustmDealRegTab

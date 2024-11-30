@@ -1,26 +1,25 @@
-import {Checkbox} from '@/app/components/common/antd/Checkbox';
-import {Panel} from '@/app/components/common/antd/Collapse';
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
-import {Switch} from '@/app/components/common/antd/Switch';
+import { Checkbox } from '@/app/components/common/antd/Checkbox';
+import { Panel } from '@/app/components/common/antd/Collapse';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
+import { Switch } from '@/app/components/common/antd/Switch';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
 import OsInput from '@/app/components/common/os-input';
-import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
+import { SelectFormItem } from '@/app/components/common/os-oem-select/oem-select-styled';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {MailOutlined} from '@ant-design/icons';
-import {Form, Radio, TimePicker} from 'antd';
-import {FC, useEffect, useState} from 'react';
-import {useAppSelector} from '../../../../../redux/hook';
+import { formatStatus } from '@/app/utils/CONSTANTS';
+import { MailOutlined } from '@ant-design/icons';
+import { Form, Radio, TimePicker } from 'antd';
+import { FC, useEffect, useState } from 'react';
+import { useAppSelector } from '../../../../../redux/hook';
 import {
   AttributeData,
   CommonFieldsProps,
   TransformedChild,
   TransformedData,
 } from './dealReg.interface';
-import {ChildCollapse} from './styled-component';
-import {formatStatus} from '@/app/utils/CONSTANTS';
-import {useSearchParams} from 'next/navigation';
+import { ChildCollapse } from './styled-component';
 
 const CommonFields: FC<CommonFieldsProps> = ({
   form,
@@ -28,8 +27,7 @@ const CommonFields: FC<CommonFieldsProps> = ({
   handleBlur,
   formData,
 }) => {
-  const searchParams = useSearchParams()!;
-  const salesForceUrl = searchParams.get('instance_url');
+  const {isCanvas} = useAppSelector((state) => state.canvas);
   const {queryData} = useAppSelector((state) => state.attributeField);
   const {data: DealRegData} = useAppSelector((state) => state.dealReg);
   const [commonTemplateData, setCommonTemplateData] = useState<any>();
@@ -112,7 +110,7 @@ const CommonFields: FC<CommonFieldsProps> = ({
     const fieldName = convertToSnakeCase(child?.label);
     const initialValue = commonTemplateData?.[fieldName];
     let commonProps;
-    if (salesForceUrl) {
+    if (isCanvas) {
       commonProps = {
         defaultValue: initialValue,
       };

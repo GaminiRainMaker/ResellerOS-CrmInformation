@@ -12,6 +12,11 @@ import {
 interface Props {
   children: ReactNode;
 }
+function getNavigationKey(locationUrl: string) {
+  const regex = /\/lightning\/r\/(\w+)\//;
+  const match = locationUrl.match(regex);
+  return match ? match[1] : null; // Returns the key or null if not found
+}
 
 const CanvasRedirectWrapper = ({children}: Props) => {
   const router = useRouter();
@@ -24,6 +29,10 @@ const CanvasRedirectWrapper = ({children}: Props) => {
         if (data?.payload?.auxiliary?.appApprovalType === 'ADMIN_APPROVED') {
           const sr = data.payload.response;
           const part = sr.split('.')[1];
+          const decryotData = globalThis.JSON.parse(Sfdc.canvas.decode(part));
+          const navigationKey = getNavigationKey(
+            decryotData?.context?.environment?.locationUrl,
+          );
           dispatch(setNewSignedRequest(sr));
           dispatch(
             setDecryptedData(globalThis.JSON.parse(Sfdc.canvas.decode(part))),
@@ -33,8 +42,14 @@ const CanvasRedirectWrapper = ({children}: Props) => {
             globalThis.JSON.parse(Sfdc.canvas.decode(part)),
           );
           dispatch(setIsCanvas(true));
-          router.replace('/dealReg');
-          //location for route
+          console.log({navigationKey});
+          if (navigationKey === 'Opportunity') {
+            router.replace('/dealReg');
+          } else if (
+            navigationKey === 'rosdealregai__Partner_Registration__c'
+          ) {
+            router.replace('/dealRegDetail');
+          }
         }
       });
 
