@@ -970,7 +970,6 @@ const NewRegistrationForm: FC<any> = ({
           setOpenReponseModal((p) => !p);
           setPartnerProgramNewId({});
           setPartnerNewId({});
-          // form.resetFields();
         }}
         footer
         footerPadding={30}

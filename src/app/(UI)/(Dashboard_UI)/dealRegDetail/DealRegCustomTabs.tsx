@@ -442,7 +442,6 @@ const DealRegCustomTabs = forwardRef<
   useImperativeHandle(ref, () => ({
     onFinish,
   }));
-  console.log({tabItems});
 
   return (
     <CustmDealRegTab
