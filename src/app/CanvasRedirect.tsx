@@ -58,7 +58,7 @@ const CanvasRedirectWrapper = ({children}: Props) => {
       console.log('Inside Salesforce Canvas');
     } else {
       console.log('Outside Canvas');
-      router.replace('/login');
+      // router.replace('/login');
     }
   }, [router, dispatch]);
 
