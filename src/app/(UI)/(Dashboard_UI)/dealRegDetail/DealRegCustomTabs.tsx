@@ -12,16 +12,11 @@ import Typography from '@/app/components/common/typography';
 import {formatStatus} from '@/app/utils/CONSTANTS';
 import {
   calculateTabBarPercentage,
-  filterRadioData,
   updateSalesForceData,
 } from '@/app/utils/base';
 import {useSearchParams} from 'next/navigation';
-import React, {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from 'react';
+import {forwardRef, useEffect, useImperativeHandle, useState} from 'react';
+import {queryAttributeFieldForForm} from '../../../../../redux/actions/attributeField';
 import {
   getDealRegById,
   updateDealRegById,
@@ -35,7 +30,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setFinalUpdatedDealRegData} from '../../../../../redux/slices/dealReg';
 import DealRegDetailForm from './DealRegDetailForm';
-import {queryAttributeFieldForForm} from '../../../../../redux/actions/attributeField';
+import {getPartnerRecord} from '../../../../../salesforceConnection/action';
 
 // Define the prop types for DealRegCustomTabs
 type DealRegCustomTabsProps = {
@@ -56,9 +51,6 @@ const DealRegCustomTabs = forwardRef<
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const searchParams = useSearchParams()!;
-  const salesForceUrl = searchParams.get('instance_url');
-  const getOpportunityId = searchParams && searchParams.get('opportunityId');
-  const salesForceKey = searchParams.get('key');
   const {
     data: DealRegData,
     getDealRegForNew,
@@ -74,14 +66,51 @@ const DealRegCustomTabs = forwardRef<
   );
   const getDealRegId = searchParams && searchParams.get('id');
   const [salesForceDealregById, setSalesForceDealregById] = useState<any>();
+  const {isCanvas, isDecryptedRecord, signedRequest, navigationKey} =
+    useAppSelector((state) => state.canvas);
+  const {client, context} = isDecryptedRecord as any;
+  const {instanceUrl: salesForceinstanceUrl, oauthToken: salesForceToken} =
+    client;
+  const {environment} = context;
+  const {parameters} = environment;
+  const {recordId: salesForceParamsId} = parameters;
+  const [salesforceOpportunityId, setSalesForceOpportunityId] =
+    useState<string>();
 
   useEffect(() => {
-    if (
-      getDealRegId &&
-      DealRegData &&
-      DealRegData.length > 0 &&
-      !salesForceUrl
-    ) {
+    const dealreg = async () => {
+      if (signedRequest && salesForceinstanceUrl) {
+        try {
+          const partnerRegRecord = await getPartnerRecord(
+            signedRequest,
+            salesForceinstanceUrl,
+            salesForceParamsId,
+          );
+
+          if (partnerRegRecord) {
+            setSalesForceOpportunityId(
+              partnerRegRecord?.rosdealregai__Opportunity__c || '', // Safeguard for null/undefined
+            );
+          } else {
+            console.warn('No partner registration record found.');
+            setSalesForceOpportunityId(''); // Handle the absence of a record gracefully
+          }
+        } catch (error) {
+          console.error('Error fetching partner registration record:', error);
+          setSalesForceOpportunityId(''); // Ensure the state is cleared in case of errors
+        }
+      }
+    };
+
+    if (navigationKey === 'rosdealregai__Partner_Registration__c') {
+      dealreg();
+    } else {
+      setSalesForceOpportunityId(salesForceParamsId);
+    }
+  }, [signedRequest, salesForceinstanceUrl, navigationKey]);
+
+  useEffect(() => {
+    if (getDealRegId && DealRegData && DealRegData.length > 0 && !isCanvas) {
       setActiveKey(Number(getDealRegId));
     } else if (DealRegData && DealRegData.length > 0) {
       setActiveKey(DealRegData[0]?.id);
@@ -94,11 +123,11 @@ const DealRegCustomTabs = forwardRef<
   useEffect(() => {
     const fetchData = async () => {
       const obj = {
-        baseURL: salesForceUrl,
-        token: salesForceKey,
-        opportunityId: getOpportunityId,
+        baseURL: salesForceinstanceUrl,
+        token: salesForceToken,
+        opportunityId: salesforceOpportunityId,
       };
-      if (getOpportunityId && salesForceUrl && salesForceKey) {
+      if (salesforceOpportunityId && salesForceinstanceUrl && salesForceToken) {
         try {
           const res: any = await dispatch(
             getSalesForceDealregByOpportunityId(obj),
@@ -127,7 +156,7 @@ const DealRegCustomTabs = forwardRef<
     };
 
     fetchData();
-  }, [salesForceUrl, isData]);
+  }, [salesForceinstanceUrl, isData, salesforceOpportunityId]);
 
   const callDealregApi = async (obj: any) => {
     try {
@@ -154,13 +183,13 @@ const DealRegCustomTabs = forwardRef<
   };
 
   useEffect(() => {
-    if (activeKey && !salesForceUrl) {
+    if (activeKey && !salesForceinstanceUrl) {
       dispatch(getDealRegById(activeKey));
-    } else if (activeKey && salesForceUrl) {
+    } else if (activeKey && salesForceinstanceUrl) {
       // call salesforce API get dealreg By id
       let obj = {
-        baseURL: salesForceUrl,
-        token: salesForceKey,
+        baseURL: salesForceinstanceUrl,
+        token: salesForceToken,
         dealRegId: activeKey,
       };
       callDealregApi(obj);
@@ -339,7 +368,7 @@ const DealRegCustomTabs = forwardRef<
       setFormData(formObj);
       updateDealRegFinalData(activeKey, newObj);
 
-      if (obj && !salesForceUrl) {
+      if (obj && !isCanvas) {
         await dispatch(updateDealRegById(obj));
         if (activeKey && tabPercentage > 0 && tabPercentage < 100) {
           const statusObj = {
@@ -348,11 +377,11 @@ const DealRegCustomTabs = forwardRef<
           };
           dispatch(updateDealRegStatus(statusObj));
         }
-      } else if (newObj && salesForceUrl) {
+      } else if (newObj && isCanvas) {
         let finalObj = {
           data: newObj,
-          baseURL: salesForceUrl,
-          token: salesForceKey,
+          baseURL: salesForceinstanceUrl,
+          token: salesForceToken,
         };
         console.log('finalObj', finalObj);
         dispatch(updateSalesForceDealregById(finalObj));

@@ -1,6 +1,5 @@
 'use client';
 
-import {Avatar} from '@/app/components/common/antd/Avatar';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -16,7 +15,7 @@ import {
   MapPinIcon,
   PhoneIcon,
 } from '@heroicons/react/24/outline';
-import {Form, Tag} from 'antd';
+import {Avatar, Form, Tag} from 'antd';
 import {useEffect, useState} from 'react';
 import {contactSales} from '../../../../../redux/actions/auth';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
