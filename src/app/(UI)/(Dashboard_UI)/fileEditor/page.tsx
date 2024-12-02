@@ -143,12 +143,12 @@ const EditorFile = () => {
     searchValue: string;
     asserType: boolean;
     salesforce: boolean;
-    lifeboatsalesforce:boolean;
+    lifeboatsalesforce: boolean;
   }>({
     searchValue: '',
     asserType: false,
     salesforce: salesForceUrl ? true : false,
-    lifeboatsalesforce:salesForceUrl ? true : false,
+    lifeboatsalesforce: salesForceUrl ? true : false,
   });
 
   const getQuoteFileByIdForFormulads = async () => {
@@ -1021,7 +1021,14 @@ const EditorFile = () => {
         lineItem: newArrWithFileId,
       };
       // file_id
-      dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {});
+      await dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {
+        console.log('23432432423', payload?.payload);
+        notification?.open({
+          message: payload?.payload?.message,
+          type: 'success',
+        });
+      });
+      notification?.open({message: 'Please Close the Modal', type: 'info'});
       setNanonetsLoading(false);
       return;
     }
