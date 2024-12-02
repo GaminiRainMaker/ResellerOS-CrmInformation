@@ -300,8 +300,8 @@ const OsUpload: React.FC<any> = ({
 
         await dispatch(uploadToAws({document: base64String})).then(
           async (payload: any) => {
-            const doc_url = payload?.payload?.data?.Location;
-            uploadedUrl = payload?.payload?.data?.Location;
+            const doc_url = payload?.payload?.data;
+            uploadedUrl = payload?.payload?.data;
             if (doc_url) {
               await dispatch(getPDFFileData({pdfUrl: doc_url}))?.then(
                 (payload: any) => {
@@ -316,7 +316,6 @@ const OsUpload: React.FC<any> = ({
 
                   let mainItem = payload?.payload?.analyzeResult?.tables;
                   let globalArr: any = [];
-                  // console.log('35435324234', mainItem);
 
                   let resultTantArrr: any = [];
 
@@ -329,7 +328,7 @@ const OsUpload: React.FC<any> = ({
                       let headers: any = {};
                       innerIntems?.cells.forEach((item: any) => {
                         if (item.kind === 'columnHeader') {
-                          headers[item.columnIndex] = item.content; // Store headers by their column index
+                          headers[item.columnIndex] = item.content?.trim(); // Store headers by their column index
                         }
                       });
 
@@ -411,7 +410,30 @@ const OsUpload: React.FC<any> = ({
                     resultTantArrr = [...globalArr?.[0]];
                   }
 
-                  let transformedArrForLOwerCase = resultTantArrr.map(
+                  const removeSpecialCharactersFromArrayOfObjects = (
+                    arr: any,
+                  ) => {
+                    return arr.map((obj: any) => {
+                      const cleanedObj: any = {};
+
+                      // Iterate over the keys of each object
+                      for (const key in obj) {
+                        if (obj.hasOwnProperty(key)) {
+                          // Clean the key by removing special characters
+                          const cleanedKey = key.replace(/[^a-zA-Z0-9_]/g, ''); // Only allow alphanumeric characters and underscores
+
+                          // Add the cleaned key and its value to the new object
+                          cleanedObj[cleanedKey] = obj[key];
+                        }
+                      }
+
+                      return cleanedObj;
+                    });
+                  };
+                  const cleanedArr =
+                    removeSpecialCharactersFromArrayOfObjects(resultTantArrr);
+
+                  let transformedArrForLOwerCase = cleanedArr.map(
                     (item: any) => {
                       let newItem: any = {};
                       for (let key in item) {
@@ -419,10 +441,11 @@ const OsUpload: React.FC<any> = ({
                         let newKey = key
                           .replace(/[^\w\s]/g, '')
                           .replace(/\s+/g, '')
-                          .toLowerCase();
+                          .toLowerCase()
+                          ?.trim();
 
                         // Assign the value to the new key
-                        newItem[newKey] = item[key];
+                        newItem[newKey?.trim()] = item[key].trim();
                       }
                       return newItem;
                     },
