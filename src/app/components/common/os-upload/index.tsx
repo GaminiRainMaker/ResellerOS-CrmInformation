@@ -316,7 +316,6 @@ const OsUpload: React.FC<any> = ({
 
                   let mainItem = payload?.payload?.analyzeResult?.tables;
                   let globalArr: any = [];
-
                   let resultTantArrr: any = [];
 
                   for (let i = 0; i < mainItem?.length; i++) {
@@ -409,7 +408,6 @@ const OsUpload: React.FC<any> = ({
                   } else {
                     resultTantArrr = [...globalArr?.[0]];
                   }
-
                   const removeSpecialCharactersFromArrayOfObjects = (
                     arr: any,
                   ) => {
@@ -450,7 +448,6 @@ const OsUpload: React.FC<any> = ({
                       return newItem;
                     },
                   );
-                  console.log('35435324234', transformedArrForLOwerCase);
 
                   resultantValues = transformedArrForLOwerCase?.map(
                     (obj: any) => {
