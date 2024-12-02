@@ -55,13 +55,12 @@ const SideBar = () => {
   const [crmChildKey, setCrmChildKey] = useState<number>(0);
   const {userInformation} = useAppSelector((state) => state.user);
   const {cacheAvailableSeats} = useAppSelector((state) => state.cacheFLow);
-  const searchParams = useSearchParams()!;
-  const salesForceUrl = searchParams.get('instance_url');
+  const {isCanvas} = useAppSelector((state) => state.canvas);
 
   type MenuItem = Required<MenuProps>['items'][number];
 
   useEffect(() => {
-    if (!!userInformation && !salesForceUrl) {
+    if (!!userInformation && !isCanvas) {
       dispatch(getUserByTokenAccess('')).then((payload: any) => {
         const relevantData = {
           QuoteAI: payload?.payload?.is_quote,
@@ -250,13 +249,13 @@ const SideBar = () => {
     }
   };
   useEffect(() => {
-    if (!salesForceUrl) {
+    if (!isCanvas) {
       getAllCustomerByCache();
     }
   }, [userInformation]);
 
   useEffect(() => {
-    if (!salesForceUrl) {
+    if (!isCanvas) {
       dispatch(getOranizationSeats(''))?.then((payload: any) => {
         dispatch(
           setCacheAvailableSeats({
@@ -271,7 +270,7 @@ const SideBar = () => {
 
   const items: MenuItem[] = [
     Role !== 'superAdmin' &&
-      !salesForceUrl &&
+      !isCanvas &&
       getItem(
         <Typography
           cursor="pointer"
