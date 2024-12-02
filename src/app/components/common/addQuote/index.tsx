@@ -589,7 +589,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
         }
       });
     }
-
+    // console.log('3242342312', newArrWithoutManual);
+    // return;
     try {
       setFinalLoading(true);
       setLoading(true);
@@ -678,8 +679,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           quotesArr.push(quoteObj);
         }
       }
-      // console.log('3242342312', quotesArr);
-      // return;
+
       if (quotesArr.length > 0 && !quoteId) {
         for (let i = 0; i < quotesArr.length; i++) {
           let newObj = {

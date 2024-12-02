@@ -99,8 +99,8 @@ const OsUpload: React.FC<any> = ({
         obj.name = file?.name;
         await dispatch(uploadExcelFileToAws({document: base64String})).then(
           async (payload: any) => {
-            const doc_url = payload?.payload?.data?.Location;
-            uploadedUrl = payload?.payload?.data?.Location;
+            const doc_url = payload?.payload?.data;
+            uploadedUrl = payload?.payload?.data;
             if (doc_url) {
               await dispatch(fetchAndParseExcel({Url: doc_url}))?.then(
                 (payload: any) => {
@@ -183,8 +183,8 @@ const OsUpload: React.FC<any> = ({
                     ?.map((subArray: any) =>
                       subArray.filter(
                         (item: any) =>
-                          item !== null &&
-                          item !== undefined &&
+                          // item !== null &&
+                          // item !== undefined &&
                           item?.toString()?.toLowerCase() !== 'om',
                       ),
                     )
@@ -194,9 +194,10 @@ const OsUpload: React.FC<any> = ({
                   let headerKeys: any = [];
                   payload?.payload[bestRowIndex]?.filter((items: any) => {
                     if (
-                      !headerKeys?.includes(items) &&
-                      items !== undefined &&
-                      items !== null
+                      !headerKeys?.includes(items)
+                      // &&
+                      // items !== undefined &&
+                      // items !== null
                     ) {
                       headerKeys?.push(items?.trim());
                     }
@@ -214,8 +215,8 @@ const OsUpload: React.FC<any> = ({
 
                   // replace the syncing valueesss ========================
 
-                  let syncedHeaderValue = headerKeys
-                    .map((item: any, index: number) => {
+                  let syncedHeaderValue = headerKeys.map(
+                    (item: any, index: number) => {
                       const match = lineItemSyncingData.find(
                         (obj: any) =>
                           obj.pdf_header ===
@@ -226,8 +227,9 @@ const OsUpload: React.FC<any> = ({
                       // } else {
                       return match ? match.quote_header : item ? item : null;
                       // }
-                    })
-                    .filter(Boolean); // Remove any undefined values
+                    },
+                  );
+                  // .filter(Boolean); // Remove any undefined values
 
                   // end of above
                   // Transform newArr into an array of objects
