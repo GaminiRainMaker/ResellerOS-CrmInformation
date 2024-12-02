@@ -20,6 +20,7 @@ const nextConfig = {
         '*.*.*.force.com',
       ],
     },
+    missingSuspenseWithCSRBailout: false,
   },
   images: {
     remotePatterns: [
