@@ -1,7 +1,7 @@
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import OsButton from '@/app/components/common/os-button';
@@ -9,23 +9,23 @@ import OsDropdown from '@/app/components/common/os-dropdown';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
 import Typography from '@/app/components/common/typography';
-import {PlusIcon} from '@heroicons/react/24/outline';
-import {MenuProps} from 'antd';
+import { PlusIcon } from '@heroicons/react/24/outline';
+import { MenuProps } from 'antd';
 import Form from 'antd/es/form';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useRef, useState} from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import {
   dealRegFormScript,
   getDealRegByOpportunityId,
   updateDealRegStatus,
 } from '../../../../../redux/actions/dealReg';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import {
   setDealReg,
   setOpenDealRegDrawer,
 } from '../../../../../redux/slices/dealReg';
 import NewRegistrationForm from '../dealReg/NewRegistrationForm';
-import DealRegCustomTabs, {DealRegCustomTabsHandle} from './DealRegCustomTabs';
+import DealRegCustomTabs, { DealRegCustomTabsHandle } from './DealRegCustomTabs';
 import ElectronBot from './ElectronBot';
 import SubmitDealRegForms from './SubmitDealRegForms';
 
@@ -46,16 +46,30 @@ const DealRegDetail = () => {
   const [electronBotModal, showElectronBotModal] = useState(false);
   const searchParams = useSearchParams()!;
   const getOpportunityId = searchParams && searchParams.get('opportunityId');
-  const salesForceUrl = searchParams.get('instance_url');
-  const salesForceKey = searchParams.get('key');
-  const salesForceUserId = searchParams.get('user_id');
-
   const [formData, setFormData] = useState<any>();
   const {userInformation} = useAppSelector((state) => state.user);
   const [salesForceDealregData, setSalesForceDealregData] = useState<any>();
+  const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
+  // // Destructuring the main object
+  const {userId, client, context} = isDecryptedRecord as any;
+  const {instanceUrl: salesForceinstanceUrl, oauthToken: salesForceToken} =
+    client;
+  const {organization, environment} = context;
+  const {parameters} = environment;
+  const {recordId: salesForceOpportunityId} = parameters;
+  const {organizationId} = organization;
+
+  console.log(
+    {isDecryptedRecord},
+    {userId},
+    {salesForceOpportunityId},
+    {salesForceinstanceUrl},
+    {salesForceToken},
+    {organizationId},
+  );
 
   useEffect(() => {
-    if (getOpportunityId && !salesForceUrl) {
+    if (getOpportunityId && !isCanvas) {
       dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
     }
   }, []);
@@ -65,7 +79,7 @@ const DealRegDetail = () => {
   }, [DealRegData]);
 
   const OsBreadCrumbItems = [
-    !salesForceUrl && {
+    !isCanvas && {
       key: '1',
       title: (
         <Typography
@@ -84,7 +98,7 @@ const DealRegDetail = () => {
       key: '2',
       title: (
         <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-          {!salesForceUrl
+          {!isCanvas
             ? DealRegData?.[0]?.Opportunity?.title
             : salesForceDealregData?.[0]?.opportunity_name}
         </Typography>
@@ -121,14 +135,14 @@ const DealRegDetail = () => {
       try {
         const finalAppData = {
           dealRegId: SubmitDealRegFormData?.id,
-          userId: userInformation?.id ?? salesForceUserId,
-          token: salesForceKey,
-          baseURL: salesForceUrl,
+          userId: userInformation?.id ?? userId,
+          token: salesForceToken,
+          baseURL: salesForceinstanceUrl,
           partnerId: SubmitDealRegFormData?.partner_id,
           partnerProgramId: SubmitDealRegFormData?.partner_program_id,
         };
         const response = await dispatch(dealRegFormScript(finalAppData));
-        if (response && !salesForceUrl) {
+        if (response && !isCanvas) {
           await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
             (response: {payload: any}) => {
               if (response?.payload) {
@@ -163,7 +177,7 @@ const DealRegDetail = () => {
         </Col>
         <Col>
           <Space size={8}>
-            {salesForceUrl && (
+            {isCanvas && (
               <OsButton
                 text="Save"
                 buttontype="SECONDARY"
@@ -187,7 +201,7 @@ const DealRegDetail = () => {
                 setShowSubmitFormModal(true);
               }}
             />
-            {!salesForceUrl && (
+            {!isCanvas && (
               <OsButton
                 text="Add New Form"
                 buttontype="PRIMARY"

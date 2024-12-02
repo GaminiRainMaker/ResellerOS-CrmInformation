@@ -9,7 +9,7 @@ import BlankDivSkeleton from './BlankDivSkeleton';
 
 const PageSkeleton: FC = () => (
   <Space size={24} direction="vertical" style={{width: '100%'}}>
-    <AnalyticCardSkeleton />{' '}
+    <AnalyticCardSkeleton key={'1'}/>{' '}
     <Row justify="space-between" align="middle">
       <Col span={12}>
         <Skeleton.Button

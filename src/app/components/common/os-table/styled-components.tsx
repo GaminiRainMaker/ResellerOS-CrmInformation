@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import {GlobalToken} from 'antd/es/theme';
 import {Table} from '../antd/Table';
-import {Avatar} from '../antd/Avatar';
+import { Avatar } from 'antd';
 
 interface ITableProps {
   token: GlobalToken;

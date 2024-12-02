@@ -8,6 +8,7 @@ import OsInput from '@/app/components/common/os-input';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
+import {formatStatus} from '@/app/utils/CONSTANTS';
 import {MailOutlined} from '@ant-design/icons';
 import {Form, Radio, TimePicker} from 'antd';
 import {FC, useEffect, useState} from 'react';
@@ -19,8 +20,6 @@ import {
   TransformedData,
 } from './dealReg.interface';
 import {ChildCollapse} from './styled-component';
-import {formatStatus} from '@/app/utils/CONSTANTS';
-import {useSearchParams} from 'next/navigation';
 
 const CommonFields: FC<CommonFieldsProps> = ({
   form,
@@ -28,8 +27,7 @@ const CommonFields: FC<CommonFieldsProps> = ({
   handleBlur,
   formData,
 }) => {
-  const searchParams = useSearchParams()!;
-  const salesForceUrl = searchParams.get('instance_url');
+  const {isCanvas} = useAppSelector((state) => state.canvas);
   const {queryData} = useAppSelector((state) => state.attributeField);
   const {data: DealRegData} = useAppSelector((state) => state.dealReg);
   const [commonTemplateData, setCommonTemplateData] = useState<any>();
@@ -112,7 +110,7 @@ const CommonFields: FC<CommonFieldsProps> = ({
     const fieldName = convertToSnakeCase(child?.label);
     const initialValue = commonTemplateData?.[fieldName];
     let commonProps;
-    if (salesForceUrl) {
+    if (isCanvas) {
       commonProps = {
         defaultValue: initialValue,
       };
@@ -206,7 +204,8 @@ const CommonFields: FC<CommonFieldsProps> = ({
                     <SelectFormItem
                       name={
                         'c_' +
-                        convertToSnakeCase(child?.label) + '_' +
+                        convertToSnakeCase(child?.label) +
+                        '_' +
                         Childndex +
                         activeKey +
                         (required ? '_required' : '')

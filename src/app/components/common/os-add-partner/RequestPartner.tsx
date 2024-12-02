@@ -50,8 +50,6 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
 }) => {
   const [token] = useThemeToken();
   const searchParams = useSearchParams()!;
-  const salesForceUrl = searchParams.get('instance_url');
-  const salesForceOrgId = searchParams.get('org');
   const [addPartnerform] = Form.useForm();
   const [addPartnerProgram] = Form.useForm();
   const dispatch = useAppDispatch();
@@ -71,7 +69,6 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
   const [getTheData, setGetTheData] = useState<boolean>(false);
   const [filteredPartners, setFilteredPartners] = useState<any>();
   const [rows, setRows] = useState<{partner: string; program: string}[]>([]);
-
   const [openAddPartnerModal, setOpenAddPartnerModal] =
     useState<boolean>(false);
   const [openAddProgramModal, setOpenAddProgramModal] =
@@ -85,16 +82,21 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
     partner: null,
     program: null,
   });
+  const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
+  // Destructuring the main object
+  const {context} = isDecryptedRecord as any;
+  const {organization} = context;
+  const {organizationId} = organization;
 
   const searchQuery = useDebounceHook(query, 400);
 
   const requestForNewPartnerAndPartnerProgram = async () => {
     setRequestLoading(true);
-    if (activetab === '1' && salesForceUrl) {
+    if (activetab === '1' && isCanvas) {
       const selectedData = rows.map((row) => ({
         admin_request: true,
         new_request: false,
-        organization: salesForceOrgId,
+        organization: organizationId,
         partner_program_id: JSON.parse(row?.program)?.id,
         program_name: JSON.parse(row?.program)?.partner_program,
       }));
@@ -126,7 +128,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
         partner_program_id: partnerProgramNewId?.value,
         type: 'approve',
         valueUpdate: false,
-        dealer_relationship: salesForceUrl ? dealerRelationShip : false,
+        dealer_relationship: isCanvas ? dealerRelationShip : false,
       };
       dispatch(upadteToRequestPartnerandprogramfromAmin(data));
       setPartnerNewId({});
@@ -139,7 +141,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!salesForceOrgId) return;
+      if (!organizationId) return;
 
       try {
         // Fetch partner data
@@ -153,7 +155,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
         if (partners.length > 0) {
           // Fetch organization data
           const orgData = await dispatch(
-            getAllOrgApprovedDataSalesForce({organization: salesForceOrgId}),
+            getAllOrgApprovedDataSalesForce({organization: organizationId}),
           );
           const orgs: any = Array.isArray(orgData?.payload)
             ? orgData.payload
@@ -180,7 +182,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
 
     fetchData();
   }, [
-    salesForceOrgId,
+    organizationId,
     dispatch,
     getAllPartnerandProgramApprovedDataSalesForce,
     getAllOrgApprovedDataSalesForce,
@@ -223,7 +225,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
   };
 
   useEffect(() => {
-    if (!salesForceUrl) {
+    if (!isCanvas) {
       dispatch(
         getAllPartnerandProgramFilterDataForOrganizationOnly(searchQuery),
       );
@@ -336,7 +338,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
           onFinish={onFinish}
           requiredMark={false}
         >
-          {salesForceUrl ? (
+          {isCanvas ? (
             <OsTabs
               defaultActiveKey="1"
               onChange={onChange}
@@ -531,7 +533,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
                         </Col>
                       </Row>
 
-                      {salesForceUrl && (
+                      {isCanvas && (
                         <Row
                           style={{
                             marginTop: '40px',

@@ -1,7 +1,3 @@
-/* eslint-disable no-nested-ternary */
-/* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-disable no-restricted-syntax */
-
 'use client';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
@@ -50,13 +46,6 @@ const NewRegistrationForm: FC<any> = ({
   const getOpportunityId = Number(searchParams.get('opportunityId'));
   const getContactId = Number(searchParams.get('contactId'));
   const getCustomerId = Number(searchParams.get('customerId'));
-  const salesForceUrl = searchParams.get('instance_url');
-  const salesForceKey = searchParams.get('key');
-  const salesForceOrganization = searchParams.get('org');
-  const salesForceOppId = searchParams.get('oppId');
-  const salesForceContactId = searchParams.get('contactId');
-  const salesForceCustomerId = searchParams.get('customerId');
-  const salesForceUserId = searchParams.get('user_id');
 
   let pathname = usePathname();
   const dispatch = useAppDispatch();
@@ -66,31 +55,33 @@ const NewRegistrationForm: FC<any> = ({
   const [customerValue, setCustomerValue] = useState<number>();
   const [registeredPartnerData, setRegisteredPartnerData] = useState<any>();
   const [addressData, setAddressData] = useState<any>();
-  const [partnerProgramOptions, setPartnerProgrramOptions] = useState();
-  const [partnerProgramOptionsForSelf, setPartnerProgrramOptionsForSelf] =
-    useState();
-
   const [selefPartnerOptions, setSelfPartnerOptions] = useState<any>();
   const [partnerOptions, setPartnerOptions] = useState<any>();
-  const [choosenIdProgram, setChoosedIdProgram] = useState<any>();
   const [regesteriedPartner, setRegesteriedPartner] = useState<any>();
   const [selfRegesteriedPartner, setSelfRegesteriedPartner] = useState<any>();
   const [errorForAll, setErrorForAll] = useState<boolean>();
-
   const [allAddedPartnerProgramIDs, setAllAddedPartnerProgramIDs] =
     useState<any>();
-
   const [openReponseModal, setOpenReponseModal] = useState<boolean>(false);
   const [requestPartnerLoading, setRequestPartnerLoading] =
     useState<boolean>(false);
   const [partnerNewId, setPartnerNewId] = useState<any>();
   const [partnerProgramNewId, setPartnerProgramNewId] = useState<any>();
+  const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
+  // Destructuring the main object
+  const {client, context} = isDecryptedRecord as any;
+  const {instanceUrl: salesForceinstanceUrl, oauthToken: salesForceToken} =
+    client;
+  const {environment} = context;
+  const {parameters} = environment;
+  const {recordId: salesForceOpportunityId} = parameters;
 
   useEffect(() => {
-    if (salesForceOrganization) {
+    if (isCanvas) {
       dispatch(
         getAllPartnerandProgramApprovedForOrganizationSalesForce({
-          org_id: salesForceOrganization,
+          // org_id: organizationId,
+          org_id: '00DHs000003TxAm',
         }),
       )?.then((payload: any) => {
         setAllFilterPartnerData(payload?.payload);
@@ -151,46 +142,6 @@ const NewRegistrationForm: FC<any> = ({
     setSelfPartnerOptions(selfPartnerOptions);
   }, [allPartnerFilterData, dataForTheObjects?.registeredPartners]);
 
-  const findPartnerProgramsForSelfById = (chosenId: number) => {
-    const filteredData = allPartnerFilterData?.AllPartnerForSelf?.filter(
-      (item: any) => item?.id === chosenId,
-    );
-
-    if (filteredData) {
-      let partnerPrograms: any = [];
-      filteredData?.[0]?.PartnerPrograms?.map((program: any) => {
-        if (!allAddedPartnerProgramIDs?.includes(program?.id)) {
-          partnerPrograms?.push({
-            label: <CustomTextCapitalization text={program?.partner_program} />,
-            value: program?.id,
-          });
-        }
-      });
-      setPartnerProgrramOptionsForSelf(partnerPrograms);
-    }
-  };
-  const onHitDeleteTheObjectForSelf = () => {
-    findPartnerProgramsForSelfById(choosenIdProgram);
-  };
-
-  const findPartnerProgramsById = (chosenId: number) => {
-    const filteredData = allPartnerFilterData?.AllPartner?.filter(
-      (item: any) => item?.id === chosenId,
-    );
-
-    if (filteredData) {
-      let partnerPrograms: any = [];
-      filteredData?.[0]?.PartnerPrograms?.map((program: any) => {
-        if (!allAddedPartnerProgramIDs?.includes(program?.id)) {
-          partnerPrograms?.push({
-            label: <CustomTextCapitalization text={program?.partner_program} />,
-            value: program?.id,
-          });
-        }
-      });
-      setPartnerProgrramOptions(partnerPrograms);
-    }
-  };
   const deleteAddedRow = (index: number, typeOfReges: string) => {
     // selfRegesteriedPartner, setSelfRegesteriedPartner
     let newArr =
@@ -325,8 +276,6 @@ const NewRegistrationForm: FC<any> = ({
     } else {
       setRegesteriedPartner(newUpdatedArrr);
     }
-
-    // optionsForProgram
   };
 
   const registeredFormFinishCurrent = async () => {
@@ -397,13 +346,13 @@ const NewRegistrationForm: FC<any> = ({
       selfRegisteredPartners: selfRegesteriedPartner,
       registeredPartners: regesteriedPartner,
     };
-    if (formStep === 0 && !isDealRegDetail && !salesForceUrl) {
+    if (formStep === 0 && !isDealRegDetail && !isCanvas) {
       setRegisteredPartnerData(data);
       setFormStep(1);
     } else if (
       (registeredPartnerData && formStep === 1) ||
       (data && isDealRegDetail) ||
-      (data && salesForceUrl)
+      (data && isCanvas)
     ) {
       let newData: any;
       if (isDealRegDetail) {
@@ -418,7 +367,7 @@ const NewRegistrationForm: FC<any> = ({
           user_id: userInformation?.id,
           date: handleDate(),
         }));
-      } else if (salesForceUrl) {
+      } else if (isCanvas) {
         newData = combinedData?.map((obj: any) => ({
           ...obj,
         }));
@@ -433,7 +382,7 @@ const NewRegistrationForm: FC<any> = ({
           date: handleDate(),
         }));
       }
-      if (salesForceUrl) {
+      if (isCanvas) {
         // Map partner and partner program data
         const createPartnerAndProgram = newData
           ?.filter((item: any) => item?.type === 'Self Registered')
@@ -458,8 +407,8 @@ const NewRegistrationForm: FC<any> = ({
             try {
               const response = await dispatch(
                 createSalesForcePartner({
-                  baseURL: `https://${salesForceUrl}`,
-                  token: salesForceKey,
+                  baseURL: salesForceinstanceUrl,
+                  token: salesForceToken,
                   data: partner,
                 }),
               );
@@ -488,7 +437,7 @@ const NewRegistrationForm: FC<any> = ({
         }
 
         const dealRegArray = newData?.map((item: any) => ({
-          rosdealregai__Opportunity__c: salesForceOppId,
+          rosdealregai__Opportunity__c: salesForceOpportunityId,
           rosdealregai__Partner__r: {
             rosdealregai__External_Id__c: item?.partner_id,
           },
@@ -497,12 +446,13 @@ const NewRegistrationForm: FC<any> = ({
           },
         }));
         try {
+          console.log('New console');
           const dealRegResponses = await Promise.all(
             dealRegArray?.map(async (dealreg: any) => {
               const response = await dispatch(
                 createSalesforceDealreg({
-                  baseURL: salesForceUrl,
-                  token: salesForceKey,
+                  baseURL: isDecryptedRecord?.client?.instanceUrl,
+                  token: isDecryptedRecord?.client?.oauthToken,
                   data: dealreg,
                 }),
               );
@@ -525,12 +475,7 @@ const NewRegistrationForm: FC<any> = ({
             message: 'Success',
             description: 'Dealreg form created successfully.',
           });
-          window.history.replaceState(
-            null,
-            '',
-            `/dealRegDetail?opportunityId=${salesForceOppId}&instance_url=${salesForceUrl}&key=${salesForceKey}&customerId=${salesForceCustomerId}&contactId=${salesForceContactId}&user_id=${salesForceUserId}`,
-          );
-          location?.reload();
+          router.replace('/dealRegDetail');
         } catch (error: any) {
           notification.error({
             message: 'Error',
@@ -983,16 +928,16 @@ const NewRegistrationForm: FC<any> = ({
         <Space size={20}>
           <OsButton
             text={
-              formStep === 0 && !isDealRegDetail && !salesForceUrl
+              formStep === 0 && !isDealRegDetail && !isCanvas
                 ? 'Save & Next'
-                : isDealRegDetail || salesForceUrl
+                : isDealRegDetail || isCanvas
                   ? 'Save'
                   : 'Save & Continue'
             }
             buttontype="PRIMARY"
             clickHandler={form.submit}
           />
-          {salesForceUrl && (
+          {isCanvas && (
             <OsButton
               text={'Request Partner'}
               buttontype="SECONDARY"
@@ -1024,7 +969,6 @@ const NewRegistrationForm: FC<any> = ({
           setOpenReponseModal((p) => !p);
           setPartnerProgramNewId({});
           setPartnerNewId({});
-          // form.resetFields();
         }}
         footer
         footerPadding={30}
