@@ -30,6 +30,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setFinalUpdatedDealRegData} from '../../../../../redux/slices/dealReg';
 import DealRegDetailForm from './DealRegDetailForm';
+import {getPartnerRecord} from '../../../../../salesforceConnection/action';
 
 // Define the prop types for DealRegCustomTabs
 type DealRegCustomTabsProps = {
@@ -65,23 +66,48 @@ const DealRegCustomTabs = forwardRef<
   );
   const getDealRegId = searchParams && searchParams.get('id');
   const [salesForceDealregById, setSalesForceDealregById] = useState<any>();
-  const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
-  const {userId, client, context} = isDecryptedRecord as any;
+  const {isCanvas, isDecryptedRecord, signedRequest, navigationKey} =
+    useAppSelector((state) => state.canvas);
+  const {client, context} = isDecryptedRecord as any;
   const {instanceUrl: salesForceinstanceUrl, oauthToken: salesForceToken} =
     client;
-  const {organization, environment} = context;
+  const {environment} = context;
   const {parameters} = environment;
-  const {'006Hs00001lIPCaIAO': salesForceOpportunityId} = parameters;
-  const {organizationId} = organization;
+  const {recordId: salesForceParamsId} = parameters;
+  const [salesforceOpportunityId, setSalesForceOpportunityId] =
+    useState<string>();
 
-  console.log(
-    {isDecryptedRecord},
-    // {userId},
-    // {salesForceOpportunityId},
-    // {salesForceinstanceUrl},
-    // {salesForceToken},
-    // {organizationId},
-  );
+  useEffect(() => {
+    const dealreg = async () => {
+      if (signedRequest && salesForceinstanceUrl) {
+        try {
+          const partnerRegRecord = await getPartnerRecord(
+            signedRequest,
+            salesForceinstanceUrl,
+            salesForceParamsId,
+          );
+
+          if (partnerRegRecord) {
+            setSalesForceOpportunityId(
+              partnerRegRecord?.rosdealregai__Opportunity__c || '', // Safeguard for null/undefined
+            );
+          } else {
+            console.warn('No partner registration record found.');
+            setSalesForceOpportunityId(''); // Handle the absence of a record gracefully
+          }
+        } catch (error) {
+          console.error('Error fetching partner registration record:', error);
+          setSalesForceOpportunityId(''); // Ensure the state is cleared in case of errors
+        }
+      }
+    };
+
+    if (navigationKey === 'rosdealregai__Partner_Registration__c') {
+      dealreg();
+    } else {
+      setSalesForceOpportunityId(salesForceParamsId);
+    }
+  }, [signedRequest, salesForceinstanceUrl, navigationKey]);
 
   useEffect(() => {
     if (getDealRegId && DealRegData && DealRegData.length > 0 && !isCanvas) {
@@ -99,10 +125,9 @@ const DealRegCustomTabs = forwardRef<
       const obj = {
         baseURL: salesForceinstanceUrl,
         token: salesForceToken,
-        opportunityId: '006Hs00001lIPCaIAO',
+        opportunityId: salesforceOpportunityId,
       };
-      // if (salesForceOpportunityId && salesForceinstanceUrl && salesForceToken) {
-      if ( salesForceinstanceUrl && salesForceToken) {
+      if (salesforceOpportunityId && salesForceinstanceUrl && salesForceToken) {
         try {
           const res: any = await dispatch(
             getSalesForceDealregByOpportunityId(obj),
@@ -131,7 +156,7 @@ const DealRegCustomTabs = forwardRef<
     };
 
     fetchData();
-  }, [salesForceinstanceUrl, isData]);
+  }, [salesForceinstanceUrl, isData, salesforceOpportunityId]);
 
   const callDealregApi = async (obj: any) => {
     try {

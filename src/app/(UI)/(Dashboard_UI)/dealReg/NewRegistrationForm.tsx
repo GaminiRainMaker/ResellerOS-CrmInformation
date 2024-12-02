@@ -72,10 +72,9 @@ const NewRegistrationForm: FC<any> = ({
   const {client, context} = isDecryptedRecord as any;
   const {instanceUrl: salesForceinstanceUrl, oauthToken: salesForceToken} =
     client;
-  const {organization, environment} = context;
+  const {environment} = context;
   const {parameters} = environment;
   const {recordId: salesForceOpportunityId} = parameters;
-  const {organizationId} = organization;
 
   useEffect(() => {
     if (isCanvas) {

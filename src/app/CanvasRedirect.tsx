@@ -7,6 +7,7 @@ import {
   setDecryptedData,
   setIsCanvas,
   setNewSignedRequest,
+  setSalesforceNavigationKey,
 } from '../../redux/slices/canvas';
 
 interface Props {
@@ -33,6 +34,7 @@ const CanvasRedirectWrapper = ({children}: Props) => {
           const navigationKey = getNavigationKey(
             decryotData?.context?.environment?.locationUrl,
           );
+          dispatch(setSalesforceNavigationKey(navigationKey));
           dispatch(setNewSignedRequest(sr));
           dispatch(
             setDecryptedData(globalThis.JSON.parse(Sfdc.canvas.decode(part))),

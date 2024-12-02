@@ -1,6 +1,6 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {insertAttributeField} from '../actions/attributeField';
-import { SignedRequest } from '../../types/salesforce';
+import {SignedRequest} from '../../types/salesforce';
 
 type CanvasState = {
   loading: boolean;
@@ -9,6 +9,7 @@ type CanvasState = {
   isCanvas: boolean;
   signedRequest: any;
   isDecryptedRecord: SignedRequest | null;
+  navigationKey: string;
 };
 const initialState: CanvasState = {
   loading: false,
@@ -17,6 +18,7 @@ const initialState: CanvasState = {
   data: {},
   signedRequest: {},
   isDecryptedRecord: null,
+  navigationKey: '',
 };
 
 const CanvasSlice = createSlice({
@@ -34,6 +36,9 @@ const CanvasSlice = createSlice({
     },
     setDecryptedData: (state, action) => {
       state.isDecryptedRecord = action.payload;
+    },
+    setSalesforceNavigationKey: (state, action) => {
+      state.navigationKey = action.payload;
     },
   },
   extraReducers(builder) {
@@ -59,6 +64,11 @@ const CanvasSlice = createSlice({
   },
 });
 
-export const {setCanvas, setIsCanvas, setNewSignedRequest, setDecryptedData} =
-  CanvasSlice.actions;
+export const {
+  setCanvas,
+  setIsCanvas,
+  setNewSignedRequest,
+  setDecryptedData,
+  setSalesforceNavigationKey,
+} = CanvasSlice.actions;
 export default CanvasSlice?.reducer;
