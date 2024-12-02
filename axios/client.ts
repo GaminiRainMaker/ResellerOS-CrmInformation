@@ -16,6 +16,7 @@ const client = axios.create({
   // baseURL: 'https://api.reselleros.com',
 
   // Azure Deployed
+
   baseURL: 'https://dev-api.reselleros.com',
 
   withCredentials: false,
