@@ -1,7 +1,7 @@
 'use client';
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import OsButton from '@/app/components/common/os-button';
@@ -9,25 +9,30 @@ import OsDropdown from '@/app/components/common/os-dropdown';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
 import Typography from '@/app/components/common/typography';
-import { PlusIcon } from '@heroicons/react/24/outline';
-import { MenuProps } from 'antd';
+import {PlusIcon} from '@heroicons/react/24/outline';
+import {MenuProps} from 'antd';
 import Form from 'antd/es/form';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import {useRouter, useSearchParams} from 'next/navigation';
+import {useEffect, useRef, useState} from 'react';
 import {
   dealRegFormScript,
   getDealRegByOpportunityId,
   updateDealRegStatus,
 } from '../../../../../redux/actions/dealReg';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {
   setDealReg,
   setOpenDealRegDrawer,
 } from '../../../../../redux/slices/dealReg';
 import NewRegistrationForm from '../dealReg/NewRegistrationForm';
-import DealRegCustomTabs, { DealRegCustomTabsHandle } from './DealRegCustomTabs';
+import DealRegCustomTabs, {DealRegCustomTabsHandle} from './DealRegCustomTabs';
 import ElectronBot from './ElectronBot';
 import SubmitDealRegForms from './SubmitDealRegForms';
+import {
+  getSalesForceDealregById,
+  getSalesForcePartnerCredentials,
+} from '../../../../../redux/actions/salesForce';
+import {decrypt, encrypt} from '@/app/utils/base';
 
 const DealRegDetail = () => {
   const [getFormData] = Form.useForm();
@@ -50,23 +55,18 @@ const DealRegDetail = () => {
   const {userInformation} = useAppSelector((state) => state.user);
   const [salesForceDealregData, setSalesForceDealregData] = useState<any>();
   const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
-  // // Destructuring the main object
-  const {userId, client, context} = isDecryptedRecord as any;
-  const {instanceUrl: salesForceinstanceUrl, oauthToken: salesForceToken} =
-    client;
-  const {organization, environment} = context;
-  const {parameters} = environment;
-  const {recordId: salesForceOpportunityId} = parameters;
-  const {organizationId} = organization;
+  // Initialize variables with default values
+  let userId: string | undefined;
+  let salesForceinstanceUrl: string | undefined;
+  let salesForceToken: string | undefined;
 
-  console.log(
-    {isDecryptedRecord},
-    {userId},
-    {salesForceOpportunityId},
-    {salesForceinstanceUrl},
-    {salesForceToken},
-    {organizationId},
-  );
+  if (isCanvas && isDecryptedRecord) {
+    const {userId: decryptedUserId, client} = isDecryptedRecord as any;
+    userId = decryptedUserId;
+    salesForceinstanceUrl = client?.instanceUrl;
+    salesForceToken = client?.oauthToken;
+  }
+  const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
 
   useEffect(() => {
     if (getOpportunityId && !isCanvas) {
@@ -133,15 +133,41 @@ const DealRegDetail = () => {
 
     if (SubmitDealRegFormData) {
       try {
-        const finalAppData = {
+        let finalAppData: any = {
           dealRegId: SubmitDealRegFormData?.id,
-          userId: userInformation?.id ?? userId,
           token: salesForceToken,
           baseURL: salesForceinstanceUrl,
           partnerId: SubmitDealRegFormData?.partner_id,
           partnerProgramId: SubmitDealRegFormData?.partner_program_id,
         };
-        const response = await dispatch(dealRegFormScript(finalAppData));
+        let finalAppData123: any = {
+          dealRegId: !isCanvas ? SubmitDealRegFormData?.id : '',
+          userId: userInformation?.id ?? userId,
+          partnerProgramId: SubmitDealRegFormData?.partner_program_id,
+          isCanvas: isCanvas,
+        };
+
+        if (isCanvas) {
+          const dealregData: any = await dispatch(
+            getSalesForceDealregById(finalAppData),
+          );
+          const res: any = await dispatch(
+            getSalesForcePartnerCredentials(finalAppData),
+          );
+          if (dealregData?.payload) {
+            finalAppData123.salesforceDealregData = dealregData?.payload?.[0];
+          }
+          if (res?.payload?.password) {
+            const {iv, data} = await encrypt(
+              res?.payload?.password,
+              SECRET_KEY as string,
+            );
+            finalAppData123.password = `${iv}:${data}`;
+            finalAppData123.username = res?.payload?.username;
+          }
+        }
+        console.log({finalAppData123});
+        const response = await dispatch(dealRegFormScript(finalAppData123));
         if (response && !isCanvas) {
           await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
             (response: {payload: any}) => {
