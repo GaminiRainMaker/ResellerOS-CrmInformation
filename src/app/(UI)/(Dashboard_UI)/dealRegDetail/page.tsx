@@ -135,11 +135,16 @@ const DealRegDetail = () => {
       try {
         let finalAppData: any = {
           dealRegId: SubmitDealRegFormData?.id,
-          userId: userInformation?.id ?? userId,
           token: salesForceToken,
           baseURL: salesForceinstanceUrl,
           partnerId: SubmitDealRegFormData?.partner_id,
           partnerProgramId: SubmitDealRegFormData?.partner_program_id,
+        };
+        let finalAppData123: any = {
+          dealRegId: !isCanvas ? SubmitDealRegFormData?.id : '',
+          userId: userInformation?.id ?? userId,
+          partnerProgramId: SubmitDealRegFormData?.partner_program_id,
+          isCanvas: isCanvas,
         };
 
         if (isCanvas) {
@@ -150,19 +155,19 @@ const DealRegDetail = () => {
             getSalesForcePartnerCredentials(finalAppData),
           );
           if (dealregData?.payload) {
-            finalAppData.salesforceDealregData = dealregData?.payload?.[0];
+            finalAppData123.salesforceDealregData = dealregData?.payload?.[0];
           }
           if (res?.payload?.password) {
             const {iv, data} = await encrypt(
               res?.payload?.password,
               SECRET_KEY as string,
             );
-            finalAppData.password = `${iv}:${data}`;
-            finalAppData.username = res?.payload?.username;
+            finalAppData123.password = `${iv}:${data}`;
+            finalAppData123.username = res?.payload?.username;
           }
         }
-        console.log({finalAppData});
-        const response = await dispatch(dealRegFormScript(finalAppData));
+        console.log({finalAppData123});
+        const response = await dispatch(dealRegFormScript(finalAppData123));
         if (response && !isCanvas) {
           await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
             (response: {payload: any}) => {
