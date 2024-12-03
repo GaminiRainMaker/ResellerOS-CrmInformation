@@ -12,6 +12,8 @@ import Typography from '@/app/components/common/typography';
 import {formatStatus} from '@/app/utils/CONSTANTS';
 import {
   calculateTabBarPercentage,
+  encrypt,
+  fetchAndDecryptRecords,
   updateSalesForceData,
 } from '@/app/utils/base';
 import {useSearchParams} from 'next/navigation';
@@ -31,6 +33,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setFinalUpdatedDealRegData} from '../../../../../redux/slices/dealReg';
 import DealRegDetailForm from './DealRegDetailForm';
 import {getPartnerRecord} from '../../../../../salesforceConnection/action';
+const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
 
 // Define the prop types for DealRegCustomTabs
 type DealRegCustomTabsProps = {
@@ -132,9 +135,13 @@ const DealRegCustomTabs = forwardRef<
           const res: any = await dispatch(
             getSalesForceDealregByOpportunityId(obj),
           );
-          if (res?.payload) {
+          const newdata = await fetchAndDecryptRecords(
+            res?.payload,
+            SECRET_KEY as string,
+          );
+          if (newdata) {
             const finalData = await updateSalesForceData(
-              res,
+              newdata,
               allPartnersById,
               allPartnerProgramById,
               dispatch,
@@ -162,11 +169,13 @@ const DealRegCustomTabs = forwardRef<
     try {
       // Wait for the dispatch to complete and get the result
       const d: any = await dispatch(getSalesForceDealregById(obj));
-
-      // If the payload is present, call updateSalesForceData
-      if (d?.payload) {
+      const newdata = await fetchAndDecryptRecords(
+        d?.payload,
+        SECRET_KEY as string,
+      );
+      if (newdata) {
         const finalData = await updateSalesForceData(
-          d,
+          newdata,
           allPartnersById,
           allPartnerProgramById,
           dispatch,
@@ -175,7 +184,6 @@ const DealRegCustomTabs = forwardRef<
         // console.log('finalData3333', finalData, d?.payload);
         setSalesForceDealregById(finalData);
       }
-
       // Set salesForceDealregById after the update
     } catch (error) {
       console.error('Error calling Dealreg API:', error);
@@ -378,12 +386,41 @@ const DealRegCustomTabs = forwardRef<
           dispatch(updateDealRegStatus(statusObj));
         }
       } else if (newObj && isCanvas) {
-        let finalObj = {
-          data: newObj,
+        const finalObj: any = {
+          common_form_data: [JSON.stringify(finalCommonFieldObject)],
+          unique_form_data: [JSON.stringify(finalUniqueFieldObject)],
+          id: activeKey,
           baseURL: salesForceinstanceUrl,
           token: salesForceToken,
+          percentage: tabPercentage,
         };
-        console.log('finalObj', finalObj);
+
+        // Encrypt and replace `common_form_data` if it exists
+        if (finalObj?.common_form_data) {
+          const commonFormDataString = JSON.stringify(
+            finalObj.common_form_data,
+          ); // Convert to string
+          const {iv, data} = await encrypt(
+            commonFormDataString,
+            SECRET_KEY as string,
+          ); // Encrypt
+          finalObj.common_form_data = `${iv}:${data}`; // Replace with encrypted value
+        }
+
+        // Encrypt and replace `unique_form_data` if it exists
+        if (finalObj?.unique_form_data) {
+          const uniqueFormDataString = JSON.stringify(
+            finalObj.unique_form_data,
+          ); // Convert to string
+          const {iv, data} = await encrypt(
+            uniqueFormDataString,
+            SECRET_KEY as string,
+          ); // Encrypt
+          finalObj.unique_form_data = `${iv}:${data}`; // Replace with encrypted value
+        }
+
+        console.log({finalObj});
+
         dispatch(updateSalesForceDealregById(finalObj));
       }
     }

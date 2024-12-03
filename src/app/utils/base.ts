@@ -1979,18 +1979,83 @@ interface PartnerProgram {
   id: string;
   [key: string]: any;
 }
+export async function fetchAndDecryptRecords(
+  encryptedRecords: Array<{
+    id: string;
+    opportunity_id: string;
+    opportunity_name: string;
+    partner_id: string;
+    partner_program_id: string;
+    unique_form_data: string;
+    common_form_data: string;
+    percentage: string;
+  }>,
+  SECRET_KEY: string,
+) {
+  try {
+    // Decrypt each record
+    const decryptedRecords = await Promise.all(
+      encryptedRecords.map(async (record) => {
+        try {
+          // Decrypt the `unique_form_data`
+          // Remove extra quotes and split the `unique_form_data`
+          const uniqueDataRaw = record.unique_form_data.replace(/^"|"$/g, ''); // Remove leading and trailing quotes
+          const [uniqueIv, uniqueEncryptedData] = uniqueDataRaw.split(':');
+
+          // Decrypt the `unique_form_data`
+          const uniqueDecryptedString = await decrypt(
+            uniqueEncryptedData,
+            SECRET_KEY,
+            uniqueIv,
+          );
+
+          // Remove extra quotes and split the `common_form_data`
+          const commonDataRaw = record.common_form_data.replace(/^"|"$/g, ''); // Remove leading and trailing quotes
+          const [commonIv, commonEncryptedData] = commonDataRaw.split(':');
+
+          // Decrypt the `common_form_data`
+          const commonDecryptedString = await decrypt(
+            commonEncryptedData,
+            SECRET_KEY,
+            commonIv,
+          );
+
+          // Return the record with decrypted data
+          return {
+            ...record,
+            unique_form_data: JSON.parse(uniqueDecryptedString),
+            common_form_data: JSON.parse(commonDecryptedString),
+          };
+        } catch (error) {
+          console.error(
+            `Failed to decrypt data for record with id: ${record.id}`,
+            error,
+          );
+
+          // Return the record as-is in case of decryption failure
+          return record;
+        }
+      }),
+    );
+
+    return decryptedRecords;
+  } catch (error) {
+    console.error('Failed to decrypt records:', error);
+    throw error; // Re-throw the error to handle it further up the chain
+  }
+}
 
 export const updateSalesForceData = async (
-  res: {payload: PayloadItem[]} | undefined,
+  res: any | undefined,
   allPartnersById: Partner[],
   allPartnerProgramById: PartnerProgram[],
   dispatch: any,
   setIsData?: any,
 ) => {
-  if (!res?.payload) return;
+  if (!res) return;
 
-  const partnerArray = res?.payload?.map((item: any) => item?.partner_id);
-  const partnerProgramArray = res?.payload?.map(
+  const partnerArray = res?.map((item: any) => item?.partner_id);
+  const partnerProgramArray = res?.map(
     (item: any) => item?.partner_program_id,
   );
   // Dispatch actions to get all partners and partner programs by id
@@ -2016,7 +2081,7 @@ export const updateSalesForceData = async (
   setIsData(true);
 
   // Updating main data with matching partner and partner program
-  const newData = res?.payload?.map((item: any) => {
+  const newData = res?.map((item: any) => {
     const updatedItem = {...item};
     // Find matching partner data
     const partner = partnerData?.find((p: any) => p?.id == item?.partner_id);
