@@ -336,7 +336,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         let findThevalue = lineItemSyncingData?.find(
           (itemInn: any) =>
             itemInn?.pdf_header ===
-              items?.pdf_header?.toString()?.toLowerCase &&
+              items?.pdf_header?.toString()?.toLowerCase() &&
             itemInn?.is_salesforce &&
             itemInn?.life_boat_salesforce,
           // &&
@@ -346,6 +346,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         if (!findThevalue) {
           updatedArrForAddingLineItemSyncFOrSales?.push({
             ...items,
+            pdf_header: items?.pdf_header?.toLowerCase(),
             life_boat_salesforce: true,
           });
         }

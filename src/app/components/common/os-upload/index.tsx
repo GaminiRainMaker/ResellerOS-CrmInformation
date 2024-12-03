@@ -120,35 +120,47 @@ const OsUpload: React.FC<any> = ({
                       .replace(/[\s_]+/g, ' ')
                       .trim();
                   };
-
+                  let lastCount = 0;
+                  let bestTab = 0;
+                  let allTimeBestRow = -1;
                   // Normalize the newArrCheck values
                   let normalizedCheckArr = newArrCheck.map(normalize);
                   // check for best matching row
                   let maxMatches = 0;
                   let bestRowIndex = -1;
+                  payload?.payload?.map((itemsMain: any, indexMain: number) => {
+                    for (let i = 0; i < itemsMain.length; i++) {
+                      let currentRow = itemsMain[i];
+                      let matchCount = 0;
 
-                  for (let i = 0; i < payload?.payload.length; i++) {
-                    let currentRow = payload?.payload[i];
-                    let matchCount = 0;
+                      for (let item of currentRow) {
+                        let normalizedItem = normalize(item);
+                        // Check if normalizedItem matches any normalized check item
+                        if (
+                          normalizedCheckArr.some(
+                            (checkItem: any) =>
+                              normalizedItem
+                                ?.toString()
+                                .replace(/\s+/g, '')
+                                .replace('.', '')
+                                .toLowerCase() === normalize(checkItem),
+                          )
+                        ) {
+                          matchCount++;
+                        }
+                      }
 
-                    for (let item of currentRow) {
-                      let normalizedItem = normalize(item);
-                      // Check if normalizedItem matches any normalized check item
-                      if (
-                        normalizedCheckArr.some(
-                          (checkItem: any) =>
-                            normalizedItem === normalize(checkItem),
-                        )
-                      ) {
-                        matchCount++;
+                      if (matchCount > maxMatches) {
+                        maxMatches = matchCount;
+                        bestRowIndex = i;
                       }
                     }
-
-                    if (matchCount > maxMatches) {
-                      maxMatches = matchCount;
-                      bestRowIndex = i;
+                    if (lastCount < maxMatches) {
+                      lastCount = maxMatches;
+                      allTimeBestRow = bestRowIndex;
+                      bestTab = indexMain;
                     }
-                  }
+                  });
 
                   // trim the arrr for valid lineItems
 
@@ -157,13 +169,14 @@ const OsUpload: React.FC<any> = ({
                       (item: any) => item === null || item === '',
                     );
                   };
-
+                  let bestTabsRawData = payload?.payload[bestTab];
                   let indexFrom = -1;
+
                   // Find the index of the first row that is null or empty
-                  for (let i = 0; i < payload?.payload?.length; i++) {
+                  for (let i = 0; i < bestTabsRawData?.length; i++) {
                     if (
-                      isNullOrEmptyRow(payload?.payload[i]) &&
-                      bestRowIndex + 3 < i
+                      isNullOrEmptyRow(bestTabsRawData[i]) &&
+                      allTimeBestRow + 3 < i
                     ) {
                       indexFrom = i;
                       break;
@@ -173,18 +186,18 @@ const OsUpload: React.FC<any> = ({
                   // Slice the array from the found index
                   let result =
                     indexFrom > 0
-                      ? payload?.payload?.slice(bestRowIndex + 1, indexFrom)
-                      : payload?.payload?.slice(
-                          bestRowIndex + 1,
-                          payload?.payload?.length,
+                      ? bestTabsRawData?.slice(bestRowIndex + 1, indexFrom)
+                      : bestTabsRawData?.slice(
+                          allTimeBestRow + 1,
+                          bestTabsRawData?.length,
                         );
 
                   let requiredOutput = result
                     ?.map((subArray: any) =>
                       subArray.filter(
                         (item: any) =>
-                          // item !== null &&
-                          // item !== undefined &&
+                          item !== null &&
+                          item !== undefined &&
                           item?.toString()?.toLowerCase() !== 'om',
                       ),
                     )
@@ -192,12 +205,11 @@ const OsUpload: React.FC<any> = ({
                   // let headerKeys: any = payload?.payload[bestRowIndex];
 
                   let headerKeys: any = [];
-                  payload?.payload[bestRowIndex]?.filter((items: any) => {
+                  bestTabsRawData[allTimeBestRow]?.filter((items: any) => {
                     if (
-                      !headerKeys?.includes(items)
-                      // &&
-                      // items !== undefined &&
-                      // items !== null
+                      !headerKeys?.includes(items) &&
+                      items !== null &&
+                      items !== undefined
                     ) {
                       headerKeys?.push(items?.trim());
                     }
@@ -230,15 +242,6 @@ const OsUpload: React.FC<any> = ({
                     },
                   );
                   // .filter(Boolean); // Remove any undefined values
-
-                  // end of above
-                  // Transform newArr into an array of objects
-                  // console.log(
-                  //   'requiredOutputrequiredOutput',
-                  //   headerKeys,
-                  //   syncedHeaderValue,
-                  //   requiredOutput,
-                  // );
 
                   resultantValues = requiredOutput.map((row: any) => {
                     let obj: any = {};
