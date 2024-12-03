@@ -68,13 +68,20 @@ const NewRegistrationForm: FC<any> = ({
   const [partnerNewId, setPartnerNewId] = useState<any>();
   const [partnerProgramNewId, setPartnerProgramNewId] = useState<any>();
   const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
-  // Destructuring the main object
-  const {client, context} = isDecryptedRecord as any;
-  const {instanceUrl: salesForceinstanceUrl, oauthToken: salesForceToken} =
-    client;
-  const {environment} = context;
-  const {parameters} = environment;
-  const {recordId: salesForceOpportunityId} = parameters;
+  // Initialize variables with default values
+  let salesForceinstanceUrl: string | undefined;
+  let salesForceToken: string | undefined;
+  let salesForceOpportunityId: string | undefined;
+
+  if (isDecryptedRecord) {
+    const {client, context} = isDecryptedRecord as any;
+    salesForceinstanceUrl = client?.instanceUrl;
+    salesForceToken = client?.oauthToken;
+
+    const {environment} = context || {};
+    const {parameters} = environment || {};
+    salesForceOpportunityId = parameters?.recordId;
+  }
 
   useEffect(() => {
     if (isCanvas) {
