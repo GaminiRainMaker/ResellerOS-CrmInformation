@@ -71,12 +71,29 @@ const DealRegCustomTabs = forwardRef<
   const [salesForceDealregById, setSalesForceDealregById] = useState<any>();
   const {isCanvas, isDecryptedRecord, signedRequest, navigationKey} =
     useAppSelector((state) => state.canvas);
-  const {client, context} = isDecryptedRecord as any;
-  const {instanceUrl: salesForceinstanceUrl, oauthToken: salesForceToken} =
-    client;
-  const {environment} = context;
-  const {parameters} = environment;
-  const {recordId: salesForceParamsId} = parameters;
+
+  // const {client, context} = isDecryptedRecord as any;
+  // const {instanceUrl: salesForceinstanceUrl, oauthToken: salesForceToken} =
+  //   client;
+  // const {environment} = context;
+  // const {parameters} = environment;
+  // const {recordId: salesForceParamsId} = parameters;
+
+  // Initialize variables with default values
+  let salesForceinstanceUrl: string | undefined;
+  let salesForceToken: string | undefined;
+  let salesForceParamsId: string | any;
+
+  if (isCanvas && isDecryptedRecord) {
+    const {client, context} = isDecryptedRecord as any;
+    salesForceinstanceUrl = client?.instanceUrl;
+    salesForceToken = client?.oauthToken;
+
+    const {environment} = context || {};
+    const {parameters} = environment || {};
+    salesForceParamsId = parameters?.recordId;
+  }
+
   const [salesforceOpportunityId, setSalesForceOpportunityId] =
     useState<string>();
 

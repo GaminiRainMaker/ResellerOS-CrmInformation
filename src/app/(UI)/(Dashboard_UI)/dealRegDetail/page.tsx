@@ -55,10 +55,17 @@ const DealRegDetail = () => {
   const {userInformation} = useAppSelector((state) => state.user);
   const [salesForceDealregData, setSalesForceDealregData] = useState<any>();
   const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
-  // // Destructuring the main object
-  const {userId, client} = isDecryptedRecord as any;
-  const {instanceUrl: salesForceinstanceUrl, oauthToken: salesForceToken} =
-    client;
+  // Initialize variables with default values
+  let userId: string | undefined;
+  let salesForceinstanceUrl: string | undefined;
+  let salesForceToken: string | undefined;
+
+  if (isCanvas && isDecryptedRecord) {
+    const {userId: decryptedUserId, client} = isDecryptedRecord as any;
+    userId = decryptedUserId;
+    salesForceinstanceUrl = client?.instanceUrl;
+    salesForceToken = client?.oauthToken;
+  }
   const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
 
   useEffect(() => {
