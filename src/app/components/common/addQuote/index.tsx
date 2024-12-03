@@ -590,6 +590,9 @@ const AddQuote: FC<AddQuoteInterface> = ({
       });
     }
 
+    console.log('34232323', newArrWithoutManual);
+    return;
+
     try {
       setFinalLoading(true);
       setLoading(true);

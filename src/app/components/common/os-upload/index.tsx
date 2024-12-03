@@ -172,6 +172,8 @@ const OsUpload: React.FC<any> = ({
                   let bestTabsRawData = payload?.payload[bestTab];
                   let indexFrom = -1;
 
+                  console.log('2343242432', bestTabsRawData, bestTab);
+
                   // Find the index of the first row that is null or empty
                   for (let i = 0; i < bestTabsRawData?.length; i++) {
                     if (
@@ -184,6 +186,11 @@ const OsUpload: React.FC<any> = ({
                   }
 
                   // Slice the array from the found index
+
+                  let undefinedValesExist =
+                    bestTabsRawData[allTimeBestRow]?.includes(undefined) ||
+                    bestTabsRawData[allTimeBestRow]?.includes(null);
+
                   let result =
                     indexFrom > 0
                       ? bestTabsRawData?.slice(bestRowIndex + 1, indexFrom)
@@ -192,28 +199,56 @@ const OsUpload: React.FC<any> = ({
                           bestTabsRawData?.length,
                         );
 
-                  let requiredOutput = result
-                    ?.map((subArray: any) =>
-                      subArray.filter(
-                        (item: any) =>
-                          item !== null &&
-                          item !== undefined &&
-                          item?.toString()?.toLowerCase() !== 'om',
-                      ),
-                    )
-                    .filter((subArray: any) => subArray.length > 0);
+                  let requiredOutput: any;
+                  if (undefinedValesExist) {
+                    requiredOutput = result
+                      ?.map((subArray: any) =>
+                        subArray.filter(
+                          (item: any) =>
+                            item !== null &&
+                            item !== undefined &&
+                            item?.toString()?.toLowerCase() !== 'om',
+                        ),
+                      )
+                      .filter((subArray: any) => subArray.length > 0);
+                  } else {
+                    requiredOutput = result
+                      ?.map((subArray: any) =>
+                        subArray.filter(
+                          (item: any) =>
+                            // item !== null &&
+                            // item !== undefined &&
+                            item?.toString()?.toLowerCase() !== 'om',
+                        ),
+                      )
+                      .filter((subArray: any) => subArray.length > 0);
+                  }
+
                   // let headerKeys: any = payload?.payload[bestRowIndex];
 
                   let headerKeys: any = [];
-                  bestTabsRawData[allTimeBestRow]?.filter((items: any) => {
-                    if (
-                      !headerKeys?.includes(items) &&
-                      items !== null &&
-                      items !== undefined
-                    ) {
-                      headerKeys?.push(items?.trim());
-                    }
-                  });
+                  if (undefinedValesExist) {
+                    bestTabsRawData[allTimeBestRow]?.filter((items: any) => {
+                      if (
+                        !headerKeys?.includes(items) &&
+                        items !== null &&
+                        items !== undefined
+                      ) {
+                        headerKeys?.push(items?.trim());
+                      }
+                    });
+                  } else {
+                    bestTabsRawData[allTimeBestRow]?.filter((items: any) => {
+                      if (
+                        !headerKeys?.includes(items)
+                        //  &&
+                        // items !== null &&
+                        // items !== undefined
+                      ) {
+                        headerKeys?.push(items?.trim());
+                      }
+                    });
+                  }
 
                   // return;
 

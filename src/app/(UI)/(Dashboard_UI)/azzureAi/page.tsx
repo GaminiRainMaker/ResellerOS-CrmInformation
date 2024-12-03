@@ -62,7 +62,6 @@ const EditorFile = () => {
 
   const [lineItemSyncingData, setLineItemSyncingData] = useState<any>();
 
-
   const [query, setQuery] = useState<{
     searchValue: string;
     asserType: boolean;
@@ -142,6 +141,7 @@ const EditorFile = () => {
             let objName = excelFile === 'true' ? 'Url' : 'pdfUrl';
             if (doc_url) {
               dispatch(pathToGo({[objName]: doc_url}))?.then((payload: any) => {
+                console.log('payloadpayload', payload?.payload);
                 if (excelFile === 'true') {
                   // this is  a check arrr
                   let newArrCheck = [
@@ -237,11 +237,6 @@ const EditorFile = () => {
                   let mappedQuoteHeaders = mapNewArrMappedValues(
                     quoteHeaderChecks,
                     newMapped,
-                  );
-                  console.log(
-                    '32432432',
-                    quoteHeaderChecks,
-                    mappedQuoteHeaders,
                   );
 
                   let result =
