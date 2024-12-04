@@ -1115,6 +1115,7 @@ export const decrypt = async (
   iv: string,
 ): Promise<string> => {
   try {
+    console.log('encrypted', encrypted, key, iv);
     const cryptoKey = await crypto.subtle.importKey(
       'raw',
       getKey(key),
@@ -1122,6 +1123,8 @@ export const decrypt = async (
       false,
       ['decrypt'],
     );
+    console.log('cryptoKey', cryptoKey);
+
     const decrypted = await crypto.subtle.decrypt(
       {
         name: 'AES-GCM',
@@ -1130,6 +1133,7 @@ export const decrypt = async (
       cryptoKey,
       base64ToArrayBuffer(encrypted), // Decode base64 encrypted data
     );
+    console.log('decrypted', decrypted);
 
     return new TextDecoder().decode(decrypted); // Decode decrypted text
   } catch (error) {
