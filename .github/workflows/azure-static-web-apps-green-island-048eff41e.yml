@@ -46,6 +46,12 @@ jobs:
           app_build_command: 'npm run build'
           api_build_command: 'rm -rf ./node_modules/@next/swc-* && rm -rf ./.next/cache'
           github_id_token: ${{ steps.idtoken.outputs.result }}
+        env:
+          NEXT_PUBLIC_SECRET_KEY: '5234523@RyVDUEUDfdsidjfb9865BDBHIhfidfbidgbirbgvifvWENB42354$@4MLMP546cdscujdbc'
+          SECRET_KEY: '2b06d5d8a095a26337ad152eae7229d030aa9acbcc3763b0fb365c28bff5577d'
+          SALESFORCE_CONSUMER_KEY: '3MVG9HB6vm3GZZR.h84pmASRrbtPTbINgzTbiQPOqcvKVYPEiEbbyZ_0sBAGY97V44ZhUvFEGKwNCFefR4mId'
+          SALESFORCE_SECRET: '904B8F5C7A17217AAC08AF05AA5D4E23E2ABDEFAF82C123B89DD6550455DEA9D'
+          NEXT_PUBLIC_SERVER_API_URL: 'https://dev-api.reselleros.com'
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
