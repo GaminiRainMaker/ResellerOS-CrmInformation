@@ -115,6 +115,8 @@ const EditorFile = () => {
   const [oldColumnName, setOldColumnName] = useState<any>();
   const [oldColumnName1, setOldColumnName1] = useState<any>();
   const [typeOfFormula, setTypeOfFormula] = useState<any>();
+  const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
+
   const salesToken = searchParams.get('key');
   const SaleQuoteId = searchParams.get('quote_Id');
   const EditSalesLineItems = searchParams.get('editLine');
