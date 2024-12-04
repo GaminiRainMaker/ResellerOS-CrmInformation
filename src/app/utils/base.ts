@@ -2002,6 +2002,7 @@ export async function fetchAndDecryptRecords(
           // Decrypt `unique_form_data` if it exists
           if (record && record?.unique_form_data) {
             console.log('record12345', record);
+            console.log('dsdssdsd', record?.unique_form_data);
 
             const uniqueDataRaw = record?.unique_form_data?.replace(
               /^"|"$/g,
