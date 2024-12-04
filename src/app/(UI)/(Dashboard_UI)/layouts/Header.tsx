@@ -95,6 +95,8 @@ const CustomHeader = () => {
     loading: notificationLoading,
   } = useAppSelector((state) => state.notification);
   const {isCanvas} = useAppSelector((state) => state.canvas);
+  const salesForceUrl = searchParams.get('instance_url');
+
 
   const [userRole, setUserRole] = useState<string>('');
   const [searchFinalData, setSearchFinalData] = useState<any>();
@@ -113,7 +115,7 @@ const CustomHeader = () => {
   const [notificationCounts, setNotificationCounts] = useState<number>(0);
 
   useEffect(() => {
-    if (!isCanvas) {
+    if (!isCanvas && !salesForceUrl) {
       dispatch(getCountOfNotification(''))?.then((payload: any) => {
         setNotificationCounts(payload?.payload?.length);
       });
@@ -121,7 +123,7 @@ const CustomHeader = () => {
   }, []);
 
   useEffect(() => {
-    if (!isCanvas) {
+    if (!isCanvas && !salesForceUrl) {
       setNotificationCounts(0);
     }
   }, [notificationData]);
@@ -311,7 +313,7 @@ const CustomHeader = () => {
             <Col>
               <Image src={HeaderLogo} alt="HeaderLogo" />
             </Col>
-            {!isCanvas && (
+            {!isCanvas && !salesForceUrl && (
               <Col span={15}>
                 <SearchSelect
                   onSearch={(e: any) => {
@@ -331,7 +333,7 @@ const CustomHeader = () => {
         </Col>
 
         <Col>
-          {!isCanvas && (
+          {!isCanvas && !salesForceUrl && (
             <Space
               direction="horizontal"
               size={24}
