@@ -1,22 +1,22 @@
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Switch } from '@/app/components/common/antd/Switch';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Switch} from '@/app/components/common/antd/Switch';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
 import {
   StyledDivider,
   ToggleColStyled,
 } from '@/app/components/common/os-div-row-col/styled-component';
 import OsInput from '@/app/components/common/os-input';
-import { SelectFormItem } from '@/app/components/common/os-oem-select/oem-select-styled';
+import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import { convertToSnakeCase } from '@/app/utils/base';
-import { MailOutlined } from '@ant-design/icons';
-import { Checkbox, Form, Radio, TimePicker } from 'antd';
-import { Option } from 'antd/es/mentions';
+import {convertToSnakeCase} from '@/app/utils/base';
+import {MailOutlined} from '@ant-design/icons';
+import {Checkbox, Form, Radio, TimePicker} from 'antd';
+import {Option} from 'antd/es/mentions';
 import dayjs from 'dayjs';
-import React, { useEffect, useState } from 'react';
-import { useAppSelector } from '../../../../../redux/hook';
-import { UniqueFieldsProps } from './dealReg.interface';
+import React, {useEffect, useState} from 'react';
+import {useAppSelector} from '../../../../../redux/hook';
+import {UniqueFieldsProps} from './dealReg.interface';
 
 const UniqueFields: React.FC<UniqueFieldsProps> = ({
   data,
@@ -322,7 +322,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     userfill: any,
     commonProps: any,
   ) => {
-    console.log('itemCon', itemCon);
     let convertedToCheckValue =
       'u_' +
       convertToSnakeCase(itemCon.label) +
@@ -355,7 +354,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     let finTheFiledActive = globalStateForDependentFields?.find(
       (item: any) => item?.idName === itemCon?.label,
     );
-    console.log('finTheFiledActive', finTheFiledActive);
     dependentField = itemCon?.dependentFiledArr.find(
       (depField: any) => depField.id === finTheFiledActive?.valueOut, // Check both selections
     );
@@ -370,7 +368,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
 
     let originalDependentValueSaved =
       formData?.unique_form_data?.[convertedToCheckDependentValue?.toString()];
-    console.log('selectedOption', selectedOption);
     return (
       <>
         {/* Render Main Field Based on the Type */}
@@ -571,6 +568,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           if (allContentItem?.name === 'Text Content') {
             return (
               <Col
+                key={itemIndex}
                 span={24}
                 style={{textAlign: alignment, padding: '12px 0px'}}
               >

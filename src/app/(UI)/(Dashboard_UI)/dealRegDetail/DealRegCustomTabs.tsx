@@ -226,7 +226,6 @@ const DealRegCustomTabs = forwardRef<
             ? []
             : finalDealReg?.unique_form_data;
 
-      console.log('finalDealReg', finalDealReg);
       const obj = {
         common_form_data:
           commonFormData && commonFormData.length > 0

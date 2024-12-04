@@ -26,7 +26,6 @@ const CanvasRedirectWrapper = ({children}: Props) => {
     const isCanvas = window.location !== window.parent.location;
     if (isCanvas) {
       globalThis.Sfdc.canvas.client.refreshSignedRequest((data) => {
-        console.log({data});
         if (data?.payload?.auxiliary?.appApprovalType === 'ADMIN_APPROVED') {
           const sr = data.payload.response;
           const part = sr.split('.')[1];
@@ -39,12 +38,7 @@ const CanvasRedirectWrapper = ({children}: Props) => {
           dispatch(
             setDecryptedData(globalThis.JSON.parse(Sfdc.canvas.decode(part))),
           );
-          console.log(
-            'ADMIN_APPROVED',
-            globalThis.JSON.parse(Sfdc.canvas.decode(part)),
-          );
           dispatch(setIsCanvas(true));
-          console.log({navigationKey});
           if (navigationKey === 'Opportunity') {
             router.replace('/dealReg');
           } else if (

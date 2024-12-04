@@ -1997,6 +1997,13 @@ export async function fetchAndDecryptRecords(
     const decryptedRecords = await Promise.all(
       encryptedRecords.map(async (record) => {
         try {
+          // Check if `unique_form_data` and `common_form_data` exist and are not null, empty, or undefined
+          if (!record.unique_form_data || !record.common_form_data) {
+            console.warn(
+              `Skipping decryption for record with id: ${record.id} due to missing data.`,
+            );
+            return record; // Return record as-is if decryption is not required
+          }
           // Decrypt the `unique_form_data`
           // Remove extra quotes and split the `unique_form_data`
           const uniqueDataRaw = record.unique_form_data.replace(/^"|"$/g, ''); // Remove leading and trailing quotes
@@ -2055,9 +2062,7 @@ export const updateSalesForceData = async (
   if (!res) return;
 
   const partnerArray = res?.map((item: any) => item?.partner_id);
-  const partnerProgramArray = res?.map(
-    (item: any) => item?.partner_program_id,
-  );
+  const partnerProgramArray = res?.map((item: any) => item?.partner_program_id);
   // Dispatch actions to get all partners and partner programs by id
   let partnerData: any = [];
   let partnerProgramData: any = [];
@@ -2099,8 +2104,6 @@ export const updateSalesForceData = async (
 
     return updatedItem;
   });
-  console.log('newData', newData);
-
   return newData;
 };
 
