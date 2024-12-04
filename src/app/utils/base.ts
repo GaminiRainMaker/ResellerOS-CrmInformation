@@ -1115,7 +1115,6 @@ export const decrypt = async (
   iv: string,
 ): Promise<string> => {
   try {
-    console.log('encrypted', encrypted, key, iv);
     const cryptoKey = await crypto.subtle.importKey(
       'raw',
       getKey(key),
@@ -1123,8 +1122,6 @@ export const decrypt = async (
       false,
       ['decrypt'],
     );
-    console.log('cryptoKey', cryptoKey);
-
     const decrypted = await crypto.subtle.decrypt(
       {
         name: 'AES-GCM',
@@ -1133,8 +1130,6 @@ export const decrypt = async (
       cryptoKey,
       base64ToArrayBuffer(encrypted), // Decode base64 encrypted data
     );
-    console.log('decrypted', decrypted);
-
     return new TextDecoder().decode(decrypted); // Decode decrypted text
   } catch (error) {
     console.error('Decryption error:', error);
@@ -2002,12 +1997,8 @@ export async function fetchAndDecryptRecords(
       encryptedRecords?.map(async (record) => {
         try {
           const updatedRecord = {...record};
-          console.log('record', record);
           // Decrypt `unique_form_data` if it exists
           if (record && record?.unique_form_data) {
-            console.log('record12345', record);
-            console.log('dsdssdsd', record?.unique_form_data);
-
             const uniqueDataRaw = record?.unique_form_data?.replace(
               /^"|"$/g,
               '',

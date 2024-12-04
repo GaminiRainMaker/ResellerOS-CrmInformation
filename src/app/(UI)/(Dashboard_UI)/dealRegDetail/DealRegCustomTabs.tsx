@@ -137,8 +137,6 @@ const DealRegCustomTabs = forwardRef<
             res?.payload,
             SECRET_KEY as string,
           );
-          console.log('newdata123', newdata);
-
           if (newdata) {
             const finalData = await updateSalesForceData(
               newdata,
@@ -173,7 +171,6 @@ const DealRegCustomTabs = forwardRef<
         d?.payload,
         SECRET_KEY as string,
       );
-      console.log('newdata', newdata);
       if (newdata) {
         const finalData = await updateSalesForceData(
           newdata,
