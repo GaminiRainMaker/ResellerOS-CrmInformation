@@ -415,9 +415,6 @@ const DealRegCustomTabs = forwardRef<
           ); // Encrypt
           finalObj.unique_form_data = `${iv}:${data}`; // Replace with encrypted value
         }
-
-        console.log({finalObj});
-
         dispatch(updateSalesForceDealregById(finalObj));
       }
     }

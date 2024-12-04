@@ -1986,8 +1986,8 @@ export async function fetchAndDecryptRecords(
     opportunity_name: string;
     partner_id: string;
     partner_program_id: string;
-    unique_form_data: string;
-    common_form_data: string;
+    unique_form_data: string | null;
+    common_form_data: string | null;
     percentage: string;
   }>,
   SECRET_KEY: string,
@@ -1995,44 +1995,57 @@ export async function fetchAndDecryptRecords(
   try {
     // Decrypt each record
     const decryptedRecords = await Promise.all(
-      encryptedRecords.map(async (record) => {
+      encryptedRecords?.map(async (record) => {
         try {
-          // Check if `unique_form_data` and `common_form_data` exist and are not null, empty, or undefined
-          if (!record.unique_form_data || !record.common_form_data) {
-            console.warn(
-              `Skipping decryption for record with id: ${record.id} due to missing data.`,
-            );
-            return record; // Return record as-is if decryption is not required
+          const updatedRecord = {...record};
+
+          // Decrypt `unique_form_data` if it exists
+          if (record?.unique_form_data) {
+            const uniqueDataRaw = record?.unique_form_data.replace(
+              /^"|"$/g,
+              '',
+            ); // Remove leading and trailing quotes
+            if (uniqueDataRaw.includes(':')) {
+              const [uniqueIv, uniqueEncryptedData] = uniqueDataRaw?.split(':');
+              const uniqueDecryptedString = await decrypt(
+                uniqueEncryptedData,
+                SECRET_KEY,
+                uniqueIv,
+              );
+              updatedRecord.unique_form_data = JSON.parse(
+                uniqueDecryptedString,
+              );
+            } else {
+              console.warn(
+                `Invalid format for unique_form_data in record with id: ${record?.id}`,
+              );
+            }
           }
-          // Decrypt the `unique_form_data`
-          // Remove extra quotes and split the `unique_form_data`
-          const uniqueDataRaw = record.unique_form_data.replace(/^"|"$/g, ''); // Remove leading and trailing quotes
-          const [uniqueIv, uniqueEncryptedData] = uniqueDataRaw.split(':');
 
-          // Decrypt the `unique_form_data`
-          const uniqueDecryptedString = await decrypt(
-            uniqueEncryptedData,
-            SECRET_KEY,
-            uniqueIv,
-          );
+          // Decrypt `common_form_data` if it exists
+          if (record?.common_form_data) {
+            const commonDataRaw = record?.common_form_data.replace(
+              /^"|"$/g,
+              '',
+            ); // Remove leading and trailing quotes
+            if (commonDataRaw.includes(':')) {
+              const [commonIv, commonEncryptedData] = commonDataRaw.split(':');
+              const commonDecryptedString = await decrypt(
+                commonEncryptedData,
+                SECRET_KEY,
+                commonIv,
+              );
+              updatedRecord.common_form_data = JSON.parse(
+                commonDecryptedString,
+              );
+            } else {
+              console.warn(
+                `Invalid format for common_form_data in record with id: ${record.id}`,
+              );
+            }
+          }
 
-          // Remove extra quotes and split the `common_form_data`
-          const commonDataRaw = record.common_form_data.replace(/^"|"$/g, ''); // Remove leading and trailing quotes
-          const [commonIv, commonEncryptedData] = commonDataRaw.split(':');
-
-          // Decrypt the `common_form_data`
-          const commonDecryptedString = await decrypt(
-            commonEncryptedData,
-            SECRET_KEY,
-            commonIv,
-          );
-
-          // Return the record with decrypted data
-          return {
-            ...record,
-            unique_form_data: JSON.parse(uniqueDecryptedString),
-            common_form_data: JSON.parse(commonDecryptedString),
-          };
+          return updatedRecord; // Return the updated record with decrypted data
         } catch (error) {
           console.error(
             `Failed to decrypt data for record with id: ${record.id}`,
