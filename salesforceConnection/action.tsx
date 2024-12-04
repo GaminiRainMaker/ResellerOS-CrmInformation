@@ -8,7 +8,8 @@ export async function getPartnerRecord(
   partnerRegId: string,
 ) {
   const oauth2 = {
-    redirectUri: 'https://localhost:3000/auth/salesforce',
+    // redirectUri: 'https://localhost:3000/auth/salesforce',
+    redirectUri: 'https://localhost:3000/salesforce',
     // redirectUri: 'https://app-dev.reselleros.com/auth/salesforce',
   };
   const conn = await new jsforce.Connection({

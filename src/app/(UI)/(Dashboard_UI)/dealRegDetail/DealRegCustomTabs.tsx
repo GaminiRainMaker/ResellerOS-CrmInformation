@@ -32,7 +32,6 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setFinalUpdatedDealRegData} from '../../../../../redux/slices/dealReg';
 import DealRegDetailForm from './DealRegDetailForm';
-import {getPartnerRecord} from '../../../../../salesforceConnection/action';
 const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
 
 // Define the prop types for DealRegCustomTabs
@@ -98,32 +97,14 @@ const DealRegCustomTabs = forwardRef<
     useState<string>();
 
   useEffect(() => {
-    const dealreg = async () => {
-      if (signedRequest && salesForceinstanceUrl) {
-        try {
-          const partnerRegRecord = await getPartnerRecord(
-            signedRequest,
-            salesForceinstanceUrl,
-            salesForceParamsId,
-          );
-
-          if (partnerRegRecord) {
-            setSalesForceOpportunityId(
-              partnerRegRecord?.rosdealregai__Opportunity__c || '', // Safeguard for null/undefined
-            );
-          } else {
-            console.warn('No partner registration record found.');
-            setSalesForceOpportunityId(''); // Handle the absence of a record gracefully
-          }
-        } catch (error) {
-          console.error('Error fetching partner registration record:', error);
-          setSalesForceOpportunityId(''); // Ensure the state is cleared in case of errors
-        }
-      }
-    };
-
-    if (navigationKey === 'rosdealregai__Partner_Registration__c') {
-      dealreg();
+    if (
+      navigationKey === 'rosdealregai__Partner_Registration__c' &&
+      isDecryptedRecord
+    ) {
+      setSalesForceOpportunityId(
+        isDecryptedRecord?.context?.environment?.parameters?.recordData
+          ?.rosdealregai__Opportunity__c,
+      );
     } else {
       setSalesForceOpportunityId(salesForceParamsId);
     }
