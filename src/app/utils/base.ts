@@ -2000,10 +2000,10 @@ export async function fetchAndDecryptRecords(
           const updatedRecord = {...record};
           console.log('record', record);
           // Decrypt `unique_form_data` if it exists
-          if (record?.unique_form_data) {
+          if (record && record?.unique_form_data) {
             console.log('record12345', record);
 
-            const uniqueDataRaw = record?.unique_form_data.replace(
+            const uniqueDataRaw = record?.unique_form_data?.replace(
               /^"|"$/g,
               '',
             ); // Remove leading and trailing quotes
@@ -2025,8 +2025,8 @@ export async function fetchAndDecryptRecords(
           }
 
           // Decrypt `common_form_data` if it exists
-          if (record?.common_form_data) {
-            const commonDataRaw = record?.common_form_data.replace(
+          if (record && record?.common_form_data) {
+            const commonDataRaw = record?.common_form_data?.replace(
               /^"|"$/g,
               '',
             ); // Remove leading and trailing quotes
