@@ -72,24 +72,26 @@ const NewRegistrationForm: FC<any> = ({
   let salesForceinstanceUrl: string | undefined;
   let salesForceToken: string | undefined;
   let salesForceOpportunityId: string | undefined;
+  let salesForceOrganizationId: string | undefined;
 
   if (isDecryptedRecord) {
     const {client, context} = isDecryptedRecord as any;
     salesForceinstanceUrl = client?.instanceUrl;
     salesForceToken = client?.oauthToken;
 
-    const {environment} = context || {};
+    const {environment, organization} = context || {};
     const {parameters} = environment || {};
     salesForceOpportunityId = parameters?.recordId;
+    salesForceOrganizationId = organization?.organizationId;
   }
   console.log({isDecryptedRecord});
+
 
   useEffect(() => {
     if (isCanvas) {
       dispatch(
         getAllPartnerandProgramApprovedForOrganizationSalesForce({
-          // org_id: organizationId,
-          org_id: '00DHs000003TxAm',
+          org_id: salesForceOrganizationId,
         }),
       )?.then((payload: any) => {
         setAllFilterPartnerData(payload?.payload);
