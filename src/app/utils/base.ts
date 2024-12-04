@@ -1998,9 +1998,11 @@ export async function fetchAndDecryptRecords(
       encryptedRecords?.map(async (record) => {
         try {
           const updatedRecord = {...record};
-
+          console.log('record', record);
           // Decrypt `unique_form_data` if it exists
           if (record?.unique_form_data) {
+            console.log('record12345', record);
+
             const uniqueDataRaw = record?.unique_form_data.replace(
               /^"|"$/g,
               '',
@@ -2057,7 +2059,7 @@ export async function fetchAndDecryptRecords(
         }
       }),
     );
-
+    console.log('decryptedRecords', decryptedRecords);
     return decryptedRecords;
   } catch (error) {
     console.error('Failed to decrypt records:', error);

@@ -82,6 +82,7 @@ const NewRegistrationForm: FC<any> = ({
     const {parameters} = environment || {};
     salesForceOpportunityId = parameters?.recordId;
   }
+  console.log({isDecryptedRecord});
 
   useEffect(() => {
     if (isCanvas) {
