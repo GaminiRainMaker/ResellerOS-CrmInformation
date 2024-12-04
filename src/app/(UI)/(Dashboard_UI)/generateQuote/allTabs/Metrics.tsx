@@ -1,17 +1,17 @@
 'use client';
 
-import { Space } from '@/app/components/common/antd/Space';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsPieChart from '@/app/components/common/os-piechart';
 import Typography from '@/app/components/common/typography';
-import { FC, useEffect, useState } from 'react';
-import { useAppSelector } from '../../../../../../redux/hook';
-import { Col, Row } from '@/app/components/common/antd/Grid';
+import {FC, useEffect, useState} from 'react';
+import {useAppSelector} from '../../../../../../redux/hook';
+import {Col, Row} from '@/app/components/common/antd/Grid';
 
-const Matrix: FC<any> = ({ selectedFilter }) => {
+const Matrix: FC<any> = ({selectedFilter}) => {
   const [token] = useThemeToken();
-  const { data: profitabilityDataByQuoteId } = useAppSelector(
+  const {data: profitabilityDataByQuoteId} = useAppSelector(
     (state) => state.profitability,
   );
   const [finalData, setFinalData] = useState<any>();
@@ -48,7 +48,7 @@ const Matrix: FC<any> = ({ selectedFilter }) => {
         }
 
         if (!groupedData[name]) {
-          groupedData[name] = { name: name, QuoteLineItem: [] };
+          groupedData[name] = {name: name, QuoteLineItem: []};
         }
         groupedData[name]?.QuoteLineItem?.push(item);
       }
@@ -59,7 +59,7 @@ const Matrix: FC<any> = ({ selectedFilter }) => {
     filterDataByValue(profitabilityDataByQuoteId, selectedFilter);
   }, [selectedFilter, profitabilityDataByQuoteId]);
 
-  const colorPalette: { [key: string]: string } = {
+  const colorPalette: {[key: string]: string} = {
     Unassigned: token?.colorInfo,
     'List Percentage': token?.colorInfo,
     'Professional Services': '#2B759A',
@@ -70,7 +70,7 @@ const Matrix: FC<any> = ({ selectedFilter }) => {
     Products: token?.colorPrimary,
     Manual: token?.colorPrimary,
     Maintenance: token?.colorTextDisabled,
-    Gp: token?.colorTextDisabled,
+    GP: token?.colorTextDisabled,
   };
   const randomColors: string[] = [
     token?.colorPrimary,
@@ -122,14 +122,16 @@ const Matrix: FC<any> = ({ selectedFilter }) => {
         let revenue = 0;
         let profitValue = 0;
         element?.QuoteLineItem?.forEach((QuoteLineItemData: any) => {
-          const { exit_price, gross_profit } = QuoteLineItemData;
+          const {exit_price, gross_profit} = QuoteLineItemData;
           if (QuoteLineItemData?.Bundle) {
             revenue =
-              Number(exit_price) ?? 1 *
-              Number(QuoteLineItemData?.Bundle?.quantity) ?? 1;
+              Number(exit_price) ??
+              1 * Number(QuoteLineItemData?.Bundle?.quantity) ??
+              1;
             profitValue =
-              Number(gross_profit) ?? 1 *
-              Number(QuoteLineItemData?.Bundle?.quantity) ?? 1;
+              Number(gross_profit) ??
+              1 * Number(QuoteLineItemData?.Bundle?.quantity) ??
+              1;
           } else {
             revenue = Number(exit_price) ?? 1;
             profitValue = Number(gross_profit) ?? 1;
@@ -160,9 +162,9 @@ const Matrix: FC<any> = ({ selectedFilter }) => {
       setSectionData((prev) =>
         prev.map((prevItem) => {
           if (prevItem.name === 'Revenue by Product Category') {
-            return { ...prevItem, pieData: tempArrRevenue };
+            return {...prevItem, pieData: tempArrRevenue};
           } else {
-            return { ...prevItem, pieData: tempArrProfit };
+            return {...prevItem, pieData: tempArrProfit};
           }
         }),
       );
