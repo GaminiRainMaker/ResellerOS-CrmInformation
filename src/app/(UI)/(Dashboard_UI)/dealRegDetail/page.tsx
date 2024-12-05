@@ -157,13 +157,27 @@ const DealRegDetail = () => {
           if (dealregData?.payload) {
             finalAppData123.salesforceDealregData = dealregData?.payload?.[0];
           }
-          if (res?.payload?.password) {
-            const {iv, data} = await encrypt(
-              res?.payload?.password,
+          // if (res?.payload?.password) {
+          //   const {iv, data} = await encrypt(
+          //     res?.payload?.password,
+          //     SECRET_KEY as string,
+          //   );
+          //   finalAppData123.password = `${iv}:${data}`;
+          //   finalAppData123.username = res?.payload?.username;
+          // }
+          if (res?.payload?.password && res?.payload?.username) {
+            const passwordEncryption = await encrypt(
+              res.payload.password,
               SECRET_KEY as string,
             );
-            finalAppData123.password = `${iv}:${data}`;
-            finalAppData123.username = res?.payload?.username;
+
+            const usernameEncryption = await encrypt(
+              res.payload.username,
+              SECRET_KEY as string,
+            );
+
+            finalAppData123.password = `${passwordEncryption.iv}:${passwordEncryption.data}`;
+            finalAppData123.username = `${usernameEncryption.iv}:${usernameEncryption.data}`;
           }
         }
         console.log({finalAppData123});
