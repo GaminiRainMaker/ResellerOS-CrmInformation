@@ -2055,7 +2055,6 @@ export async function fetchAndDecryptRecords(
         }
       }),
     );
-    console.log('decryptedRecords', decryptedRecords);
     return decryptedRecords;
   } catch (error) {
     console.error('Failed to decrypt records:', error);

@@ -68,8 +68,11 @@ const DealRegCustomTabs = forwardRef<
   );
   const getDealRegId = searchParams && searchParams.get('id');
   const [salesForceDealregById, setSalesForceDealregById] = useState<any>();
-  const {isCanvas, isDecryptedRecord, signedRequest, navigationKey} =
-    useAppSelector((state) => state.canvas);
+  const {isCanvas, isDecryptedRecord, navigationKey} = useAppSelector(
+    (state) => state.canvas,
+  );
+
+  console.log({isDecryptedRecord});
 
   // Initialize variables with default values
   let salesForceinstanceUrl: string | undefined;
@@ -102,8 +105,6 @@ const DealRegCustomTabs = forwardRef<
       setSalesForceOpportunityId(salesForceParamsId);
     }
   }, [navigationKey, isDecryptedRecord]);
-  
-  console.log({isDecryptedRecord}, salesforceOpportunityId);
 
   useEffect(() => {
     if (getDealRegId && DealRegData && DealRegData.length > 0 && !isCanvas) {
