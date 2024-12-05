@@ -71,6 +71,8 @@ type SalesUpdatedDataItem = {
   quote_header: string;
   status: string;
   is_salesforce: boolean;
+  life_boat_salesforce: boolean;
+  assert_mapping: boolean;
 };
 
 interface EditPdfDataInterface {
@@ -310,11 +312,16 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         // (itemInn?.status === 'Pending' || itemInn?.status === 'Approved'),
       );
       if (!findThevalue) {
-        updatedArrForAddingLineItemSync?.push(items);
+        updatedArrForAddingLineItemSync?.push({
+          ...items,
+          life_boat_salesforce: true,
+        });
       }
     });
 
     if (updatedArrForAddingLineItemSync && !SaleQuoteId) {
+      console.log('435435345345', updatedArrForAddingLineItemSync);
+
       dispatch(insertLineItemSyncing(updatedArrForAddingLineItemSync));
     } else if (updatedArrForAddingLineItemSync && SaleQuoteId) {
       const NewupdatedData: SalesUpdatedDataItem[] =
@@ -328,6 +335,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
               quote_header: newVal,
               status: 'Pending',
               is_salesforce: SaleQuoteId ? true : false,
+              life_boat_salesforce: true,
+              assert_mapping: salesFOrceAccoutFlow === 'true' ? true : false,
             }),
           );
 
@@ -339,15 +348,13 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
               items?.pdf_header?.toString()?.toLowerCase() &&
             itemInn?.is_salesforce &&
             itemInn?.life_boat_salesforce,
-          // &&
-          //   itemInn?.quote_header === items?.quote_header &&
-          //   (itemInn?.status === 'Pending' || itemInn?.status === 'Approved'),
         );
         if (!findThevalue) {
           updatedArrForAddingLineItemSyncFOrSales?.push({
             ...items,
             pdf_header: items?.pdf_header?.toLowerCase(),
             life_boat_salesforce: true,
+            assert_mapping: salesFOrceAccoutFlow === 'true' ? true : false,
           });
         }
       });
