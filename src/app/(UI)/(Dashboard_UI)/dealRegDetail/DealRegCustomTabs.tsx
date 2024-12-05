@@ -71,13 +71,6 @@ const DealRegCustomTabs = forwardRef<
   const {isCanvas, isDecryptedRecord, signedRequest, navigationKey} =
     useAppSelector((state) => state.canvas);
 
-  // const {client, context} = isDecryptedRecord as any;
-  // const {instanceUrl: salesForceinstanceUrl, oauthToken: salesForceToken} =
-  //   client;
-  // const {environment} = context;
-  // const {parameters} = environment;
-  // const {recordId: salesForceParamsId} = parameters;
-
   // Initialize variables with default values
   let salesForceinstanceUrl: string | undefined;
   let salesForceToken: string | undefined;
@@ -108,7 +101,9 @@ const DealRegCustomTabs = forwardRef<
     } else {
       setSalesForceOpportunityId(salesForceParamsId);
     }
-  }, [signedRequest, salesForceinstanceUrl, navigationKey]);
+  }, [navigationKey, isDecryptedRecord]);
+  
+  console.log({isDecryptedRecord}, salesforceOpportunityId);
 
   useEffect(() => {
     if (getDealRegId && DealRegData && DealRegData.length > 0 && !isCanvas) {
@@ -161,7 +156,7 @@ const DealRegCustomTabs = forwardRef<
     };
 
     fetchData();
-  }, [salesForceinstanceUrl, isData, salesforceOpportunityId]);
+  }, [isData, salesforceOpportunityId]);
 
   const callDealregApi = async (obj: any) => {
     try {
