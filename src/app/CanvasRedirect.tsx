@@ -28,13 +28,16 @@ const CanvasRedirectWrapper = ({children}: Props) => {
       isCanvas = true;
     }
     if (isCanvas) {
+      console.log('datadatadatadata1234');
       globalThis.Sfdc.canvas.client.refreshSignedRequest((data) => {
+        console.log('datadatadatadata', data);
         if (data?.payload?.auxiliary?.appApprovalType === 'ADMIN_APPROVED') {
           const sr = data.payload.response;
           const part = sr.split('.')[1];
-          const decryotData = globalThis.JSON.parse(Sfdc.canvas.decode(part));
+          const decryptData = globalThis.JSON.parse(Sfdc.canvas.decode(part));
+          console.log({sr}, {decryptData});
           const navigationKey = getNavigationKey(
-            decryotData?.context?.environment?.locationUrl,
+            decryptData?.context?.environment?.locationUrl,
           );
           dispatch(setSalesforceNavigationKey(navigationKey));
           dispatch(setNewSignedRequest(sr));
@@ -52,7 +55,7 @@ const CanvasRedirectWrapper = ({children}: Props) => {
         }
       });
 
-      console.log('Inside Salesforce Canvas');
+      console.log('Inside Salesforce Canvas1234');
     }
   }, [router, dispatch]);
 
