@@ -30,7 +30,10 @@ export default async function RootLayout({
         <body className={`${jakartaSans.variable}`}>
           <Providers>
             <CanvasRedirectWrapper>{children}</CanvasRedirectWrapper>
-            <NextScript src="/canvas-all.js" strategy="beforeInteractive" />
+            <NextScript
+              src="/canvas-all-orderAI.js"
+              strategy="beforeInteractive"
+            />
           </Providers>
         </body>
       </html>

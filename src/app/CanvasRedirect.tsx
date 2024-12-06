@@ -27,36 +27,38 @@ const CanvasRedirectWrapper = ({children}: Props) => {
     if (window.location !== window.parent.location) {
       isCanvas = true;
     }
-    if (isCanvas) {
-      console.log('datadatadatadata1234');
-      globalThis.Sfdc.canvas.client.refreshSignedRequest((data) => {
-        console.log('datadatadatadata', data);
-        if (data?.payload?.auxiliary?.appApprovalType === 'ADMIN_APPROVED') {
-          const sr = data.payload.response;
-          const part = sr.split('.')[1];
-          const decryptData = globalThis.JSON.parse(Sfdc.canvas.decode(part));
-          console.log({sr}, {decryptData});
-          const navigationKey = getNavigationKey(
-            decryptData?.context?.environment?.locationUrl,
-          );
-          dispatch(setSalesforceNavigationKey(navigationKey));
-          dispatch(setNewSignedRequest(sr));
-          dispatch(
-            setDecryptedData(globalThis.JSON.parse(Sfdc.canvas.decode(part))),
-          );
-          dispatch(setIsCanvas(true));
-          if (navigationKey === 'Opportunity') {
-            router.replace('/dealReg');
-          } else if (
-            navigationKey === 'rosdealregai__Partner_Registration__c'
-          ) {
-            router.replace('/dealRegDetail');
-          }
-        }
-      });
+    console.log('33222dsdsd', isCanvas);
 
-      console.log('Inside Salesforce Canvas1234');
-    }
+    // if (isCanvas) {
+    //   globalThis.Sfdc.canvas.client.refreshSignedRequest((data) => {
+    //     if (data?.payload?.auxiliary?.appApprovalType === 'ADMIN_APPROVED') {
+    //       const sr = data.payload.response;
+    //       const part = sr.split('.')[1];
+
+    //       const decryptData = globalThis.JSON.parse(Sfdc.canvas.decode(part));
+    //       console.log({sr}, {decryptData});
+    //       console.log('33222dsdsd', decryptData);
+    //       const navigationKey = getNavigationKey(
+    //         decryptData?.context?.environment?.locationUrl,
+    //       );
+    //       dispatch(setSalesforceNavigationKey(navigationKey));
+    //       dispatch(setNewSignedRequest(sr));
+    //       dispatch(
+    //         setDecryptedData(globalThis.JSON.parse(Sfdc.canvas.decode(part))),
+    //       );
+    //       dispatch(setIsCanvas(true));
+    //       if (navigationKey === 'Opportunity') {
+    //         router.replace('/dealReg');
+    //       } else if (
+    //         navigationKey === 'rosdealregai__Partner_Registration__c'
+    //       ) {
+    //         router.replace('/dealRegDetail');
+    //       }
+    //     }
+    //   });
+
+    //   console.log('Inside Salesforce Canvas1234');
+    // }
   }, [router, dispatch]);
 
   // Optionally, return null if the redirection process doesn't need to show children.
