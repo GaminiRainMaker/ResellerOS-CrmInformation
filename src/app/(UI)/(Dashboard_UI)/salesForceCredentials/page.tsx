@@ -112,6 +112,7 @@ const AddUser = () => {
                 saleforce_org_Id: record?.saleforce_org_Id,
                 is_sso: record?.is_sso,
                 base_url: record?.base_url,
+                instance_url: record?.instance_url,
                 password: record?.password,
               });
             }}
