@@ -113,6 +113,20 @@ const EditSalesForceCredentials: FC<{
         </Col>
         <Col span={24}>
           <SelectFormItem
+            label={<Typography name="Body 4/Medium">Instance URL</Typography>}
+            name={'instance_url'}
+            rules={[
+              {
+                required: true,
+                message: 'Instance URL is required!',
+              },
+            ]}
+          >
+            <OsInput placeholder="Enter Base URL" />
+          </SelectFormItem>
+        </Col>
+        <Col span={24}>
+          <SelectFormItem
             label={<Typography name="Body 4/Medium">Password</Typography>}
             name={'password'}
             // rules={
