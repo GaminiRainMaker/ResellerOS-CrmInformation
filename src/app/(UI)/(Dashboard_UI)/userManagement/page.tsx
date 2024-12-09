@@ -213,7 +213,7 @@ const UserManagement = () => {
       );
       if (res?.payload) {
         const credentials = {
-          base_url: res.payload.base_url,
+          login_url: res.payload.login_url,
           consumer_key: res.payload.consumer_key,
           consumer_secret: res.payload.consumer_secret,
           username: res.payload.username,
