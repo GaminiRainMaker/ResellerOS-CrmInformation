@@ -31,6 +31,7 @@ import {
 import {
   checkFunctionInArray,
   concatenateAfterFirstWithSpace,
+  encrypt,
   getLineItemsWithNonRepitive,
   getResultedValue,
   getValuesOFLineItemsThoseNotAddedBefore,
@@ -97,6 +98,7 @@ const EditorFile = () => {
   const getQUoteId = searchParams.get('id');
   const getQuoteFileId = searchParams.get('fileId');
   const [quoteItems, setQuoteItems] = useState<any>([]);
+  const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
   const [mergedValue, setMergedVaalues] = useState<any>();
   const router = useRouter();
   const ExistingQuoteItemss = searchParams.get('quoteExist');
@@ -115,14 +117,7 @@ const EditorFile = () => {
   const [oldColumnName, setOldColumnName] = useState<any>();
   const [oldColumnName1, setOldColumnName1] = useState<any>();
   const [typeOfFormula, setTypeOfFormula] = useState<any>();
-  const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
 
-  const salesToken = searchParams.get('key');
-  const SaleQuoteId = searchParams.get('quote_Id');
-  const EditSalesLineItems = searchParams.get('editLine');
-  const salesFOrceManual = searchParams.get('manual');
-  const salesForceUrl = searchParams.get('instance_url');
-  const salesForceFiledId = searchParams.get('file_Id');
   const fullStackManul = searchParams.get('manualFlow');
   const [lineItemSyncingData, setLineItemSyncingData] = useState<any>();
   const [formulaOptions, setFormulaOptions] = useState<any>();
@@ -141,6 +136,43 @@ const EditorFile = () => {
   const [finalArrForMerged, setFinalArrayForMerged] = useState<any>();
   const [currentFIle, setCurrentFile] = useState<any>();
 
+  const {isCanvas, isDecryptedRecord, navigationKey} = useAppSelector(
+    (state) => state.canvas,
+  );
+
+  console.log({isDecryptedRecord});
+
+  // Initialize variables with default values
+  let salesForceinstanceUrl: string | undefined;
+  let salesForceToken: string | undefined;
+  let salesForceParamsId: string | any;
+  let salesFOrceAccoutId: string | undefined;
+  let salesFOrceAccoutFlow: string | undefined;
+  let salesForceEDitDAta: string | any;
+  let salesForceFiledId: string | any;
+  let salesFOrceManual: boolean | any;
+  let SaleQuoteId: string | any;
+  let EditSalesLineItems: boolean | any;
+
+  if (isCanvas && isDecryptedRecord) {
+    const {client, context} = isDecryptedRecord as any;
+
+    salesForceinstanceUrl = client?.instanceUrl;
+    salesForceToken = client?.oauthToken;
+
+    const {environment} = context || {};
+    const {parameters} = environment || {};
+
+    salesForceParamsId = parameters?.recordId;
+    salesFOrceAccoutId = parameters?.AccountId;
+    salesFOrceAccoutFlow = parameters?.accoutFlow;
+    salesForceEDitDAta = parameters?.editLine;
+    salesForceFiledId = parameters?.file_Id;
+    salesFOrceManual = parameters?.manual;
+    SaleQuoteId = parameters?.quote_Id;
+    EditSalesLineItems = parameters?.editLine;
+  }
+
   const [query, setQuery] = useState<{
     searchValue: string;
     asserType: boolean;
@@ -149,8 +181,8 @@ const EditorFile = () => {
   }>({
     searchValue: '',
     asserType: false,
-    salesforce: salesForceUrl ? true : false,
-    lifeboatsalesforce: salesForceUrl ? true : false,
+    salesforce: salesForceinstanceUrl ? true : false,
+    lifeboatsalesforce: salesForceinstanceUrl ? true : false,
   });
 
   const getQuoteFileByIdForFormulads = async () => {
@@ -191,9 +223,9 @@ const EditorFile = () => {
     if (EditSalesLineItems === 'true') {
       // Work In Case of Edit Data As It Is
       let newdata = {
-        token: salesToken,
+        token: salesForceToken,
         // documentId: salesForceFiledId,
-        urls: salesForceUrl,
+        urls: salesForceinstanceUrl,
         QuoteId: SaleQuoteId,
         FileId: salesForceFiledId,
       };
@@ -234,16 +266,16 @@ const EditorFile = () => {
     }
     // Work in case of export to tables
     let dataSingle = {
-      token: salesToken,
+      token: salesForceToken,
       FileId: salesForceFiledId,
-      urls: salesForceUrl,
+      urls: salesForceinstanceUrl,
       quoteId: null,
       file_type: null,
     };
     let data = {
-      token: salesToken,
+      token: salesForceToken,
       FileId: null,
-      urls: salesForceUrl,
+      urls: salesForceinstanceUrl,
       quoteId: SaleQuoteId,
       file_type: 'ExportFileToTable',
     };
@@ -260,9 +292,9 @@ const EditorFile = () => {
         }
 
         let newObj = {
-          token: salesToken,
+          token: salesForceToken,
           FileId: null,
-          urls: salesForceUrl,
+          urls: salesForceinstanceUrl,
           quoteId: SaleQuoteId,
           file_type: 'Manual',
         };
@@ -278,7 +310,7 @@ const EditorFile = () => {
             window.history.replaceState(
               null,
               '',
-              `/manualFileEditor?quote_Id=${SaleQuoteId}&key=${salesToken}&instance_url=${salesForceUrl}&file_Id=${null}&editLine=false&manual=true`,
+              `/manualFileEditor?quote_Id=${SaleQuoteId}&key=${salesForceToken}&instance_url=${salesForceinstanceUrl}&file_Id=${null}&editLine=false&manual=true`,
             );
             location?.reload();
           }
@@ -410,7 +442,7 @@ const EditorFile = () => {
   };
 
   useEffect(() => {
-    if (salesForceUrl && !getQuoteFileId) {
+    if (salesForceinstanceUrl && !getQuoteFileId) {
       fetchSaleForceDataa();
     } else {
       getQuoteFileByIdForFormulads();
@@ -705,7 +737,7 @@ const EditorFile = () => {
     }
   }, [updateLineItemsValue]);
   useEffect(() => {
-    if (!salesForceUrl) {
+    if (!salesForceinstanceUrl) {
       if (fullStackManul === 'true') {
         let data = {
           id: getQUoteId,
@@ -918,7 +950,7 @@ const EditorFile = () => {
             const dataObj = {data: item};
             updateLineItemColumnData?.push(dataObj);
           }
-          if (salesForceUrl) {
+          if (salesForceinstanceUrl) {
             let cleanedString = item.replace(/^rosquoteai__|__c$/g, '');
             let finalResult = cleanedString.replace(/_/g, ' ');
             updateLineItemColumnArr?.push(formatStatus(finalResult));
@@ -1013,14 +1045,19 @@ const EditorFile = () => {
         };
         newArrWithFileId?.push(newObj);
       });
+
+      const jsonstring = JSON.stringify(newArrWithFileId);
+      const {iv, data} = await encrypt(jsonstring, SECRET_KEY as string); // Encrypt
+
+      const newEncryptedDataLineItems: any = `${iv}:${data}`;
       let newdata = {
-        token: salesToken,
+        token: salesForceToken,
         // documentId: salesForceFiledId,
-        urls: salesForceUrl,
+        urls: salesForceinstanceUrl,
         QuoteId: SaleQuoteId,
         FileId: salesForceFiledId,
         action: 'EditDataAsIs',
-        lineItem: newArrWithFileId,
+        lineItem: newEncryptedDataLineItems,
       };
       // file_id
       await dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {
@@ -1197,9 +1234,9 @@ const EditorFile = () => {
       return;
     } else {
       let data = {
-        token: salesToken,
+        token: salesForceToken,
         FileId: null,
-        urls: salesForceUrl,
+        urls: salesForceinstanceUrl,
         quoteId: SaleQuoteId,
         file_type: 'ExportFileToTable',
       };
@@ -1207,9 +1244,9 @@ const EditorFile = () => {
       dispatch(getSalesForceFileData(data))?.then(async (payload: any) => {
         if (!payload?.payload?.body) {
           let newObj = {
-            token: salesToken,
+            token: salesForceToken,
             FileId: null,
-            urls: salesForceUrl,
+            urls: salesForceinstanceUrl,
             quoteId: SaleQuoteId,
             file_type: 'Manual',
           };
@@ -1224,7 +1261,7 @@ const EditorFile = () => {
               window.history.replaceState(
                 null,
                 '',
-                `/manualFileEditor?quote_Id=${SaleQuoteId}&key=${salesToken}&instance_url=${salesForceUrl}&file_Id=${null}&editLine=false&manual=true`,
+                `/manualFileEditor?quote_Id=${SaleQuoteId}&key=${salesForceToken}&instance_url=${salesForceinstanceUrl}&file_Id=${null}&editLine=false&manual=true`,
               );
               location?.reload();
             }
@@ -1536,7 +1573,7 @@ const EditorFile = () => {
               dropdownMenu
               hiddenColumns={{
                 indicators: true,
-                columns: salesForceUrl ? [0, 1] : [0, 1],
+                columns: salesForceinstanceUrl ? [0, 1] : [0, 1],
               }}
               contextMenu={true}
               multiColumnSorting
@@ -1578,7 +1615,7 @@ const EditorFile = () => {
               marginBottom: '20px',
             }}
           >
-            {!salesForceUrl && (
+            {!salesForceinstanceUrl && (
               <OsButton
                 text="Cancel"
                 buttontype="SECONDARY"
@@ -1706,7 +1743,7 @@ const EditorFile = () => {
                       marginBottom: '20px',
                     }}
                   >
-                    {!salesForceUrl && (
+                    {!salesForceinstanceUrl && (
                       <OsButton
                         text="Cancel"
                         buttontype="SECONDARY"
@@ -1848,7 +1885,7 @@ const EditorFile = () => {
                         }}
                       >
                         {' '}
-                        {!salesForceUrl && (
+                        {!salesForceinstanceUrl && (
                           <OsButton
                             text="Cancel"
                             buttontype="SECONDARY"
@@ -1898,7 +1935,7 @@ const EditorFile = () => {
           }}
         />
       )}
-      {!salesForceUrl && (
+      {!salesForceinstanceUrl && (
         <OsModal
           body={
             <Row style={{width: '100%', padding: '15px'}}>

@@ -22,43 +22,47 @@ function getNavigationKey(locationUrl: string) {
 const CanvasRedirectWrapper = ({children}: Props) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+
   useEffect(() => {
     let isCanvas: boolean = false;
     if (window.location !== window.parent.location) {
       isCanvas = true;
     }
-    console.log('33222dsdsd', isCanvas);
+    console.log('345343242', isCanvas);
 
-    // if (isCanvas) {
-    //   globalThis.Sfdc.canvas.client.refreshSignedRequest((data) => {
-    //     if (data?.payload?.auxiliary?.appApprovalType === 'ADMIN_APPROVED') {
-    //       const sr = data.payload.response;
-    //       const part = sr.split('.')[1];
+    if (isCanvas) {
+      globalThis.Sfdc.canvas.client.refreshSignedRequest((data) => {
+        if (data?.payload?.auxiliary?.appApprovalType === 'ADMIN_APPROVED') {
+          const sr = data.payload.response;
+          const part = sr.split('.')[1];
 
-    //       const decryptData = globalThis.JSON.parse(Sfdc.canvas.decode(part));
-    //       console.log({sr}, {decryptData});
-    //       console.log('33222dsdsd', decryptData);
-    //       const navigationKey = getNavigationKey(
-    //         decryptData?.context?.environment?.locationUrl,
-    //       );
-    //       dispatch(setSalesforceNavigationKey(navigationKey));
-    //       dispatch(setNewSignedRequest(sr));
-    //       dispatch(
-    //         setDecryptedData(globalThis.JSON.parse(Sfdc.canvas.decode(part))),
-    //       );
-    //       dispatch(setIsCanvas(true));
-    //       if (navigationKey === 'Opportunity') {
-    //         router.replace('/dealReg');
-    //       } else if (
-    //         navigationKey === 'rosdealregai__Partner_Registration__c'
-    //       ) {
-    //         router.replace('/dealRegDetail');
-    //       }
-    //     }
-    //   });
+          const decryptData = globalThis.JSON.parse(Sfdc.canvas.decode(part));
+          console.log({sr}, {decryptData});
+          const navigationKey = getNavigationKey(
+            decryptData?.context?.environment?.locationUrl,
+          );
+          dispatch(setSalesforceNavigationKey(navigationKey));
+          dispatch(setNewSignedRequest(sr));
+          dispatch(
+            setDecryptedData(globalThis.JSON.parse(Sfdc.canvas.decode(part))),
+          );
+          dispatch(setIsCanvas(true));
+          if (navigationKey === 'Opportunity') {
+            router.replace('/dealReg');
+          } else if (
+            navigationKey === 'rosdealregai__Partner_Registration__c'
+          ) {
+            router.replace('/dealRegDetail');
+          } else if (navigationKey === 'Account') {
+            router.replace('/manualFileEditor');
+          } else {
+            router.replace('/manualFileEditor');
+          }
+        }
+      });
 
-    //   console.log('Inside Salesforce Canvas1234');
-    // }
+      console.log('Inside Salesforce Canvas1234');
+    }
   }, [router, dispatch]);
 
   // Optionally, return null if the redirection process doesn't need to show children.

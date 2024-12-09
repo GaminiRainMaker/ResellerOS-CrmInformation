@@ -53,6 +53,7 @@ import {
   queryLineItemSyncing,
   queryLineItemSyncingForSalesForce,
 } from '../../../../../redux/actions/LineItemSyncing';
+import ConverSationProcess from '../admin/quote-AI/configuration/configuration-tabs/ConversationProcess';
 
 registerAllModules();
 
@@ -62,7 +63,6 @@ const EditorFile = () => {
   const searchParams = useSearchParams()!;
   const router = useRouter();
   const getQuoteID = searchParams.get('id');
-  const SaleQuoteId = searchParams.get('quote_Id');
   const getQuoteFileId = searchParams.get('fileId');
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -70,18 +70,12 @@ const EditorFile = () => {
   const [saveNewHeader, setSaveNewHeader] = useState<boolean>(false);
   const [showConfirmHeader, setShowConfirmHeader] = useState<boolean>(false);
   const [currentFileData, setCurrentFileData] = useState<any>();
-  const salesToken = searchParams.get('key');
-  const EditSalesLineItems = searchParams.get('editLine');
-  const salesForceFiledId = searchParams.get('file_Id');
+  // const salesForceFiledId = searchParams.get('file_Id');
   const [mergeedColumnHeader, setMergeedColumnHeader] = useState<any>();
   const [oldColumnName, setOldColumnName] = useState<any>();
   const [showAddColumnModal, setShowAddColumnModal] = useState<boolean>(false);
   const [newHeaderName, setNewHeaderName] = useState<any>();
-  const salesForceUrl = searchParams.get('instance_url');
   const fullStackManul = searchParams.get('manualFlow');
-  const salesFOrceManual = searchParams.get('manual');
-  const salesFOrceAccoutId = searchParams.get('AccountId');
-  const salesFOrceAccoutFlow = searchParams.get('accoutFlow');
   const [lineItemSyncingData, setLineItemSyncingData] = useState<any>();
 
   const [accoutSyncOptions, setAccoutSyncOptions] = useState<any>();
@@ -90,6 +84,41 @@ const EditorFile = () => {
   const [existingColumnOptions, setExistingColumnName] = useState<any>();
   const [formulaOptions, setFormulaOptions] = useState<any>();
 
+  const {isCanvas, isDecryptedRecord, navigationKey} = useAppSelector(
+    (state) => state.canvas,
+  );
+
+  console.log({isDecryptedRecord});
+
+  // Initialize variables with default values
+  let salesForceinstanceUrl: string | undefined;
+  let salesForceToken: string | undefined;
+  let salesForceParamsId: string | any;
+  let salesFOrceAccoutId: string | undefined;
+  let salesFOrceAccoutFlow: string | undefined;
+  let salesForceEDitDAta: string | any;
+  let salesForceFiledId: string | any;
+  let salesFOrceManual: boolean | any;
+  let SaleQuoteId: string | any;
+
+  if (isCanvas && isDecryptedRecord) {
+    const {client, context} = isDecryptedRecord as any;
+
+    salesForceinstanceUrl = client?.instanceUrl;
+    salesForceToken = client?.oauthToken;
+
+    const {environment} = context || {};
+    const {parameters} = environment || {};
+
+    salesForceParamsId = parameters?.recordId;
+    salesFOrceAccoutId = parameters?.AccountId;
+    salesFOrceAccoutFlow = parameters?.accoutFlow;
+    salesForceEDitDAta = parameters?.editLine;
+    salesForceFiledId = parameters?.file_Id;
+    salesFOrceManual = parameters?.manual;
+    SaleQuoteId = parameters?.quote_Id;
+  }
+
   const [query, setQuery] = useState<{
     searchValue: string;
     asserType: boolean;
@@ -97,10 +126,11 @@ const EditorFile = () => {
     salesforce: boolean;
   }>({
     searchValue: '',
-    asserType: salesFOrceAccoutFlow === 'true' ? true : false,
-    salesforce: salesForceUrl ? true : false,
-    lifeboatsalesforce: salesForceUrl ? true : false,
+    asserType: salesFOrceAccoutFlow ? true : false,
+    salesforce: salesForceinstanceUrl ? true : false,
+    lifeboatsalesforce: salesForceinstanceUrl ? true : false,
   });
+
   const addNewLine = () => {
     let newArr = [
       {
@@ -146,9 +176,9 @@ const EditorFile = () => {
   useEffect(() => {
     if (salesFOrceAccoutId) {
       let newObj = {
-        token: salesToken,
+        token: salesForceToken,
 
-        urls: salesForceUrl,
+        urls: salesForceinstanceUrl,
       };
 
       dispatch(getSalesForceFields(newObj))?.then((payload: any) => {
@@ -168,10 +198,11 @@ const EditorFile = () => {
         }
       });
     }
-  }, []);
+  }, [salesForceinstanceUrl, salesForceToken]);
+
   useEffect(() => {
     addNewLine();
-  }, []);
+  }, [salesForceToken, salesForceinstanceUrl]);
 
   const AddNewHeaderToTheObject = () => {
     setSaveNewHeader(true);
@@ -231,22 +262,22 @@ const EditorFile = () => {
     if (!salesFOrceAccoutId) {
       if (SaleQuoteId) {
         let data = {
-          token: salesToken,
+          token: salesForceToken,
           FileId: salesForceFiledId,
-          urls: salesForceUrl,
+          urls: salesForceinstanceUrl,
           quoteId: null,
           file_type: null,
         };
 
         let newObj = {
           file_type: 'Manual',
-          token: salesToken,
+          token: salesForceToken,
           FileId: null,
-          urls: salesForceUrl,
+          urls: salesForceinstanceUrl,
           quoteId: SaleQuoteId,
         };
 
-        let pathTOGo = salesFOrceManual === 'true' ? newObj : data;
+        let pathTOGo = salesFOrceManual ? newObj : data;
         dispatch(getSalesForceFileData(pathTOGo))?.then((payload: any) => {
           if (payload?.payload) {
             let newObjFromSalesFOrce = JSON?.parse(payload?.payload?.qliFields);
@@ -320,12 +351,12 @@ const EditorFile = () => {
   };
 
   const checkForNewFileForSalesForce = async () => {
-    if (salesFOrceManual === 'true') {
+    if (salesFOrceManual) {
       let newObj = {
         file_type: 'Manual',
-        token: salesToken,
+        token: salesForceToken,
         FileId: null,
-        urls: salesForceUrl,
+        urls: salesForceinstanceUrl,
         quoteId: SaleQuoteId,
       };
       dispatch(getSalesForceFileData(newObj))?.then((payload: any) => {
