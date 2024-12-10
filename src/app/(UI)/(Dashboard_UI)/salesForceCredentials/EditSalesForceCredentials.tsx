@@ -60,12 +60,12 @@ const EditSalesForceCredentials: FC<{
               <Typography name="Body 4/Medium">Salesforce Org Name</Typography>
             }
             name={'salesforce_org_name'}
-            rules={[
-              {
-                required: true,
-                message: 'Salesforce Org Name is required!',
-              },
-            ]}
+            // rules={[
+            //   {
+            //     required: true,
+            //     message: 'Salesforce Org Name is required!',
+            //   },
+            // ]}
           >
             <OsInput placeholder="Enter Salesforce Org ID" />
           </SelectFormItem>
@@ -104,12 +104,12 @@ const EditSalesForceCredentials: FC<{
           <SelectFormItem
             label={<Typography name="Body 4/Medium">Login URL</Typography>}
             name={'login_url'}
-            rules={[
-              {
-                required: true,
-                message: 'Login URL is required!',
-              },
-            ]}
+            // rules={[
+            //   {
+            //     required: true,
+            //     message: 'Login URL is required!',
+            //   },
+            // ]}
           >
             <OsInput placeholder="Enter Login URL" />
           </SelectFormItem>
@@ -118,12 +118,12 @@ const EditSalesForceCredentials: FC<{
           <SelectFormItem
             label={<Typography name="Body 4/Medium">Instance URL</Typography>}
             name={'instance_url'}
-            rules={[
-              {
-                required: true,
-                message: 'Instance URL is required!',
-              },
-            ]}
+            // rules={[
+            //   {
+            //     required: true,
+            //     message: 'Instance URL is required!',
+            //   },
+            // ]}
           >
             <OsInput placeholder="Enter Base URL" />
           </SelectFormItem>
