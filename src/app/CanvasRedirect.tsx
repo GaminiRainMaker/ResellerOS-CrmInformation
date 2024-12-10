@@ -22,18 +22,20 @@ function getNavigationKey(locationUrl: string) {
 const CanvasRedirectWrapper = ({children}: Props) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+
   useEffect(() => {
     let isCanvas: boolean = false;
     if (window.location !== window.parent.location) {
       isCanvas = true;
     }
+    console.log('345343242', isCanvas);
+
     if (isCanvas) {
-      console.log('datadatadatadata1234');
       globalThis.Sfdc.canvas.client.refreshSignedRequest((data) => {
-        console.log('datadatadatadata', data);
         if (data?.payload?.auxiliary?.appApprovalType === 'ADMIN_APPROVED') {
           const sr = data.payload.response;
           const part = sr.split('.')[1];
+
           const decryptData = globalThis.JSON.parse(Sfdc.canvas.decode(part));
           console.log({sr}, {decryptData});
           const navigationKey = getNavigationKey(
@@ -44,6 +46,14 @@ const CanvasRedirectWrapper = ({children}: Props) => {
           dispatch(
             setDecryptedData(globalThis.JSON.parse(Sfdc.canvas.decode(part))),
           );
+          let NavigationUrls =
+            decryptData?.context?.environment?.parameters?.locationUrl;
+          console.log(
+            '45435435334',
+            decryptData?.context?.environment?.parameters,
+            NavigationUrls,
+          );
+          // NavigationUrls == "EditDataAsIs"
           dispatch(setIsCanvas(true));
           if (navigationKey === 'Opportunity') {
             router.replace('/dealReg');
@@ -51,6 +61,16 @@ const CanvasRedirectWrapper = ({children}: Props) => {
             navigationKey === 'rosdealregai__Partner_Registration__c'
           ) {
             router.replace('/dealRegDetail');
+          } else if (
+            NavigationUrls === 'Account' ||
+            NavigationUrls === 'Manual'
+          ) {
+            router.replace('/manualFileEditor');
+          } else if (
+            NavigationUrls == 'EditDataAsIs' ||
+            NavigationUrls == 'exportfiletotable'
+          ) {
+            router.replace('/fileEditor');
           }
         }
       });
