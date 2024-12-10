@@ -22,6 +22,7 @@ import {
 import {
   decrypt,
   encrypt,
+  encryptForSalesforce,
   getLineItemsWithNonRepitive,
   getValuesOFLineItemsThoseNotAddedBefore,
   handleDate,
@@ -492,17 +493,18 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       }
       setNanonetsLoading(false);
       const jsonstring = JSON.stringify(newArrWIthFileName);
-      const {iv, data} = await encrypt(jsonstring, SECRET_KEY as string); // Encrypt
 
-      const newEncryptedDataLineItems: any = `${iv}:${data}`;
-      // console.log('345342342423', dataa);
+      const newSalesEncryptedData = encryptForSalesforce(
+        jsonstring,
+        'CghhpgRahZKN0P8SaquPX/k30H+v2QWcKpcH42H9q0w=',
+      );
 
       if (salesFOrceAccoutFlow) {
         let newdata = {
           token: salesForceToken,
           AccountId: salesFOrceAccoutId,
           urls: salesForceinstanceUrl,
-          lineItem: newArrWIthFileName,
+          lineItem: newSalesEncryptedData,
         };
 
         await dispatch(addSalesForceDataaForAccount(newdata))?.then(
@@ -535,7 +537,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
               : salesForceFiledId,
           // FileId: '0Q09I0000002Bc5SAE',
           action: 'ExportFileToTable',
-          lineItem: newArrWIthFileName,
+          lineItem: newSalesEncryptedData,
         };
 
         await dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {
@@ -561,7 +563,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         return;
       }
     }
-    return;
     const newrrLineItems: any = [];
     const rebateDataArray: any = [];
     const contractProductArray: any = [];

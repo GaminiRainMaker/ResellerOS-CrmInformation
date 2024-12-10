@@ -24,14 +24,19 @@ import './styles.css';
 import {Space} from '@/app/components/common/antd/Space';
 import OsButton from '@/app/components/common/os-button';
 import OsModal from '@/app/components/common/os-modal';
+
 import {
   changeTheALpabetsFromFormula,
   formatStatus,
 } from '@/app/utils/CONSTANTS';
 import {
+  base64ToArrayBuffer1,
   checkFunctionInArray,
   concatenateAfterFirstWithSpace,
+  decrypt,
+  decryptFromSalesforce,
   encrypt,
+  encryptForSalesforce,
   getLineItemsWithNonRepitive,
   getResultedValue,
   getValuesOFLineItemsThoseNotAddedBefore,
@@ -1047,9 +1052,11 @@ const EditorFile = () => {
       });
 
       const jsonstring = JSON.stringify(newArrWithFileId);
-      const {iv, data} = await encrypt(jsonstring, SECRET_KEY as string); // Encrypt
+      const newSalesEncryptedData = encryptForSalesforce(
+        jsonstring,
+        'CghhpgRahZKN0P8SaquPX/k30H+v2QWcKpcH42H9q0w=',
+      );
 
-      const newEncryptedDataLineItems: any = `${iv}:${data}`;
       let newdata = {
         token: salesForceToken,
         // documentId: salesForceFiledId,
@@ -1057,11 +1064,10 @@ const EditorFile = () => {
         QuoteId: SaleQuoteId,
         FileId: salesForceFiledId,
         action: 'EditDataAsIs',
-        lineItem: newEncryptedDataLineItems,
+        lineItem: newSalesEncryptedData,
       };
       // file_id
       await dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {
-        console.log('23432432423', payload?.payload);
         notification?.open({
           message: payload?.payload?.message,
           type: 'success',

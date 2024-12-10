@@ -28,7 +28,6 @@ const CanvasRedirectWrapper = ({children}: Props) => {
     if (window.location !== window.parent.location) {
       isCanvas = true;
     }
-    console.log('345343242', isCanvas);
 
     if (isCanvas) {
       globalThis.Sfdc.canvas.client.refreshSignedRequest((data) => {
