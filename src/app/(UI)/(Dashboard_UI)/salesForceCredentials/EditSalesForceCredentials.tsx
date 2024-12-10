@@ -99,12 +99,12 @@ const EditSalesForceCredentials: FC<{
         </Col>
         <Col span={24}>
           <SelectFormItem
-            label={<Typography name="Body 4/Medium">Base URL</Typography>}
-            name={'base_url'}
+            label={<Typography name="Body 4/Medium">Instance URL</Typography>}
+            name={'instance_url'}
             rules={[
               {
                 required: true,
-                message: 'Base URL is required!',
+                message: 'Instance URL is required!',
               },
             ]}
           >

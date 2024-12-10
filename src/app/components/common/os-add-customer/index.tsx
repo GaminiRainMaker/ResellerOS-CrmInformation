@@ -438,20 +438,6 @@ const AddCustomer: React.FC<any> = ({
                       </Space>
                     </Col>
                   )}
-                  <Col span={drawer ? 24 : 12}>
-                    <Space align="start">
-                      <SelectFormItem
-                        label=""
-                        valuePropName="checked"
-                        name="is_default_address"
-                      >
-                        <Checkbox style={{paddingBottom: '10px'}} />
-                      </SelectFormItem>
-                      <Typography name="Body 3/Regular">
-                        Is this the default address?
-                      </Typography>
-                    </Space>
-                  </Col>
 
                   <Col span={24}>
                     <SelectFormItem
@@ -527,6 +513,21 @@ const AddCustomer: React.FC<any> = ({
                     >
                       <OsInput placeholder="Enter here" />
                     </SelectFormItem>
+                  </Col>
+                  <Col span={drawer ? 24 : 12}>
+                    <Space align="start">
+                      <SelectFormItem
+                        label=""
+                        valuePropName="checked"
+                        name="is_default_address"
+                      >
+                        <Checkbox style={{paddingBottom: '10px'}} />
+                      </SelectFormItem>
+                      <Typography name="Body 3/Regular">
+                        Should this be your default shipping and billing
+                        address?
+                      </Typography>
+                    </Space>
                   </Col>
                 </Row>
               ),

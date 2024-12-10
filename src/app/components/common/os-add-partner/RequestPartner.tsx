@@ -12,7 +12,6 @@ import {useEffect, useState} from 'react';
 import {formatStatus} from '@/app/utils/CONSTANTS';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Option} from 'antd/lib/mentions';
-import {useSearchParams} from 'next/navigation';
 import AddPartner from '.';
 import {
   addAssignPartnerProgramSalesForce,
@@ -49,7 +48,6 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
   setShowModal,
 }) => {
   const [token] = useThemeToken();
-  const searchParams = useSearchParams()!;
   const [addPartnerform] = Form.useForm();
   const [addPartnerProgram] = Form.useForm();
   const dispatch = useAppDispatch();

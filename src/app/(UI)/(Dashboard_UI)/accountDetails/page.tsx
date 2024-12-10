@@ -443,9 +443,13 @@ const AccountDetails = () => {
       setActiveKey((Number(activeKey) + 1)?.toString());
       return;
     }
-    const isAllFieldsUndefined = Object.values(addressData)?.every(
-      (value) => value === undefined || value === '',
-    );
+
+    const isAllFieldsUndefined = Object.entries(addressData)
+      .filter(
+        ([key]) =>
+          !['is_same_shipping_address', 'is_default_address'].includes(key),
+      )
+      .every(([_, value]) => value === undefined || value === '');
 
     if (isAllFieldsUndefined) {
       message.error(

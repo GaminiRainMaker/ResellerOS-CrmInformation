@@ -405,8 +405,10 @@ const SuperAdminPartner: React.FC = () => {
       ),
       dataIndex: 'organization',
       key: 'organization',
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">
+          {text ?? record?.Partner?.organization ?? '--'}
+        </Typography>
       ),
       width: 200,
     },
@@ -463,6 +465,7 @@ const SuperAdminPartner: React.FC = () => {
       render: (text: any, record: any) => (
         <Typography name="Body 4/Regular">
           {record?.AssignPartnerProgram?.User?.user_name ??
+            record?.Partner?.salesforce_username ??
             record?.organization}
         </Typography>
       ),

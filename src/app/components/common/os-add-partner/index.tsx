@@ -35,11 +35,11 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
   setPartnerNewId,
 }) => {
   const [token] = useThemeToken();
-  const searchParams = useSearchParams()!;
   const pathname = usePathname();
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
-  const salesForceUrl = searchParams.get('instance_url');
+  const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
+
   useEffect(() => {
     form?.resetFields();
     if (updateTheObject) {
@@ -71,8 +71,12 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
       if (!userInformation?.Admin) {
         partnerObj.admin_request = false;
       }
-      if (salesForceUrl) {
-        partnerObj.admin_request = true;
+      if (isCanvas) {
+        (partnerObj.admin_request = true),
+          (partnerObj.organization =
+            isDecryptedRecord?.context?.organization?.name),
+          (partnerObj.salesforce_username =
+            isDecryptedRecord?.context?.user?.userName);
       }
       await dispatch(insertPartner(partnerObj)).then((d: any) => {
         if (d?.payload) {
