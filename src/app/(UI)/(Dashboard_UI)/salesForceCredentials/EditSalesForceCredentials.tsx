@@ -14,7 +14,8 @@ import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/out
 const EditSalesForceCredentials: FC<{
   onFinish: any;
   form: FormInstance;
-}> = ({form, onFinish}) => {
+  drawer?: boolean;
+}> = ({form, onFinish, drawer}) => {
   return (
     <Form
       layout="vertical"
@@ -23,7 +24,7 @@ const EditSalesForceCredentials: FC<{
       onFinish={onFinish}
     >
       <Row gutter={[12, 12]} justify="space-between">
-        <Col span={24}>
+        <Col span={drawer ? 24 : 12}>
           <SelectFormItem
             label={<Typography name="Body 4/Medium">Username</Typography>}
             name={'username'}
@@ -37,7 +38,7 @@ const EditSalesForceCredentials: FC<{
             <OsInput placeholder="Enter Username" />
           </SelectFormItem>
         </Col>
-        <Col span={24}>
+        <Col span={drawer ? 24 : 12}>
           <SelectFormItem
             label={
               <Typography name="Body 4/Medium">Salesforce Org ID</Typography>
@@ -53,7 +54,23 @@ const EditSalesForceCredentials: FC<{
             <OsInput placeholder="Enter Salesforce Org ID" />
           </SelectFormItem>
         </Col>
-        <Col span={24}>
+        <Col span={drawer ? 24 : 12}>
+          <SelectFormItem
+            label={
+              <Typography name="Body 4/Medium">Salesforce Org Name</Typography>
+            }
+            name={'salesforce_org_name'}
+            rules={[
+              {
+                required: true,
+                message: 'Salesforce Org Name is required!',
+              },
+            ]}
+          >
+            <OsInput placeholder="Enter Salesforce Org ID" />
+          </SelectFormItem>
+        </Col>
+        <Col span={drawer ? 24 : 12}>
           <SelectFormItem
             label={<Typography name="Body 4/Medium">Consumer Key</Typography>}
             name={'consumer_key'}
@@ -67,7 +84,7 @@ const EditSalesForceCredentials: FC<{
             <OsInput placeholder="Enter Salesforce Org ID" />
           </SelectFormItem>
         </Col>
-        <Col span={24}>
+        <Col span={drawer ? 24 : 12}>
           <SelectFormItem
             label={
               <Typography name="Body 4/Medium">Consumer Secret</Typography>
@@ -83,7 +100,7 @@ const EditSalesForceCredentials: FC<{
             <OsInput placeholder="Enter Consumer Secret" />
           </SelectFormItem>
         </Col>
-        <Col span={24}>
+        <Col span={drawer ? 24 : 12}>
           <SelectFormItem
             label={<Typography name="Body 4/Medium">Login URL</Typography>}
             name={'login_url'}
@@ -97,7 +114,7 @@ const EditSalesForceCredentials: FC<{
             <OsInput placeholder="Enter Login URL" />
           </SelectFormItem>
         </Col>
-        <Col span={24}>
+        <Col span={drawer ? 24 : 12}>
           <SelectFormItem
             label={<Typography name="Body 4/Medium">Instance URL</Typography>}
             name={'instance_url'}
@@ -111,7 +128,7 @@ const EditSalesForceCredentials: FC<{
             <OsInput placeholder="Enter Base URL" />
           </SelectFormItem>
         </Col>
-        <Col span={24}>
+        <Col span={drawer ? 24 : 12}>
           <SelectFormItem
             label={<Typography name="Body 4/Medium">Password</Typography>}
             name={'password'}
