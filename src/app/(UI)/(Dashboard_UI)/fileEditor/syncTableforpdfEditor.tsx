@@ -502,7 +502,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           token: salesForceToken,
           AccountId: salesFOrceAccoutId,
           urls: salesForceinstanceUrl,
-          lineItem: newEncryptedDataLineItems,
+          lineItem: newArrWIthFileName,
         };
 
         await dispatch(addSalesForceDataaForAccount(newdata))?.then(
@@ -535,7 +535,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
               : salesForceFiledId,
           // FileId: '0Q09I0000002Bc5SAE',
           action: 'ExportFileToTable',
-          lineItem: newEncryptedDataLineItems,
+          lineItem: newArrWIthFileName,
         };
 
         await dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {

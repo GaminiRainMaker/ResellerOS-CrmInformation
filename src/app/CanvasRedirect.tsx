@@ -46,6 +46,14 @@ const CanvasRedirectWrapper = ({children}: Props) => {
           dispatch(
             setDecryptedData(globalThis.JSON.parse(Sfdc.canvas.decode(part))),
           );
+          let NavigationUrls =
+            decryptData?.context?.environment?.parameters?.locationUrl;
+          console.log(
+            '45435435334',
+            decryptData?.context?.environment?.parameters,
+            NavigationUrls,
+          );
+          // NavigationUrls == "EditDataAsIs"
           dispatch(setIsCanvas(true));
           if (navigationKey === 'Opportunity') {
             router.replace('/dealReg');
@@ -53,10 +61,16 @@ const CanvasRedirectWrapper = ({children}: Props) => {
             navigationKey === 'rosdealregai__Partner_Registration__c'
           ) {
             router.replace('/dealRegDetail');
-          } else if (navigationKey === 'Account') {
+          } else if (
+            NavigationUrls === 'Account' ||
+            NavigationUrls === 'Manual'
+          ) {
             router.replace('/manualFileEditor');
-          } else {
-            router.replace('/manualFileEditor');
+          } else if (
+            NavigationUrls == 'EditDataAsIs' ||
+            NavigationUrls == 'exportfiletotable'
+          ) {
+            router.replace('/fileEditor');
           }
         }
       });
