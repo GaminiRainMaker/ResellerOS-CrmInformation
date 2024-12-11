@@ -6,6 +6,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
 import {FormInstance, InputNumberProps} from 'antd';
+import * as CryptoJS from 'crypto-js';
 import axios from 'axios';
 import moment from 'moment';
 import {getContractInBulkByProductCode} from '../../../redux/actions/contractProduct';
@@ -2025,3 +2026,76 @@ export function convertToNumber(variable: any) {
   const num = Number(variable);
   return isNaN(num) ? 0 : num;
 }
+
+export const base64ToArrayBuffer1 = function (base64: any) {
+  var binary_string = atob(base64);
+  var len = binary_string.length;
+  var bytes = new Uint8Array(len);
+  for (var i = 0; i < len; i++) {
+    bytes[i] = binary_string.charCodeAt(i);
+  }
+  return bytes.buffer;
+};
+
+// Helper function to append two ArrayBuffers
+export const appendBuffer = function (buffer1: any, buffer2: any) {
+  var tmp = new Uint8Array(buffer1.byteLength + buffer2.byteLength);
+  tmp.set(new Uint8Array(buffer1), 0); // Set buffer1 content
+  tmp.set(new Uint8Array(buffer2), buffer1.byteLength); // Append buffer2 content
+  return tmp.buffer; // Return combined ArrayBuffer
+};
+
+// Helper function to convert ArrayBuffer to Base64
+export const arrayBufferToBase641 = function (arrayBuffer: any) {
+  return btoa(
+    new Uint8Array(arrayBuffer).reduce(function (data, byte) {
+      return data + String.fromCharCode(byte);
+    }, ''),
+  );
+};
+
+export const encryptForSalesforce = function (msg: any, base64Secret: any) {
+  var iv = CryptoJS.lib.WordArray.random(16); // Generate a random IV
+  var aes_options = {
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7,
+    iv: iv, // Use the IV
+  };
+  var encryptionObj = CryptoJS.AES.encrypt(
+    msg, // Message to encrypt
+    CryptoJS.enc.Base64?.parse(base64Secret), // Base64 decoded secret
+    aes_options,
+  );
+  // Convert encrypted data and IV to ArrayBuffer
+  var encryptedBuffer = base64ToArrayBuffer1(encryptionObj.toString());
+  var ivBuffer = base64ToArrayBuffer1(iv.toString(CryptoJS.enc.Base64));
+  var finalBuffer = appendBuffer(ivBuffer, encryptedBuffer); // Append IV and encrypted data
+  return arrayBufferToBase641(finalBuffer); // Return as Base64
+};
+
+// Decrypts the string with the given secret (both params are Base64 encoded)
+export const decryptFromSalesforce = function (
+  encryptedBase64: any,
+  base64Secret: any,
+) {
+  var arrayBuffer = base64ToArrayBuffer1(encryptedBase64);
+  var iv = CryptoJS.enc.Base64.parse(
+    arrayBufferToBase641(arrayBuffer.slice(0, 16)),
+  );
+  var encryptedStr = arrayBufferToBase641(
+    arrayBuffer.slice(16, arrayBuffer.byteLength),
+  );
+
+  var aes_options = {
+    iv: iv, // Provide the extracted IV
+    mode: CryptoJS.mode.CBC,
+  };
+
+  var decryptObj = CryptoJS.AES.decrypt(
+    encryptedStr,
+    CryptoJS.enc.Base64.parse(base64Secret), // Base64 decoded secret
+    aes_options,
+  );
+
+  return decryptObj.toString(CryptoJS.enc.Utf8); // Return decrypted string
+};

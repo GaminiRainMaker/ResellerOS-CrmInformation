@@ -2527,6 +2527,11 @@
   resolved "https://registry.npmjs.org/@types/aws-lambda/-/aws-lambda-8.10.143.tgz"
   integrity sha512-u5vzlcR14ge/4pMTTMDQr3MF0wEe38B2F9o84uC4F43vN5DGTy63npRrB6jQhyt+C0lGv4ZfiRcRkqJoZuPnmg==
 
+"@types/crypto-js@^4.2.2":
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/@types/crypto-js/-/crypto-js-4.2.2.tgz#771c4a768d94eb5922cc202a3009558204df0cea"
+  integrity sha512-sDOLlVbHhXpAUAL0YHDUUwDZf3iN4Bwi4W6a0W0b+QcAezUbRtH4FVb+9J4h+XFPW7l/gQ9F8qC7P+Ec4k8QVQ==
+
 "@types/d3-array@^3.0.3":
   version "3.2.1"
   resolved "https://registry.npmjs.org/@types/d3-array/-/d3-array-3.2.1.tgz"
@@ -3426,7 +3431,7 @@ cross-spawn@^7.0.2:
 
 crypto-js@^4.2.0:
   version "4.2.0"
-  resolved "https://registry.npmjs.org/crypto-js/-/crypto-js-4.2.0.tgz"
+  resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-4.2.0.tgz#4d931639ecdfd12ff80e8186dba6af2c2e856631"
   integrity sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==
 
 csstype@^3.0.2, csstype@^3.1.3:

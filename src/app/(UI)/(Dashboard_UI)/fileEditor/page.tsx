@@ -31,6 +31,8 @@ import {
 import {
   checkFunctionInArray,
   concatenateAfterFirstWithSpace,
+  decryptFromSalesforce,
+  encryptForSalesforce,
   getLineItemsWithNonRepitive,
   getResultedValue,
   getValuesOFLineItemsThoseNotAddedBefore,
@@ -1009,6 +1011,12 @@ const EditorFile = () => {
         };
         newArrWithFileId?.push(newObj);
       });
+      const jsonstring = JSON.stringify(newArrWithFileId);
+      const newSalesEncryptedData = encryptForSalesforce(
+        jsonstring,
+        'CghhpgRahZKN0P8SaquPX/k30H+v2QWcKpcH42H9q0w=',
+      );
+
       let newdata = {
         token: salesToken,
         // documentId: salesForceFiledId,
@@ -1016,7 +1024,7 @@ const EditorFile = () => {
         QuoteId: SaleQuoteId,
         FileId: salesForceFiledId,
         action: 'EditDataAsIs',
-        lineItem: newArrWithFileId,
+        lineItem: newSalesEncryptedData,
       };
       // file_id
       dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {});
