@@ -11,6 +11,9 @@ const client = axios.create({
   baseURL: process.env.NEXT_PUBLIC_SERVER_API_URL,
 
   withCredentials: false,
+  headers: {
+    'Access-Control-Allow-Origin': '*',
+  },
 });
 
 client.interceptors.request.use(requestInterceptor);
