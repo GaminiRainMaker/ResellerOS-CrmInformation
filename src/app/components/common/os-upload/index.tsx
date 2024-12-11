@@ -323,6 +323,65 @@ const OsUpload: React.FC<any> = ({
     };
   };
 
+  const beforeUploadDataForExcelFile = async (file: File) => {
+    const obj: any = {...file};
+    let resultantValues: any;
+    let uploadedUrl: any;
+    await convertFileToBase64(file)
+      .then(async (base64String: string) => {
+        obj.base64 = base64String;
+        obj.name = file?.name;
+        await dispatch(uploadExcelFileToAws({document: base64String})).then(
+          async (payload: any) => {
+            const doc_url = payload?.payload?.data;
+            uploadedUrl = payload?.payload?.data;
+          },
+        );
+      })
+      .catch((error: any) => {
+        console.log('324342', error);
+        notification?.open({
+          message: 'Error converting file to base64',
+          type: 'error',
+        });
+        // message.error('Error converting file to base64', error);
+      });
+
+    return {
+      file_name: file?.name,
+      pdf_url: uploadedUrl,
+    };
+  };
+
+  const beforeUploadDataForPDFFile = async (file: File) => {
+    const obj: any = {...file};
+    let resultantValues: any;
+    let uploadedUrl: any;
+    await convertFileToBase64(file)
+      .then(async (base64String: string) => {
+        obj.base64 = base64String;
+        obj.name = file?.name;
+        await dispatch(uploadToAws({document: base64String})).then(
+          async (payload: any) => {
+            const doc_url = payload?.payload?.data;
+            uploadedUrl = payload?.payload?.data;
+          },
+        );
+      })
+      .catch((error: any) => {
+        console.log('324342', error);
+        notification?.open({
+          message: 'Error converting file to base64',
+          type: 'error',
+        });
+        // message.error('Error converting file to base64', error);
+      });
+
+    return {
+      file_name: file?.name,
+      pdf_url: uploadedUrl,
+    };
+  };
   function transformString(str: any) {
     return str.toLowerCase().replace(/[^a-z0-9]/g, '');
   }
@@ -587,19 +646,21 @@ const OsUpload: React.FC<any> = ({
         (obj?.model_id !== 'a02fffb7-5221-44a2-8eb1-85781a0ecd67' ||
           obj?.file?.type.includes('spreadsheetml'))
       ) {
-        // if (obj?.file?.type.includes('spreadsheetml')) {
-        //   const dataa = await beforeUploadDataForExcel(obj?.file);
+        if (obj?.file?.type.includes('spreadsheetml')) {
+          const dataa = await beforeUploadDataForExcelFile(obj?.file);
 
-        //   obj = {...obj, ...dataa};
-        // } else {
-        // eslint-disable-next-line no-await-in-loop
-        const response: any = await sendDataToNanonets(
-          obj?.model_id,
-          obj?.file,
-        );
+          obj = {...obj, ...dataa};
+        } else {
+          // eslint-disable-next-line no-await-in-loop
+          const dataa = await beforeUploadDataForPDFFile(obj?.file);
 
-        obj = {...obj, ...response};
-        // }
+          const response: any = await sendDataToNanonets(
+            obj?.model_id,
+            obj?.file,
+          );
+
+          obj = {...obj, ...response, ...dataa};
+        }
       }
 
       newArr.push(obj);

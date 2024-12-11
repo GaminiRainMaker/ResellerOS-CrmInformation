@@ -623,7 +623,7 @@ const EditorFile = () => {
         });
       }
     }
-  }, [ExistingQuoteItemss, quoteFileById]);
+  }, [ExistingQuoteItemss, quoteFileById, salesForceinstanceUrl]);
 
   let newArrForAlpa = [
     'A :',
