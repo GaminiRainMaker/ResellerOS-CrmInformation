@@ -1,5 +1,5 @@
 import {Form} from 'antd';
-import React, {FC} from 'react';
+import React, {FC, useState} from 'react';
 import {Col, Row} from '../antd/Grid';
 import {CustomerTabsStyle} from '../os-add-customer/styled-components';
 import {SelectFormItem} from '../os-oem-select/oem-select-styled';
@@ -16,6 +16,8 @@ const AddAddress: FC<OsAddAddressInterface> = ({
   onFinish,
   drawer,
 }) => {
+  const [sameAsShippingAddress, setSameAsShippingAddress] =
+    useState<boolean>(false);
   const onChange = (key: string) => {
     setActiveKey(key);
   };
@@ -140,6 +142,7 @@ const AddAddress: FC<OsAddAddressInterface> = ({
                             <Checkbox
                               style={{paddingBottom: '10px'}}
                               onChange={(e) => {
+                                setSameAsShippingAddress(e.target.checked);
                                 if (e.target.checked) {
                                   const data = form.getFieldsValue();
                                   form.setFieldsValue({
@@ -181,7 +184,10 @@ const AddAddress: FC<OsAddAddressInterface> = ({
                       }
                       name="billing_address_line"
                     >
-                      <OsInput placeholder="Enter here" />
+                      <OsInput
+                        placeholder="Enter here"
+                        disabled={sameAsShippingAddress}
+                      />
                     </SelectFormItem>
                   </Col>
                   <Col span={12}>
@@ -195,7 +201,10 @@ const AddAddress: FC<OsAddAddressInterface> = ({
                       label={<Typography name="Body 4/Medium">City</Typography>}
                       name="billing_city"
                     >
-                      <OsInput placeholder="Enter here" />
+                      <OsInput
+                        placeholder="Enter here"
+                        disabled={sameAsShippingAddress}
+                      />
                     </SelectFormItem>
                   </Col>
                   <Col span={12}>
@@ -211,7 +220,10 @@ const AddAddress: FC<OsAddAddressInterface> = ({
                       }
                       name="billing_state"
                     >
-                      <OsInput placeholder="Enter here" />
+                      <OsInput
+                        placeholder="Enter here"
+                        disabled={sameAsShippingAddress}
+                      />
                     </SelectFormItem>
                   </Col>
                   <Col span={12}>
@@ -228,7 +240,10 @@ const AddAddress: FC<OsAddAddressInterface> = ({
                         },
                       ]}
                     >
-                      <OsInput placeholder="Enter here" />
+                      <OsInput
+                        placeholder="Enter here"
+                        disabled={sameAsShippingAddress}
+                      />
                     </SelectFormItem>
                   </Col>
                   <Col span={12}>
@@ -244,7 +259,10 @@ const AddAddress: FC<OsAddAddressInterface> = ({
                       }
                       name="billing_country"
                     >
-                      <OsInput placeholder="Enter here" />
+                      <OsInput
+                        placeholder="Enter here"
+                        disabled={sameAsShippingAddress}
+                      />
                     </SelectFormItem>
                   </Col>
 
