@@ -157,14 +157,14 @@ const DealRegDetail = () => {
           if (dealregData?.payload) {
             finalAppData123.salesforceDealregData = dealregData?.payload?.[0];
           }
-          if (res?.payload?.password && res?.payload?.username) {
+          if (res?.payload?.data?.password && res?.payload?.data?.username) {
             const passwordEncryption = await encrypt(
-              res.payload.password,
+              res.payload?.data?.password,
               SECRET_KEY as string,
             );
 
             const usernameEncryption = await encrypt(
-              res.payload.username,
+              res.payload.data?.username,
               SECRET_KEY as string,
             );
 
