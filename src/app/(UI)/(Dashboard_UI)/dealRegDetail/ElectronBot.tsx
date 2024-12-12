@@ -50,7 +50,7 @@ const ElectronBot = () => {
   const getElectronAppLink = () => {
     switch (os) {
       case 'windows':
-        return 'https://reselller-os.s3.us-east-1.amazonaws.com/DealRegAI+Setup+0.1.0.exe';
+        return 'https://reselller-os.s3.us-east-1.amazonaws.com/DealRegAI+Setup+0.1.0+Azure.exe';
       case 'mac':
         return 'https://reselller-os.s3.us-east-1.amazonaws.com/DealRegAI-0.1.0.dmg';
       case 'linux':
