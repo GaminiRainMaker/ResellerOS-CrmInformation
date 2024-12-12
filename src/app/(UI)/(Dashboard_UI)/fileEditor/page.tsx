@@ -472,7 +472,7 @@ const EditorFile = () => {
         setNanonetsLoading(true);
 
         dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
-          if (payload?.payload?.advanced_excel) {
+          if (payload?.payload?.advanced_excel || true) {
             dispatch(getPDFFileData({pdfUrl: quoteFileById?.pdf_url}))?.then(
               (payload: any) => {
                 let newArrCheck: any = [];
@@ -529,7 +529,10 @@ const EditorFile = () => {
             );
           } else {
             setNanonetsLoading(true);
-            fetch(quoteFileById?.pdf_url)
+            fetch(quoteFileById?.pdf_url, {
+              method: 'GET',
+              mode: 'no-cors', // Disables CORS checks
+            })
               .then((res) => res.blob())
               .then(async (file) => {
                 const finalFile = new File([file], quoteFileById?.file_name, {
