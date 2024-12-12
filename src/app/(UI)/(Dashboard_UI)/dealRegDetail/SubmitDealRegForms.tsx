@@ -40,7 +40,7 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
             value: JSON.stringify(element),
             label: (
               <Typography cursor="pointer" name="Button 1">
-                {`${formatStatus(Partner?.partner)} - ${formatStatus(PartnerProgram?.partner_program)}`}
+                {`${formatStatus(Partner?.partner)} - ${formatStatus(PartnerProgram?.partner_program)} - ${tabPercentage ?? Number(element?.percentage)}`}
               </Typography>
             ),
             // };
