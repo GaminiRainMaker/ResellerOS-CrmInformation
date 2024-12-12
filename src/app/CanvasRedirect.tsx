@@ -47,11 +47,7 @@ const CanvasRedirectWrapper = ({children}: Props) => {
           );
           let NavigationUrls =
             decryptData?.context?.environment?.parameters?.locationUrl;
-          console.log(
-            '45435435334',
-            decryptData?.context?.environment?.parameters,
-            NavigationUrls,
-          );
+
           // NavigationUrls == "EditDataAsIs"
           dispatch(setIsCanvas(true));
           if (navigationKey === 'Opportunity') {
@@ -67,7 +63,8 @@ const CanvasRedirectWrapper = ({children}: Props) => {
             router.replace('/manualFileEditor');
           } else if (
             NavigationUrls == 'EditDataAsIs' ||
-            NavigationUrls == 'exportfiletotable'
+            NavigationUrls == 'exportfiletotable' ||
+            NavigationUrls == 'Others'
           ) {
             router.replace('/fileEditor');
           }
