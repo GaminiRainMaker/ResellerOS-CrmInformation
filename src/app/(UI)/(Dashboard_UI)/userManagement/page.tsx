@@ -171,7 +171,23 @@ const UserManagement = () => {
       key: 'actions',
       width: 250,
       render: (text: string, record: any) => (
-        <Space size={18}>
+        <Space size={30}>
+          <PencilSquareIcon
+            height={24}
+            width={24}
+            onClick={() => {
+              setShowEditDrawer(true);
+              setEditRecordData(record);
+              editOrgForm.setFieldsValue({
+                org_id: record?.org_id,
+                organization: record?.organization,
+                email: record?.email,
+                user_name: record?.user_name,
+              });
+            }}
+            color={token.colorInfoBorder}
+            style={{cursor: 'pointer'}}
+          />
           <EyeIcon
             height={24}
             width={24}
@@ -193,22 +209,6 @@ const UserManagement = () => {
               setShowPartnerProgramAssignModal(true);
               dispatch(setAllResellerRecord(record));
             }}
-          />
-          <PencilSquareIcon
-            height={24}
-            width={24}
-            onClick={() => {
-              setShowEditDrawer(true);
-              setEditRecordData(record);
-              editOrgForm.setFieldsValue({
-                org_id: record?.org_id,
-                organization: record?.organization,
-                email: record?.email,
-                user_name: record?.user_name,
-              });
-            }}
-            color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
           />
         </Space>
       ),
