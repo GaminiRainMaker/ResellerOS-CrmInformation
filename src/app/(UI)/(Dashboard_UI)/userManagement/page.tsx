@@ -398,7 +398,7 @@ const UserManagement = () => {
     if (dataa?.org_id) {
       obj = {
         organization: organizationValue,
-        password: `${dataa?.user_name}@123`,
+        password: `${dataa?.salesforce_user_name}@123`,
         is_admin: true,
         master_admin: true,
         is_salesforce: true,
