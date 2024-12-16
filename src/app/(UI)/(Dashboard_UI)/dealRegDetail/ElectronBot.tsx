@@ -52,7 +52,7 @@ const ElectronBot = () => {
       case 'windows':
         return 'https://rosdevdi.blob.core.windows.net/reselleros/DealRegAI%20Setup%200.1.0.exe?sp=r&st=2024-12-16T10:46:34Z&se=2050-12-16T18:46:34Z&spr=https&sv=2022-11-02&sr=b&sig=vZy8GvqSZp6ckNusX%2B7QsPZLOQCUyYkiDMaHsJAt5jU%3D';
       case 'mac':
-        return 'https://rosdevdi.blob.core.windows.net/reselleros/DealRegAI-0.1.0.dmg?sp=r&st=2024-12-16T12:46:47Z&se=2050-12-16T20:46:47Z&spr=https&sv=2022-11-02&sr=b&sig=J791%2BLILuMlefGmE6hpFWr0hLNzxHvGnM%2FxbRuQN5VQ%3D';
+        return 'https://rosdevdi.blob.core.windows.net/reselleros/DealRegAI-0.1.0.dmg?sp=r&st=2024-12-16T14:26:20Z&se=2050-12-16T22:26:20Z&spr=https&sv=2022-11-02&sr=b&sig=Yznget6QvhGwuSf07Lwwkfk4bQAqQfS5GxIEUxZ%2FvcA%3D';
       case 'linux':
         return 'https://reselller-os.s3.amazonaws.com/MyApp-linux-x64.zip';
       default:
