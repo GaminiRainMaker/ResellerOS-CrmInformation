@@ -19,6 +19,7 @@ import {
   queryAllOrganizations,
   createNewOrganization,
   updateAdvancedSetting,
+  getSalesForceUserDetails,
 } from '../actions/user';
 
 type UserState = {
@@ -343,6 +344,24 @@ const userSlice = createSlice({
       )
       .addCase(
         updateAdvancedSetting.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getSalesForceUserDetails.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getSalesForceUserDetails.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.allOrganization = action.payload;
+        },
+      )
+      .addCase(
+        getSalesForceUserDetails.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

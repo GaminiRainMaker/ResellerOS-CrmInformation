@@ -378,6 +378,7 @@ const UserManagement = () => {
         master_admin: true,
         is_salesforce: true,
         org_id: dataa?.org_id,
+        org_name: dataa?.org_name,
         email: dataa?.salesforce_email,
         user_name: dataa?.salesforce_user_name,
       };

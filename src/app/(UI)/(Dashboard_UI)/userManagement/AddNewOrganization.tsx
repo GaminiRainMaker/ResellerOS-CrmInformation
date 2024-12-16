@@ -243,6 +243,24 @@ const AddNewOrganization: FC<{
                     <SelectFormItem
                       label={
                         <Typography name="Body 4/Medium">
+                          Organization Name
+                        </Typography>
+                      }
+                      name={'org_name'}
+                      rules={[
+                        {
+                          required: activeKey === '2' ? true : false,
+                          message: 'Organization ID is required!',
+                        },
+                      ]}
+                    >
+                      <OsInput placeholder="Enter Organization Name" />
+                    </SelectFormItem>
+                  </Col>
+                  <Col span={12}>
+                    <SelectFormItem
+                      label={
+                        <Typography name="Body 4/Medium">
                           Master Email
                         </Typography>
                       }

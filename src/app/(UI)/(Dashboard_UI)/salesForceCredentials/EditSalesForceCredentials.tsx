@@ -1,21 +1,18 @@
 import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Switch} from '@/app/components/common/antd/Switch';
 import OsInput from '@/app/components/common/os-input';
-import OsInputPassword from '@/app/components/common/os-input/InputPassword';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
+import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
 import {FormInstance} from 'antd/lib';
-import Image from 'next/image';
 import {FC} from 'react';
-import eyeSlashIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye-slash.svg';
-import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
 
 const EditSalesForceCredentials: FC<{
   onFinish: any;
   form: FormInstance;
   drawer?: boolean;
-}> = ({form, onFinish, drawer}) => {
+  salesDetailOptions?: any;
+}> = ({form, onFinish, drawer, salesDetailOptions}) => {
   return (
     <Form
       layout="vertical"
@@ -38,7 +35,7 @@ const EditSalesForceCredentials: FC<{
             <OsInput placeholder="Enter Username" />
           </SelectFormItem>
         </Col>
-        <Col span={drawer ? 24 : 12}>
+        {/* <Col span={drawer ? 24 : 12}>
           <SelectFormItem
             label={
               <Typography name="Body 4/Medium">Salesforce Org ID</Typography>
@@ -53,13 +50,13 @@ const EditSalesForceCredentials: FC<{
           >
             <OsInput placeholder="Enter Salesforce Org ID" />
           </SelectFormItem>
-        </Col>
+        </Col> */}
         <Col span={drawer ? 24 : 12}>
           <SelectFormItem
             label={
               <Typography name="Body 4/Medium">Salesforce Org Name</Typography>
             }
-            name={'salesforce_org_name'}
+            name={'saleforce_org_Id'}
             // rules={[
             //   {
             //     required: true,
@@ -67,10 +64,11 @@ const EditSalesForceCredentials: FC<{
             //   },
             // ]}
           >
-            <OsInput placeholder="Enter Salesforce Org ID" />
+            <CommonSelect options={salesDetailOptions} />
+            {/* <OsInput placeholder="Enter Salesforce Org ID" /> */}
           </SelectFormItem>
         </Col>
-        <Col span={drawer ? 24 : 12}>
+        {/* <Col span={drawer ? 24 : 12}>
           <SelectFormItem
             label={<Typography name="Body 4/Medium">Consumer Key</Typography>}
             name={'consumer_key'}
@@ -99,10 +97,12 @@ const EditSalesForceCredentials: FC<{
           >
             <OsInput placeholder="Enter Consumer Secret" />
           </SelectFormItem>
-        </Col>
+        </Col> */}
         <Col span={drawer ? 24 : 12}>
           <SelectFormItem
-            label={<Typography name="Body 4/Medium">Login URL</Typography>}
+            label={
+              <Typography name="Body 4/Medium">Login/Instance URL</Typography>
+            }
             name={'login_url'}
             // rules={[
             //   {
@@ -114,7 +114,7 @@ const EditSalesForceCredentials: FC<{
             <OsInput placeholder="Enter Login URL" />
           </SelectFormItem>
         </Col>
-        <Col span={drawer ? 24 : 12}>
+        {/* <Col span={drawer ? 24 : 12}>
           <SelectFormItem
             label={<Typography name="Body 4/Medium">Instance URL</Typography>}
             name={'instance_url'}
@@ -127,8 +127,8 @@ const EditSalesForceCredentials: FC<{
           >
             <OsInput placeholder="Enter Base URL" />
           </SelectFormItem>
-        </Col>
-        <Col span={drawer ? 24 : 12}>
+        </Col> */}
+        {/* <Col span={drawer ? 24 : 12}>
           <SelectFormItem
             label={<Typography name="Body 4/Medium">Password</Typography>}
             name={'password'}
@@ -165,7 +165,7 @@ const EditSalesForceCredentials: FC<{
               style={{width: '100%'}}
             />
           </SelectFormItem>
-        </Col>
+        </Col> */}
       </Row>
     </Form>
   );
