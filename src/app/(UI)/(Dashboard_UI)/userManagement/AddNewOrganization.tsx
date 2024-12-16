@@ -1,4 +1,5 @@
 import {Col, Row} from '@/app/components/common/antd/Grid';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import OsTabs from '@/app/components/common/os-tabs';
@@ -12,6 +13,7 @@ const AddNewOrganization: FC<{
   onFinish: any;
 }> = ({form, onFinish}) => {
   const [activeKey, setActiveKey] = useState<string>('1');
+  const [token] = useThemeToken();
   const onChange = (key: string) => {
     setActiveKey(key);
   };
@@ -290,6 +292,26 @@ const AddNewOrganization: FC<{
           ]}
         />
       </Form>
+      <div
+        style={{display: 'flex', flexDirection: 'column', marginTop: '20px'}}
+      >
+        <Typography
+          name="Body 3/Bold"
+          color={token?.colorLink}
+          style={{marginBottom: '6px'}}
+        >
+          Note:
+        </Typography>
+        <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
+          <ul style={{listStyleType: 'disc', marginLeft: '20px'}}>
+            <li>
+              A default password is generated based on the Master Username. For
+              example, if the Master Username is "admin", the password will be
+              admin@123.
+            </li>
+          </ul>
+        </Typography>
+      </div>
     </>
   );
 };
