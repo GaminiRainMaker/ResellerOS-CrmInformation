@@ -71,6 +71,7 @@ export const API = {
     GetAllOrganizations: '/user/queryAllOrganizations',
     CreateNewOrganization: '/user/createNewOrganization',
     updateAdvancedSetting: '/user/updateAdvancedSetting',
+    getSalesForceUserDetails: '/user/getSalesForceUserDetails',
   },
   PRODUCT: {
     INDEX: '/product',

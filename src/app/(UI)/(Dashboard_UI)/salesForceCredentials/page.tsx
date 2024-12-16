@@ -30,6 +30,7 @@ import AddSalesForceCredentials, {
 import EditSalesForceCredentials from './EditSalesForceCredentials';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsCollapse from '@/app/components/common/os-collapse';
+import {getSalesForceUserDetails} from '../../../../../redux/actions/user';
 
 const AddUser = () => {
   const csvUploadRef = useRef<AddSalesForceCredentialsRef>(null);
@@ -46,6 +47,7 @@ const AddUser = () => {
   const [deleteIds, setDeleteIds] = useState<any>();
   const [userData, setUserData] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
+  const [salesDetailOptions, setSalesDetailOptions] = useState<any>();
 
   const deleteSelectedIds = async () => {
     const dataa = {id: deleteIds};
@@ -58,6 +60,19 @@ const AddUser = () => {
     setShowModalDelete(false);
   };
 
+  const getSalesForceCredentialsData = async () => {
+    await dispatch(getSalesForceUserDetails(''))?.then((payload: any) => {
+      let newArr: any = [];
+      payload?.payload?.map((items: any) => {
+        newArr?.push({label: items?.org_name, value: items?.org_id});
+      });
+      setSalesDetailOptions(newArr);
+    });
+  };
+
+  useEffect(() => {
+    getSalesForceCredentialsData();
+  }, []);
   const UserColumns = [
     {
       title: (
@@ -155,7 +170,9 @@ const AddUser = () => {
     let obj = {
       ...getformData,
       id: userData?.id,
+      instance_url: getformData?.login_url,
     };
+
     dispatch(updateSalesForceCredentialsId(obj)).then((res) => {
       if (res?.payload) {
         dispatch(queryAddSalesForceCredentials(''));
@@ -338,7 +355,13 @@ const AddUser = () => {
       <OsModal
         title="Add SalesForce Credentials"
         loading={loading}
-        body={<EditSalesForceCredentials onFinish={updateData} form={form} />}
+        body={
+          <EditSalesForceCredentials
+            onFinish={updateData}
+            form={form}
+            salesDetailOptions={salesDetailOptions}
+          />
+        }
         width={696}
         open={showAddSingleUserModal}
         onCancel={() => {
@@ -382,7 +405,12 @@ const AddUser = () => {
           </Row>
         }
       >
-        <EditSalesForceCredentials onFinish={updateData} form={form} drawer />
+        <EditSalesForceCredentials
+          onFinish={updateData}
+          form={form}
+          drawer
+          salesDetailOptions={salesDetailOptions}
+        />
       </OsDrawer>
     </>
   );

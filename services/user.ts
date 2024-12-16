@@ -43,4 +43,6 @@ export const USERAPI = {
     get(API.USER.GetAllOrganizations) as Promise<AxiosResponse<[]>>,
   updateAdvancedSetting: (data: any) =>
     post(API.USER.updateAdvancedSetting, data) as Promise<AxiosResponse<any>>,
+  getSalesForceUserDetails: () =>
+    get(API.USER.getSalesForceUserDetails) as Promise<AxiosResponse<[]>>,
 };
