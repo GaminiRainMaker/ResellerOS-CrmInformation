@@ -33,6 +33,11 @@ import {
   getSalesForcePartnerCredentials,
 } from '../../../../../redux/actions/salesForce';
 import {decrypt, encrypt} from '@/app/utils/base';
+import {
+  dependentFieldProcess,
+  processFormData,
+  processScript,
+} from '@/app/utils/script';
 
 const DealRegDetail = () => {
   const [getFormData] = Form.useForm();
@@ -130,7 +135,7 @@ const DealRegDetail = () => {
       ...FinalSubmitDealRegForm,
       status: 'Submitted',
     };
-
+    let salesforceData: any = {};
     if (SubmitDealRegFormData) {
       try {
         let finalAppData: any = {
@@ -140,12 +145,6 @@ const DealRegDetail = () => {
           partnerId: SubmitDealRegFormData?.partner_id,
           partnerProgramId: SubmitDealRegFormData?.partner_program_id,
         };
-        let finalAppData123: any = {
-          dealRegId: !isCanvas ? SubmitDealRegFormData?.id : '',
-          userId: userInformation?.id ?? userId,
-          partnerProgramId: SubmitDealRegFormData?.partner_program_id,
-          isCanvas: isCanvas,
-        };
 
         if (isCanvas) {
           const dealregData: any = await dispatch(
@@ -154,26 +153,27 @@ const DealRegDetail = () => {
           const res: any = await dispatch(
             getSalesForcePartnerCredentials(finalAppData),
           );
-          if (dealregData?.payload) {
-            finalAppData123.salesforceDealregData = dealregData?.payload?.[0];
-          }
-          if (res?.payload?.data?.password && res?.payload?.data?.username) {
-            const passwordEncryption = await encrypt(
-              res.payload?.data?.password,
-              SECRET_KEY as string,
-            );
-
-            const usernameEncryption = await encrypt(
-              res.payload.data?.username,
-              SECRET_KEY as string,
-            );
-
-            finalAppData123.password = `${passwordEncryption.iv}:${passwordEncryption.data}`;
-            finalAppData123.username = `${usernameEncryption.iv}:${usernameEncryption.data}`;
+          if (dealregData?.payload && res?.payload) {
+            salesforceData.data = dealregData?.payload?.[0];
+            salesforceData.credentials = res?.payload?.data;
+            salesforceData.PartnerProgram =
+              SubmitDealRegFormData?.PartnerProgram;
           }
         }
-        console.log({finalAppData123});
-        const response = await dispatch(dealRegFormScript(finalAppData123));
+        const createScriptData = await createScript(
+          isCanvas ? salesforceData : SubmitDealRegFormData,
+          isCanvas,
+        );
+        const scriptEncryption = await encrypt(
+          createScriptData as string,
+          SECRET_KEY as string,
+        );
+        const desktopAppData = {
+          isCanvas: isCanvas,
+          userId: userInformation?.id ?? userId,
+          script: JSON.stringify(scriptEncryption),
+        };
+        const response = await dispatch(dealRegFormScript(desktopAppData));
         if (response && !isCanvas) {
           await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
             (response: {payload: any}) => {
@@ -198,6 +198,89 @@ const DealRegDetail = () => {
     // Call the child's onFinish function using the ref
     if (dealRegTabsRef.current) {
       dealRegTabsRef.current.onFinish();
+    }
+  };
+
+  const createScript = async (dealData: any, isSalesForce: any) => {
+    try {
+      let finalMainData = {...dealData}; // Initialize with a shallow copy of dealData
+      if (isSalesForce) {
+        // Process and decrypt unique form data
+        const uniqueDataRaw = dealData?.data?.unique_form_data?.replace(
+          /^"|"$/g,
+          '',
+        ); // Remove quotes
+        if (uniqueDataRaw) {
+          const [uniqueIv, uniqueEncryptedData] = uniqueDataRaw.split(':');
+          if (uniqueIv && uniqueEncryptedData) {
+            const uniqueDecryptedString = await decrypt(
+              uniqueEncryptedData,
+              SECRET_KEY as string,
+              uniqueIv,
+            );
+            finalMainData.unique_form_data = uniqueDecryptedString;
+          } else {
+            console.error('Invalid unique_form_data format:', uniqueDataRaw);
+          }
+        } else {
+          console.error('unique_form_data is missing or invalid');
+        }
+      }
+      const {PartnerProgram, unique_form_data} = finalMainData;
+      let finalUniqueData;
+      finalUniqueData = unique_form_data && JSON.parse(unique_form_data);
+      if (isSalesForce) {
+        finalUniqueData = finalUniqueData && JSON.parse(finalUniqueData);
+      }
+      const template =
+        PartnerProgram?.form_data &&
+        JSON.parse(PartnerProgram?.form_data)?.[0]?.content;
+
+      if (PartnerProgram?.PartnerPassword?.password && !isSalesForce) {
+        const [iv, encryptedData] =
+          PartnerProgram.PartnerPassword.password.split(':');
+        if (iv && encryptedData) {
+          try {
+            finalMainData.password = await decrypt(
+              encryptedData,
+              SECRET_KEY as string,
+              iv,
+            );
+          } catch (error) {
+            console.error('Error decrypting PartnerPassword:', error);
+          }
+        } else {
+          console.error(
+            'Invalid PartnerPassword format:',
+            PartnerProgram.PartnerPassword.password,
+          );
+        }
+      }
+
+      const newFormData = processFormData(template, finalUniqueData);
+      let updatedData;
+      if (newFormData) {
+        updatedData = dependentFieldProcess(template, newFormData);
+      }
+      const finalData = {
+        username: isSalesForce
+          ? finalMainData?.credentials?.username
+          : PartnerProgram?.PartnerPassword?.username,
+        password: isSalesForce
+          ? finalMainData?.credentials?.password
+          : finalMainData.password,
+        data: updatedData,
+        script: PartnerProgram?.script,
+        isLoginStep: PartnerProgram?.login_step,
+      };
+      console.log('finalData', finalData);
+      const processScriptData = processScript(finalData);
+      if (processScriptData) {
+        return processScriptData;
+      }
+    } catch (error) {
+      console.error('Error in createScript:', error);
+      throw error; // Rethrow the error for the caller to handle
     }
   };
 
