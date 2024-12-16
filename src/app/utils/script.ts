@@ -1,9 +1,3 @@
-import {getAllPartnerProgramById} from '../../../redux/actions/partnerProgram';
-// import {useAppDispatch} from '../../../redux/hook';
-import {decrypt} from './base';
-// const dispatch = useAppDispatch();
-const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
-
 export let processFormData = (template: any, finalUniqueData: any) => {
   // Extract labels with user_fill set to true from the template
   let labelsWithUserFillTrue = template
@@ -108,7 +102,6 @@ export let dependentFieldProcess = (templateData: any, formData: any) => {
   });
   return formData;
 };
-
 
 export let processScript = (finalObj: any) => {
   // Join the script array into a single string
