@@ -27,13 +27,17 @@ import {
 import {
   getAllPartnerandProgramApprovedForOrganization,
   getAllPartnerandProgramApprovedForOrganizationSalesForce,
+  insertPartner,
 } from '../../../../../redux/actions/partner';
 import {
   createSalesforceDealreg,
   createSalesForcePartner,
+  getSalesForceActivePartners,
+  updatePartnersandProgramIdFromFS,
 } from '../../../../../redux/actions/salesForce';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {CollapseSpaceStyle} from '../dealRegDetail/styled-component';
+import {insertPartnerProgram} from '../../../../../redux/actions/partnerProgram';
 
 const NewRegistrationForm: FC<any> = ({
   isDealRegDetail = false,
@@ -59,6 +63,12 @@ const NewRegistrationForm: FC<any> = ({
   const [partnerOptions, setPartnerOptions] = useState<any>();
   const [regesteriedPartner, setRegesteriedPartner] = useState<any>();
   const [selfRegesteriedPartner, setSelfRegesteriedPartner] = useState<any>();
+  const [salesForceSelfRegisteredPartner, setSalesForceSelfRegisteredPartner] =
+    useState<any>();
+  const [
+    salesForceSelfRegisteredPartnerOption,
+    setSalesForceSelfRegisteredPartnerOption,
+  ] = useState<any>();
   const [errorForAll, setErrorForAll] = useState<boolean>();
   const [allAddedPartnerProgramIDs, setAllAddedPartnerProgramIDs] =
     useState<any>();
@@ -73,19 +83,22 @@ const NewRegistrationForm: FC<any> = ({
   let salesForceToken: string | undefined;
   let salesForceOpportunityId: string | undefined;
   let salesForceOrganizationId: string | undefined;
+  let salesForceOrganizationName: string | undefined;
+  let salesForceUserId: string | undefined;
 
   if (isDecryptedRecord) {
     const {client, context} = isDecryptedRecord as any;
     salesForceinstanceUrl = client?.instanceUrl;
     salesForceToken = client?.oauthToken;
 
-    const {environment, organization} = context || {};
+    const {environment, organization, user} = context || {};
     const {parameters} = environment || {};
     salesForceOpportunityId = parameters?.recordId;
     salesForceOrganizationId = organization?.organizationId;
+    salesForceOrganizationName = organization?.name;
+    salesForceUserId = user?.userId;
   }
   console.log({isDecryptedRecord});
-
 
   useEffect(() => {
     if (isCanvas) {
@@ -95,6 +108,48 @@ const NewRegistrationForm: FC<any> = ({
         }),
       )?.then((payload: any) => {
         setAllFilterPartnerData(payload?.payload);
+      });
+      dispatch(
+        getSalesForceActivePartners({
+          baseURL: salesForceinstanceUrl,
+          token: salesForceToken,
+        }),
+      ).then((res) => {
+        if (res?.payload?.PartnerPrograms) {
+          console.log({res});
+
+          const transformedData = Object.values(
+            res?.payload?.PartnerPrograms?.reduce((acc: any, item: any) => {
+              const {
+                Partner_Name,
+                Partner_ExternalId,
+                Partner_Id,
+                Partner_Program_Name,
+                Partner_Program_ExternalId,
+                Partner_Program_Id,
+              } = item;
+
+              if (!acc[Partner_Id]) {
+                acc[Partner_Id] = {
+                  Partner_Name,
+                  Partner_ExternalId,
+                  Partner_Id,
+                  PartnerPrograms: [],
+                };
+              }
+
+              acc[Partner_Id].PartnerPrograms.push({
+                Partner_Program_Name,
+                Partner_Program_ExternalId,
+                Partner_Program_Id,
+              });
+
+              return acc;
+            }, {}),
+          );
+          if (transformedData)
+            setSalesForceSelfRegisteredPartner(transformedData);
+        }
       });
     } else {
       dispatch(
@@ -151,6 +206,19 @@ const NewRegistrationForm: FC<any> = ({
     setPartnerOptions(partnerOptions);
     setSelfPartnerOptions(selfPartnerOptions);
   }, [allPartnerFilterData, dataForTheObjects?.registeredPartners]);
+
+  useEffect(() => {
+    if (salesForceSelfRegisteredPartner) {
+      let selfPartnerOptions: any = [];
+      salesForceSelfRegisteredPartner?.map((partner: any) => {
+        selfPartnerOptions?.push({
+          label: <CustomTextCapitalization text={partner?.Partner_Name} />,
+          value: partner?.Partner_Id,
+        });
+      });
+      setSalesForceSelfRegisteredPartnerOption(selfPartnerOptions);
+    }
+  }, [salesForceSelfRegisteredPartner]);
 
   const deleteAddedRow = (index: number, typeOfReges: string) => {
     // selfRegesteriedPartner, setSelfRegesteriedPartner
@@ -249,19 +317,35 @@ const NewRegistrationForm: FC<any> = ({
       }
     }
     if (type === 'partner' && typeOfWorkFor === 'self') {
-      const filteredData = allPartnerFilterData?.AllPartnerForSelf?.filter(
-        (item: any) => item?.id === newTempArr[index]?.partner_id,
-      );
+      let filteredData;
+      if (isCanvas) {
+        filteredData = salesForceSelfRegisteredPartner?.filter(
+          (item: any) => item?.Partner_Id === newTempArr[index]?.partner_id,
+        );
+      } else {
+        filteredData = allPartnerFilterData?.AllPartnerForSelf?.filter(
+          (item: any) => item?.id === newTempArr[index]?.partner_id,
+        );
+      }
 
       if (filteredData) {
         let partnerPrograms: any = [];
         filteredData?.[0]?.PartnerPrograms?.map((program: any) => {
-          if (!allAddedPartnerProgramIDs?.includes(program?.id)) {
+          if (!allAddedPartnerProgramIDs?.includes(program?.id) && !isCanvas) {
             partnerPrograms?.push({
               label: (
                 <CustomTextCapitalization text={program?.partner_program} />
               ),
               value: program?.id,
+            });
+          } else {
+            partnerPrograms?.push({
+              label: (
+                <CustomTextCapitalization
+                  text={program?.Partner_Program_Name}
+                />
+              ),
+              value: program?.Partner_Program_Id,
             });
           }
         });
@@ -393,30 +477,82 @@ const NewRegistrationForm: FC<any> = ({
         }));
       }
       if (isCanvas) {
-        // Map partner and partner program data
-        const createPartnerAndProgram = newData
+        const createPartnerAndProgramOnFS = newData
           ?.filter((item: any) => item?.type === 'Self Registered')
           .map((item: any) => ({
             Partner: {
-              Name: item?.partner_name,
-              rosdealregai__External_Id__c: String(item?.partner_id),
-              rosstarter__Status__c: 'Active',
+              partner: item?.partner_name,
+              organization: salesForceOrganizationName,
+              admin_approved: true,
+              Id: item?.partner_id,
             },
             Partner_Program: {
-              Name: item?.partner_program_name,
-              rosdealregai__External_Id__c: String(item?.partner_program_id),
-              rosdealregai__Partner_LR__c: String(item?.partner_id),
+              partner_program: item?.partner_program_name,
+              admin_approved: true,
+              Id: item?.partner_program_id,
             },
           }));
 
-        // Create partners and partner programs
-        if (createPartnerAndProgram?.length) {
+        if (createPartnerAndProgramOnFS?.length) {
+          for (const partner of createPartnerAndProgramOnFS) {
+            try {
+              const res = await dispatch(insertPartner(partner?.Partner));
+              // Check the request status to handle success or failure
+              if (res?.payload) {
+                const partnerId = res?.payload?.id;
+                if (partnerId) {
+                  partner.Partner.rosdealregai__External_Id__c =
+                    String(partnerId);
+                  const partnerProgramPayload = {
+                    ...partner?.Partner_Program,
+                    partner: partnerId, // Include the partner ID in the Partner_Program payload
+                  };
+                  const programRes = await dispatch(
+                    insertPartnerProgram(partnerProgramPayload),
+                  );
+                  if (programRes?.payload) {
+                    // Update Partner_Program object with partner_program_new_id
+                    partner.Partner_Program.rosdealregai__External_Id__c =
+                      String(programRes.payload?.id);
+                  } else if (programRes.meta.requestStatus === 'rejected') {
+                    // Handle Partner Program creation failure
+                    notification.error({
+                      message: 'Error Creating Partner Program',
+                      description: `Failed to create partner program for Partner ID ${partnerId}: ${
+                        programRes || 'Unknown error'
+                      }`,
+                    });
+                  }
+                } else {
+                  notification.error({
+                    message: 'Error Creating Partner',
+                    description: `Partner creation did not return an ID.`,
+                  });
+                }
+              } else {
+                // Handle Partner creation failure
+                notification.error({
+                  message: 'Error Creating Partner',
+                  description: `Failed to create partner: ${
+                    res || 'Unknown error'
+                  }`,
+                });
+              }
+            } catch (error: any) {
+              // Handle unexpected errors
+              notification.error({
+                message: 'Unexpected Error',
+                description: `An unexpected error occurred: ${error.message}`,
+              });
+            }
+          }
+
           // Collect responses individually with enhanced error handling
           const partnerRes: any[] = [];
-          for (const partner of createPartnerAndProgram) {
+          for (const partner of createPartnerAndProgramOnFS) {
             try {
               const response = await dispatch(
-                createSalesForcePartner({
+                updatePartnersandProgramIdFromFS({
                   baseURL: salesForceinstanceUrl,
                   token: salesForceToken,
                   data: partner,
@@ -444,8 +580,20 @@ const NewRegistrationForm: FC<any> = ({
             });
             return; // Stop execution on error
           }
+          // const dealRegArray = createPartnerAndProgramOnFS?.map(
+          //   (item: any) => ({
+          //     rosdealregai__Opportunity__c: salesForceOpportunityId,
+          //     rosdealregai__Partner__r: {
+          //       rosdealregai__External_Id__c:
+          //         item?.Partner?.rosdealregai__External_Id__c,
+          //     },
+          //     rosdealregai__Partner_Program__r: {
+          //       rosdealregai__External_Id__c:
+          //         item?.Partner_Program?.rosdealregai__External_Id__c,
+          //     },
+          //   }),
+          // );
         }
-
         const dealRegArray = newData?.map((item: any) => ({
           rosdealregai__Opportunity__c: salesForceOpportunityId,
           rosdealregai__Partner__r: {
@@ -456,7 +604,6 @@ const NewRegistrationForm: FC<any> = ({
           },
         }));
         try {
-          console.log('New console');
           const dealRegResponses = await Promise.all(
             dealRegArray?.map(async (dealreg: any) => {
               const response = await dispatch(
@@ -753,7 +900,11 @@ const NewRegistrationForm: FC<any> = ({
                                             ? ''
                                             : '24px',
                                       }}
-                                      options={selefPartnerOptions}
+                                      options={
+                                        isCanvas
+                                          ? salesForceSelfRegisteredPartnerOption
+                                          : selefPartnerOptions
+                                      }
                                       onChange={(e, record: any) => {
                                         // findPartnerProgramsById(value);
                                         // setChoosedIdProgram(value);

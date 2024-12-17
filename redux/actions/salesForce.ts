@@ -86,3 +86,25 @@ export const getSalesForcePartnerCredentials = createAsyncThunk(
     }
   },
 );
+export const getSalesForceActivePartners = createAsyncThunk(
+  'salesforce/getSalesForceActivePartners',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await SALESFORCE_API.getSalesForceActivePartners(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+export const updatePartnersandProgramIdFromFS = createAsyncThunk(
+  'salesforce/updatePartnersandProgramIdFromFS',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await SALESFORCE_API.updatePartnersandProgramIdFromFS(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
