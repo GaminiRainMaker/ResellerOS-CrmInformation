@@ -593,52 +593,52 @@ const NewRegistrationForm: FC<any> = ({
           //     },
           //   }),
           // );
-          const dealRegArray = newData?.map((item: any) => ({
-            rosdealregai__Opportunity__c: salesForceOpportunityId,
-            rosdealregai__Partner__r: {
-              rosdealregai__External_Id__c: item?.partner_id,
-            },
-            rosdealregai__Partner_Program__r: {
-              rosdealregai__External_Id__c: item?.partner_program_id,
-            },
-          }));
-          try {
-            const dealRegResponses = await Promise.all(
-              dealRegArray?.map(async (dealreg: any) => {
-                const response = await dispatch(
-                  createSalesforceDealreg({
-                    baseURL: isDecryptedRecord?.client?.instanceUrl,
-                    token: isDecryptedRecord?.client?.oauthToken,
-                    data: dealreg,
-                  }),
-                );
-                return response;
-              }),
-            );
+        }
+        const dealRegArray = newData?.map((item: any) => ({
+          rosdealregai__Opportunity__c: salesForceOpportunityId,
+          rosdealregai__Partner__r: {
+            rosdealregai__External_Id__c: item?.partner_id,
+          },
+          rosdealregai__Partner_Program__r: {
+            rosdealregai__External_Id__c: item?.partner_program_id,
+          },
+        }));
+        try {
+          const dealRegResponses = await Promise.all(
+            dealRegArray?.map(async (dealreg: any) => {
+              const response = await dispatch(
+                createSalesforceDealreg({
+                  baseURL: isDecryptedRecord?.client?.instanceUrl,
+                  token: isDecryptedRecord?.client?.oauthToken,
+                  data: dealreg,
+                }),
+              );
+              return response;
+            }),
+          );
 
-            // Check if any deal registration creation failed
-            for (const response of dealRegResponses) {
-              if (response.status === 400 && response.success === false) {
-                notification.error({
-                  message: 'Error',
-                  description: `Error creating deal registration: ${response.errors.join(', ') || 'Unknown error'}`,
-                });
-                return; // Stop further execution
-              }
+          // Check if any deal registration creation failed
+          for (const response of dealRegResponses) {
+            if (response.status === 400 && response.success === false) {
+              notification.error({
+                message: 'Error',
+                description: `Error creating deal registration: ${response.errors.join(', ') || 'Unknown error'}`,
+              });
+              return; // Stop further execution
             }
-            // If all APIs succeed, show success notification and navigate
-            notification.success({
-              message: 'Success',
-              description: 'Dealreg form created successfully.',
-            });
-            router.replace('/dealRegDetail');
-          } catch (error: any) {
-            notification.error({
-              message: 'Error',
-              description: `Error creating entries: ${error.message}`,
-            });
-            console.error('Error creating entries:', error);
           }
+          // If all APIs succeed, show success notification and navigate
+          notification.success({
+            message: 'Success',
+            description: 'Dealreg form created successfully.',
+          });
+          router.replace('/dealRegDetail');
+        } catch (error: any) {
+          notification.error({
+            message: 'Error',
+            description: `Error creating entries: ${error.message}`,
+          });
+          console.error('Error creating entries:', error);
         }
       } else {
         await dispatch(insertDealReg(newData)).then((d: any) => {
