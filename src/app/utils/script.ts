@@ -264,7 +264,8 @@ export let processScript = (finalObj: any) => {
   
                       ${
                         dataObj.type.toLowerCase().includes('text') ||
-                        dataObj.type.toLowerCase().includes('email')
+                        dataObj.type.toLowerCase().includes('email') ||
+                        dataObj.type.toLowerCase().includes('date')
                           ? `await page.getByLabel('${label}').fill('${value}');`
                           : dataObj.type.toLowerCase().includes('select') ||
                               dataObj.type.toLowerCase().includes('drop')
