@@ -1,8 +1,12 @@
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import OsInput from '@/app/components/common/os-input';
+import OsInputPassword from '@/app/components/common/os-input/InputPassword';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
+import Image from 'next/image';
+import eyeSlashIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye-slash.svg';
+import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
 import {Form} from 'antd';
 import {FormInstance} from 'antd/lib';
 import {FC} from 'react';
@@ -128,7 +132,7 @@ const EditSalesForceCredentials: FC<{
             <OsInput placeholder="Enter Base URL" />
           </SelectFormItem>
         </Col> */}
-        {/* <Col span={drawer ? 24 : 12}>
+        <Col span={drawer ? 24 : 12}>
           <SelectFormItem
             label={<Typography name="Body 4/Medium">Password</Typography>}
             name={'password'}
@@ -165,7 +169,7 @@ const EditSalesForceCredentials: FC<{
               style={{width: '100%'}}
             />
           </SelectFormItem>
-        </Col> */}
+        </Col>
       </Row>
     </Form>
   );
