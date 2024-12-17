@@ -110,8 +110,8 @@ export let processScript = (finalObj: any) => {
   let loginStepImplemented = finalObj.isLoginStep ? false : true;
   let newScript = [];
   newScript.push(`let labelFilled=[];`);
-  let formPages = 1;
-  let formValues = 0;
+  let formPages = 1 * finalObj.data.length;
+  let formValues = [];
   let iswaitingScript = false;
 
   for (let i = 0; i < parsedScript.length; i++) {
@@ -240,7 +240,7 @@ export let processScript = (finalObj: any) => {
           } else {
             if (
               currentLine.includes('fill') &&
-              formValues < formPages &&
+              formValues.length <= formPages &&
               !currentLine.includes('Verification')
             ) {
               for (let dataObj of finalObj.data) {
@@ -329,19 +329,40 @@ export let processScript = (finalObj: any) => {
                         newScript.push(data);
                       }
                     }
+                    formValues.push(label);
                   }
                 }
               }
-
-              formValues = formValues + 1;
             } else {
               if (
                 !currentLine.includes('fill') &&
                 !currentLine.includes('selectOption') &&
                 !currentLine.includes('press') &&
                 !(lastline.includes('Code') && currentLine.includes('Verify'))
-              )
-                newScript.push(currentLine);
+              ) {
+                if (currentLine.includes('link')) {
+                  newScript.push(
+                    `const loginLink = ${currentLine.replace('.click()', '')};
+
+                await loginLink.waitFor({ state: 'visible', timeout: 5000 });
+                await loginLink.scrollIntoViewIfNeeded();
+
+                for (let i = 0; i < 3; i++) {
+                  try {
+                    await loginLink.click();
+                    console.log('Login link clicked successfully.');
+                    break;
+                  } catch (error) {
+                    console.warn('Attempt failed');
+                    await page.waitForTimeout(500);
+                  }
+                }
+                `,
+                  );
+                } else {
+                  newScript.push(currentLine);
+                }
+              }
             }
           }
         }
