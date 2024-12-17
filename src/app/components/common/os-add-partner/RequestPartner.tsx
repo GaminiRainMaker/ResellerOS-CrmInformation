@@ -83,13 +83,14 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
   const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
 
   let salesForceOrganizationId: string | undefined;
+  let salesForceOrganizationName: string | undefined;
 
   if (isDecryptedRecord) {
     const {context} = isDecryptedRecord as any;
     const {organization} = context || {};
     salesForceOrganizationId = organization?.organizationId;
+    salesForceOrganizationName = organization?.name;
   }
-
   const searchQuery = useDebounceHook(query, 400);
 
   const requestForNewPartnerAndPartnerProgram = async () => {
@@ -109,7 +110,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
             if (d?.payload) {
               dispatch(
                 sendPartnerRequestEmail({
-                  organizationName: data?.organization,
+                  organizationName: salesForceOrganizationName,
                   programName: data?.program_name,
                 }),
               );
@@ -157,7 +158,9 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
         if (partners.length > 0) {
           // Fetch organization data
           const orgData = await dispatch(
-            getAllOrgApprovedDataSalesForce({organization: salesForceOrganizationId}),
+            getAllOrgApprovedDataSalesForce({
+              organization: salesForceOrganizationId,
+            }),
           );
           const orgs: any = Array.isArray(orgData?.payload)
             ? orgData.payload

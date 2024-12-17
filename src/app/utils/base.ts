@@ -1919,7 +1919,7 @@ export const convertToSnakeCase = (input: string): string => {
   const result = cleanInput
     ?.replace(/([a-z0-9])([A-Z])/g, '$1_$2') // Handle camelCase and PascalCase
     ?.replace(/\s+/g, '_') // Replace spaces with underscores
-    ?.replace(/[^a-zA-Z0-9_]/g, '') // Remove non-alphanumeric characters except underscores
+    // ?.replace(/[^a-zA-Z0-9_]/g, '') // Remove non-alphanumeric characters except underscores
     ?.replace(/_+/g, '_') // Remove multiple consecutive underscores
     ?.replace(/^_+|_+$/g, ''); // Remove leading and trailing underscores
 
