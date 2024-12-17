@@ -32,4 +32,12 @@ export const SALESFORCE_API = {
     post(API.SALESFORCE.GetSalesForcePartnerCredentials, data) as Promise<
       AxiosResponse<any>
     >,
+  getSalesForceActivePartners: (data: any) =>
+    post(API.SALESFORCE.GetSalesForceActivePartners, data) as Promise<
+      AxiosResponse<any>
+    >,
+  updatePartnersandProgramIdFromFS: (data: any) =>
+    post(API.SALESFORCE.UpdatePartnersandProgramIdFromFS, data) as Promise<
+      AxiosResponse<any>
+    >,
 };

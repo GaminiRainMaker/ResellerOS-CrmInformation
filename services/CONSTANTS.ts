@@ -348,6 +348,8 @@ export const API = {
     UpdateSalesForceDealregById: '/salesForce/updateSalesForceDealregById',
     GetSalesForcePartnerCredentials:
       '/salesForce/getSalesForcePartnerCredentials',
+    GetSalesForceActivePartners: '/salesForce/getSalesForceActivePartners',
+    UpdatePartnersandProgramIdFromFS: '/salesForce/updatePartnersandProgramIdFromFS',
   },
   SALESFORCE_CREDENTIALS: {
     INDEX: '/salesForceCredential',
