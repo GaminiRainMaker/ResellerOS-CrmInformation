@@ -81,10 +81,14 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
     program: null,
   });
   const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
-  // Destructuring the main object
-  const {context} = isDecryptedRecord as any;
-  const {organization} = context;
-  const {organizationId} = organization;
+
+  let salesForceOrganizationId: string | undefined;
+
+  if (isDecryptedRecord) {
+    const {context} = isDecryptedRecord as any;
+    const {organization} = context || {};
+    salesForceOrganizationId = organization?.organizationId;
+  }
 
   const searchQuery = useDebounceHook(query, 400);
 
@@ -94,7 +98,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
       const selectedData = rows.map((row) => ({
         admin_request: true,
         new_request: false,
-        organization: organizationId,
+        organization: salesForceOrganizationId,
         partner_program_id: JSON.parse(row?.program)?.id,
         program_name: JSON.parse(row?.program)?.partner_program,
       }));
@@ -139,7 +143,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!organizationId) return;
+      if (!salesForceOrganizationId) return;
 
       try {
         // Fetch partner data
@@ -153,7 +157,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
         if (partners.length > 0) {
           // Fetch organization data
           const orgData = await dispatch(
-            getAllOrgApprovedDataSalesForce({organization: organizationId}),
+            getAllOrgApprovedDataSalesForce({organization: salesForceOrganizationId}),
           );
           const orgs: any = Array.isArray(orgData?.payload)
             ? orgData.payload
@@ -180,7 +184,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
 
     fetchData();
   }, [
-    organizationId,
+    salesForceOrganizationId,
     dispatch,
     getAllPartnerandProgramApprovedDataSalesForce,
     getAllOrgApprovedDataSalesForce,
