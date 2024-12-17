@@ -580,19 +580,28 @@ const NewRegistrationForm: FC<any> = ({
             });
             return; // Stop execution on error
           }
-          const dealRegArray = createPartnerAndProgramOnFS?.map(
-            (item: any) => ({
-              rosdealregai__Opportunity__c: salesForceOpportunityId,
-              rosdealregai__Partner__r: {
-                rosdealregai__External_Id__c:
-                  item?.Partner?.rosdealregai__External_Id__c,
-              },
-              rosdealregai__Partner_Program__r: {
-                rosdealregai__External_Id__c:
-                  item?.Partner_Program?.rosdealregai__External_Id__c,
-              },
-            }),
-          );
+          // const dealRegArray = createPartnerAndProgramOnFS?.map(
+          //   (item: any) => ({
+          //     rosdealregai__Opportunity__c: salesForceOpportunityId,
+          //     rosdealregai__Partner__r: {
+          //       rosdealregai__External_Id__c:
+          //         item?.Partner?.rosdealregai__External_Id__c,
+          //     },
+          //     rosdealregai__Partner_Program__r: {
+          //       rosdealregai__External_Id__c:
+          //         item?.Partner_Program?.rosdealregai__External_Id__c,
+          //     },
+          //   }),
+          // );
+          const dealRegArray = newData?.map((item: any) => ({
+            rosdealregai__Opportunity__c: salesForceOpportunityId,
+            rosdealregai__Partner__r: {
+              rosdealregai__External_Id__c: item?.partner_id,
+            },
+            rosdealregai__Partner_Program__r: {
+              rosdealregai__External_Id__c: item?.partner_program_id,
+            },
+          }));
           try {
             const dealRegResponses = await Promise.all(
               dealRegArray?.map(async (dealreg: any) => {
