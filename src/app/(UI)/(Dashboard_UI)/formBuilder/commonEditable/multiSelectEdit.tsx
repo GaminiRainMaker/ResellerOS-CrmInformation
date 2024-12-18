@@ -925,6 +925,29 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
                           />
                         )}
                       </div>
+                      <Row
+                        style={{
+                          background: '#E9F0F7',
+                          padding: '15px',
+                          width: '90%',
+                          margin: '10px',
+                          borderRadius: '10px',
+                          display: 'flex',
+                          justifyContent: 'center',
+
+                          // border: '1px solid #2364AA',
+                        }}
+                      >
+                        <Typography
+                          name="Body 3/Medium"
+                          onClick={() => {
+                            setOpenMappedModal(true);
+                          }}
+                        >
+                          Add Mapped Options
+                        </Typography>
+                      </Row>
+
                       {!items?.user_fill && (
                         <Row
                           style={{
@@ -935,7 +958,12 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
                           <OsCollapseStyleForAdmin
                             key={index}
                             defaultActiveKey={['1']}
-                            style={{width: '100%', padding: '10px'}}
+                            style={{
+                              width: '100%',
+                              padding: '10px',
+                              height: '300px',
+                              overflow: 'auto',
+                            }}
                             bordered={false}
                             // expandIcon={true}
                           >
@@ -955,7 +983,10 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
                               <>
                                 {' '}
                                 <div
-                                  style={{marginBottom: '10px', width: '100%'}}
+                                  style={{
+                                    marginBottom: '10px',
+                                    width: '100%',
+                                  }}
                                 >
                                   <Typography
                                     name="Body 3/Bold"
@@ -979,7 +1010,11 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
                                       index || 0
                                     ]?.options?.map(
                                       (itemOption: any, indexOp: number) => (
-                                        <Row style={{width: '100%'}}>
+                                        <Row
+                                          style={{
+                                            width: '100%',
+                                          }}
+                                        >
                                           <Col
                                             key={indexOp}
                                             className="list-item"
@@ -1088,6 +1123,8 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
             selectedColumnIndex={selectedColumnIndex}
             setOpenMappedModal={setOpenMappedModal}
             typeOfFILE={'select'}
+            activeIndexForDependent={activeIndexForDependent}
+            dependedAdd={openModalForDependentFiled}
           />
         }
         width={500}

@@ -31,6 +31,7 @@ import EditSalesForceCredentials from './EditSalesForceCredentials';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsCollapse from '@/app/components/common/os-collapse';
 import {getSalesForceUserDetails} from '../../../../../redux/actions/user';
+import {formatStatus} from '@/app/utils/CONSTANTS';
 
 const AddUser = () => {
   const csvUploadRef = useRef<AddSalesForceCredentialsRef>(null);
@@ -64,8 +65,21 @@ const AddUser = () => {
     await dispatch(getSalesForceUserDetails(''))?.then((payload: any) => {
       let newArr: any = [];
       payload?.payload?.map((items: any) => {
-        newArr?.push({label: items?.org_name, value: items?.org_id});
+        newArr?.push({
+          label: formatStatus(items?.org_name),
+          value: items?.org_id,
+        });
       });
+
+      // Sort by the 'name' property in alphabetical order
+      newArr.sort((a: any, b: any) => {
+        if (a.label.toLowerCase() < b.label.toLowerCase()) return -1;
+        if (a.label.toLowerCase() > b.label.toLowerCase()) return 1;
+        return 0;
+      });
+
+      console.log(newArr);
+
       setSalesDetailOptions(newArr);
     });
   };

@@ -169,7 +169,7 @@ export const formbuildernewObject = (newItem: string) => {
       customFieldName: '',
 
       label: 'Label',
-      type: 'multiple',
+      type: 'tag',
       user_fill: false,
       required: false,
       requiredLabel: true,
