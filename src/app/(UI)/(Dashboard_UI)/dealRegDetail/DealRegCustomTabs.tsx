@@ -240,11 +240,19 @@ const DealRegCustomTabs = forwardRef<
         common_template: queryData,
         Partner: finalDealReg?.Partner,
         PartnerProgram: finalDealReg?.PartnerProgram,
-        partner_approval_id: finalDealReg?.partner_approval_id,
-        partner_deal_id: finalDealReg?.partner_deal_id,
-        expiration_date: finalDealReg?.expiration_date,
-        submitted_date: finalDealReg?.submitted_date,
-        status: finalDealReg?.status,
+        partner_approval_id:
+          finalDealReg?.partner_approval_id ??
+          finalDealReg?.rosdealregai__Partner_Approval_ID__c,
+        partner_deal_id:
+          finalDealReg?.partner_deal_id ??
+          finalDealReg?.rosdealregai__Partner_Deal_ID__c,
+        expiration_date:
+          finalDealReg?.expiration_date ??
+          finalDealReg?.rosdealregai__Expiration_Date__c,
+        submitted_date:
+          finalDealReg?.submitted_date ??
+          finalDealReg?.rosdealregai__Submitted_Date__c,
+        status: finalDealReg?.status ?? finalDealReg?.rosdealregai__Status__c,
         type: finalDealReg?.type,
       };
       setFormData(obj);
@@ -344,11 +352,19 @@ const DealRegCustomTabs = forwardRef<
         common_template: queryData,
         Partner: finalDealReg?.Partner,
         PartnerProgram: finalDealReg?.PartnerProgram,
-        partner_approval_id: finalDealReg?.partner_approval_id,
-        partner_deal_id: finalDealReg?.partner_deal_id,
-        expiration_date: finalDealReg?.expiration_date,
-        submitted_date: finalDealReg?.submitted_date,
-        status: finalDealReg?.status,
+        partner_approval_id:
+          finalDealReg?.partner_approval_id ??
+          finalDealReg?.rosdealregai__Partner_Approval_ID__c,
+        partner_deal_id:
+          finalDealReg?.partner_deal_id ??
+          finalDealReg?.rosdealregai__Partner_Deal_ID__c,
+        expiration_date:
+          finalDealReg?.expiration_date ??
+          finalDealReg?.rosdealregai__Expiration_Date__c,
+        submitted_date:
+          finalDealReg?.submitted_date ??
+          finalDealReg?.rosdealregai__Submitted_Date__c,
+        status: finalDealReg?.status ?? finalDealReg?.rosdealregai__Status__c,
       };
       const newObj = {
         common_form_data: [JSON.stringify(finalCommonFieldObject)],
@@ -358,11 +374,19 @@ const DealRegCustomTabs = forwardRef<
         common_template: queryData,
         Partner: finalDealReg?.Partner,
         PartnerProgram: finalDealReg?.PartnerProgram,
-        partner_approval_id: finalDealReg?.partner_approval_id,
-        partner_deal_id: finalDealReg?.partner_deal_id,
-        expiration_date: finalDealReg?.expiration_date,
-        submitted_date: finalDealReg?.submitted_date,
-        status: finalDealReg?.status,
+        partner_approval_id:
+          finalDealReg?.partner_approval_id ??
+          finalDealReg?.rosdealregai__Partner_Approval_ID__c,
+        partner_deal_id:
+          finalDealReg?.partner_deal_id ??
+          finalDealReg?.rosdealregai__Partner_Deal_ID__c,
+        expiration_date:
+          finalDealReg?.expiration_date ??
+          finalDealReg?.rosdealregai__Expiration_Date__c,
+        submitted_date:
+          finalDealReg?.submitted_date ??
+          finalDealReg?.rosdealregai__Submitted_Date__c,
+        status: finalDealReg?.status ?? finalDealReg?.rosdealregai__Status__c,
         percentage: tabPercentage,
       };
 
