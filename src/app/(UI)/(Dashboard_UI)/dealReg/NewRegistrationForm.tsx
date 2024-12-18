@@ -173,20 +173,21 @@ const NewRegistrationForm: FC<any> = ({
     let partnerOptions: any = [];
     let selfPartnerOptions: any = [];
     let finalPartnerData: any = [];
-    finalPartnerData = allPartnerFilterData?.AllPartner;
     if (
       salesForceSelfRegisteredPartner &&
-      salesForceSelfRegisteredPartner?.length > 0
+      salesForceSelfRegisteredPartner?.length > 0 &&
+      isCanvas
     ) {
       finalPartnerData =
-        salesForceSelfRegisteredPartner.length > 0
-          ? allPartnerFilterData?.AllPartner?.filter((fullstackItem: any) =>
-              salesForceSelfRegisteredPartner?.some(
-                (salesforceItem: any) =>
-                  salesforceItem.Partner_Name === fullstackItem.partner,
-              ),
-            )
-          : [];
+        allPartnerFilterData?.AllPartner?.filter((fullstackItem: any) =>
+          salesForceSelfRegisteredPartner?.some(
+            (salesforceItem: any) =>
+              salesforceItem?.Partner_Name === fullstackItem?.partner,
+          ),
+        ) || [];
+    } else {
+      // Default to all partners if `salesForceSelfRegisteredPartner` is not present
+      finalPartnerData = allPartnerFilterData?.AllPartner || [];
     }
 
     finalPartnerData &&
