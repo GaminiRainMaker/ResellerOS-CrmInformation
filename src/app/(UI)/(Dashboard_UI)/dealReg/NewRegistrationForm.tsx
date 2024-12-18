@@ -173,8 +173,22 @@ const NewRegistrationForm: FC<any> = ({
   useEffect(() => {
     let partnerOptions: any = [];
     let selfPartnerOptions: any = [];
+    let finalPartnerData: any = [];
+    finalPartnerData = allPartnerFilterData?.AllPartner;
+    if (
+      salesForceSelfRegisteredPartner &&
+      salesForceSelfRegisteredPartner?.length > 0
+    ) {
+      finalPartnerData = allPartnerFilterData?.AllPartner?.filter(
+        (fullstackItem: any) =>
+          salesForceSelfRegisteredPartner?.some(
+            (salesforceItem: any) =>
+              salesforceItem.Partner_Name === fullstackItem.partner,
+          ),
+      );
+    }
 
-    allPartnerFilterData?.AllPartner?.map((partner: any) => {
+    finalPartnerData?.map((partner: any) => {
       let newCheckArrForHaveProgrmIds: any = [];
       partner?.PartnerPrograms?.map((items: any) => {
         if (!allAddedPartnerProgramIDs?.includes(items?.id)) {
@@ -202,10 +216,13 @@ const NewRegistrationForm: FC<any> = ({
         });
       }
     });
-
     setPartnerOptions(partnerOptions);
     setSelfPartnerOptions(selfPartnerOptions);
-  }, [allPartnerFilterData, dataForTheObjects?.registeredPartners]);
+  }, [
+    allPartnerFilterData,
+    dataForTheObjects?.registeredPartners,
+    salesForceSelfRegisteredPartner,
+  ]);
 
   useEffect(() => {
     if (salesForceSelfRegisteredPartner) {
