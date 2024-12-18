@@ -580,29 +580,42 @@ const NewRegistrationForm: FC<any> = ({
             });
             return; // Stop execution on error
           }
-          // const dealRegArray = createPartnerAndProgramOnFS?.map(
-          //   (item: any) => ({
-          //     rosdealregai__Opportunity__c: salesForceOpportunityId,
-          //     rosdealregai__Partner__r: {
-          //       rosdealregai__External_Id__c:
-          //         item?.Partner?.rosdealregai__External_Id__c,
-          //     },
-          //     rosdealregai__Partner_Program__r: {
-          //       rosdealregai__External_Id__c:
-          //         item?.Partner_Program?.rosdealregai__External_Id__c,
-          //     },
-          //   }),
-          // );
         }
-        const dealRegArray = newData?.map((item: any) => ({
-          rosdealregai__Opportunity__c: salesForceOpportunityId,
-          rosdealregai__Partner__r: {
-            rosdealregai__External_Id__c: item?.partner_id,
-          },
-          rosdealregai__Partner_Program__r: {
-            rosdealregai__External_Id__c: item?.partner_program_id,
-          },
-        }));
+        const dealRegArray = newData?.map((item: any) => {
+          // Find matching data in createPartnerAndProgramOnFS
+          const matchedFSData = createPartnerAndProgramOnFS?.find(
+            (fsItem: any) => {
+              return (
+                fsItem?.Partner?.partner === item?.partner_name &&
+                fsItem?.Partner_Program?.partner_program ===
+                  item?.partner_program_name
+              );
+            },
+          );
+
+          // Use data from matchedFSData if found, otherwise fallback to item
+          const sourceData = matchedFSData
+            ? {
+                partner_id: Number(
+                  matchedFSData?.Partner?.rosdealregai__External_Id__c,
+                ),
+                partner_program_id: Number(
+                  matchedFSData?.Partner_Program?.rosdealregai__External_Id__c,
+                ),
+              }
+            : item;
+
+          return {
+            rosdealregai__Opportunity__c: salesForceOpportunityId,
+            rosdealregai__Partner__r: {
+              rosdealregai__External_Id__c: sourceData?.partner_id,
+            },
+            rosdealregai__Partner_Program__r: {
+              rosdealregai__External_Id__c: sourceData?.partner_program_id,
+            },
+          };
+        });
+
         try {
           const dealRegResponses = await Promise.all(
             dealRegArray?.map(async (dealreg: any) => {
