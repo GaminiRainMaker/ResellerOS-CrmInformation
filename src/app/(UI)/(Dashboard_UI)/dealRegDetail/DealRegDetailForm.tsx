@@ -20,8 +20,6 @@ const DealRegDetailForm: FC<any> = ({
   formData,
 }) => {
   const [token] = useThemeToken();
-  const {isCanvas} = useAppSelector((state) => state.canvas);
-
   const dispatch = useAppDispatch();
   const {openDealRegDrawer} = useAppSelector((state) => state.dealReg);
 
@@ -80,20 +78,18 @@ const DealRegDetailForm: FC<any> = ({
 
   return (
     <>
-      {!isCanvas && (
-        <Space
-          style={{
-            width: '100%',
-            background: 'white',
-            padding: '24px',
-            borderRadius: '12px',
-          }}
-          size={24}
-          direction="vertical"
-        >
-          <OsCollapseAdmin items={ResponseDetails} />
-        </Space>
-      )}
+      <Space
+        style={{
+          width: '100%',
+          background: 'white',
+          padding: '24px',
+          borderRadius: '12px',
+        }}
+        size={24}
+        direction="vertical"
+      >
+        <OsCollapseAdmin items={ResponseDetails} />
+      </Space>
       <>
         {data?.PartnerProgram?.form_data &&
           data?.type !== 'self_registered' && (
