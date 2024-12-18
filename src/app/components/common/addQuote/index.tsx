@@ -236,6 +236,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
             },
           ],
         };
+
         if (singleQuote || quoteId) {
           if (i === 0) {
             quotesArr.push(quoteObj);
@@ -433,7 +434,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
     await dispatch(getQuotesByDateFilter({}));
     setShowModal(false);
     setUploadFileData([]);
-
     if ((singleQuote || quoteId) && newArrWithManual?.length > 0) {
       let latestestFIleId: any;
       let quoteIdForManualss: any;

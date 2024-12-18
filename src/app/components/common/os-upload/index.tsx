@@ -648,8 +648,11 @@ const OsUpload: React.FC<any> = ({
       ) {
         if (obj?.file?.type.includes('spreadsheetml')) {
           const dataa = await beforeUploadDataForExcelFile(obj?.file);
-
-          obj = {...obj, ...dataa};
+          const response: any = await sendDataToNanonets(
+            obj?.model_id,
+            obj?.file,
+          );
+          obj = {...obj, ...dataa, ...response};
         } else {
           // eslint-disable-next-line no-await-in-loop
           const dataa = await beforeUploadDataForPDFFile(obj?.file);
