@@ -173,34 +173,39 @@ const NewRegistrationForm: FC<any> = ({
     let partnerOptions: any = [];
     let selfPartnerOptions: any = [];
     let finalPartnerData: any = [];
-    finalPartnerData = allPartnerFilterData?.AllPartner;
     if (
       salesForceSelfRegisteredPartner &&
-      salesForceSelfRegisteredPartner?.length > 0
+      salesForceSelfRegisteredPartner?.length > 0 &&
+      isCanvas
     ) {
-      finalPartnerData = allPartnerFilterData?.AllPartner?.filter(
-        (fullstackItem: any) =>
+      finalPartnerData =
+        allPartnerFilterData?.AllPartner?.filter((fullstackItem: any) =>
           salesForceSelfRegisteredPartner?.some(
             (salesforceItem: any) =>
-              salesforceItem.Partner_Name === fullstackItem.partner,
+              salesforceItem?.Partner_Name === fullstackItem?.partner,
           ),
-      );
+        ) || [];
+    } else if (!isCanvas) {
+      // Default to all partners if `salesForceSelfRegisteredPartner` is not present
+      finalPartnerData = allPartnerFilterData?.AllPartner || [];
     }
 
-    finalPartnerData?.map((partner: any) => {
-      let newCheckArrForHaveProgrmIds: any = [];
-      partner?.PartnerPrograms?.map((items: any) => {
-        if (!allAddedPartnerProgramIDs?.includes(items?.id)) {
-          newCheckArrForHaveProgrmIds?.push(items?.id);
+    finalPartnerData &&
+      finalPartnerData?.length > 0 &&
+      finalPartnerData?.map((partner: any) => {
+        let newCheckArrForHaveProgrmIds: any = [];
+        partner?.PartnerPrograms?.map((items: any) => {
+          if (!allAddedPartnerProgramIDs?.includes(items?.id)) {
+            newCheckArrForHaveProgrmIds?.push(items?.id);
+          }
+        });
+        if (newCheckArrForHaveProgrmIds?.length > 0) {
+          partnerOptions?.push({
+            label: <CustomTextCapitalization text={partner?.partner} />,
+            value: partner?.id,
+          });
         }
       });
-      if (newCheckArrForHaveProgrmIds?.length > 0) {
-        partnerOptions?.push({
-          label: <CustomTextCapitalization text={partner?.partner} />,
-          value: partner?.id,
-        });
-      }
-    });
     allPartnerFilterData?.AllPartnerForSelf?.map((partner: any) => {
       let newCheckArrForHaveProgrmIds: any = [];
       partner?.PartnerPrograms?.map((items: any) => {

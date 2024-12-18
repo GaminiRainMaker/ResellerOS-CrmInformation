@@ -50,12 +50,16 @@ const ResponseDetailForm: FC<any> = ({activeKey, formData}) => {
     const salesForceObj = {
       id: activeKey,
       rosdealregai__Status__c: values?.status,
-      rosdealregai__Expiration_Date__c: values?.expiration_date
-        ? new Date(values.expiration_date).toLocaleDateString('en-CA')
-        : '',
-      rosdealregai__Submitted_Date__c: values?.submitted_date
-        ? new Date(values.submitted_date).toLocaleDateString('en-CA')
-        : '',
+      ...(values?.expiration_date && {
+        rosdealregai__Expiration_Date__c: new Date(
+          values.expiration_date,
+        ).toLocaleDateString('en-CA'),
+      }),
+      ...(values?.submitted_date && {
+        rosdealregai__Submitted_Date__c: new Date(
+          values.submitted_date,
+        ).toLocaleDateString('en-CA'),
+      }),
       rosdealregai__Partner_Deal_ID__c: values?.partner_deal_id,
       rosdealregai__Partner_Approval_ID__c: values?.partner_approval_id,
       baseURL: salesForceinstanceUrl,
