@@ -29,15 +29,14 @@ import {
   getAllPartnerandProgramApprovedForOrganizationSalesForce,
   insertPartner,
 } from '../../../../../redux/actions/partner';
+import {insertPartnerProgram} from '../../../../../redux/actions/partnerProgram';
 import {
   createSalesforceDealreg,
-  createSalesForcePartner,
   getSalesForceActivePartners,
   updatePartnersandProgramIdFromFS,
 } from '../../../../../redux/actions/salesForce';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {CollapseSpaceStyle} from '../dealRegDetail/styled-component';
-import {insertPartnerProgram} from '../../../../../redux/actions/partnerProgram';
 
 const NewRegistrationForm: FC<any> = ({
   isDealRegDetail = false,
