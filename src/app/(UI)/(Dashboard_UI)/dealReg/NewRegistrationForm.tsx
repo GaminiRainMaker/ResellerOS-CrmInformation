@@ -178,29 +178,33 @@ const NewRegistrationForm: FC<any> = ({
       salesForceSelfRegisteredPartner &&
       salesForceSelfRegisteredPartner?.length > 0
     ) {
-      finalPartnerData = allPartnerFilterData?.AllPartner?.filter(
-        (fullstackItem: any) =>
-          salesForceSelfRegisteredPartner?.some(
-            (salesforceItem: any) =>
-              salesforceItem.Partner_Name === fullstackItem.partner,
-          ),
-      );
+      finalPartnerData =
+        salesForceSelfRegisteredPartner.length > 0
+          ? allPartnerFilterData?.AllPartner?.filter((fullstackItem: any) =>
+              salesForceSelfRegisteredPartner?.some(
+                (salesforceItem: any) =>
+                  salesforceItem.Partner_Name === fullstackItem.partner,
+              ),
+            )
+          : [];
     }
 
-    finalPartnerData?.map((partner: any) => {
-      let newCheckArrForHaveProgrmIds: any = [];
-      partner?.PartnerPrograms?.map((items: any) => {
-        if (!allAddedPartnerProgramIDs?.includes(items?.id)) {
-          newCheckArrForHaveProgrmIds?.push(items?.id);
+    finalPartnerData &&
+      finalPartnerData?.length > 0 &&
+      finalPartnerData?.map((partner: any) => {
+        let newCheckArrForHaveProgrmIds: any = [];
+        partner?.PartnerPrograms?.map((items: any) => {
+          if (!allAddedPartnerProgramIDs?.includes(items?.id)) {
+            newCheckArrForHaveProgrmIds?.push(items?.id);
+          }
+        });
+        if (newCheckArrForHaveProgrmIds?.length > 0) {
+          partnerOptions?.push({
+            label: <CustomTextCapitalization text={partner?.partner} />,
+            value: partner?.id,
+          });
         }
       });
-      if (newCheckArrForHaveProgrmIds?.length > 0) {
-        partnerOptions?.push({
-          label: <CustomTextCapitalization text={partner?.partner} />,
-          value: partner?.id,
-        });
-      }
-    });
     allPartnerFilterData?.AllPartnerForSelf?.map((partner: any) => {
       let newCheckArrForHaveProgrmIds: any = [];
       partner?.PartnerPrograms?.map((items: any) => {
