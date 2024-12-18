@@ -16,6 +16,8 @@ const AddMappedOptionsForFormBuilder: FC<any> = ({
   setOpenMappedModal,
   selectedColumnIndex,
   typeOfFILE,
+  activeIndexForDependent,
+  dependedAdd,
 }) => {
   const [loadingApi, setLoadingApi] = useState<boolean>(true);
   const [mappedOptions, setMappedOptions] = useState<any>();
@@ -53,7 +55,43 @@ const AddMappedOptionsForFormBuilder: FC<any> = ({
     setCartItems(newTempArr);
     setOpenMappedModal(false);
   };
-  console.log('324324324', cartItems);
+
+  const addnewOptionsForDependent = (newValue: any, labelTypeVal: string) => {
+    const newTempArr = cartItems.map((sectItem: any, sectioIndex: number) => {
+      if (sectioIndex === sectionIndex) {
+        return {
+          ...sectItem,
+          content: sectItem.content.map((contItem: any, contInde: number) => {
+            if (contInde === contentIndex) {
+              return {
+                ...contItem,
+                dependentFiledArr: contItem?.dependentFiledArr?.map(
+                  (deItem: any, deIndex: number) => {
+                    if (activeIndexForDependent === deIndex) {
+                      return {
+                        ...deItem,
+                        [labelTypeVal]: newValue,
+                      };
+                    }
+                    return deItem;
+                  },
+                ),
+              };
+            }
+            return contItem;
+          }),
+        };
+      }
+      return sectItem;
+    });
+
+    // tempvalue?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.[
+    //   nameOptions
+    // ]?.[activeIndexForDependent || 0]?.['options']?.push('');
+
+    setCartItems(newTempArr);
+    setOpenMappedModal(false);
+  };
   return (
     <GlobalLoader loading={loadingApi}>
       {mappedOptions?.length > 0 ? (
@@ -81,12 +119,21 @@ const AddMappedOptionsForFormBuilder: FC<any> = ({
                     name="Body 3/Medium"
                     onClick={() => {
                       if (items?.values_option) {
-                        changeFieldValues(
-                          JSON?.parse(items?.values_option),
-                          typeOfFILE === 'Checkbox'
-                            ? 'labelOptions'
-                            : 'options',
-                        );
+                        if (dependedAdd) {
+                          addnewOptionsForDependent(
+                            JSON?.parse(items?.values_option),
+                            typeOfFILE === 'Checkbox'
+                              ? 'labelOptions'
+                              : 'options',
+                          );
+                        } else {
+                          changeFieldValues(
+                            JSON?.parse(items?.values_option),
+                            typeOfFILE === 'Checkbox'
+                              ? 'labelOptions'
+                              : 'options',
+                          );
+                        }
                       }
                     }}
                   >
