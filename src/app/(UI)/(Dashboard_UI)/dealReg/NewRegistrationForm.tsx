@@ -185,7 +185,7 @@ const NewRegistrationForm: FC<any> = ({
               salesforceItem?.Partner_Name === fullstackItem?.partner,
           ),
         ) || [];
-    } else {
+    } else if (!isCanvas) {
       // Default to all partners if `salesForceSelfRegisteredPartner` is not present
       finalPartnerData = allPartnerFilterData?.AllPartner || [];
     }
