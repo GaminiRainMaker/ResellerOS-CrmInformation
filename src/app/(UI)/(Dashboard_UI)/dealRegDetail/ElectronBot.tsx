@@ -50,9 +50,9 @@ const ElectronBot = () => {
   const getElectronAppLink = () => {
     switch (os) {
       case 'windows':
-        return 'https://rosdevdi.blob.core.windows.net/reselleros/DealRegAI%20Setup%200.1.0.exe?sp=r&st=2024-12-16T10:46:34Z&se=2050-12-16T18:46:34Z&spr=https&sv=2022-11-02&sr=b&sig=vZy8GvqSZp6ckNusX%2B7QsPZLOQCUyYkiDMaHsJAt5jU%3D';
+        return 'https://rosdevdi.blob.core.windows.net/reselleros/DealRegAI%20Setup%200.1.0.exe?sp=r&st=2024-12-17T17:01:20Z&se=2060-12-18T01:01:20Z&spr=https&sv=2022-11-02&sr=b&sig=tIgWZo8%2FTheR4azOIl0WZ8EYoXDMhUGlVXOMxTrwdV8%3D';
       case 'mac':
-        return 'https://rosdevdi.blob.core.windows.net/reselleros/DealRegAI-0.1.0.dmg?sp=r&st=2024-12-16T14:26:20Z&se=2050-12-16T22:26:20Z&spr=https&sv=2022-11-02&sr=b&sig=Yznget6QvhGwuSf07Lwwkfk4bQAqQfS5GxIEUxZ%2FvcA%3D';
+        return 'https://rosdevdi.blob.core.windows.net/reselleros/DealRegAI-0.1.0.dmg?sp=r&st=2024-12-17T17:00:16Z&se=2060-12-18T01:00:16Z&spr=https&sv=2022-11-02&sr=b&sig=rV4SS1msyK6oZRxKgh2ZXoHcUAXZRG8DLElKApOYngA%3D';
       case 'linux':
         return 'https://reselller-os.s3.amazonaws.com/MyApp-linux-x64.zip';
       default:

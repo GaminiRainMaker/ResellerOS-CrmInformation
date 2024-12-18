@@ -240,6 +240,7 @@ export let processScript = (finalObj: any) => {
           } else {
             if (
               currentLine.includes('fill') &&
+              !currentLine.includes('pause()') &&
               formValues.length <= formPages &&
               !currentLine.includes('Verification')
             ) {
@@ -336,6 +337,7 @@ export let processScript = (finalObj: any) => {
               }
             } else {
               if (
+                !currentLine.includes('pause()') &&
                 !currentLine.includes('fill') &&
                 !currentLine.includes('selectOption') &&
                 !currentLine.includes('press') &&
@@ -369,10 +371,6 @@ export let processScript = (finalObj: any) => {
         }
       }
     }
-  }
-  let pauseIndex = newScript.findIndex((item) => item.includes('pause()'));
-  if (pauseIndex === -1) {
-    newScript.push(`await page.pause();`);
   }
 
   let finalArr = newScript;
