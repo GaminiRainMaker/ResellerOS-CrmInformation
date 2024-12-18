@@ -239,8 +239,8 @@ const UserManagement = () => {
       if (res?.payload) {
         const credentials = {
           login_url: res.payload.login_url,
-          consumer_key: res.payload.consumer_key,
-          consumer_secret: res.payload.consumer_secret,
+          consumer_key: process.env.NEXT_PUBLIC_APP_SALESFORCE_CONSUMER_KEY,
+          consumer_secret: process.env.NEXT_PUBLIC_APP_SALESFORCE_SECRET,
           username: res.payload.username,
           password: res.payload.password,
         };
