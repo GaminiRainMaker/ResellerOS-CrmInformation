@@ -228,18 +228,20 @@ function approvedQuoteMappingColumns(
       dataIndex: 'pdf_header',
       key: 'pdf_header',
       width: 173,
-      render: (text: string) => (
+      render: (text: string, record: any) => (
         <Typography name="Body 4/Regular">
           {' '}
-          {formatStatus(
-            text === 'product_code'
-              ? 'SKU'
-              : text === 'adjusted_price'
-                ? 'Cost'
-                : text === 'list_price'
-                  ? 'MSRP'
-                  : text,
-          )}
+          {record?.is_salesforce
+            ? formatStatus(text)
+            : formatStatus(
+                text === 'product_code'
+                  ? 'SKU'
+                  : text === 'adjusted_price'
+                    ? 'Cost'
+                    : text === 'list_price'
+                      ? 'MSRP'
+                      : text,
+              )}
         </Typography>
       ),
     },
@@ -252,7 +254,7 @@ function approvedQuoteMappingColumns(
       dataIndex: 'quote_header',
       key: 'quote_header',
       width: 220,
-      render: (text: string) => (
+      render: (text: string, record: any) => (
         <CustomTextCapitalization
           text={
             text === 'product_code'
