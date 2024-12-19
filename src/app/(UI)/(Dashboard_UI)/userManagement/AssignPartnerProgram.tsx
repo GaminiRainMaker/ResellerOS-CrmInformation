@@ -110,7 +110,9 @@ const AssignPartnerProgram: FC<UserManagementInterface> = ({
       key: 'program',
       render: (text: string, record: any) => (
         <CustomTextCapitalization
-          text={record?.PartnerPrograms?.[0]?.partner_program}
+          text={record?.PartnerPrograms?.map(
+            (program: any) => program.partner_program,
+          ).join(', ')}
         />
       ),
       width: 190,
