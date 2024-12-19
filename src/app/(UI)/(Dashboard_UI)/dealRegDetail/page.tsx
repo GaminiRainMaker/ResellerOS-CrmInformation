@@ -142,6 +142,7 @@ const DealRegDetail = () => {
           dealRegId: SubmitDealRegFormData?.id,
           token: salesForceToken,
           baseURL: salesForceinstanceUrl,
+          userId: userId,
           partnerId: SubmitDealRegFormData?.partner_id,
           partnerProgramId: SubmitDealRegFormData?.partner_program_id,
         };

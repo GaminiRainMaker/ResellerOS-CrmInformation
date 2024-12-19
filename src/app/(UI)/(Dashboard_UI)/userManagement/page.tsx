@@ -53,7 +53,7 @@ const UserManagement = () => {
     useState<boolean>(false);
   const [showEditDrawer, setShowEditDrawer] = useState<boolean>(false);
   const [editRecordData, setEditRecordData] = useState<any>();
-
+  const [activeKey, setActiveKey] = useState<string>('1');
   const [selectedRecordData, setSelectedRecordData] = useState<any>();
   const [showNewOrganizationModal, setShowNewOrganizationModal] =
     useState<boolean>(false);
@@ -570,7 +570,9 @@ const UserManagement = () => {
           <AssignPartnerProgram
             form={form}
             onFinish={onFinish}
-            organizationCurrent={selectedRecordData?.organization}
+            selectedRowRecord={selectedRecordData}
+            activeKey={activeKey}
+            setActiveKey={setActiveKey}
           />
         }
         bodyPadding={40}
@@ -581,7 +583,7 @@ const UserManagement = () => {
           form.resetFields();
         }}
         destroyOnClose
-        primaryButtonText="Assign"
+        primaryButtonText={activeKey === '1' ? 'Assign' : ''}
         onOk={() => {
           form?.submit();
         }}
