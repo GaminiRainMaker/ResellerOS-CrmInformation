@@ -496,7 +496,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
 
       const newSalesEncryptedData = encryptForSalesforce(
         jsonstring,
-        'CghhpgRahZKN0P8SaquPX/k30H+v2QWcKpcH42H9q0w=',
+        process.env.CRYPTO_SECERT_KEY,
       );
 
       if (salesFOrceAccoutFlow) {
