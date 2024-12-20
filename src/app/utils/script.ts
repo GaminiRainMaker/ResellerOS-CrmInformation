@@ -114,7 +114,6 @@ export let processScript = (finalObj: any) => {
   let formValues = [];
   let iswaitingScript = false;
   let waitingScriptValue = '';
-  let lastScript = [];
 
   for (let i = 0; i < parsedScript.length; i++) {
     const lastline = newScript[newScript.length - 1];
@@ -396,7 +395,6 @@ export let processScript = (finalObj: any) => {
       }
     }
   }
-  newScript = [...newScript, ...lastScript];
   let finalArr = newScript;
 
   let updatedScript = finalArr.join('\n');
