@@ -256,6 +256,13 @@ const ContentSection: FC<AuthLayoutInterface> = ({
       ).then((d: any) => {
         if (d?.payload) {
           setShowDailogModal(true);
+        } else {
+          notification?.open({
+            message:
+              'User does not exist with this email address. Please try again with correct email!',
+            type: 'error',
+          });
+          return;
         }
       });
     } else if (
