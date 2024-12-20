@@ -252,7 +252,7 @@ export let processScript = (finalObj: any) => {
                   let usedLabel = newLabel?.includes('/')
                     ? newLabel.split('/')[0]
                     : newLabel;
-                  if (label.includes('State')) {
+                  if (newLabel.includes('State')) {
                     newScript.push(`await page.waitForTimeout(2000);`);
                   }
 
