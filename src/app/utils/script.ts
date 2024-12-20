@@ -113,6 +113,8 @@ export let processScript = (finalObj: any) => {
   let formPages = 1 * finalObj.data.length;
   let formValues = [];
   let iswaitingScript = false;
+  let waitingScriptValue = '';
+  let lastScript = [];
 
   for (let i = 0; i < parsedScript.length; i++) {
     const lastline = newScript[newScript.length - 1];
@@ -246,15 +248,12 @@ export let processScript = (finalObj: any) => {
             ) {
               for (let dataObj of finalObj.data) {
                 for (let [label, value] of Object.entries(dataObj)) {
-                  let newLabel = label?.includes(' ')
-                    ? label.split(' ')[0]
-                    : label;
-                  let usedLabel = newLabel?.includes('/')
-                    ? newLabel.split('/')[0]
-                    : newLabel;
-                  if (newLabel.includes('State')) {
-                    newScript.push(`await page.waitForTimeout(2000);`);
-                  }
+                  // let newLabel = label?.includes(' ')
+                  //   ? label.split(' ')[0]
+                  //   : label;
+                  // let usedLabel = newLabel?.includes('/')
+                  //   ? newLabel.split('/')[0]
+                  //   : newLabel;
 
                   if (
                     label !== 'userFill' &&
@@ -278,13 +277,35 @@ export let processScript = (finalObj: any) => {
                               : `await page.getByLabel('${label}').selectOption('${value}');`
                             : `await page.getByText('${value}').click();`
                       }
-                      labelFilled.push('${usedLabel}');
+                      labelFilled.push('${label}');
                       `;
-                      newScript.push(data);
+                      const stateIndex = newScript.findIndex((item) =>
+                        item.includes('State'),
+                      );
+                      if (label.includes('State') && stateIndex === -1) {
+                        const countryIndex = newScript.findIndex((item) =>
+                          item.includes('Country'),
+                        );
+                        if (countryIndex == -1) {
+                          waitingScriptValue = data;
+                        } else {
+                          newScript.push(data);
+                        }
+                      } else {
+                        if (label.includes('Country') && waitingScriptValue) {
+                          newScript.push(
+                            `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 10000 });`,
+                          );
+                          newScript.push(data);
+                          newScript.push(waitingScriptValue);
+                        } else {
+                          newScript.push(data);
+                        }
+                      }
                     } else {
                       if (dataObj.userFill) {
                         let data = `
-                        if(!labelFilled.includes('${usedLabel}')){
+                        if(!labelFilled.includes('${label}')){
   
                         await page.evaluate(() => {
         const messageDiv = document.createElement('div');
@@ -375,8 +396,9 @@ export let processScript = (finalObj: any) => {
       }
     }
   }
-
+  newScript = [...newScript, ...lastScript];
   let finalArr = newScript;
+
   let updatedScript = finalArr.join('\n');
 
   return updatedScript;
