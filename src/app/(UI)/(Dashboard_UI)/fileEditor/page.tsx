@@ -1057,7 +1057,7 @@ const EditorFile = () => {
       const jsonstring = JSON.stringify(newArrWithFileId);
       const newSalesEncryptedData = encryptForSalesforce(
         jsonstring,
-        process.env.CRYPTO_SECERT_KEY,
+        'CghhpgRahZKN0P8SaquPX/k30H+v2QWcKpcH42H9q0w=',
       );
 
       let newdata = {

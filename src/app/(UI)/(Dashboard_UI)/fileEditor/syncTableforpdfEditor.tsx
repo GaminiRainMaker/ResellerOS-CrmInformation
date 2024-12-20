@@ -21,6 +21,7 @@ import {
 } from '@/app/utils/CONSTANTS';
 import {
   decrypt,
+  decryptFromSalesforce,
   encrypt,
   encryptForSalesforce,
   getLineItemsWithNonRepitive,
@@ -434,10 +435,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         newObj.AccountId = salesFOrceAccoutId;
       } else {
         (newObj.rosquoteai__File_Name__c = currentFileData?.file_name),
-          (newObj.rosquoteai__SF_File_Id__c =
-            salesFOrceManual
-              ? currentFileData?.FileId
-              : salesForceFiledId);
+          (newObj.rosquoteai__SF_File_Id__c = salesFOrceManual
+            ? currentFileData?.FileId
+            : salesForceFiledId);
       }
       let string = items?.rosquoteai__Product_Code__c?.trim();
 
@@ -496,7 +496,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
 
       const newSalesEncryptedData = encryptForSalesforce(
         jsonstring,
-        process.env.CRYPTO_SECERT_KEY,
+        'CghhpgRahZKN0P8SaquPX/k30H+v2QWcKpcH42H9q0w=',
       );
 
       if (salesFOrceAccoutFlow) {
@@ -531,10 +531,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           // documentId: salesForceFiledId,
           urls: salesForceinstanceUrl,
           QuoteId: SaleQuoteId,
-          FileId:
-            salesFOrceManual
-              ? currentFileData?.FileId
-              : salesForceFiledId,
+          FileId: salesFOrceManual
+            ? currentFileData?.FileId
+            : salesForceFiledId,
           // FileId: '0Q09I0000002Bc5SAE',
           action: 'ExportFileToTable',
           lineItem: newSalesEncryptedData,
