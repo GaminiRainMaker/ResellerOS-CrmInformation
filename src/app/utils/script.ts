@@ -252,6 +252,9 @@ export let processScript = (finalObj: any) => {
                   let usedLabel = newLabel?.includes('/')
                     ? newLabel.split('/')[0]
                     : newLabel;
+                  if (label.includes('State')) {
+                    newScript.push(`await page.waitForTimeout(2000);`);
+                  }
 
                   if (
                     label !== 'userFill' &&
