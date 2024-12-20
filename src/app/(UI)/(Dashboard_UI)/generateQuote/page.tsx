@@ -62,8 +62,14 @@ const ReviewQuotes = dynamic(() => import('./allTabs/ReviewQuotes'), {
 import dynamic from 'next/dynamic';
 import {getRebateQuoteLineItemByQuoteId} from '../../../../../redux/actions/rebateQuoteLineitem';
 import {getAllValidationByQuoteId} from '../../../../../redux/actions/validation';
-import DrawerContent from './DrawerContent';
-import GenerateQuoteAnalytics from './analytics';
+const DrawerContent = dynamic(() => import('./DrawerContent'), {
+  ssr: false,
+});
+const GenerateQuoteAnalytics = dynamic(() => import('./analytics'), {
+  ssr: false,
+});
+// import DrawerContent from './DrawerContent';
+// import GenerateQuoteAnalytics from './analytics';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -102,6 +108,7 @@ const GenerateQuote: React.FC = () => {
   const {quoteFileUnverifiedById, getQuoteFileDataCount} = useAppSelector(
     (state) => state.quoteFile,
   );
+  const [filesCount, setFilesCount] = useState<any>(0);
   const [showUpdateLineItemModal, setShowUpdateLineItemModal] =
     useState<boolean>(false);
   const [typeForAttachmentFilter, setTypeForAttachmentFilter] =
@@ -111,6 +118,12 @@ const GenerateQuote: React.FC = () => {
   const [addNewCustomerQuote, setAddNewCustomerQuote] =
     useState<boolean>(false);
 
+  useEffect(() => {
+    console.log('432432432', getQuoteFileDataCount);
+    if (getQuoteFileDataCount !== undefined && getQuoteFileDataCount !== null) {
+      setFilesCount(Number(getQuoteFileDataCount));
+    }
+  }, [getQuoteFileDataCount]);
   useEffect(() => {
     if (getQuoteID) {
       dispatch(getQuoteFileCount(Number(getQuoteID)));
@@ -342,7 +355,7 @@ const GenerateQuote: React.FC = () => {
     {
       key: 1,
       name: (
-        <Badge count={getQuoteFileDataCount}>
+        <Badge count={!isNaN(filesCount) ? filesCount : 0}>
           <Typography
             style={{padding: '10px'}}
             name="Body 4/Regular"
@@ -402,73 +415,47 @@ const GenerateQuote: React.FC = () => {
         />
       ),
     },
-    {
-      key: 3,
-      name: (
-        <Typography
-          name="Body 4/Regular"
-          onClick={() => {
-            setActiveTab('3');
-            setValidationTab(false);
-          }}
-          cursor="pointer"
-          color={token?.colorTextBase}
-        >
-          Rebates
-        </Typography>
-      ),
-      children: (
-        <Rebates
-          tableColumnDataShow={tableColumnDataShow}
-          selectedFilter={selectedFilter}
-          collapseActiveKeys={collapseActiveKeys}
-          setCollapseActiveKeys={setCollapseActiveKeys}
-        />
-      ),
-    },
-    contractSettingData?.show_validation_tab && {
-      key: 4,
-      name: (
-        <Typography
-          name="Body 4/Regular"
-          onClick={() => {
-            setActiveTab('4');
-            setValidationTab(true);
-          }}
-          cursor="pointer"
-          color={token?.colorTextBase}
-        >
-          Validation
-        </Typography>
-      ),
-      children: (
-        <ProfitabilityMain
-          tableColumnDataShow={tableColumnDataShow}
-          selectedFilter={selectedFilter}
-          setShowUpdateLineItemModal={setShowUpdateLineItemModal}
-          showUpdateLineItemModal={showUpdateLineItemModal}
-          selectTedRowData={selectTedRowData}
-          setSelectedRowData={setSelectedRowData}
-          setCollapseActiveKeys={setCollapseActiveKeys}
-          collapseActiveKeys={collapseActiveKeys}
-          setShowBundleModal={setShowBundleModal}
-          selectTedRowIds={selectTedRowIds}
-          setSelectedRowIds={setSelectedRowIds}
-          showBundleModal={showBundleModal}
-          isDeleteProfitabilityModal={isDeleteProfitabilityModal}
-          setIsDeleteProfitabilityModal={setIsDeleteProfitabilityModal}
-          showRemoveBundleLineItemModal={showRemoveBundleLineItemModal}
-          setShowRemoveBundleLineItemModal={setShowRemoveBundleLineItemModal}
-          validationTab={validationTab}
-        />
-        // <Validation
-        //   tableColumnDataShow={tableColumnDataShow}
-        //   selectedFilter={selectedFilter}
-        //   collapseActiveKeys={collapseActiveKeys}
-        //   setCollapseActiveKeys={setCollapseActiveKeys}
-        // />
-      ),
-    },
+    contractSettingData?.show_validation_tab
+      ? {
+          key: 4,
+          name: (
+            <Typography
+              name="Body 4/Regular"
+              onClick={() => {
+                setActiveTab('4');
+                setValidationTab(true);
+              }}
+              cursor="pointer"
+              color={token?.colorTextBase}
+            >
+              Validation
+            </Typography>
+          ),
+          children: (
+            <ProfitabilityMain
+              tableColumnDataShow={tableColumnDataShow}
+              selectedFilter={selectedFilter}
+              setShowUpdateLineItemModal={setShowUpdateLineItemModal}
+              showUpdateLineItemModal={showUpdateLineItemModal}
+              selectTedRowData={selectTedRowData}
+              setSelectedRowData={setSelectedRowData}
+              setCollapseActiveKeys={setCollapseActiveKeys}
+              collapseActiveKeys={collapseActiveKeys}
+              setShowBundleModal={setShowBundleModal}
+              selectTedRowIds={selectTedRowIds}
+              setSelectedRowIds={setSelectedRowIds}
+              showBundleModal={showBundleModal}
+              isDeleteProfitabilityModal={isDeleteProfitabilityModal}
+              setIsDeleteProfitabilityModal={setIsDeleteProfitabilityModal}
+              showRemoveBundleLineItemModal={showRemoveBundleLineItemModal}
+              setShowRemoveBundleLineItemModal={
+                setShowRemoveBundleLineItemModal
+              }
+              validationTab={validationTab}
+            />
+          ),
+        }
+      : null, // Explicitly returning `null` if the condition fails
     {
       key: 5,
       name: (
@@ -493,7 +480,7 @@ const GenerateQuote: React.FC = () => {
           name="Body 4/Regular"
           cursor="pointer"
           color={token?.colorTextBase}
-          onClick={() => setActiveTab('1')}
+          onClick={() => setActiveTab('6')}
         >
           Attachments
         </Typography>
@@ -506,8 +493,7 @@ const GenerateQuote: React.FC = () => {
         />
       ),
     },
-  ].filter(Boolean);
-
+  ].filter((item) => item !== null); // Remove `null` from the array, explicitly ensuring no `null` items in TabPaneData
   const menuItems = [
     {
       key: '1',
@@ -646,6 +632,7 @@ const GenerateQuote: React.FC = () => {
             </Space>
           </Col>
         </Row>
+
         <Row
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
@@ -715,19 +702,45 @@ const GenerateQuote: React.FC = () => {
               </Space>
             }
           >
-            {TabPaneData?.map((item: any) => (
-              <TabPane
-                key={item?.key}
-                tab={
-                  <Typography name="Body 4/Regular">{item?.name}</Typography>
-                }
-              >
-                {item?.children}
-              </TabPane>
-            ))}
+            {TabPaneData &&
+              TabPaneData.length > 0 &&
+              TabPaneData.map((item, index) => {
+                if (!item || !item.name || !item.children) return null; // Skip invalid items
+                console.log('Rendering TabPane:', item);
+                return (
+                  <TabPane
+                    key={index}
+                    tab={
+                      <Typography name="Body 4/Regular">{item.name}</Typography>
+                    }
+                  >
+                    {item.children}
+                  </TabPane>
+                );
+              })}
+            {/* {TabPaneData &&
+              TabPaneData?.length > 0 &&
+              TabPaneData?.map((item: any, index: number) => {
+                console.log('3432423423432', item, TabPaneData);
+                return (
+                  <>
+                    <TabPane
+                      key={index}
+                      tab={
+                        <Typography name="Body 4/Regular">
+                          {item?.name}
+                        </Typography>
+                      }
+                    >
+                      {item?.children}
+                    </TabPane>
+                  </>
+                );
+              })} */}
           </OsTabs>
         </Row>
       </Space>
+
       <OsDrawer
         title={<Typography name="Body 1/Regular">Quote Settings</Typography>}
         placement="right"
