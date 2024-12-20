@@ -327,7 +327,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             quote_file_id:
               fullStackManul === 'true'
                 ? currentFileData?.id
-                : salesFOrceManual === 'true'
+                : salesFOrceManual
                   ? currentFileData?.FileId
                   : Number(getQuoteFileId),
             is_salesforce: SaleQuoteId || salesFOrceAccoutFlow ? true : false,
@@ -435,7 +435,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       } else {
         (newObj.rosquoteai__File_Name__c = currentFileData?.file_name),
           (newObj.rosquoteai__SF_File_Id__c =
-            salesFOrceManual === 'true'
+            salesFOrceManual
               ? currentFileData?.FileId
               : salesForceFiledId);
       }
@@ -453,7 +453,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       //   ...items,
       //   file_name: currentFileData?.file_name,
       //   file_id:
-      //     salesFOrceManual === 'true'
+      //     salesFOrceManual
       //       ? currentFileData?.FileId
       //       : salesForceFiledId,
       // });
@@ -514,7 +514,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
               message: messgaeForApi,
               type: 'info',
             });
-            if (salesFOrceManual === 'false') {
+            if (!salesFOrceManual) {
               notification.open({
                 message: 'Please close the  window',
                 type: 'info',
@@ -532,7 +532,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           urls: salesForceinstanceUrl,
           QuoteId: SaleQuoteId,
           FileId:
-            salesFOrceManual === 'true'
+            salesFOrceManual
               ? currentFileData?.FileId
               : salesForceFiledId,
           // FileId: '0Q09I0000002Bc5SAE',
@@ -546,7 +546,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             message: messgaeForApi,
             type: 'info',
           });
-          if (salesFOrceManual === 'false') {
+          if (!salesFOrceManual) {
             notification.open({
               message: 'Please close the review quotes window',
               type: 'info',
@@ -555,7 +555,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         });
 
         setNanonetsLoading(false);
-        if (salesFOrceManual === 'true') {
+        if (salesFOrceManual) {
           setTimeout(() => {
             checkForNewFileForSalesForce();
           }, 2000);
@@ -657,7 +657,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
               quote_file_id:
                 fullStackManul === 'true'
                   ? currentFileData?.id
-                  : salesFOrceManual === 'true'
+                  : salesFOrceManual
                     ? currentFileData?.FileId
                     : getQuoteFileId
                       ? getQuoteFileId
