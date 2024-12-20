@@ -374,179 +374,183 @@ const ReviewQuotes: FC<any> = ({
           </div>
         ) : selectedFilter && reviewQuotesData?.length > 0 ? (
           <>
-            {reviewQuotesData?.map((finalDataItem: any, index: number) => {
-              return (
-                <OsCollapse
-                  key={index}
-                  items={[
-                    {
-                      key: index,
-                      label: (
-                        <Row justify="space-between">
-                          <Col span={10}>
-                            <p>{finalDataItem?.title}</p>
-                          </Col>
-                          <Col span={4}>
-                            <p>
-                              Line Items: {finalDataItem?.QuoteLineItem?.length}
-                            </p>
-                          </Col>
-                          <Col span={4}>
-                            <p>
-                              Total Cost: $
-                              {abbreviate(
-                                Number(
-                                  finalDataItem?.totalAdjustedPrice ?? 0.0,
-                                ),
-                              )}
-                            </p>
-                          </Col>
-                          <Col
-                            span={4}
-                            style={{
-                              justifyContent: 'end',
-                              display: 'flex',
-                            }}
-                          >
-                            <Space>
-                              <AvatarStyled
-                                shape="square"
-                                background={token?.colorSuccess}
-                                size={28}
-                                icon={
-                                  <CheckIcon
-                                    width={25}
-                                    color={token?.colorBgContainer}
-                                    onClick={(e) => {
-                                      e?.stopPropagation();
-                                      if (isView === 'true') {
-                                        notification.open({
-                                          message:
-                                            "You can't use in view mode.",
-                                          type: 'info',
-                                        });
-                                      } else {
-                                        setShowVerificationFileModal(true);
-                                        setFileData(finalDataItem);
-                                      }
-                                    }}
-                                  />
-                                }
-                              />
-                              <AvatarStyled
-                                shape="square"
-                                background={token?.colorError}
-                                size={28}
-                                icon={
-                                  <XMarkIcon
-                                    width={25}
-                                    color={token?.colorBgContainer}
-                                    onClick={(e) => {
-                                      if (isView === 'true') {
-                                        notification.open({
-                                          message:
-                                            "You can't use in view mode.",
-                                          type: 'info',
-                                        });
-                                      } else {
-                                        if (!finalDataItem?.maunalAdded) {
-                                          if (
-                                            finalDataItem?.QuoteLineItem
-                                              ?.length === 0
-                                          ) {
+            {reviewQuotesData &&
+              reviewQuotesData?.length > 0 &&
+              reviewQuotesData?.map((finalDataItem: any, index: number) => {
+                return (
+                  <OsCollapse
+                    key={index + 1}
+                    items={[
+                      {
+                        label: (
+                          <Row justify="space-between">
+                            <Col span={10}>
+                              <p>{finalDataItem?.title}</p>
+                            </Col>
+                            <Col span={4}>
+                              <p>
+                                Line Items:{' '}
+                                {finalDataItem?.QuoteLineItem?.length}
+                              </p>
+                            </Col>
+                            <Col span={4}>
+                              <p>
+                                Total Cost: $
+                                {abbreviate(
+                                  Number(
+                                    finalDataItem?.totalAdjustedPrice ?? 0.0,
+                                  ),
+                                )}
+                              </p>
+                            </Col>
+                            <Col
+                              span={4}
+                              style={{
+                                justifyContent: 'end',
+                                display: 'flex',
+                              }}
+                            >
+                              <Space>
+                                <AvatarStyled
+                                  shape="square"
+                                  background={token?.colorSuccess}
+                                  size={28}
+                                  icon={
+                                    <CheckIcon
+                                      width={25}
+                                      color={token?.colorBgContainer}
+                                      onClick={(e) => {
+                                        e?.stopPropagation();
+                                        if (isView === 'true') {
+                                          notification.open({
+                                            message:
+                                              "You can't use in view mode.",
+                                            type: 'info',
+                                          });
+                                        } else {
+                                          setShowVerificationFileModal(true);
+                                          setFileData(finalDataItem);
+                                        }
+                                      }}
+                                    />
+                                  }
+                                />
+                                <AvatarStyled
+                                  shape="square"
+                                  background={token?.colorError}
+                                  size={28}
+                                  icon={
+                                    <XMarkIcon
+                                      width={25}
+                                      color={token?.colorBgContainer}
+                                      onClick={(e) => {
+                                        if (isView === 'true') {
+                                          notification.open({
+                                            message:
+                                              "You can't use in view mode.",
+                                            type: 'info',
+                                          });
+                                        } else {
+                                          if (!finalDataItem?.maunalAdded) {
+                                            if (
+                                              finalDataItem?.QuoteLineItem
+                                                ?.length === 0
+                                            ) {
+                                              setConditionsForTheButtons({
+                                                ...conditionsForTheButtons,
+                                                exportAs: false,
+                                              });
+                                              setShowExportAs(false);
+                                            } else {
+                                              setConditionsForTheButtons({
+                                                ...conditionsForTheButtons,
+                                                exportAs: true,
+                                              });
+                                              setShowExportAs(true);
+                                            }
+                                            if (
+                                              !finalDataItem?.title
+                                                ?.toLowerCase()
+                                                ?.split('.')
+                                                ?.includes('pdf')
+                                            ) {
+                                              setConditionsForTheButtons({
+                                                ...conditionsForTheButtons,
+                                                exportTable: false,
+                                              });
+                                              setShowExportToTable(false);
+                                            } else {
+                                              setConditionsForTheButtons({
+                                                ...conditionsForTheButtons,
+                                                exportTable: true,
+                                              });
+                                              setShowExportToTable(true);
+                                            }
+                                            if (
+                                              finalDataItem?.QuoteLineItem
+                                                ?.length === 0 &&
+                                              !finalDataItem?.title
+                                                ?.toLowerCase()
+                                                ?.split('.')
+                                                ?.includes('pdf')
+                                            ) {
+                                              setConditionsForTheButtons({
+                                                ...conditionsForTheButtons,
+                                                maunalExport: true,
+                                              });
+                                              setShowSubmitButton(true);
+                                            } else {
+                                              setConditionsForTheButtons({
+                                                ...conditionsForTheButtons,
+                                                maunalExport: false,
+                                              });
+                                              setShowSubmitButton(false);
+                                            }
+                                          }
+                                          if (finalDataItem?.maunalAdded) {
                                             setConditionsForTheButtons({
                                               ...conditionsForTheButtons,
                                               exportAs: false,
-                                            });
-                                            setShowExportAs(false);
-                                          } else {
-                                            setConditionsForTheButtons({
-                                              ...conditionsForTheButtons,
-                                              exportAs: true,
-                                            });
-                                            setShowExportAs(true);
-                                          }
-                                          if (
-                                            !finalDataItem?.title
-                                              ?.toLowerCase()
-                                              ?.split('.')
-                                              ?.includes('pdf')
-                                          ) {
-                                            setConditionsForTheButtons({
-                                              ...conditionsForTheButtons,
                                               exportTable: false,
-                                            });
-                                            setShowExportToTable(false);
-                                          } else {
-                                            setConditionsForTheButtons({
-                                              ...conditionsForTheButtons,
-                                              exportTable: true,
-                                            });
-                                            setShowExportToTable(true);
-                                          }
-                                          if (
-                                            finalDataItem?.QuoteLineItem
-                                              ?.length === 0 &&
-                                            !finalDataItem?.title
-                                              ?.toLowerCase()
-                                              ?.split('.')
-                                              ?.includes('pdf')
-                                          ) {
-                                            setConditionsForTheButtons({
-                                              ...conditionsForTheButtons,
                                               maunalExport: true,
                                             });
                                             setShowSubmitButton(true);
-                                          } else {
-                                            setConditionsForTheButtons({
-                                              ...conditionsForTheButtons,
-                                              maunalExport: false,
-                                            });
-                                            setShowSubmitButton(false);
+                                            setShowExportToTable(false);
+                                            setShowExportAs(false);
                                           }
-                                        }
-                                        if (finalDataItem?.maunalAdded) {
-                                          setConditionsForTheButtons({
-                                            ...conditionsForTheButtons,
-                                            exportAs: false,
-                                            exportTable: false,
-                                            maunalExport: true,
-                                          });
-                                          setShowSubmitButton(true);
-                                          setShowExportToTable(false);
-                                          setShowExportAs(false);
-                                        }
 
-                                        setShowRaiseConcernModal(true);
-                                        setFileData(finalDataItem);
-                                      }
-                                      e?.stopPropagation();
-                                    }}
-                                  />
-                                }
-                              />
-                            </Space>
-                          </Col>
-                        </Row>
-                      ),
-                      children: (
-                        <OsTableWithOutDrag
-                          loading={quoteFileDataLoading}
-                          columns={finalReviewCol}
-                          dataSource={finalDataItem?.QuoteLineItem}
-                          scroll
-                          locale={locale}
-                          defaultPageSize={finalDataItem?.QuoteLineItem?.length}
-                          setPageChange={setPageChange}
-                          pageChange={pageChange}
-                          uniqueId={finalDataItem?.name}
-                        />
-                      ),
-                    },
-                  ]}
-                />
-              );
-            })}
+                                          setShowRaiseConcernModal(true);
+                                          setFileData(finalDataItem);
+                                        }
+                                        e?.stopPropagation();
+                                      }}
+                                    />
+                                  }
+                                />
+                              </Space>
+                            </Col>
+                          </Row>
+                        ),
+                        children: (
+                          <OsTableWithOutDrag
+                            loading={quoteFileDataLoading}
+                            columns={finalReviewCol}
+                            dataSource={finalDataItem?.QuoteLineItem}
+                            scroll
+                            locale={locale}
+                            defaultPageSize={
+                              finalDataItem?.QuoteLineItem?.length
+                            }
+                            setPageChange={setPageChange}
+                            pageChange={pageChange}
+                            uniqueId={finalDataItem?.name}
+                          />
+                        ),
+                      },
+                    ]}
+                  />
+                );
+              })}
           </>
         ) : (
           <EmptyContainer

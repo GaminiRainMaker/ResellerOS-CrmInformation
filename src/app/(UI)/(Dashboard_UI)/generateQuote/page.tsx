@@ -62,8 +62,14 @@ const ReviewQuotes = dynamic(() => import('./allTabs/ReviewQuotes'), {
 import dynamic from 'next/dynamic';
 import {getRebateQuoteLineItemByQuoteId} from '../../../../../redux/actions/rebateQuoteLineitem';
 import {getAllValidationByQuoteId} from '../../../../../redux/actions/validation';
-import DrawerContent from './DrawerContent';
-import GenerateQuoteAnalytics from './analytics';
+const DrawerContent = dynamic(() => import('./DrawerContent'), {
+  ssr: false,
+});
+const GenerateQuoteAnalytics = dynamic(() => import('./analytics'), {
+  ssr: false,
+});
+// import DrawerContent from './DrawerContent';
+// import GenerateQuoteAnalytics from './analytics';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -358,11 +364,12 @@ const GenerateQuote: React.FC = () => {
         </Badge>
       ),
       children: (
-        <ReviewQuotes
-          tableColumnDataShow={tableColumnDataShow}
-          selectedFilter={selectedFilter}
-          getQuoteDetailById={getQuoteDetailById}
-        />
+        <></>
+        // <ReviewQuotes
+        //   tableColumnDataShow={tableColumnDataShow}
+        //   selectedFilter={selectedFilter}
+        //   getQuoteDetailById={getQuoteDetailById}
+        // />
       ),
     },
     {
@@ -646,6 +653,7 @@ const GenerateQuote: React.FC = () => {
             </Space>
           </Col>
         </Row>
+
         <Row
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
@@ -715,16 +723,18 @@ const GenerateQuote: React.FC = () => {
               </Space>
             }
           >
-            {TabPaneData?.map((item: any) => (
-              <TabPane
-                key={item?.key}
-                tab={
-                  <Typography name="Body 4/Regular">{item?.name}</Typography>
-                }
-              >
-                {item?.children}
-              </TabPane>
-            ))}
+            {TabPaneData &&
+              TabPaneData?.length > 0 &&
+              TabPaneData?.map((item: any) => (
+                <TabPane
+                  key={item?.key}
+                  tab={
+                    <Typography name="Body 4/Regular">{item?.name}</Typography>
+                  }
+                >
+                  {item?.children}
+                </TabPane>
+              ))}
           </OsTabs>
         </Row>
       </Space>
