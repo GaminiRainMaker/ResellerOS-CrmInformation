@@ -50,7 +50,7 @@ const ElectronBot = () => {
   const getElectronAppLink = () => {
     switch (os) {
       case 'windows':
-        return 'https://rosdevdi.blob.core.windows.net/reselleros/DealRegAI%20Setup%200.1.0.exe?sp=r&st=2024-12-17T17:01:20Z&se=2060-12-18T01:01:20Z&spr=https&sv=2022-11-02&sr=b&sig=tIgWZo8%2FTheR4azOIl0WZ8EYoXDMhUGlVXOMxTrwdV8%3D';
+        return 'https://rosdevdi.blob.core.windows.net/reselleros/DealRegAI%20Setup%200.1.0.exe?sp=r&st=2024-12-20T10:48:48Z&se=2050-12-20T18:48:48Z&spr=https&sv=2022-11-02&sr=b&sig=qLB0a2DAWsMTjCZ9MD0uIpsBo8BFUEs9qtYNsnnUM%2BM%3D';
       case 'mac':
         return 'https://rosdevdi.blob.core.windows.net/reselleros/DealRegAI-0.1.0.dmg?sp=r&st=2024-12-17T17:00:16Z&se=2060-12-18T01:00:16Z&spr=https&sv=2022-11-02&sr=b&sig=rV4SS1msyK6oZRxKgh2ZXoHcUAXZRG8DLElKApOYngA%3D';
       case 'linux':

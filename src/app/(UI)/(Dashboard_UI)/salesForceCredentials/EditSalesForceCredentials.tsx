@@ -104,9 +104,7 @@ const EditSalesForceCredentials: FC<{
         </Col> */}
         <Col span={drawer ? 24 : 12}>
           <SelectFormItem
-            label={
-              <Typography name="Body 4/Medium">Login/Instance URL</Typography>
-            }
+            label={<Typography name="Body 4/Medium">Login URL</Typography>}
             name={'login_url'}
             // rules={[
             //   {
@@ -118,7 +116,7 @@ const EditSalesForceCredentials: FC<{
             <OsInput placeholder="Enter Login URL" />
           </SelectFormItem>
         </Col>
-        {/* <Col span={drawer ? 24 : 12}>
+        <Col span={drawer ? 24 : 12}>
           <SelectFormItem
             label={<Typography name="Body 4/Medium">Instance URL</Typography>}
             name={'instance_url'}
@@ -131,7 +129,7 @@ const EditSalesForceCredentials: FC<{
           >
             <OsInput placeholder="Enter Base URL" />
           </SelectFormItem>
-        </Col> */}
+        </Col>
         <Col span={drawer ? 24 : 12}>
           <SelectFormItem
             label={<Typography name="Body 4/Medium">Password</Typography>}
