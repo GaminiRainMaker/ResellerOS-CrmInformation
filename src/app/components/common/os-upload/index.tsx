@@ -640,6 +640,7 @@ const OsUpload: React.FC<any> = ({
         }
       }
 
+      console.log('werwwwwe', obj);
       if (
         !obj.error &&
         obj?.model_id &&
@@ -664,10 +665,15 @@ const OsUpload: React.FC<any> = ({
 
           obj = {...obj, ...response, ...dataa};
         }
+      } else {
+        const dataa = await beforeUploadDataForPDFFile(obj?.file);
+
+        obj = {...obj, ...dataa};
       }
 
       newArr.push(obj);
     }
+
     setLoading(false);
     const index = newArr.findIndex((item) => item.error);
 
@@ -740,6 +746,10 @@ const OsUpload: React.FC<any> = ({
 
           obj = {...obj, ...dataa};
         }
+      } else {
+        const dataa = await beforeUploadDataForPDFFile(obj?.file);
+
+        obj = {...obj, ...dataa};
       }
 
       newArr.push(obj);
