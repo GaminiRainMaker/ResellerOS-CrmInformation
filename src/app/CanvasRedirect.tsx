@@ -49,6 +49,7 @@ const CanvasRedirectWrapper = ({children}: Props) => {
             decryptData?.context?.environment?.parameters?.locationUrl;
 
           // NavigationUrls == "EditDataAsIs"
+          console.log('43543432', NavigationUrls);
           dispatch(setIsCanvas(true));
           if (navigationKey === 'Opportunity') {
             router.replace('/dealReg');

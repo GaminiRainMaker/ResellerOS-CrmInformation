@@ -277,7 +277,7 @@ const EditorFile = () => {
           quoteId: SaleQuoteId,
         };
 
-        let pathTOGo = salesFOrceManual ? newObj : data;
+        let pathTOGo = salesFOrceManual === true ? newObj : data;
         dispatch(getSalesForceFileData(pathTOGo))?.then((payload: any) => {
           if (payload?.payload) {
             let newObjFromSalesFOrce = JSON?.parse(payload?.payload?.qliFields);
@@ -351,7 +351,7 @@ const EditorFile = () => {
   };
 
   const checkForNewFileForSalesForce = async () => {
-    if (salesFOrceManual) {
+    if (salesFOrceManual === true) {
       let newObj = {
         file_type: 'Manual',
         token: salesForceToken,
