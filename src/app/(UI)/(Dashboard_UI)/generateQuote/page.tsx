@@ -364,12 +364,12 @@ const GenerateQuote: React.FC = () => {
         </Badge>
       ),
       children: (
-        <></>
-        // <ReviewQuotes
-        //   tableColumnDataShow={tableColumnDataShow}
-        //   selectedFilter={selectedFilter}
-        //   getQuoteDetailById={getQuoteDetailById}
-        // />
+        // <></>
+        <ReviewQuotes
+          tableColumnDataShow={tableColumnDataShow}
+          selectedFilter={selectedFilter}
+          getQuoteDetailById={getQuoteDetailById}
+        />
       ),
     },
     {
