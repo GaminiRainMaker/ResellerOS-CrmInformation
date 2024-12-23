@@ -435,9 +435,14 @@ const DealRegCustomTabs = forwardRef<
           ); // Encrypt
           finalObj.unique_form_data = `${iv}:${data}`; // Replace with encrypted value
         }
+        responseForm();
         dispatch(updateSalesForceDealregById(finalObj));
       }
     }
+  };
+
+  const responseForm = () => {
+    console.log('Dataaaa');
   };
 
   useEffect(() => {
@@ -505,6 +510,7 @@ const DealRegCustomTabs = forwardRef<
                   form={form}
                   handleBlur={onFinish}
                   formData={formData}
+                  responseForm={responseForm}
                 />
               </div>
             ),

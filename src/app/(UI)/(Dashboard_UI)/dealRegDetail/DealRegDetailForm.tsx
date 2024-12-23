@@ -18,6 +18,7 @@ const DealRegDetailForm: FC<any> = ({
   form,
   handleBlur,
   formData,
+  responseForm,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -71,7 +72,11 @@ const DealRegDetailForm: FC<any> = ({
         </Typography>
       ),
       children: (
-        <ResponseDetailForm activeKey={activeKey} formData={formData} />
+        <ResponseDetailForm
+          activeKey={activeKey}
+          formData={formData}
+          responseForm={responseForm}
+        />
       ),
     },
   ];

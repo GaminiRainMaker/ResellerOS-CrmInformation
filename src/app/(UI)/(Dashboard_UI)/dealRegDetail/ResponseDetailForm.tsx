@@ -13,7 +13,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsButton from '@/app/components/common/os-button';
 import {updateSalesForceDealregById} from '../../../../../redux/actions/salesForce';
 
-const ResponseDetailForm: FC<any> = ({activeKey, formData}) => {
+const ResponseDetailForm: FC<any> = ({activeKey, formData, responseForm}) => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
@@ -43,6 +43,8 @@ const ResponseDetailForm: FC<any> = ({activeKey, formData}) => {
   }, [formData]);
 
   const onFinish = async (values: any) => {
+    const data = form.getFieldsValue();
+    responseForm(data);
     const newObj = {
       ...values,
       id: activeKey,
