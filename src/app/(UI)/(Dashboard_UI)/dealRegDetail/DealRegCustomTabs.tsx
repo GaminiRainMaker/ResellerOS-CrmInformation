@@ -273,6 +273,8 @@ const DealRegCustomTabs = forwardRef<
   const onFinish = async () => {
     const commonFieldFormData = form.getFieldsValue();
     const commonFieldObject: any = {};
+    const responseFieldObject: any = {};
+
     const uniqueFieldObject: any = {};
     let finalCommonFieldObject: any = {};
     let finalUniqueFieldObject: any = {};
@@ -284,6 +286,8 @@ const DealRegCustomTabs = forwardRef<
           commonFieldObject[key] = value;
         } else if (key?.startsWith('u_')) {
           uniqueFieldObject[key] = value;
+        } else {
+          responseFieldObject[key] = value;
         }
       }
       const selectedDealRegData =

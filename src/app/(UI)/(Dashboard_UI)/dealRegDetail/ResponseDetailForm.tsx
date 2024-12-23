@@ -13,8 +13,12 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsButton from '@/app/components/common/os-button';
 import {updateSalesForceDealregById} from '../../../../../redux/actions/salesForce';
 
-const ResponseDetailForm: FC<any> = ({activeKey, formData, responseForm}) => {
-  const [form] = Form.useForm();
+const ResponseDetailForm: FC<any> = ({
+  activeKey,
+  formData,
+  responseForm,
+  form,
+}) => {
   const dispatch = useAppDispatch();
   const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
 
@@ -77,7 +81,7 @@ const ResponseDetailForm: FC<any> = ({activeKey, formData, responseForm}) => {
 
   const handleBlur = () => {
     if (!isCanvas) {
-      form.validateFields().then((values) => {
+      form.validateFields().then((values: any) => {
         onFinish(values);
       });
     }
@@ -85,7 +89,7 @@ const ResponseDetailForm: FC<any> = ({activeKey, formData, responseForm}) => {
 
   const handleSelect = () => {
     if (!isCanvas) {
-      form.validateFields().then((values) => {
+      form.validateFields().then((values: any) => {
         onFinish(values);
       });
     }
@@ -99,7 +103,7 @@ const ResponseDetailForm: FC<any> = ({activeKey, formData, responseForm}) => {
             buttontype="SECONDARY"
             text="Save Response Details"
             clickHandler={() =>
-              form.validateFields().then((values) => {
+              form.validateFields().then((values: any) => {
                 onFinish(values);
               })
             }

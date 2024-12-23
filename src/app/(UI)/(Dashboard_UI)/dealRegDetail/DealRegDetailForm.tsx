@@ -74,6 +74,7 @@ const DealRegDetailForm: FC<any> = ({
       children: (
         <ResponseDetailForm
           activeKey={activeKey}
+          form={form}
           formData={formData}
           responseForm={responseForm}
         />
