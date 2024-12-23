@@ -90,6 +90,7 @@ const ContractProductMain: React.FC = () => {
       dataIndex: 'contract_product_name',
       key: 'contract_product_name',
       render: (text: string) => <CustomTextCapitalization text={text} />,
+      width: 250,
     },
     {
       title: 'Product Code',
@@ -100,6 +101,7 @@ const ContractProductMain: React.FC = () => {
           {record?.Product?.product_code ?? '--'}
         </Typography>
       ),
+      width: 180,
     },
     {
       title: 'Contract',
@@ -110,6 +112,7 @@ const ContractProductMain: React.FC = () => {
           {record?.Contract?.contract ?? '--'}
         </Typography>
       ),
+      width: 180,
     },
     {
       title: 'Contract Product Price',
@@ -118,6 +121,7 @@ const ContractProductMain: React.FC = () => {
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
+      width: 180,
     },
 
     {
@@ -127,6 +131,7 @@ const ContractProductMain: React.FC = () => {
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
+      width: 180,
     },
 
     {
@@ -134,6 +139,7 @@ const ContractProductMain: React.FC = () => {
       dataIndex: 'Status',
       key: 'Status',
       render: (text: string) => <CustomTextCapitalization text={text} />,
+      width: 250,
     },
 
     {
@@ -173,6 +179,7 @@ const ContractProductMain: React.FC = () => {
           />
         </Space>
       ),
+      width: 150,
     },
   ];
 
@@ -251,23 +258,13 @@ const ContractProductMain: React.FC = () => {
             />
           </Col>
         </Row>
-
-        <Row
-          style={{
-            background: 'white',
-            padding: '24px',
-            borderRadius: '12px',
-            overflow: 'auto',
-          }}
-        >
-          <OsTable
-            columns={ContractProductColumns}
-            dataSource={contractProductFinalData || []}
-            scroll
-            locale={locale}
-            loading={loading}
-          />
-        </Row>
+        <OsTable
+          columns={ContractProductColumns}
+          dataSource={contractProductFinalData || []}
+          scroll
+          locale={locale}
+          loading={loading}
+        />
       </Space>
 
       <OsModal
