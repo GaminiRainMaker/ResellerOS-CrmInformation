@@ -187,7 +187,8 @@ const AddUser = () => {
     let obj = {
       ...getformData,
       id: userData?.id,
-      instance_url: getformData?.login_url,
+      login_url: getformData?.login_url,
+      instance_url: getformData?.instance_url,
       salesforce_org_name: orgName?.label,
     };
 

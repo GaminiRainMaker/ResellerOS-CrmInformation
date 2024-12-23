@@ -217,15 +217,7 @@ const FormulaMain: React.FC = () => {
             />
           </Col>
         </Row>
-
-        <Row
-          style={{
-            background: 'white',
-            padding: '24px',
-            borderRadius: '12px',
-            overflow: 'auto',
-          }}
-        >
+        
           <OsTable
             columns={FormulaColumn}
             dataSource={formulaData || []}
@@ -233,7 +225,6 @@ const FormulaMain: React.FC = () => {
             locale={locale}
             loading={loadingContract}
           />
-        </Row>
       </Space>
 
       <OsModal
