@@ -365,6 +365,7 @@ const AddUser = () => {
         open={showAddUserModal}
         onCancel={() => {
           setShowAddUserModal((p) => !p);
+          setUserData('');
         }}
         onOk={handleSaveClick}
         primaryButtonText="Save"
@@ -386,6 +387,7 @@ const AddUser = () => {
         onCancel={() => {
           setShowAddSingleUserModal((p) => !p);
           form.resetFields();
+          setUserData('');
         }}
         onOk={form.submit}
         primaryButtonText="Save"
@@ -409,6 +411,7 @@ const AddUser = () => {
         placement="right"
         onClose={() => {
           setOpen(false);
+          setUserData('');
           form.resetFields();
         }}
         open={open}
