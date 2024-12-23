@@ -725,7 +725,7 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
           borderRadius: '10px',
           display: 'flex',
           justifyContent: 'center',
-
+          cursor: 'pointer',
           // border: '1px solid #2364AA',
         }}
       >
@@ -734,6 +734,7 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
           onClick={() => {
             setOpenMappedModal(true);
           }}
+          cursor="pointer"
         >
           Add Mapped Options
         </Typography>
@@ -934,6 +935,7 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
                           borderRadius: '10px',
                           display: 'flex',
                           justifyContent: 'center',
+                          cursor: 'pointer',
 
                           // border: '1px solid #2364AA',
                         }}
@@ -943,6 +945,7 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
                           onClick={() => {
                             setOpenMappedModal(true);
                           }}
+                          cursor="pointer"
                         >
                           Add Mapped Options
                         </Typography>

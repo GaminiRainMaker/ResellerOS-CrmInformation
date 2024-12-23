@@ -110,6 +110,7 @@ const AddMappedOptionsForFormBuilder: FC<any> = ({
                     borderRadius: '10px',
                     display: 'flex',
                     justifyContent: 'center',
+                    cursor: 'pointer',
 
                     // border: '1px solid #2364AA',
                   }}
@@ -117,6 +118,7 @@ const AddMappedOptionsForFormBuilder: FC<any> = ({
                 >
                   <Typography
                     name="Body 3/Medium"
+                    cursor="pointer"
                     onClick={() => {
                       if (items?.values_option) {
                         if (dependedAdd) {

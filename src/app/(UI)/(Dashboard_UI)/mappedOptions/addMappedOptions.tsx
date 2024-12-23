@@ -7,9 +7,9 @@ import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useAppDispatch} from '../../../../../redux/hook';
-import {Input} from 'antd';
+import {Input, notification} from 'antd';
 import {ArrowsPointingOutIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {insertMappedOptions} from '../../../../../redux/actions/mappedOptions';
 
@@ -49,9 +49,9 @@ const AddMappedOptions: React.FC<any> = ({
     setOptionsData(optionItems);
   };
 
-  console.log('optionsDataoptionsData', optionsData);
-
   const addNewRowToOptions = () => {
+    setShowError(false);
+
     let newArr: any = optionsData?.length > 0 ? [...optionsData] : [];
     newArr?.push('');
     setOptionsData(newArr);
@@ -72,12 +72,28 @@ const AddMappedOptions: React.FC<any> = ({
     });
     setOptionsData(updatedArr);
   };
+
+  // useEffect(() => {
+  //   let findError = optionsData?.find((it: string) => it === '');
+  //   if (!findError && nameOfOption) {
+  //     setShowError(false);
+  //   }
+  // }, [optionsData, nameOfOption]);
   const addNewOptionData = async () => {
     if (!nameOfOption) {
       setShowError(true);
       return;
     }
 
+    let findError = optionsData?.findIndex((it: string) => it === '');
+    if (findError > -1) {
+      setShowError(true);
+      notification?.open({
+        message: 'Please enter values for the options!',
+        type: 'error',
+      });
+      return;
+    }
     let newObj = {
       name: nameOfOption,
       values_option: JSON?.stringify(optionsData),
@@ -86,6 +102,8 @@ const AddMappedOptions: React.FC<any> = ({
     setNameOfOption('');
     setOptionsData([]);
     getllMappedOption();
+    setShowError(false);
+
     setAddNewOptionModal(false);
   };
 
@@ -128,11 +146,10 @@ const AddMappedOptions: React.FC<any> = ({
                 placeholder="Enter Text"
                 value={nameOfOption}
                 onChange={(e: any) => {
-                  setShowError(false);
                   setNameOfOption(e?.target?.value);
                 }}
               />
-              {showError && (
+              {showError && !nameOfOption && (
                 <div style={{color: 'red'}}>This Field is required!</div>
               )}
             </Col>
@@ -176,6 +193,12 @@ const AddMappedOptions: React.FC<any> = ({
                         key={indexOp}
                         // defaultValue={itemOption}
                         type="text"
+                        style={{
+                          border:
+                            showError && itemOption === ''
+                              ? '1px solid red'
+                              : '',
+                        }}
                         value={itemOption}
                         onChange={(e: any) => {
                           changeValueOfOption(indexOp, e?.target?.value);
@@ -191,6 +214,9 @@ const AddMappedOptions: React.FC<any> = ({
                         width={35}
                         key={indexOp}
                       />
+                      {/* {showError && itemOption === '' && (
+                      <div style={{color: 'red'}}>Please enter the value!</div>
+                    )} */}
                     </Col>
                   </Row>
                 ))}

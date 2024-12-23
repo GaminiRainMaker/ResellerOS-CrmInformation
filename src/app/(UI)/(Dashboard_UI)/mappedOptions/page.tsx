@@ -5,7 +5,7 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {Form} from 'antd';
+import {Form, notification} from 'antd';
 import {useRouter} from 'next/navigation';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {PencilSquareIcon, TrashIcon} from '@heroicons/react/24/outline';
@@ -124,6 +124,15 @@ const MappedOptions = () => {
       return;
     }
 
+    let findError = optionsData?.findIndex((it: string) => it === '');
+    if (findError > -1) {
+      setShowError(true);
+      notification?.open({
+        message:"Please enter values for the options!",
+        type:'error'
+      })
+      return;
+    }
     let newObj = {
       name: nameOfOption,
       values_option: JSON?.stringify(optionsData),
@@ -149,7 +158,7 @@ const MappedOptions = () => {
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-              Quote Mappings
+              Mapped Options
             </Typography>
           </Col>
           <Col>
