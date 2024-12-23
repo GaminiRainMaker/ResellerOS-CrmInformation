@@ -263,7 +263,7 @@ export let processScript = (finalObj: any) => {
                   ) {
                     if (!dataObj.userFill) {
                       newScript.push(
-                        `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 10000 });`,
+                        `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 30000 });`,
                       );
                       let data = `
   
