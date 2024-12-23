@@ -262,6 +262,9 @@ export let processScript = (finalObj: any) => {
                     dataObj.type
                   ) {
                     if (!dataObj.userFill) {
+                      newScript.push(
+                        `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 10000 });`,
+                      );
                       let data = `
   
                       ${
@@ -292,9 +295,6 @@ export let processScript = (finalObj: any) => {
                         }
                       } else {
                         if (label.includes('Country') && waitingScriptValue) {
-                          newScript.push(
-                            `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 10000 });`,
-                          );
                           newScript.push(data);
                           newScript.push(waitingScriptValue);
                         } else {
