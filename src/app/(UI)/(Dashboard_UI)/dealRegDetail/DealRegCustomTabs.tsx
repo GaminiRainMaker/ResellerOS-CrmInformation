@@ -439,14 +439,33 @@ const DealRegCustomTabs = forwardRef<
           ); // Encrypt
           finalObj.unique_form_data = `${iv}:${data}`; // Replace with encrypted value
         }
-        responseForm();
+
+        const salesForceObj = {
+          id: activeKey,
+          rosdealregai__Status__c: responseFieldObject?.status,
+          ...(responseFieldObject?.expiration_date && {
+            rosdealregai__Expiration_Date__c: new Date(
+              responseFieldObject.expiration_date,
+            ).toLocaleDateString('en-CA'),
+          }),
+          ...(responseFieldObject?.submitted_date && {
+            rosdealregai__Submitted_Date__c: new Date(
+              responseFieldObject.submitted_date,
+            ).toLocaleDateString('en-CA'),
+          }),
+          rosdealregai__Partner_Deal_ID__c:
+            responseFieldObject?.partner_deal_id,
+          rosdealregai__Partner_Approval_ID__c:
+            responseFieldObject?.partner_approval_id,
+          baseURL: salesForceinstanceUrl,
+          token: salesForceToken,
+        };
+        if (salesForceObj) {
+          dispatch(updateSalesForceDealregById(salesForceObj));
+        }
         dispatch(updateSalesForceDealregById(finalObj));
       }
     }
-  };
-
-  const responseForm = () => {
-    console.log('Dataaaa');
   };
 
   useEffect(() => {
@@ -514,7 +533,6 @@ const DealRegCustomTabs = forwardRef<
                   form={form}
                   handleBlur={onFinish}
                   formData={formData}
-                  responseForm={responseForm}
                 />
               </div>
             ),
