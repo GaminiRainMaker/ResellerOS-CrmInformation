@@ -225,7 +225,7 @@ const EditorFile = () => {
     }
     setNanonetsLoading(true);
 
-    if (EditSalesLineItems === true) {
+    if (EditSalesLineItems === 'true') {
       // Work In Case of Edit Data As It Is
       let newdata = {
         token: salesForceToken,
@@ -286,10 +286,10 @@ const EditorFile = () => {
       file_type: 'ExportFileToTable',
     };
 
-    let pathTOGo = salesFOrceManual === true ? data : dataSingle;
+    let pathTOGo = salesFOrceManual === 'true' ? data : dataSingle;
     dispatch(getSalesForceFileData(pathTOGo))?.then(async (payload: any) => {
       if (!payload?.payload?.body) {
-        if (salesFOrceManual === false) {
+        if (salesFOrceManual === 'false') {
           notification?.open({
             message: 'Please close the modal!. All the files are updated',
             type: 'info',
@@ -1046,7 +1046,7 @@ const EditorFile = () => {
     let newArrFOrUpdation: any = [];
     let newArrForAddition: any = [];
 
-    if (EditSalesLineItems) {
+    if (EditSalesLineItems === 'true') {
       let newArrWithFileId: any = [];
       updateLineItemsValue?.map((itemss: any) => {
         let newObj = {
@@ -1235,7 +1235,7 @@ const EditorFile = () => {
     //   message: 'The Line Items are created! Please close the modal!',
     // });
 
-    if (salesFOrceManual === false) {
+    if (salesFOrceManual === 'false') {
       notification?.open({
         message: 'Please close the modal!. All the files are updated',
         type: 'info',
@@ -1559,7 +1559,7 @@ const EditorFile = () => {
         <Typography name="Body 1/Bold">{currentFIle?.file_name}</Typography>
       </Space>
 
-      {(ExistingQuoteItemss === 'true' || EditSalesLineItems === true) &&
+      {(ExistingQuoteItemss === 'true' || EditSalesLineItems === 'true') &&
       updateLineItemsValue?.length > 0 ? (
         <>
           <div
@@ -1643,7 +1643,7 @@ const EditorFile = () => {
       ) : (
         <>
           {(ExistingQuoteItemss !== 'true' ||
-            (salesForceinstanceUrl && EditSalesLineItems === false)) && (
+            (salesForceinstanceUrl && EditSalesLineItems === 'false')) && (
             <>
               {mergedValue && mergedValue?.length > 0 ? (
                 <>
@@ -1655,7 +1655,7 @@ const EditorFile = () => {
                     }}
                   >
                     {(ExistingQuoteItemss === 'false' ||
-                      EditSalesLineItems === false) && (
+                      EditSalesLineItems === 'false') && (
                       <Space
                         onClick={(e) => {
                           e?.preventDefault();
