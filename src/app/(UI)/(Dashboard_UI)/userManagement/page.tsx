@@ -135,19 +135,19 @@ const UserManagement = () => {
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
-    // {
-    //   title: (
-    //     <Typography name="Body 4/Medium" className="dragHandler">
-    //       Organization ID
-    //     </Typography>
-    //   ),
-    //   dataIndex: 'org_id',
-    //   key: 'org_id',
-    //   width: 173,
-    //   render: (text: string) => (
-    //     <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-    //   ),
-    // },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Organization ID
+        </Typography>
+      ),
+      dataIndex: 'org_id',
+      key: 'org_id',
+      width: 173,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">

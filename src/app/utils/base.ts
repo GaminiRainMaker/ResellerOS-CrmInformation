@@ -1552,7 +1552,9 @@ export const calculateTabBarPercentage = (
   const filteredObj2 = filterRequiredAndNonEmptyValues(commonFormData);
 
   const mergedObj = {...filteredObj1, ...filteredObj2};
-
+  if (Object.keys(mergedObj).length === 0) {
+    return 100;
+  }
   const filledValueLength = Object.keys(mergedObj).length;
   const fillupPercentage = (filledValueLength / totalCount?.length) * 100;
   return Math.round(fillupPercentage);
@@ -2229,4 +2231,11 @@ export const decryptFromSalesforce = function (
   );
 
   return decryptObj.toString(CryptoJS.enc.Utf8); // Return decrypted string
+};
+
+export const formatMailString = (input: string) => {
+  return input
+    .split('_') // Split the string by underscores
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize the first letter of each word
+    .join(' '); // Join the words with spaces
 };

@@ -77,6 +77,7 @@ const FormulaMain: React.FC = () => {
       title: 'Title',
       dataIndex: 'title',
       key: 'title',
+      width: '200px',
       render: (text: string) => <CustomTextCapitalization text={text} />,
     },
 
@@ -84,6 +85,8 @@ const FormulaMain: React.FC = () => {
       title: 'Description',
       dataIndex: 'description',
       key: 'description',
+      width: '200px',
+
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
@@ -101,12 +104,16 @@ const FormulaMain: React.FC = () => {
       title: 'Active',
       dataIndex: 'is_active',
       key: 'is_active',
+      width: '200px',
+
       render: (text: boolean) => <Checkbox disabled checked={text} />,
     },
     {
       title: 'OEM/Distributor',
       dataIndex: 'oem_id',
       key: 'oem_id',
+      width: '200px',
+
       render: (text: string, record: any, index: number) => (
         <Space size={18}>
           {record?.Oem
@@ -121,6 +128,8 @@ const FormulaMain: React.FC = () => {
       title: 'Action',
       dataIndex: 'actions',
       key: 'actions',
+      width: '200px',
+
       render: (text: string, record: any, index: number) => (
         <Space size={18}>
           <PencilSquareIcon
@@ -217,14 +226,14 @@ const FormulaMain: React.FC = () => {
             />
           </Col>
         </Row>
-        
-          <OsTable
-            columns={FormulaColumn}
-            dataSource={formulaData || []}
-            scroll
-            locale={locale}
-            loading={loadingContract}
-          />
+
+        <OsTable
+          columns={FormulaColumn}
+          dataSource={formulaData || []}
+          scroll
+          locale={locale}
+          loading={loadingContract}
+        />
       </Space>
 
       <OsModal

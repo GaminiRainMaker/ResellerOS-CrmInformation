@@ -366,6 +366,7 @@ const AddUser = () => {
         onCancel={() => {
           setUserData('');
           setShowAddUserModal((p) => !p);
+          setUserData('');
         }}
         onOk={handleSaveClick}
         primaryButtonText="Save"
