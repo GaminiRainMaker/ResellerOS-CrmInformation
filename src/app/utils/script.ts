@@ -342,61 +342,73 @@ export let processScript = (finalObj: any) => {
                           newScript.push(data);
                         }
                       }
-                    } else {
-                      if (dataObj.userFill && !pushedLabels.includes(label)) {
+                    }
+                    const userFillFields = finalObj.data.filter(
+                      (objItem: any) => objItem.userFill,
+                    );
+                    for (let i = 0; i < userFillFields.length; i++) {
+                      let newDataObj = userFillFields[i];
+                      const newLabel = Object.keys(newDataObj).find(
+                        (key) => !excludedKeys.includes(key.toLowerCase()),
+                      );
+                      if (
+                        newDataObj.userFill &&
+                        newLabel &&
+                        !pushedLabels.includes(newLabel)
+                      ) {
                         let data = `
-                          if(!labelFilled.includes('${label}')){
-    
-                          await page.evaluate(() => {
-          const messageDiv = document.createElement('div');
-          messageDiv.id = 'customMessage';
-          messageDiv.style.position = 'fixed';
-          messageDiv.style.top = '20px';
-          messageDiv.style.left = '20px';
-          messageDiv.style.padding = '10px';
-          messageDiv.style.backgroundColor = 'white';
-          messageDiv.style.width = '250px';
-          messageDiv.style.height = '120px';
-          messageDiv.style.border = '1px solid #000';
-          messageDiv.style.borderRadius = '12px';
-          messageDiv.style.zIndex = '1000';
-          messageDiv.innerHTML =  \`
-          <h3>${label}</h3>
-          <p>Please Enter ${label}.</p>
-          <button id="close-popup">Close</button>
-        \`;
-          document.body.appendChild(messageDiv);
-          document.getElementById('close-popup').addEventListener('click', () => {
-            messageDiv.style.display = 'none';
+                            if(!labelFilled.includes('${newLabel}')){
+      
+                            await page.evaluate(() => {
+            const messageDiv = document.createElement('div');
+            messageDiv.id = 'customMessage';
+            messageDiv.style.position = 'fixed';
+            messageDiv.style.top = '20px';
+            messageDiv.style.left = '20px';
+            messageDiv.style.padding = '10px';
+            messageDiv.style.backgroundColor = 'white';
+            messageDiv.style.width = '250px';
+            messageDiv.style.height = '120px';
+            messageDiv.style.border = '1px solid #000';
+            messageDiv.style.borderRadius = '12px';
+            messageDiv.style.zIndex = '1000';
+            messageDiv.innerHTML =  \`
+            <h3>${newLabel}</h3>
+            <p>Please Enter ${newLabel}.</p>
+            <button id="close-popup-${newLabel}">Close</button>
+          \`;
+            document.body.appendChild(messageDiv);
+            document.getElementById("close-popup-${newLabel}").addEventListener('click', () => {
+              messageDiv.style.display = 'none';
+            });
           });
-        });
-    }
-                        
-                         await page.waitForFunction(async() => {
-        const label = Array.from(document.querySelectorAll('label')).find(label => label.innerText.includes('${label}'));
-            const button = document.querySelector('button[role="combobox"][aria-label="${label}"]');
-    
-    
-    
-        if (label) {
-          const control = label.control || label.querySelector('input, select'); 
-          
-          if (control) {
-            return control.value && control.value.trim() !== '';  
+      }
+                          
+                           await page.waitForFunction(async() => {
+          const label = Array.from(document.querySelectorAll('label')).find(label => label.innerText.includes('${newLabel}'));
+              const button = document.querySelector('button[role="combobox"][aria-label="${newLabel}"]');
+      
+      
+      
+          if (label) {
+            const control = label.control || label.querySelector('input, select'); 
+            
+            if (control) {
+              return control.value && control.value.trim() !== '';  
+            }
           }
-        }
-          if(button){
-    
-    return button.getAttribute('data-value') || null;
-          }
-        return false;
-      }, { timeout: 900000 }); 
-                          `;
+            if(button){
+      
+      return button.getAttribute('data-value') || null;
+            }
+          return false;
+        }, { timeout: 900000 }); 
+                            `;
                         newScript.push(data);
                       }
                     }
-                    formValues.push(label);
                   }
+                  formValues.push(label);
                 }
               }
             } else {
