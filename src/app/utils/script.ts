@@ -275,16 +275,19 @@ export let processScript = (finalObj: any) => {
                     !pushedLabels.includes(label)
                   ) {
                     if (!dataObj.userFill) {
-                      if (!currentLine.includes('combobox')) {
-                        newScript.push(
-                          `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 50000 });`,
-                        );
-                      } else {
+                      if (currentLine.includes('combobox')) {
                         newScript.push(currentLine);
                         newScript.push(
                           `await page.getByRole('option', { name: '${value}' }).locator('span').nth(1).click();`,
                         );
                         continue;
+                      } else if (
+                        !label.includes('State') &&
+                        !label.includes('Country')
+                      ) {
+                        newScript.push(
+                          `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 50000 });`,
+                        );
                       }
 
                       let data = `
@@ -304,9 +307,11 @@ export let processScript = (finalObj: any) => {
                         labelFilled.push('${label}');
                         `;
                       pushedLabels.push(label);
-                      const stateIndex = newScript.findIndex((item) =>
-                        item.includes('State'),
+                      const stateIndex = newScript.findIndex(
+                        (item) =>
+                          item.includes('State') && !item.includes('States'),
                       );
+
                       if (label.includes('State') && stateIndex === -1) {
                         const countryIndex = newScript.findIndex((item) =>
                           item.includes('Country'),
@@ -318,9 +323,15 @@ export let processScript = (finalObj: any) => {
                         }
                       } else {
                         if (label.includes('Country') && waitingScriptValue) {
+                          newScript.push(
+                            `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 50000 });`,
+                          );
                           newScript.push(data);
                           newScript.push(waitingScriptValue);
                         } else {
+                          newScript.push(
+                            `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 50000 });`,
+                          );
                           newScript.push(data);
                         }
                       }
