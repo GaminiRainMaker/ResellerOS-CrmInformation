@@ -10,7 +10,7 @@ import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
 import Typography from '@/app/components/common/typography';
 import {PlusIcon} from '@heroicons/react/24/outline';
-import {MenuProps} from 'antd';
+import {MenuProps, notification} from 'antd';
 import Form from 'antd/es/form';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useRef, useState} from 'react';
@@ -199,6 +199,10 @@ const DealRegDetail = () => {
     // Call the child's onFinish function using the ref
     if (dealRegTabsRef.current) {
       dealRegTabsRef.current.onFinish();
+      notification?.open({
+        message: 'The form has been saved successfully.',
+        type: 'info',
+      });
     }
   };
 

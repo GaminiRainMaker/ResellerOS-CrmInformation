@@ -1552,7 +1552,9 @@ export const calculateTabBarPercentage = (
   const filteredObj2 = filterRequiredAndNonEmptyValues(commonFormData);
 
   const mergedObj = {...filteredObj1, ...filteredObj2};
-
+  if (Object.keys(mergedObj).length === 0) {
+    return 100;
+  }
   const filledValueLength = Object.keys(mergedObj).length;
   const fillupPercentage = (filledValueLength / totalCount?.length) * 100;
   return Math.round(fillupPercentage);
