@@ -5,7 +5,7 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import Typography from '@/app/components/common/typography';
-import {mergeArrayWithObject} from '@/app/utils/base';
+import {formatMailString, mergeArrayWithObject} from '@/app/utils/base';
 import {Form} from 'antd';
 import {useEffect, useState} from 'react';
 
@@ -20,6 +20,7 @@ import {
 } from '../../../../../redux/actions/assignPartnerProgram';
 import {
   getAllPartnerandProgramApprovedDataSalesForce,
+  getAllPartnerandProgramApprovedForOrganizationSalesForce,
   getAllPartnerandProgramFilterDataForOrganizationOnly,
 } from '../../../../../redux/actions/partner';
 import {upadteToRequestPartnerandprogramfromAmin} from '../../../../../redux/actions/partnerProgram';
@@ -65,7 +66,6 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
   const [partnerVal, setPartnerVal] = useState<number>();
   const [activetab, setActiveTab] = useState<string>('1');
   const [getTheData, setGetTheData] = useState<boolean>(false);
-  const [filteredPartners, setFilteredPartners] = useState<any>();
   const [rows, setRows] = useState<{partner: string; program: string}[]>([]);
   const [openAddPartnerModal, setOpenAddPartnerModal] =
     useState<boolean>(false);
@@ -73,6 +73,8 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
     useState<boolean>(false);
   const [dealerRelationShip, setDealerRelationShip] = useState<boolean>(false);
   const [requestLoading, setRequestLoading] = useState<boolean>(false);
+  const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
+
   const [query, setQuery] = useState<{
     partner: string | null;
     program: string | null;
@@ -111,7 +113,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
               dispatch(
                 sendPartnerRequestEmail({
                   organizationName: salesForceOrganizationName,
-                  programName: data?.program_name,
+                  programName: formatMailString(data?.program_name),
                 }),
               );
             }
@@ -133,7 +135,17 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
         valueUpdate: false,
         dealer_relationship: isCanvas ? dealerRelationShip : false,
       };
-      dispatch(upadteToRequestPartnerandprogramfromAmin(data));
+      dispatch(upadteToRequestPartnerandprogramfromAmin(data)).then((d) => {
+        if (d?.payload && isCanvas) {
+          dispatch(
+            sendPartnerRequestEmail({
+              organizationName: salesForceOrganizationName,
+              programName: formatMailString(partnerProgramNewId?.name),
+              isNew: true,
+            }),
+          );
+        }
+      });
       setPartnerNewId({});
       setPartnerProgramNewId({});
       setShowModal(false);
@@ -143,55 +155,68 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (!salesForceOrganizationId) return;
+    if (isCanvas && salesForceOrganizationId) {
+      dispatch(
+        getAllPartnerandProgramApprovedForOrganizationSalesForce({
+          org_id: salesForceOrganizationId,
+        }),
+      )?.then((payload: any) => {
+        setAllFilterPartnerData(payload?.payload?.AllPartnerForSelf);
+      });
+    }
+  }, [isCanvas]);
 
-      try {
-        // Fetch partner data
-        const partnerData = await dispatch(
-          getAllPartnerandProgramApprovedDataSalesForce(''),
-        );
-        const partners: any = Array.isArray(partnerData?.payload)
-          ? partnerData.payload
-          : []; // Ensure it's an array
+  //Comment previos salesforce according option
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     if (!salesForceOrganizationId) return;
 
-        if (partners.length > 0) {
-          // Fetch organization data
-          const orgData = await dispatch(
-            getAllOrgApprovedDataSalesForce({
-              organization: salesForceOrganizationId,
-            }),
-          );
-          const orgs: any = Array.isArray(orgData?.payload)
-            ? orgData.payload
-            : []; // Ensure it's an array
+  //     try {
+  //       // Fetch partner data
+  //       const partnerData = await dispatch(
+  //         getAllPartnerandProgramApprovedDataSalesForce(''),
+  //       );
+  //       const partners: any = Array.isArray(partnerData?.payload)
+  //         ? partnerData.payload
+  //         : []; // Ensure it's an array
 
-          // Filter PartnerPrograms
-          const updatedPartnerData = partners
-            .map((partner: any) => ({
-              ...partner,
-              PartnerPrograms: partner.PartnerPrograms.filter(
-                (program: any) =>
-                  !orgs.some(
-                    (org: any) => org.partner_program_id === program.id,
-                  ),
-              ),
-            }))
-            .filter((partner: any) => partner.PartnerPrograms.length > 0); // Remove partners with empty PartnerPrograms
-          setFilteredPartners(updatedPartnerData);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+  //       if (partners.length > 0) {
+  //         // Fetch organization data
+  //         const orgData = await dispatch(
+  //           getAllOrgApprovedDataSalesForce({
+  //             organization: salesForceOrganizationId,
+  //           }),
+  //         );
+  //         const orgs: any = Array.isArray(orgData?.payload)
+  //           ? orgData.payload
+  //           : []; // Ensure it's an array
 
-    fetchData();
-  }, [
-    salesForceOrganizationId,
-    dispatch,
-    getAllPartnerandProgramApprovedDataSalesForce,
-    getAllOrgApprovedDataSalesForce,
-  ]);
+  //         // Filter PartnerPrograms
+  //         const updatedPartnerData = partners
+  //           .map((partner: any) => ({
+  //             ...partner,
+  //             PartnerPrograms: partner.PartnerPrograms.filter(
+  //               (program: any) =>
+  //                 !orgs.some(
+  //                   (org: any) => org.partner_program_id === program.id,
+  //                 ),
+  //             ),
+  //           }))
+  //           .filter((partner: any) => partner.PartnerPrograms.length > 0); // Remove partners with empty PartnerPrograms
+  //         setFilteredPartners(updatedPartnerData);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [
+  //   salesForceOrganizationId,
+  //   dispatch,
+  //   getAllPartnerandProgramApprovedDataSalesForce,
+  //   getAllOrgApprovedDataSalesForce,
+  // ]);
 
   useEffect(() => {
     setGetTheData(true);
@@ -377,7 +402,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
                               placeholder="Select Partner"
                               allowClear
                             >
-                              {filteredPartners?.map((partner: any) => (
+                              {allPartnerFilterData?.map((partner: any) => (
                                 <Option key={partner?.id} value={partner?.id}>
                                   <CustomTextCapitalization
                                     text={partner?.partner}
@@ -399,8 +424,8 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
                               disabled={!row.partner} // Disable Program select if no Partner is selected
                             >
                               {row?.partner &&
-                                filteredPartners
-                                  .find(
+                                allPartnerFilterData
+                                  ?.find(
                                     (partner: any) =>
                                       partner.id === row.partner,
                                   )

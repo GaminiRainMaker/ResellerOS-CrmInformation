@@ -240,20 +240,14 @@ export let processScript = (finalObj: any) => {
             loginStepImplemented = true;
           } else {
             if (
-              currentLine.includes('fill') &&
+              (currentLine.includes('fill') ||
+                currentLine.includes('option')) &&
               !currentLine.includes('pause()') &&
               formValues.length <= formPages &&
               !currentLine.includes('Verification')
             ) {
               for (let dataObj of finalObj.data) {
                 for (let [label, value] of Object.entries(dataObj)) {
-                  // let newLabel = label?.includes(' ')
-                  //   ? label.split(' ')[0]
-                  //   : label;
-                  // let usedLabel = newLabel?.includes('/')
-                  //   ? newLabel.split('/')[0]
-                  //   : newLabel;
-
                   if (
                     label !== 'userFill' &&
                     value &&
@@ -263,9 +257,12 @@ export let processScript = (finalObj: any) => {
                     !pushedLabels.includes(label)
                   ) {
                     if (!dataObj.userFill) {
-                      newScript.push(
-                        `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 50000 });`,
-                      );
+                      if (!currentLine.includes('combobox')) {
+                        newScript.push(
+                          `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 50000 });`,
+                        );
+                      }
+
                       let data = `
   
                       ${
@@ -278,7 +275,9 @@ export let processScript = (finalObj: any) => {
                             ? dataObj.name
                               ? `await page.locator('select[name="${dataObj.name}"]').selectOption('${value}');`
                               : `await page.getByLabel('${label}').selectOption('${value}');`
-                            : `await page.getByText('${value}').click();`
+                            : currentLine.includes('combobox')
+                              ? `await page.getByRole('option', { name: '${value}' }).locator('span').nth(1).click();`
+                              : `await page.getByText('${value}').click();`
                       }
                       labelFilled.push('${label}');
                       `;
@@ -362,6 +361,8 @@ export let processScript = (finalObj: any) => {
               }
             } else {
               if (
+                !currentLine.includes('combobox') &&
+                !currentLine.includes('option') &&
                 !currentLine.includes('pause()') &&
                 !currentLine.includes('fill') &&
                 !currentLine.includes('selectOption') &&
