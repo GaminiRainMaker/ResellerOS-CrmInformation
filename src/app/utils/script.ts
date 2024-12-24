@@ -274,10 +274,9 @@ export let processScript = (finalObj: any) => {
                             ? dataObj.name
                               ? `await page.locator('select[name="${dataObj.name}"]').selectOption('${value}');`
                               : `await page.getByLabel('${label}').selectOption('${value}');`
-                              ?currentLine.includes("combobox")?
-                              `await page.getByRole('option', { name: '${value}' }).locator('span').nth(1).click();`
-                              :`await page.getByText('${value}').click();`
-                            : `await page.getByText('${value}').click();`
+                            : currentLine.includes('combobox')
+                              ? `await page.getByRole('option', { name: '${value}' }).locator('span').nth(1).click();`
+                              : `await page.getByText('${value}').click();`
                       }
                       labelFilled.push('${label}');
                       `;
