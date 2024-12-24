@@ -2230,3 +2230,10 @@ export const decryptFromSalesforce = function (
 
   return decryptObj.toString(CryptoJS.enc.Utf8); // Return decrypted string
 };
+
+export const formatMailString = (input: string) => {
+  return input
+    .split('_') // Split the string by underscores
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize the first letter of each word
+    .join(' '); // Join the words with spaces
+};

@@ -5,7 +5,7 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import Typography from '@/app/components/common/typography';
-import {mergeArrayWithObject} from '@/app/utils/base';
+import {formatMailString, mergeArrayWithObject} from '@/app/utils/base';
 import {Form} from 'antd';
 import {useEffect, useState} from 'react';
 
@@ -133,7 +133,17 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
         valueUpdate: false,
         dealer_relationship: isCanvas ? dealerRelationShip : false,
       };
-      dispatch(upadteToRequestPartnerandprogramfromAmin(data));
+      dispatch(upadteToRequestPartnerandprogramfromAmin(data)).then((d) => {
+        if (d?.payload && isCanvas) {
+          dispatch(
+            sendPartnerRequestEmail({
+              organizationName: salesForceOrganizationName,
+              programName: formatMailString(partnerProgramNewId?.name),
+              isNew: true
+            }),
+          );
+        }
+      });
       setPartnerNewId({});
       setPartnerProgramNewId({});
       setShowModal(false);
