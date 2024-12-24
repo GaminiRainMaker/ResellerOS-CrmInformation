@@ -240,7 +240,8 @@ export let processScript = (finalObj: any) => {
             loginStepImplemented = true;
           } else {
             if (
-              currentLine.includes('fill') &&
+              (currentLine.includes('fill') ||
+                currentLine.includes('option')) &&
               !currentLine.includes('pause()') &&
               formValues.length <= formPages &&
               !currentLine.includes('Verification')
@@ -360,6 +361,8 @@ export let processScript = (finalObj: any) => {
               }
             } else {
               if (
+                !currentLine.includes('combobox') &&
+                !currentLine.includes('option') &&
                 !currentLine.includes('pause()') &&
                 !currentLine.includes('fill') &&
                 !currentLine.includes('selectOption') &&
