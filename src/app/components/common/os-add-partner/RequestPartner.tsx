@@ -111,7 +111,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
               dispatch(
                 sendPartnerRequestEmail({
                   organizationName: salesForceOrganizationName,
-                  programName: data?.program_name,
+                  programName: formatMailString(data?.program_name),
                 }),
               );
             }
