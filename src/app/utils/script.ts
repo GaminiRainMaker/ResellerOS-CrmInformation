@@ -257,11 +257,15 @@ export let processScript = (finalObj: any) => {
 
                 scriptName = nameMatch[1];
               }
+
+              const labelMatch = currentLine.match(/getByLabel\('(.*?)'\)/);
+              const lineLabel = labelMatch ? labelMatch[1] : null;
               const dataObj = finalObj.data.find((objItem: any) =>
                 Object.keys(objItem).find(
                   (key) =>
                     !excludedKeys.includes(key.toLowerCase()) &&
                     (currentLine.includes(key) ||
+                      (lineLabel && key.includes(lineLabel)) ||
                       (scriptName && key.trim().includes(scriptName.trim()))),
                 ),
               );
@@ -301,7 +305,10 @@ export let processScript = (finalObj: any) => {
                                 dataObj.type.toLowerCase().includes('drop')
                               ? dataObj.name
                                 ? `await page.locator('select[name="${dataObj.name}"]').selectOption('${value}');`
-                                : `await page.getByLabel('${label}').selectOption('${value}');`
+                                : currentLine.includes('selectOption')
+                                  ? `${currentLine.split('.selectOption')[0]}
+                                      .selectOption('${value}')`
+                                  : `await page.getByLabel('${label}').selectOption('${value}');`
                               : `await page.getByText('${value}').click();`
                         }
                         labelFilled.push('${label}');
