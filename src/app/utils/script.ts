@@ -366,7 +366,10 @@ export let processScript = (finalObj: any) => {
                 !currentLine.includes('press') &&
                 !(lastline.includes('Code') && currentLine.includes('Verify'))
               ) {
-                if (currentLine.includes('link')) {
+                const loginLinkIndex = newScript.findIndex((item) =>
+                  item.includes(`const loginLink =`),
+                );
+                if (currentLine.includes('link') && loginLinkIndex == -1) {
                   newScript.push(
                     `const loginLink = ${currentLine.replace('.click()', '')};
 
