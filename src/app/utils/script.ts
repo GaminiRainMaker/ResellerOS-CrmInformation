@@ -242,7 +242,8 @@ export let processScript = (finalObj: any) => {
           } else {
             if (
               (currentLine.includes('fill') ||
-                currentLine.includes('combobox')) &&
+                currentLine.includes('combobox') ||
+                currentLine.includes('selectOption')) &&
               !currentLine.includes('pause()') &&
               !currentLine.includes('option') &&
               formValues.length <= formPages &&
