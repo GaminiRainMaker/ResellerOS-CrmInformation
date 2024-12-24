@@ -1912,18 +1912,24 @@ export const convertToSnakeCase = (input: string): string => {
   // Safely check for a match and get the punctuation (if any)
   const endingPunctuation = input?.match(punctuation)?.[0] ?? '';
 
+  // Check if there's a space before the punctuation (if it's a question mark)
+  const spaceBeforePunctuation =
+    endingPunctuation === '?' && input.endsWith(' ?');
+
   // Remove punctuation from the input temporarily
   const cleanInput = input?.replace(punctuation, '');
 
-  // Convert to snake case and add an underscore only if punctuation is absent
+  // Convert to snake case
   const result = cleanInput
     ?.replace(/([a-z0-9])([A-Z])/g, '$1_$2') // Handle camelCase and PascalCase
     ?.replace(/\s+/g, '_') // Replace spaces with underscores
-    // ?.replace(/[^a-zA-Z0-9_]/g, '') // Remove non-alphanumeric characters except underscores
     ?.replace(/_+/g, '_') // Remove multiple consecutive underscores
     ?.replace(/^_+|_+$/g, ''); // Remove leading and trailing underscores
 
-  return endingPunctuation ? result + endingPunctuation : result;
+  // Add punctuation back, with a space if necessary
+  return endingPunctuation
+    ? result + (spaceBeforePunctuation ? ' ' : '') + endingPunctuation
+    : result;
 };
 
 export const radioValidator = (data: any, value: any, form: FormInstance) => {

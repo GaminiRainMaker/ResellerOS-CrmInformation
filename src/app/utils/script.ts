@@ -51,13 +51,14 @@ export let processFormData = (template: any, finalUniqueData: any) => {
       let name = matchingTemplateItem
         ? matchingTemplateItem.customFieldName
         : '';
-
-      transformedData.push({
-        [newKey]: finalUniqueData[key],
-        userFill: userFill,
-        type: type, // Adding the "name" field from the template
-        name: name,
-      });
+      if (finalUniqueData[key] && (type || name)) {
+        transformedData.push({
+          [newKey]: finalUniqueData[key],
+          userFill: userFill,
+          type: type, // Adding the "name" field from the template
+          name: name,
+        });
+      }
     }
   }
 
@@ -241,19 +242,35 @@ export let processScript = (finalObj: any) => {
           } else {
             if (
               (currentLine.includes('fill') ||
-                currentLine.includes('option')) &&
+                currentLine.includes('combobox')) &&
               !currentLine.includes('pause()') &&
+              !currentLine.includes('option') &&
               formValues.length <= formPages &&
               !currentLine.includes('Verification')
             ) {
-              for (let dataObj of finalObj.data) {
+              const excludedKeys = ['name', 'userFill', 'type'];
+              let scriptName = '';
+
+              if (currentLine.includes('combobox')) {
+                const nameMatch = currentLine.match(/name: '(.*?)'/);
+
+                scriptName = nameMatch[1];
+              }
+              const dataObj = finalObj.data.find((objItem: any) =>
+                Object.keys(objItem).find(
+                  (key) =>
+                    !excludedKeys.includes(key.toLowerCase()) &&
+                    (currentLine.includes(key) ||
+                      (scriptName && key.trim().includes(scriptName.trim()))),
+                ),
+              );
+              if (dataObj) {
                 for (let [label, value] of Object.entries(dataObj)) {
                   if (
                     label !== 'userFill' &&
                     value &&
                     label !== 'name' &&
                     label !== 'type' &&
-                    dataObj.type &&
                     !pushedLabels.includes(label)
                   ) {
                     if (!dataObj.userFill) {
@@ -261,26 +278,30 @@ export let processScript = (finalObj: any) => {
                         newScript.push(
                           `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 50000 });`,
                         );
+                      } else {
+                        newScript.push(currentLine);
+                        newScript.push(
+                          `await page.getByRole('option', { name: '${value}' }).locator('span').nth(1).click();`,
+                        );
+                        continue;
                       }
 
                       let data = `
-  
-                      ${
-                        dataObj.type.toLowerCase().includes('text') ||
-                        dataObj.type.toLowerCase().includes('email') ||
-                        dataObj.type.toLowerCase().includes('date')
-                          ? `await page.getByLabel('${label}').fill('${value}');`
-                          : dataObj.type.toLowerCase().includes('select') ||
-                              dataObj.type.toLowerCase().includes('drop')
-                            ? dataObj.name
-                              ? `await page.locator('select[name="${dataObj.name}"]').selectOption('${value}');`
-                              : `await page.getByLabel('${label}').selectOption('${value}');`
-                            : currentLine.includes('combobox')
-                              ? `await page.getByRole('option', { name: '${value}' }).locator('span').nth(1).click();`
+    
+                        ${
+                          dataObj.type.toLowerCase().includes('text') ||
+                          dataObj.type.toLowerCase().includes('email') ||
+                          dataObj.type.toLowerCase().includes('date')
+                            ? `await page.getByLabel('${label}').fill('${value}');`
+                            : dataObj.type.toLowerCase().includes('select') ||
+                                dataObj.type.toLowerCase().includes('drop')
+                              ? dataObj.name
+                                ? `await page.locator('select[name="${dataObj.name}"]').selectOption('${value}');`
+                                : `await page.getByLabel('${label}').selectOption('${value}');`
                               : `await page.getByText('${value}').click();`
-                      }
-                      labelFilled.push('${label}');
-                      `;
+                        }
+                        labelFilled.push('${label}');
+                        `;
                       pushedLabels.push(label);
                       const stateIndex = newScript.findIndex((item) =>
                         item.includes('State'),
@@ -305,53 +326,53 @@ export let processScript = (finalObj: any) => {
                     } else {
                       if (dataObj.userFill && !pushedLabels.includes(label)) {
                         let data = `
-                        if(!labelFilled.includes('${label}')){
-  
-                        await page.evaluate(() => {
-        const messageDiv = document.createElement('div');
-        messageDiv.id = 'customMessage';
-        messageDiv.style.position = 'fixed';
-        messageDiv.style.top = '20px';
-        messageDiv.style.left = '20px';
-        messageDiv.style.padding = '10px';
-        messageDiv.style.backgroundColor = 'white';
-        messageDiv.style.width = '250px';
-        messageDiv.style.height = '120px';
-        messageDiv.style.border = '1px solid #000';
-        messageDiv.style.borderRadius = '12px';
-        messageDiv.style.zIndex = '1000';
-        messageDiv.innerHTML =  \`
-        <h3>${label}</h3>
-        <p>Please Enter ${label}.</p>
-        <button id="close-popup">Close</button>
-      \`;
-        document.body.appendChild(messageDiv);
-        document.getElementById('close-popup').addEventListener('click', () => {
-          messageDiv.style.display = 'none';
+                          if(!labelFilled.includes('${label}')){
+    
+                          await page.evaluate(() => {
+          const messageDiv = document.createElement('div');
+          messageDiv.id = 'customMessage';
+          messageDiv.style.position = 'fixed';
+          messageDiv.style.top = '20px';
+          messageDiv.style.left = '20px';
+          messageDiv.style.padding = '10px';
+          messageDiv.style.backgroundColor = 'white';
+          messageDiv.style.width = '250px';
+          messageDiv.style.height = '120px';
+          messageDiv.style.border = '1px solid #000';
+          messageDiv.style.borderRadius = '12px';
+          messageDiv.style.zIndex = '1000';
+          messageDiv.innerHTML =  \`
+          <h3>${label}</h3>
+          <p>Please Enter ${label}.</p>
+          <button id="close-popup">Close</button>
+        \`;
+          document.body.appendChild(messageDiv);
+          document.getElementById('close-popup').addEventListener('click', () => {
+            messageDiv.style.display = 'none';
+          });
         });
-      });
-  }
-                      
-                       await page.waitForFunction(async() => {
-      const label = Array.from(document.querySelectorAll('label')).find(label => label.innerText.includes('${label}'));
-          const button = document.querySelector('button[role="combobox"][aria-label="${label}"]');
-  
-  
-  
-      if (label) {
-        const control = label.control || label.querySelector('input, select'); 
-        
-        if (control) {
-          return control.value && control.value.trim() !== '';  
+    }
+                        
+                         await page.waitForFunction(async() => {
+        const label = Array.from(document.querySelectorAll('label')).find(label => label.innerText.includes('${label}'));
+            const button = document.querySelector('button[role="combobox"][aria-label="${label}"]');
+    
+    
+    
+        if (label) {
+          const control = label.control || label.querySelector('input, select'); 
+          
+          if (control) {
+            return control.value && control.value.trim() !== '';  
+          }
         }
-      }
-        if(button){
-  
-  return button.getAttribute('data-value') || null;
-        }
-      return false;
-    }, { timeout: 900000 }); 
-                        `;
+          if(button){
+    
+    return button.getAttribute('data-value') || null;
+          }
+        return false;
+      }, { timeout: 900000 }); 
+                          `;
                         newScript.push(data);
                       }
                     }
