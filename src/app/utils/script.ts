@@ -247,13 +247,6 @@ export let processScript = (finalObj: any) => {
             ) {
               for (let dataObj of finalObj.data) {
                 for (let [label, value] of Object.entries(dataObj)) {
-                  // let newLabel = label?.includes(' ')
-                  //   ? label.split(' ')[0]
-                  //   : label;
-                  // let usedLabel = newLabel?.includes('/')
-                  //   ? newLabel.split('/')[0]
-                  //   : newLabel;
-
                   if (
                     label !== 'userFill' &&
                     value &&
@@ -263,9 +256,12 @@ export let processScript = (finalObj: any) => {
                     !pushedLabels.includes(label)
                   ) {
                     if (!dataObj.userFill) {
-                      newScript.push(
-                        `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 50000 });`,
-                      );
+                      if (!currentLine.includes('combobox')) {
+                        newScript.push(
+                          `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 50000 });`,
+                        );
+                      }
+
                       let data = `
   
                       ${
@@ -278,6 +274,9 @@ export let processScript = (finalObj: any) => {
                             ? dataObj.name
                               ? `await page.locator('select[name="${dataObj.name}"]').selectOption('${value}');`
                               : `await page.getByLabel('${label}').selectOption('${value}');`
+                              ?currentLine.includes("combobox")?
+                              `await page.getByRole('option', { name: '${value}' }).locator('span').nth(1).click();`
+                              :`await page.getByText('${value}').click();`
                             : `await page.getByText('${value}').click();`
                       }
                       labelFilled.push('${label}');
