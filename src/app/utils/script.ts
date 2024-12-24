@@ -259,7 +259,8 @@ export let processScript = (finalObj: any) => {
                     value &&
                     label !== 'name' &&
                     label !== 'type' &&
-                    dataObj.type
+                    dataObj.type &&
+                    !pushedLabels.includes(label)
                   ) {
                     if (!dataObj.userFill) {
                       newScript.push(
