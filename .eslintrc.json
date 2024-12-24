@@ -45,12 +45,6 @@
           ]
         }
       ],
-      // "import/no-anonymous-default-export": [
-      //   2,
-      //   {
-      //     "allowArrowFunction": true
-      //   }
-      // ],
       "import/no-extraneous-dependencies": [
         "error",
         {

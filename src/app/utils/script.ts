@@ -114,7 +114,7 @@ export let processScript = (finalObj: any) => {
   let formValues = [];
   let iswaitingScript = false;
   let waitingScriptValue = '';
-
+  const pushedLabels: string[] = [];
   for (let i = 0; i < parsedScript.length; i++) {
     const lastline = newScript[newScript.length - 1];
 
@@ -259,9 +259,13 @@ export let processScript = (finalObj: any) => {
                     value &&
                     label !== 'name' &&
                     label !== 'type' &&
-                    dataObj.type
+                    dataObj.type &&
+                    !pushedLabels.includes(label)
                   ) {
                     if (!dataObj.userFill) {
+                      newScript.push(
+                        `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 50000 });`,
+                      );
                       let data = `
   
                       ${
@@ -278,6 +282,7 @@ export let processScript = (finalObj: any) => {
                       }
                       labelFilled.push('${label}');
                       `;
+                      pushedLabels.push(label);
                       const stateIndex = newScript.findIndex((item) =>
                         item.includes('State'),
                       );
@@ -292,9 +297,6 @@ export let processScript = (finalObj: any) => {
                         }
                       } else {
                         if (label.includes('Country') && waitingScriptValue) {
-                          newScript.push(
-                            `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 10000 });`,
-                          );
                           newScript.push(data);
                           newScript.push(waitingScriptValue);
                         } else {
@@ -302,7 +304,7 @@ export let processScript = (finalObj: any) => {
                         }
                       }
                     } else {
-                      if (dataObj.userFill) {
+                      if (dataObj.userFill && !pushedLabels.includes(label)) {
                         let data = `
                         if(!labelFilled.includes('${label}')){
   
@@ -366,7 +368,10 @@ export let processScript = (finalObj: any) => {
                 !currentLine.includes('press') &&
                 !(lastline.includes('Code') && currentLine.includes('Verify'))
               ) {
-                if (currentLine.includes('link')) {
+                const loginLinkIndex = newScript.findIndex((item) =>
+                  item.includes(`const loginLink =`),
+                );
+                if (currentLine.includes('link') && loginLinkIndex == -1) {
                   newScript.push(
                     `const loginLink = ${currentLine.replace('.click()', '')};
 
