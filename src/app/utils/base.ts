@@ -287,7 +287,11 @@ export const formbuildernewObject = (newItem: string) => {
       dependentFiledArr: [],
       dependentFiled: false,
     };
-  } else if (newItem === 'Text' || newItem === 'Email') {
+  } else if (
+    newItem === 'Text' ||
+    newItem === 'Textarea' ||
+    newItem === 'Email'
+  ) {
     newObjAddedon = {
       name: newItem,
       customFieldName: '',

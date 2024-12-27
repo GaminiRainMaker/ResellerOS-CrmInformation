@@ -11,7 +11,7 @@ import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {convertToSnakeCase} from '@/app/utils/base';
 import {MailOutlined} from '@ant-design/icons';
-import {Checkbox, Form, Radio, TimePicker} from 'antd';
+import {Checkbox, Form, Input, Radio, TimePicker} from 'antd';
 import {Option} from 'antd/es/mentions';
 import dayjs from 'dayjs';
 import React, {useEffect, useState} from 'react';
@@ -26,7 +26,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
   formData,
 }) => {
   const {isCanvas} = useAppSelector((state) => state.canvas);
-
+  const {TextArea} = Input;
   const [globalStateForDependentFields, setGlobalStateForDependentFields] =
     useState<any>();
 
@@ -126,6 +126,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
         case 'Time':
         case 'Date':
         case 'Currency':
+        case 'Textarea':
           return (
             <>
               {itemCon?.name === 'Time' ? (
@@ -140,6 +141,8 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                   type={itemCon?.type}
                   {...commonProps}
                 />
+              ) : itemCon?.name === 'Textarea' ? (
+                <TextArea {...commonProps} />
               ) : itemCon?.name === 'Date' ? (
                 <>
                   <CommonDatePicker
@@ -365,9 +368,21 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
       activeKey +
       (required ? '_required' : '') +
       (userfill ? '_userfill' : '');
-
     let originalDependentValueSaved =
       formData?.unique_form_data?.[convertedToCheckDependentValue?.toString()];
+    let findTheShowDependentForMulti = itemCon?.options?.findIndex(
+      (idd: any) =>
+        (selectedOption && idd === selectedOption) ||
+        idd === originalValueSaved,
+    );
+    let findTheShowDependentForCheck = itemCon?.labelOptions?.findIndex(
+      (idd: any) =>
+        idd === (selectedOption || finTheFiledActive?.valueOut?.[0]),
+    );
+    let dependentArrValOrMulti: any =
+      itemCon?.dependentFiledArr?.[findTheShowDependentForMulti];
+    let dependentArrValOrCheck: any =
+      itemCon?.dependentFiledArr?.[findTheShowDependentForCheck];
     return (
       <>
         {/* Render Main Field Based on the Type */}
@@ -422,8 +437,143 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
         ) : (
           <></>
         )}
+        {dependentArrValOrMulti?.map((itemsDeCh: any, indexDepCh: number) => {
+          console.log('');
+          return (
+            <SelectFormItem
+              name={
+                'u_' +
+                convertToSnakeCase(itemsDeCh?.label) +
+                '_' +
+                itemIndex +
+                activeKey +
+                (required ? '_required' : '') +
+                (userfill ? '_userfill' : '')
+              }
+              label={
+                <Typography name="Body 4/Medium">{itemsDeCh?.label}</Typography>
+              }
+              required={itemsDeCh?.required}
+              rules={[
+                itemsDeCh?.label === 'Email'
+                  ? {
+                      type: 'email',
+                      message: 'Please enter a valid email address!',
+                    }
+                  : {},
+                {
+                  required: itemsDeCh?.required,
+                  message: 'This field is required!',
+                },
+              ]}
+            >
+              {itemsDeCh?.type === 'text' ? (
+                <>
+                  <OsInput
+                    style={{width: '100%'}}
+                    placeholder={`Select ${itemsDeCh?.label}`}
+                    allowClear
+                    value={dependentVal || originalDependentValueSaved}
+                    onChange={(e) => {
+                      form.setFieldValue(
+                        convertedToCheckDependentValue,
+                        e?.target?.value,
+                      );
+                      setDependentVal(e?.target?.value);
+                    }}
+                    {...commonProps}
+                  />
+                </>
+              ) : (
+                <CommonSelect
+                  style={{width: '100%'}}
+                  placeholder={`Select ${itemsDeCh?.label}`}
+                  allowClear
+                  options={itemsDeCh?.options.map((opt: any) => ({
+                    label: opt,
+                    value: opt,
+                  }))}
+                  value={dependentVal || originalDependentValueSaved}
+                  onChange={(value) => {
+                    form.setFieldValue(convertedToCheckDependentValue, value);
+                    setDependentVal(value);
+                  }}
+                  {...commonProps}
+                />
+              )}
+            </SelectFormItem>
+          );
+        })}
+        {dependentArrValOrCheck?.map((itemsDeCh: any, indexDepCh: number) => {
+          console.log('');
+          return (
+            <SelectFormItem
+              name={
+                'u_' +
+                convertToSnakeCase(itemsDeCh?.label) +
+                '_' +
+                itemIndex +
+                activeKey +
+                (required ? '_required' : '') +
+                (userfill ? '_userfill' : '')
+              }
+              label={
+                <Typography name="Body 4/Medium">{itemsDeCh?.label}</Typography>
+              }
+              required={itemsDeCh?.required}
+              rules={[
+                itemsDeCh?.label === 'Email'
+                  ? {
+                      type: 'email',
+                      message: 'Please enter a valid email address!',
+                    }
+                  : {},
+                {
+                  required: itemsDeCh?.required,
+                  message: 'This field is required!',
+                },
+              ]}
+            >
+              {itemsDeCh?.type === 'text' ? (
+                <>
+                  <OsInput
+                    style={{width: '100%'}}
+                    placeholder={`Select ${itemsDeCh?.label}`}
+                    allowClear
+                    value={dependentVal || originalDependentValueSaved}
+                    onChange={(e) => {
+                      form.setFieldValue(
+                        convertedToCheckDependentValue,
+                        e?.target?.value,
+                      );
+                      setDependentVal(e?.target?.value);
+                    }}
+                    {...commonProps}
+                  />
+                </>
+              ) : (
+                <CommonSelect
+                  style={{width: '100%'}}
+                  placeholder={`Select ${itemsDeCh?.label}`}
+                  allowClear
+                  options={itemsDeCh?.options.map((opt: any) => ({
+                    label: opt,
+                    value: opt,
+                  }))}
+                  value={dependentVal || originalDependentValueSaved}
+                  onChange={(value) => {
+                    form.setFieldValue(convertedToCheckDependentValue, value);
+                    setDependentVal(value);
+                  }}
+                  {...commonProps}
+                />
+              )}
+            </SelectFormItem>
+          );
+        })}
         {/* Conditionally Render Dependent Field Based on Selection */}
-        {(selectedOption || radioSelection || originalValueSaved) && (
+        {/* {(selectedOption || radioSelection || originalValueSaved) && (
+
           <SelectFormItem
             name={
               'u_' +
@@ -488,7 +638,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
               />
             )}
           </SelectFormItem>
-        )}
+        )} */}
       </>
     );
   };
