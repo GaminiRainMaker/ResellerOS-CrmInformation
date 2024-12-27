@@ -116,6 +116,46 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
 
     setCartItems(newTempArr);
   };
+
+  const deleteTheInnerChildFiled = (indexInn: number, type: string) => {
+    let tempvalue: any = [...cartItems];
+    if (type === 'main') {
+      const newTempArr = cartItems.map((sectItem: any, sectioIndex: number) => {
+        if (sectioIndex === sectionIndex) {
+          return {
+            ...sectItem,
+            content: sectItem.content.map((contItem: any, contInde: number) => {
+              if (contInde === contentIndex) {
+                return {
+                  ...contItem,
+                  ['dependentFiledArr']: contItem?.['dependentFiledArr']?.map(
+                    (itemsInner: any, indexInner: number) => {
+                      if (indexInner === activeIndexForDependent) {
+                        return [];
+                      }
+                      return itemsInner;
+                    },
+                  ),
+                };
+              }
+              return contItem;
+            }),
+          };
+        }
+        return sectItem;
+      });
+
+      setCartItems(newTempArr);
+    } else {
+      tempvalue?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.[
+        'dependentFiledArr'
+      ]?.[activeIndexForDependent || 0]?.splice(indexInn, 1);
+
+      setActiveIndexForDendentInnerChild(0);
+      setCartItems(tempvalue);
+    }
+  };
+
   const deleteOptionForDependent = (
     indexofoption: number,
     nameOptions: any,
@@ -814,13 +854,26 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
           <>
             <Space size={20} direction="vertical" style={{width: '100%'}}>
               {' '}
-              <Typography name="Body 1/Regular">
-                Select The Following:
-              </Typography>
+              <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                {' '}
+                <Typography name="Body 1/Regular">
+                  Select The Following:
+                </Typography>
+                <OsButton
+                  text="Save & Close"
+                  buttontype="PRIMARY"
+                  clickHandler={() => {
+                    setOpenModalForDependentFiled(false);
+                  }}
+                />
+              </div>
               <Row gutter={[20, 20]}>
                 {cartItems?.[sectionIndex || 0]?.content?.[
                   contentIndex || 0
                 ]?.dependentFiledArr?.map((items: any, index: number) => {
+                  if (items?.length === 0) {
+                    return;
+                  }
                   return (
                     <Col
                       style={{
@@ -845,316 +898,293 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
                         style={{
                           paddingTop: '18px',
                           paddingBottom: '18px',
+                          display: 'flex',
+                          justifyContent: 'space-between',
                         }}
                       >
                         {' '}
                         <Typography name="Body 3/Regular">
                           {items?.[0]?.id}
                         </Typography>
+                        <TrashIcon
+                          color="#EB445A"
+                          width={25}
+                          onClick={() =>
+                            deleteTheInnerChildFiled(index, 'main')
+                          }
+                          style={{marginRight: '10px'}}
+                        />
                       </div>
-                      {items?.map((itemInner: any, indexInn: number) => {
-                        return (
-                          <Col
-                            onClick={() => {
-                              setActiveIndexForDendent(index);
+                      {items &&
+                        items?.length > 0 &&
+                        items?.map((itemInner: any, indexInn: number) => {
+                          return (
+                            <Col
+                              onClick={() => {
+                                setActiveIndexForDendent(index);
 
-                              setActiveIndexForDendentInnerChild(indexInn);
-                            }}
-                            // span={11}
-                            style={{
-                              borderStyle: 'solid',
-                              border:
-                                activeIndexForDependent === index &&
-                                activeIndexForDependentInnerChild === indexInn
-                                  ? '2px solid #3DA5D9'
-                                  : '1px solid grey',
-                              padding: '10px',
-                              marginTop: '5px',
-                            }}
-                          >
-                            {' '}
-                            <div
-                              style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
+                                setActiveIndexForDendentInnerChild(indexInn);
                               }}
-                            >
-                              <OsInput
-                                style={{width: '70%'}}
-                                disabled={
+                              // span={11}
+                              style={{
+                                borderStyle: 'solid',
+                                border:
+                                  activeIndexForDependent === index &&
                                   activeIndexForDependentInnerChild === indexInn
-                                    ? false
-                                    : true
-                                }
-                                value={itemInner?.label}
-                                onChange={(e) => {
-                                  changeFieldValuesForDependent(
-                                    e?.target?.value,
-                                    'label',
-                                  );
-                                }}
-                              />{' '}
-                              {items?.length - 1 === indexInn && (
-                                <div style={{marginTop: '0px'}}>
-                                  {' '}
-                                  <OsButton
-                                    text="+"
-                                    buttontype="PRIMARY"
-                                    clickHandler={() => {
-                                      if (itemInner?.type === 'text') {
-                                        addnewOptionTochildDependent(
-                                          'text',
-                                          items?.[0]?.id,
-                                        );
-                                      } else {
-                                        addnewOptionTochildDependent(
-                                          'tag',
-                                          items?.[0]?.id,
-                                        );
-                                      }
-                                    }}
-                                  />
-                                </div>
-                              )}
-                            </div>
-                            <div
-                              style={{
-                                marginTop: '10px',
-                                display: 'flex',
-                                justifyContent: 'space-between',
+                                    ? '2px solid #3DA5D9'
+                                    : '1px solid grey',
+                                padding: '10px',
+                                marginTop: '5px',
                               }}
                             >
-                              <Typography name="Body 3/Regular">
-                                Required{' '}
-                                <Switch
-                                  disabled={
-                                    activeIndexForDependentInnerChild ===
-                                    indexInn
-                                      ? false
-                                      : true
-                                  }
-                                  value={itemInner?.required}
-                                  onChange={(e) => {
-                                    changeFieldValuesForDependent(
-                                      e,
-                                      'required',
-                                    );
-                                  }}
-                                />
-                              </Typography>{' '}
-                              <Typography name="Body 3/Regular">
-                                User Fill{' '}
-                                <Switch
-                                  disabled={
-                                    activeIndexForDependentInnerChild ===
-                                    indexInn
-                                      ? false
-                                      : true
-                                  }
-                                  value={itemInner?.user_fill}
-                                  onChange={(e) => {
-                                    changeFieldValuesForDependent(
-                                      e,
-                                      'user_fill',
-                                    );
-                                  }}
-                                />
-                              </Typography>
-                            </div>
-                            <div
-                              style={{
-                                marginTop: '10px',
-                              }}
-                            >
-                              {' '}
-                              <Typography name="Body 4/Medium">
-                                Field Type
-                              </Typography>
-                              <CommonSelect
-                                disabled={
-                                  activeIndexForDependentInnerChild === indexInn
-                                    ? false
-                                    : true
-                                }
-                                onChange={(e: any) => {
-                                  changeFieldValuesForDependent(e, 'type');
-                                }}
-                                defaultValue={
-                                  cartItems?.[sectionIndex || 0]?.content?.[
-                                    contentIndex || 0
-                                  ]?.type
-                                }
-                                value={itemInner?.type}
-                                style={{width: '100%'}}
-                                options={[
-                                  {label: 'Mutiple', value: 'multiple'},
-                                  {label: 'Single', value: 'tag'},
-                                  {label: 'Input', value: 'text'},
-                                ]}
-                              />
-                            </div>
-                            {itemInner?.type !== 'text' && (
-                              <Row
+                              <div
                                 style={{
-                                  background: '#E9F0F7',
-                                  padding: '15px',
-                                  width: '90%',
-                                  margin: '10px',
-                                  borderRadius: '10px',
+                                  marginTop: '0px',
                                   display: 'flex',
-                                  justifyContent: 'center',
-                                  cursor: 'pointer',
-
-                                  // border: '1px solid #2364AA',
+                                  justifyContent: 'end',
+                                  marginBottom: '5px',
                                 }}
                               >
-                                <Typography
-                                  name="Body 3/Medium"
-                                  onClick={() => {
-                                    setOpenMappedModal(true);
+                                {' '}
+                                <TrashIcon
+                                  color="#EB445A"
+                                  width={25}
+                                  onClick={() =>
+                                    deleteTheInnerChildFiled(indexInn, 'child')
+                                  }
+                                />
+                              </div>{' '}
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  justifyContent: 'space-between',
+                                }}
+                              >
+                                <OsInput
+                                  style={{width: '70%'}}
+                                  disabled={
+                                    activeIndexForDependentInnerChild ===
+                                    indexInn
+                                      ? false
+                                      : true
+                                  }
+                                  value={itemInner?.label}
+                                  onChange={(e) => {
+                                    changeFieldValuesForDependent(
+                                      e?.target?.value,
+                                      'label',
+                                    );
                                   }}
-                                  cursor="pointer"
-                                >
-                                  Add Mapped Options
-                                </Typography>
-                              </Row>
-                            )}
-                            {itemInner?.type !== 'text' && (
-                              <Row
+                                />{' '}
+                                {items?.length - 1 === indexInn && (
+                                  <div style={{marginTop: '0px'}}>
+                                    {' '}
+                                    <OsButton
+                                      text="+"
+                                      buttontype="PRIMARY"
+                                      clickHandler={() => {
+                                        if (itemInner?.type === 'text') {
+                                          addnewOptionTochildDependent(
+                                            'text',
+                                            items?.[0]?.id,
+                                          );
+                                        } else {
+                                          addnewOptionTochildDependent(
+                                            'tag',
+                                            items?.[0]?.id,
+                                          );
+                                        }
+                                      }}
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                              <div
                                 style={{
                                   marginTop: '10px',
-                                  width: '100%',
+                                  display: 'flex',
+                                  justifyContent: 'space-between',
                                 }}
                               >
-                                <OsCollapseStyleForAdmin
-                                  key={index}
-                                  defaultActiveKey={['1']}
-                                  style={{
-                                    width: '100%',
-                                    padding: '10px',
-                                    height:
-                                      cartItems?.[sectionIndex || 0]?.content?.[
-                                        contentIndex || 0
-                                      ]?.dependentFiledArr?.[index || 0]?.[
-                                        indexInn || 0
-                                      ]?.options?.length > 2
-                                        ? '300px'
-                                        : '100px',
-                                    overflow: 'auto',
-                                  }}
-                                  bordered={false}
-                                  // expandIcon={true}
-                                >
-                                  <Panel
-                                    header={
-                                      <Typography
-                                        name="Body 2/Medium"
-                                        color={token?.colorInfo}
-                                      >
-                                        Edit Choices
-                                      </Typography>
+                                <Typography name="Body 3/Regular">
+                                  Required{' '}
+                                  <Switch
+                                    disabled={
+                                      activeIndexForDependentInnerChild ===
+                                      indexInn
+                                        ? false
+                                        : true
                                     }
-                                    key="1"
-                                    showArrow={false}
+                                    value={itemInner?.required}
+                                    onChange={(e) => {
+                                      changeFieldValuesForDependent(
+                                        e,
+                                        'required',
+                                      );
+                                    }}
+                                  />
+                                </Typography>{' '}
+                                <Typography name="Body 3/Regular">
+                                  User Fill{' '}
+                                  <Switch
+                                    disabled={
+                                      activeIndexForDependentInnerChild ===
+                                      indexInn
+                                        ? false
+                                        : true
+                                    }
+                                    value={itemInner?.user_fill}
+                                    onChange={(e) => {
+                                      changeFieldValuesForDependent(
+                                        e,
+                                        'user_fill',
+                                      );
+                                    }}
+                                  />
+                                </Typography>
+                              </div>
+                              <div
+                                style={{
+                                  marginTop: '10px',
+                                }}
+                              >
+                                {' '}
+                                <Typography name="Body 4/Medium">
+                                  Field Type
+                                </Typography>
+                                <CommonSelect
+                                  disabled={
+                                    activeIndexForDependentInnerChild ===
+                                    indexInn
+                                      ? false
+                                      : true
+                                  }
+                                  onChange={(e: any) => {
+                                    changeFieldValuesForDependent(e, 'type');
+                                  }}
+                                  defaultValue={
+                                    cartItems?.[sectionIndex || 0]?.content?.[
+                                      contentIndex || 0
+                                    ]?.type
+                                  }
+                                  value={itemInner?.type}
+                                  style={{width: '100%'}}
+                                  options={[
+                                    {label: 'Mutiple', value: 'multiple'},
+                                    {label: 'Single', value: 'tag'},
+                                    {label: 'Input', value: 'text'},
+                                  ]}
+                                />
+                              </div>
+                              {itemInner?.type !== 'text' && (
+                                <Row
+                                  style={{
+                                    background: '#E9F0F7',
+                                    padding: '15px',
+                                    width: '90%',
+                                    margin: '10px',
+                                    borderRadius: '10px',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    cursor: 'pointer',
+
+                                    // border: '1px solid #2364AA',
+                                  }}
+                                >
+                                  <Typography
+                                    name="Body 3/Medium"
+                                    onClick={() => {
+                                      setOpenMappedModal(true);
+                                    }}
+                                    cursor="pointer"
                                   >
-                                    {' '}
-                                    <>
-                                      {' '}
-                                      <div
-                                        style={{
-                                          marginBottom: '10px',
-                                          width: '100%',
-                                        }}
-                                      >
+                                    Add Mapped Options
+                                  </Typography>
+                                </Row>
+                              )}
+                              {itemInner?.type !== 'text' && (
+                                <Row
+                                  style={{
+                                    marginTop: '10px',
+                                    width: '100%',
+                                  }}
+                                >
+                                  <OsCollapseStyleForAdmin
+                                    key={index}
+                                    defaultActiveKey={['1']}
+                                    style={{
+                                      width: '100%',
+                                      padding: '10px',
+                                      height:
+                                        cartItems?.[sectionIndex || 0]
+                                          ?.content?.[contentIndex || 0]
+                                          ?.dependentFiledArr?.[index || 0]?.[
+                                          indexInn || 0
+                                        ]?.options?.length > 2
+                                          ? '300px'
+                                          : '100px',
+                                      overflow: 'auto',
+                                    }}
+                                    bordered={false}
+                                    // expandIcon={true}
+                                  >
+                                    <Panel
+                                      header={
                                         <Typography
-                                          name="Body 3/Bold"
-                                          color={token?.colorLink}
-                                          onClick={() =>
-                                            addnewOptionsForDependent(
-                                              'dependentFiledArr',
-                                            )
-                                          }
-                                          cursor="pointer"
-                                          style={{cursor: 'pointer'}}
+                                          name="Body 2/Medium"
+                                          color={token?.colorInfo}
                                         >
-                                          + Add New
+                                          Edit Choices
                                         </Typography>
-                                      </div>{' '}
-                                      <Form layout="vertical">
-                                        <div>
-                                          {cartItems?.[
-                                            sectionIndex || 0
-                                          ]?.content?.[
-                                            contentIndex || 0
-                                          ]?.dependentFiledArr?.[index || 0]?.[
-                                            indexInn || 0
-                                          ]?.options?.map(
-                                            (
-                                              itemOption: any,
-                                              indexOp: number,
-                                            ) => (
-                                              <Row
-                                                style={{
-                                                  width: '100%',
-                                                }}
-                                              >
-                                                <Col
-                                                  key={indexOp}
-                                                  className="list-item"
-                                                  draggable
-                                                  onDragStart={(e) => {
-                                                    dragItem.current = indexOp;
-                                                  }}
-                                                  onDragEnter={(e) => {
-                                                    dragOverItem.current =
-                                                      indexOp;
-                                                  }}
-                                                  onDragEnd={() =>
-                                                    handleSortForDependent(
-                                                      'dependentFiledArr',
-                                                    )
-                                                  }
-                                                  onDragOver={(e) =>
-                                                    e.preventDefault()
-                                                  }
+                                      }
+                                      key="1"
+                                      showArrow={false}
+                                    >
+                                      {' '}
+                                      <>
+                                        {' '}
+                                        <div
+                                          style={{
+                                            marginBottom: '10px',
+                                            width: '100%',
+                                          }}
+                                        >
+                                          <Typography
+                                            name="Body 3/Bold"
+                                            color={token?.colorLink}
+                                            onClick={() =>
+                                              addnewOptionsForDependent(
+                                                'dependentFiledArr',
+                                              )
+                                            }
+                                            cursor="pointer"
+                                            style={{cursor: 'pointer'}}
+                                          >
+                                            + Add New
+                                          </Typography>
+                                        </div>{' '}
+                                        <Form layout="vertical">
+                                          <div>
+                                            {cartItems?.[
+                                              sectionIndex || 0
+                                            ]?.content?.[
+                                              contentIndex || 0
+                                            ]?.dependentFiledArr?.[
+                                              index || 0
+                                            ]?.[indexInn || 0]?.options?.map(
+                                              (
+                                                itemOption: any,
+                                                indexOp: number,
+                                              ) => (
+                                                <Row
                                                   style={{
-                                                    display: 'flex',
-                                                    justifyContent:
-                                                      'space-between',
                                                     width: '100%',
-                                                    marginBottom: '25px',
-                                                    gap: '12px',
                                                   }}
                                                 >
-                                                  {/* <div>{itemOption}</div> */}
-                                                  <OsInput
-                                                    key={indexOp}
-                                                    // defaultValue={itemOption}
-                                                    value={itemOption}
-                                                    onChange={(e: any) => {
-                                                      changeFiellOptionsValueForDependent(
-                                                        e?.target?.value,
-                                                        indexOp,
-                                                        'dependentFiledArr',
-                                                      );
-                                                    }}
-                                                  />{' '}
-                                                  <TrashIcon
-                                                    color="#EB445A"
-                                                    width={35}
-                                                    onClick={() =>
-                                                      deleteOptionForDependent(
-                                                        indexOp,
-                                                        'dependentFiledArr',
-                                                      )
-                                                    }
-                                                  />{' '}
-                                                  <ArrowsPointingOutIcon
-                                                    color="#2364AA"
-                                                    width={35}
+                                                  <Col
                                                     key={indexOp}
                                                     className="list-item"
-                                                    // draggable
+                                                    draggable
                                                     onDragStart={(e) => {
                                                       dragItem.current =
                                                         indexOp;
@@ -1171,21 +1201,75 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
                                                     onDragOver={(e) =>
                                                       e.preventDefault()
                                                     }
-                                                  />
-                                                </Col>
-                                              </Row>
-                                            ),
-                                          )}
-                                        </div>
-                                      </Form>
-                                    </>
-                                  </Panel>
-                                </OsCollapseStyleForAdmin>
-                              </Row>
-                            )}
-                          </Col>
-                        );
-                      })}
+                                                    style={{
+                                                      display: 'flex',
+                                                      justifyContent:
+                                                        'space-between',
+                                                      width: '100%',
+                                                      marginBottom: '25px',
+                                                      gap: '12px',
+                                                    }}
+                                                  >
+                                                    {/* <div>{itemOption}</div> */}
+                                                    <OsInput
+                                                      key={indexOp}
+                                                      // defaultValue={itemOption}
+                                                      value={itemOption}
+                                                      onChange={(e: any) => {
+                                                        changeFiellOptionsValueForDependent(
+                                                          e?.target?.value,
+                                                          indexOp,
+                                                          'dependentFiledArr',
+                                                        );
+                                                      }}
+                                                    />{' '}
+                                                    <TrashIcon
+                                                      color="#EB445A"
+                                                      width={35}
+                                                      onClick={() =>
+                                                        deleteOptionForDependent(
+                                                          indexOp,
+                                                          'dependentFiledArr',
+                                                        )
+                                                      }
+                                                    />{' '}
+                                                    <ArrowsPointingOutIcon
+                                                      color="#2364AA"
+                                                      width={35}
+                                                      key={indexOp}
+                                                      className="list-item"
+                                                      // draggable
+                                                      onDragStart={(e) => {
+                                                        dragItem.current =
+                                                          indexOp;
+                                                      }}
+                                                      onDragEnter={(e) => {
+                                                        dragOverItem.current =
+                                                          indexOp;
+                                                      }}
+                                                      onDragEnd={() =>
+                                                        handleSortForDependent(
+                                                          'dependentFiledArr',
+                                                        )
+                                                      }
+                                                      onDragOver={(e) =>
+                                                        e.preventDefault()
+                                                      }
+                                                    />
+                                                  </Col>
+                                                </Row>
+                                              ),
+                                            )}
+                                          </div>
+                                        </Form>
+                                      </>
+                                    </Panel>
+                                  </OsCollapseStyleForAdmin>
+                                </Row>
+                              )}
+                            </Col>
+                          );
+                        })}
                     </Col>
                   );
                 })}
