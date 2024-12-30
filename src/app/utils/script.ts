@@ -3,7 +3,6 @@ export let processFormData = (template: any, finalUniqueData: any) => {
   let labelsWithUserFillTrue = template
     .filter((item: any) => item.user_fill === true)
     .map((item: any) => item.label);
-
   // Transform data keys
   let transformedData = [];
 
@@ -249,7 +248,7 @@ export let processScript = (finalObj: any) => {
               formValues.length <= formPages &&
               !currentLine.includes('Verification')
             ) {
-              const excludedKeys = ['name', 'userFill', 'type'];
+              const excludedKeys = ['name', 'userfill', 'type'];
               let lineLabel = '';
               let lineName = '';
 
@@ -287,17 +286,25 @@ export let processScript = (finalObj: any) => {
                 ),
               );
               const dataObj =
-                dataObjAll && dataObjAll.length > 1
-                  ? dataObjAll.find((objItem: any) =>
+                lineLabel || lineName
+                  ? dataObjAll && dataObjAll.length > 1
+                    ? dataObjAll.find((objItem: any) =>
+                        Object.keys(objItem).find(
+                          (key) =>
+                            !excludedKeys.includes(key.toLowerCase()) &&
+                            key === lineLabel,
+                        ),
+                      )
+                    : dataObjAll.length == 1
+                      ? dataObjAll[0]
+                      : null
+                  : finalObj.data.find((objItem: any) =>
                       Object.keys(objItem).find(
                         (key) =>
                           !excludedKeys.includes(key.toLowerCase()) &&
-                          key === lineLabel,
+                          !formValues.includes(key),
                       ),
-                    )
-                  : dataObjAll.length == 1
-                    ? dataObjAll[0]
-                    : null;
+                    );
               if (dataObj) {
                 for (let [label, value] of Object.entries(dataObj)) {
                   if (
@@ -313,7 +320,9 @@ export let processScript = (finalObj: any) => {
                         newScript.push(
                           `await page.getByRole('option', { name: '${value}' }).locator('span').nth(1).click();`,
                         );
-                        continue;
+                        formValues.push(label);
+
+                        break;
                       } else if (
                         !label.includes('State') &&
                         !label.includes('Country') &&
@@ -362,13 +371,15 @@ export let processScript = (finalObj: any) => {
                           newScript.push(data);
                         }
                       } else {
-                        if (!dataObj.name) {
+                        if (label.includes('Country')) {
                           newScript.push(
                             `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 50000 });`,
                           );
                         }
+                        if (!currentLine.includes('combobox')) {
+                          newScript.push(data);
+                        }
 
-                        newScript.push(data);
                         if (label.includes('Country') && waitingScriptValue) {
                           newScript.push(waitingScriptValue);
                         }
