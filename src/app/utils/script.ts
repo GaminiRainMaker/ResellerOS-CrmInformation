@@ -5,7 +5,6 @@ export let processFormData = (template: any, finalUniqueData: any) => {
     .map((item: any) => item.label);
   // Transform data keys
   let transformedData = [];
-
   for (let key in finalUniqueData) {
     if (finalUniqueData.hasOwnProperty(key)) {
       // Step 1: Remove 'u_'
@@ -21,6 +20,8 @@ export let processFormData = (template: any, finalUniqueData: any) => {
       let matchingTemplateItem = template.find((item: any) => {
         return item.label === newKey;
       });
+      let finalItem: any;
+
       // If no exact match is found, check for items with dependentFiled === true
       if (!matchingTemplateItem) {
         template.some((item: any) => {
@@ -29,16 +30,23 @@ export let processFormData = (template: any, finalUniqueData: any) => {
             const dependentMatch = item.dependentFiledArr.find(
               (dependentItem: any) => {
                 // Normalize dependentItem.label if it exists
-                const dependentLabel = dependentItem.label
-                  ? dependentItem.label
-                  : '';
-                return dependentLabel === newKey;
+
+                finalItem =
+                  dependentItem?.label === newKey
+                    ? dependentItem
+                    : dependentItem.find((item: any) => item.label === newKey);
+
+                return dependentItem?.label
+                  ? dependentItem?.label === newKey
+                  : dependentItem.length > 0
+                    ? dependentItem.find((item: any) => item.label === newKey)
+                    : '';
               },
             );
 
             // If a dependent match is found, set matchingTemplateItem to the dependent item
-            if (dependentMatch) {
-              matchingTemplateItem = dependentMatch;
+            if (finalItem) {
+              matchingTemplateItem = finalItem;
               return true; // Break out of the some loop if a match is found
             }
           }
@@ -46,7 +54,11 @@ export let processFormData = (template: any, finalUniqueData: any) => {
         });
       }
       // Retrieve the name if a match was found; otherwise, default to an empty string
-      let type = matchingTemplateItem ? matchingTemplateItem.name : '';
+      let type = matchingTemplateItem
+        ? matchingTemplateItem === finalItem
+          ? matchingTemplateItem.type
+          : matchingTemplateItem.name
+        : '';
       let name = matchingTemplateItem
         ? matchingTemplateItem.customFieldName
         : '';
@@ -108,6 +120,8 @@ export let processScript = (finalObj: any) => {
   let processedScript = finalObj.script.join('\n');
   let parsedScript = JSON.parse(processedScript).split('\n');
   let loginStepImplemented = finalObj.isLoginStep ? false : true;
+  let loginDetailsFilled = false;
+
   let newScript = [];
   newScript.push(`let labelFilled=[];`);
   let formPages = 1 * finalObj.data.length;
@@ -143,9 +157,10 @@ export let processScript = (finalObj: any) => {
             formPages = formPages + 1;
           }
         } else if (
-          currentLine.toLowerCase().includes('username') ||
-          currentLine.toLowerCase().includes('email') ||
-          currentLine.toLowerCase().includes('password')
+          !loginDetailsFilled &&
+          (currentLine.toLowerCase().includes('username') ||
+            currentLine.toLowerCase().includes('email') ||
+            currentLine.toLowerCase().includes('password'))
         ) {
           if (currentLine.includes('fill')) {
             let currentlabel = currentLine.includes('getByLabel(')
@@ -158,6 +173,9 @@ export let processScript = (finalObj: any) => {
             let finalVal = currentLine.toLowerCase().includes('password')
               ? finalObj.password.replace(/['"]+/g, '')
               : finalObj.username.replace(/['"]+/g, '');
+            if (currentLine.toLowerCase().includes('password')) {
+              loginDetailsFilled = true;
+            }
             currentLine = currentLine.includes('getByLabel(')
               ? `await page.getByLabel('${currentlabel
                   .split(')')[0]
@@ -292,13 +310,15 @@ export let processScript = (finalObj: any) => {
                       Object.keys(objItem).find(
                         (key) =>
                           !excludedKeys.includes(key.toLowerCase()) &&
-                          key === lineLabel,
+                          key
+                            .replace(/[^a-zA-Z0-9]/g, '')
+                            .replace(/\s+/g, '')
+                            .trim() === lineLabel,
                       ),
                     )
                   : dataObjAll.length == 1
                     ? dataObjAll[0]
                     : null;
-
               if (dataObj) {
                 for (let [label, value] of Object.entries(dataObj)) {
                   if (
@@ -312,7 +332,7 @@ export let processScript = (finalObj: any) => {
                       if (currentLine.includes('combobox')) {
                         newScript.push(currentLine);
                         newScript.push(
-                          `await page.getByRole('option', { name: '${value}' }).locator('span').nth(1).click();`,
+                          `await page.getByRole('option', { name: '${value}' , exact: true}).locator('span').nth(1).click();`,
                         );
                         formValues.push(label);
 
@@ -449,6 +469,7 @@ export let processScript = (finalObj: any) => {
               }
             } else {
               if (
+                !currentLine.includes('getByLabel') &&
                 !currentLine.includes('combobox') &&
                 !currentLine.includes('option') &&
                 !currentLine.includes('pause()') &&
