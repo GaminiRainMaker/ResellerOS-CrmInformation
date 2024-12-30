@@ -251,6 +251,7 @@ export let processScript = (finalObj: any) => {
             ) {
               const excludedKeys = ['name', 'userFill', 'type'];
               let lineLabel = '';
+              let lineName = '';
 
               if (currentLine.includes('combobox')) {
                 const nameMatch = currentLine.match(/name: '(.*?)'/);
@@ -264,12 +265,25 @@ export let processScript = (finalObj: any) => {
                 lineLabel = labelMatch[2].replace(/\s+/g, '').trim();
               }
 
+              const locatorRegex = /page\.locator\((['"`])([^'"`]+)\1\)/;
+              const match = currentLine.match(locatorRegex);
+
+              if (match) {
+                let locatorName = match[2]; // Extract the locator name
+                // Replace all special characters with an empty string
+                lineName = locatorName.replace(/[^a-zA-Z0-9]/g, '');
+              }
+
               const dataObjAll = finalObj.data.filter((objItem: any) =>
                 Object.keys(objItem).find(
                   (key) =>
-                    !excludedKeys.includes(key.toLowerCase()) &&
-                    lineLabel &&
-                    key.replace(/\s+/g, '').trim().includes(lineLabel),
+                    (!excludedKeys.includes(key.toLowerCase()) &&
+                      lineLabel &&
+                      key.replace(/\s+/g, '').trim().includes(lineLabel)) ||
+                    (lineName &&
+                      objItem.name
+                        .replace(/[^a-zA-Z0-9]/g, '')
+                        .includes(lineName)),
                 ),
               );
               const dataObj =
@@ -317,7 +331,7 @@ export let processScript = (finalObj: any) => {
                           dataObj.type.toLowerCase().includes('email') ||
                           dataObj.type.toLowerCase().includes('date')
                             ? dataObj.name
-                              ? `await page.locator('input[name="${dataObj.name}"]').fill('${value}');
+                              ? `await page.locator('${dataObj.type.toLowerCase() === 'textarea' ? 'textarea' : 'input'}[name="${dataObj.name}"]').fill('${value}');
 `
                               : `await page.getByLabel('${label}').fill('${value}');`
                             : dataObj.type.toLowerCase().includes('select') ||
@@ -348,17 +362,15 @@ export let processScript = (finalObj: any) => {
                           newScript.push(data);
                         }
                       } else {
+                        if (!dataObj.name) {
+                          newScript.push(
+                            `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 50000 });`,
+                          );
+                        }
+
+                        newScript.push(data);
                         if (label.includes('Country') && waitingScriptValue) {
-                          newScript.push(
-                            `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 50000 });`,
-                          );
-                          newScript.push(data);
                           newScript.push(waitingScriptValue);
-                        } else {
-                          newScript.push(
-                            `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 50000 });`,
-                          );
-                          newScript.push(data);
                         }
                       }
                     }
