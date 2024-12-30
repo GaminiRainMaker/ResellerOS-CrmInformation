@@ -280,31 +280,25 @@ export let processScript = (finalObj: any) => {
                       lineLabel &&
                       key.replace(/\s+/g, '').trim().includes(lineLabel)) ||
                     (lineName &&
-                      objItem.name
+                      objItem?.name &&
+                      objItem?.name
                         .replace(/[^a-zA-Z0-9]/g, '')
                         .includes(lineName)),
                 ),
               );
               const dataObj =
-                lineLabel || lineName
-                  ? dataObjAll && dataObjAll.length > 1
-                    ? dataObjAll.find((objItem: any) =>
-                        Object.keys(objItem).find(
-                          (key) =>
-                            !excludedKeys.includes(key.toLowerCase()) &&
-                            key === lineLabel,
-                        ),
-                      )
-                    : dataObjAll.length == 1
-                      ? dataObjAll[0]
-                      : null
-                  : finalObj.data.find((objItem: any) =>
+                dataObjAll && dataObjAll.length > 1
+                  ? dataObjAll.find((objItem: any) =>
                       Object.keys(objItem).find(
                         (key) =>
                           !excludedKeys.includes(key.toLowerCase()) &&
-                          !formValues.includes(key),
+                          key === lineLabel,
                       ),
-                    );
+                    )
+                  : dataObjAll.length == 1
+                    ? dataObjAll[0]
+                    : null;
+
               if (dataObj) {
                 for (let [label, value] of Object.entries(dataObj)) {
                   if (
