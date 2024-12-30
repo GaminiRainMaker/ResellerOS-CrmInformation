@@ -157,8 +157,8 @@ export let processScript = (finalObj: any) => {
                   ? currentLine.split('}).fill(')[0]?.split('name:')[1]
                   : '';
             let finalVal = currentLine.toLowerCase().includes('password')
-              ? finalObj.password
-              : finalObj.username;
+              ? finalObj.password.replace(/['"]+/g, '')
+              : finalObj.username.replace(/['"]+/g, '');
             currentLine = currentLine.includes('getByLabel(')
               ? `await page.getByLabel('${currentlabel
                   .split(')')[0]
