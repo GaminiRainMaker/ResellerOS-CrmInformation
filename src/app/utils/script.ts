@@ -250,25 +250,40 @@ export let processScript = (finalObj: any) => {
               !currentLine.includes('Verification')
             ) {
               const excludedKeys = ['name', 'userFill', 'type'];
-              let scriptName = '';
+              let lineLabel = '';
 
               if (currentLine.includes('combobox')) {
                 const nameMatch = currentLine.match(/name: '(.*?)'/);
 
-                scriptName = nameMatch[1];
+                lineLabel = nameMatch[1].replace(/\s+/g, '').trim();
+              }
+              const labelMatch = currentLine.match(
+                /getByLabel\('(\*?\s*)(.*?)'\)/,
+              );
+              if (labelMatch) {
+                lineLabel = labelMatch[2].replace(/\s+/g, '').trim();
               }
 
-              const labelMatch = currentLine.match(/getByLabel\('(.*?)'\)/);
-              const lineLabel = labelMatch ? labelMatch[1] : null;
-              const dataObj = finalObj.data.find((objItem: any) =>
+              const dataObjAll = finalObj.data.filter((objItem: any) =>
                 Object.keys(objItem).find(
                   (key) =>
                     !excludedKeys.includes(key.toLowerCase()) &&
-                    (currentLine.includes(key) ||
-                      (lineLabel && key.includes(lineLabel)) ||
-                      (scriptName && key.trim().includes(scriptName.trim()))),
+                    lineLabel &&
+                    key.replace(/\s+/g, '').trim().includes(lineLabel),
                 ),
               );
+              const dataObj =
+                dataObjAll && dataObjAll.length > 1
+                  ? dataObjAll.find((objItem: any) =>
+                      Object.keys(objItem).find(
+                        (key) =>
+                          !excludedKeys.includes(key.toLowerCase()) &&
+                          key === lineLabel,
+                      ),
+                    )
+                  : dataObjAll.length == 1
+                    ? dataObjAll[0]
+                    : null;
               if (dataObj) {
                 for (let [label, value] of Object.entries(dataObj)) {
                   if (
@@ -287,7 +302,8 @@ export let processScript = (finalObj: any) => {
                         continue;
                       } else if (
                         !label.includes('State') &&
-                        !label.includes('Country')
+                        !label.includes('Country') &&
+                        !dataObj.name
                       ) {
                         newScript.push(
                           `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 50000 });`,
@@ -300,7 +316,10 @@ export let processScript = (finalObj: any) => {
                           dataObj.type.toLowerCase().includes('text') ||
                           dataObj.type.toLowerCase().includes('email') ||
                           dataObj.type.toLowerCase().includes('date')
-                            ? `await page.getByLabel('${label}').fill('${value}');`
+                            ? dataObj.name
+                              ? `await page.locator('input[name="${dataObj.name}"]').fill('${value}');
+`
+                              : `await page.getByLabel('${label}').fill('${value}');`
                             : dataObj.type.toLowerCase().includes('select') ||
                                 dataObj.type.toLowerCase().includes('drop')
                               ? dataObj.name
@@ -407,8 +426,8 @@ export let processScript = (finalObj: any) => {
                         newScript.push(data);
                       }
                     }
+                    formValues.push(label);
                   }
-                  formValues.push(label);
                 }
               }
             } else {
