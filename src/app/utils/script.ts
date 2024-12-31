@@ -345,7 +345,7 @@ export let processScript = (finalObj: {
                           for (let i = 0; i < value?.length; i++) {
                             newScript.push(`await page
                               .getByRole('option', {
-                                name: '${value[i]}',
+                                name: '${value[i]}',exact: true 
                               })
                               .click();`);
 
