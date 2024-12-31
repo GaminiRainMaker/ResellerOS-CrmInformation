@@ -407,12 +407,9 @@ export let processScript = (finalObj: any) => {
                         let data = `
                             if(!labelFilled.includes('${newLabel}')){
 
-
-                             
-      
                             await page.evaluate(() => {
             const messageDiv = document.createElement('div');
-            messageDiv.id = 'customMessage';
+            messageDiv.id = 'customMessage-${newLabel}';
             messageDiv.style.position = 'fixed';
             messageDiv.style.top = '20px';
             messageDiv.style.left = '20px';
@@ -430,7 +427,7 @@ export let processScript = (finalObj: any) => {
           \`;
             document.body.appendChild(messageDiv);
             document.getElementById("close-popup-${newLabel}").addEventListener('click', () => {
-             const existingPopup = document.getElementById('customMessage');
+             const existingPopup = document.getElementById('customMessage-${newLabel}');
       if (existingPopup) {
         existingPopup.style.display = 'none';
       }
