@@ -115,7 +115,13 @@ export let dependentFieldProcess = (templateData: any, formData: any) => {
   return formData;
 };
 
-export let processScript = (finalObj: any) => {
+export let processScript = (finalObj: {
+  data: [{[key: string]: any}];
+  script: any;
+  isLoginStep: boolean;
+  username: string;
+  password: string;
+}) => {
   // Join the script array into a single string
   let processedScript = finalObj.script.join('\n');
   let parsedScript = JSON.parse(processedScript).split('\n');
@@ -331,6 +337,25 @@ export let processScript = (finalObj: any) => {
                     !formValues.includes(label)
                   ) {
                     if (!dataObj.userFill) {
+                      if (
+                        currentLine.includes('getByLabel') &&
+                        currentLine.includes('button')
+                      ) {
+                        if (value && value.length > 0) {
+                          for (let i = 0; i < value?.length; i++) {
+                            newScript.push(`await page
+                              .getByRole('option', {
+                                name: '${value[i]}',
+                              })
+                              .click();`);
+
+                            newScript.push(currentLine);
+                          }
+                        }
+
+                        formValues.push(label);
+                        break;
+                      }
                       if (currentLine.includes('combobox')) {
                         newScript.push(currentLine);
                         newScript.push(
