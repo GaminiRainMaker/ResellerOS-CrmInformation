@@ -177,8 +177,8 @@ export let processScript = (finalObj: {
                   ? currentLine.split('}).fill(')[0]?.split('name:')[1]
                   : '';
             let finalVal = currentLine.toLowerCase().includes('password')
-              ? finalObj.password.replace(/['"]+/g, '')
-              : finalObj.username.replace(/['"]+/g, '');
+              ? finalObj?.password?.replace(/['"]+/g, '')
+              : finalObj?.username?.replace(/['"]+/g, '');
             if (currentLine.toLowerCase().includes('password')) {
               loginDetailsFilled = true;
             }
