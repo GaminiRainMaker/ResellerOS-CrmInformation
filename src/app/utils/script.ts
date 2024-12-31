@@ -211,18 +211,15 @@ export let processScript = (finalObj: {
             (currentLine.includes('Verification') ||
               currentLine.includes('Code'))
           ) {
-            newScript.push(
-              ` const verificationTextExists = await page.isVisible('text="Verify"');`,
-            );
             if (iswaitingScript) {
               newScript.push(`await page.waitForTimeout(15000);`);
             }
 
             let data = `
-    if (verificationTextExists) {
+            
       await page.evaluate(() => {
         const messageDiv = document.createElement('div');
-        messageDiv.id = 'customMessage';
+        messageDiv.id = 'verificationMessage';
         messageDiv.style.position = 'fixed';
         messageDiv.style.top = '20px';
         messageDiv.style.left = '20px';
@@ -243,7 +240,7 @@ export let processScript = (finalObj: {
           messageDiv.style.display = 'none';
         });
       });
-    }
+    
             
            
             await page.waitForFunction(() => {
