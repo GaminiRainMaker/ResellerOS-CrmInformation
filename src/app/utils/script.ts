@@ -125,10 +125,9 @@ export let processScript = (finalObj: any) => {
   let newScript = [];
   newScript.push(`let labelFilled=[];`);
   let formPages = 1 * finalObj.data.length;
-  let formValues = [];
+  let formValues: string[] = [];
   let iswaitingScript = false;
   let waitingScriptValue = '';
-  const pushedLabels: string[] = [];
   for (let i = 0; i < parsedScript.length; i++) {
     const lastline = newScript[newScript.length - 1];
 
@@ -147,6 +146,7 @@ export let processScript = (finalObj: any) => {
       } else {
         if (
           currentLine.includes('button') &&
+          !currentLine.includes('getByLabel') &&
           !(lastline.includes('Code') && currentLine.includes('Verify'))
         ) {
           newScript.push(currentLine);
@@ -260,7 +260,9 @@ export let processScript = (finalObj: any) => {
             if (
               (currentLine.includes('fill') ||
                 currentLine.includes('combobox') ||
-                currentLine.includes('selectOption')) &&
+                currentLine.includes('selectOption') ||
+                (currentLine.includes('getByLabel') &&
+                  currentLine.includes('button'))) &&
               !currentLine.includes('pause()') &&
               !currentLine.includes('option') &&
               formValues.length <= formPages &&
@@ -326,7 +328,7 @@ export let processScript = (finalObj: any) => {
                     value &&
                     label !== 'name' &&
                     label !== 'type' &&
-                    !pushedLabels.includes(label)
+                    !formValues.includes(label)
                   ) {
                     if (!dataObj.userFill) {
                       if (currentLine.includes('combobox')) {
@@ -369,7 +371,6 @@ export let processScript = (finalObj: any) => {
                         }
                         labelFilled.push('${label}');
                         `;
-                      pushedLabels.push(label);
                       const stateIndex = newScript.findIndex(
                         (item) =>
                           item.includes('State') && !item.includes('States'),
@@ -398,22 +399,16 @@ export let processScript = (finalObj: any) => {
                           newScript.push(waitingScriptValue);
                         }
                       }
-                    }
-                    const userFillFields = finalObj.data.filter(
-                      (objItem: any) => objItem.userFill,
-                    );
-                    for (let i = 0; i < userFillFields.length; i++) {
-                      let newDataObj = userFillFields[i];
-                      const newLabel = Object.keys(newDataObj).find(
+                    } else {
+                      const newLabel = Object.keys(dataObj).find(
                         (key) => !excludedKeys.includes(key.toLowerCase()),
                       );
-                      if (
-                        newDataObj.userFill &&
-                        newLabel &&
-                        !pushedLabels.includes(newLabel)
-                      ) {
+                      if (dataObj.userFill && newLabel) {
                         let data = `
                             if(!labelFilled.includes('${newLabel}')){
+
+
+                             
       
                             await page.evaluate(() => {
             const messageDiv = document.createElement('div');
@@ -435,7 +430,10 @@ export let processScript = (finalObj: any) => {
           \`;
             document.body.appendChild(messageDiv);
             document.getElementById("close-popup-${newLabel}").addEventListener('click', () => {
-              messageDiv.style.display = 'none';
+             const existingPopup = document.getElementById('customMessage');
+      if (existingPopup) {
+        existingPopup.style.display = 'none';
+      }
             });
           });
       }
@@ -463,6 +461,7 @@ export let processScript = (finalObj: any) => {
                         newScript.push(data);
                       }
                     }
+
                     formValues.push(label);
                   }
                 }
