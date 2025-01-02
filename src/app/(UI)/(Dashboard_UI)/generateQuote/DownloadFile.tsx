@@ -271,10 +271,10 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
 
   return (
     <>
-      <Suspense fallback={<div>Loading...</div>}>
-        <GlobalLoader
-          loading={formStackSyncLoading || GeneralSettingLoading || loading}
-        >
+      <GlobalLoader
+        loading={formStackSyncLoading || GeneralSettingLoading || loading}
+      >
+        <Suspense fallback={<div>Loading...</div>}>
           {FormstackDataOptions ? (
             <Form layout="vertical" requiredMark={false} form={form}>
               <Row gutter={[16, 24]} justify="space-between">
@@ -375,8 +375,8 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
               </Typography>
             </div>
           )}
-        </GlobalLoader>
-      </Suspense>
+        </Suspense>
+      </GlobalLoader>
     </>
   );
 };

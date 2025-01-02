@@ -425,8 +425,8 @@ const EditorFile = () => {
   }, [mergeedColumnHeader]);
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <GlobalLoader loading={nanonetsLoading}>
+    <GlobalLoader loading={nanonetsLoading}>
+      <Suspense fallback={<div>Loading...</div>}>
         {currentFileData && (
           <Typography
             name="Body 1/Bold"
@@ -813,8 +813,8 @@ const EditorFile = () => {
             setOldColumnName('');
           }}
         />
-      </GlobalLoader>
-    </Suspense>
+      </Suspense>
+    </GlobalLoader>
   );
 };
 export default EditorFile;

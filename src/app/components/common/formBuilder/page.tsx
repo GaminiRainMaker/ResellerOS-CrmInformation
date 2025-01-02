@@ -289,8 +289,8 @@ const FormBuilderMain: React.FC<any> = ({
     setSelectIndexFOrAllDependentField(newTempArr);
   };
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <GlobalLoader loading={formLoading}>
+    <GlobalLoader loading={formLoading}>
+      <Suspense fallback={<div>Loading...</div>}>
         {contextHolder}
         {!previewFile && (
           <Row
@@ -1250,8 +1250,8 @@ const FormBuilderMain: React.FC<any> = ({
             <RowStyledForForm>+ Drop Filed</RowStyledForForm>
           )}
         </div>
-      </GlobalLoader>
-    </Suspense>
+      </Suspense>
+    </GlobalLoader>
   );
 };
 export default FormBuilderMain;

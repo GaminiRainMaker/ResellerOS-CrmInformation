@@ -119,8 +119,8 @@ const MyTeam = () => {
   ];
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Space size={5} direction="vertical" style={{width: '100%'}}>
+    <Space size={5} direction="vertical" style={{width: '100%'}}>
+      <Suspense fallback={<div>Loading...</div>}>
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
@@ -185,8 +185,8 @@ const MyTeam = () => {
           }
           items={tabItems}
         />
-      </Space>
-    </Suspense>
+      </Suspense>
+    </Space>
   );
 };
 

@@ -238,8 +238,8 @@ const AccountDetails = () => {
 
   return (
     <>
+      <OsBreadCrumb items={menuItems} />
       <Suspense fallback={<div>Loading...</div>}>
-        <OsBreadCrumb items={menuItems} />
         <Row justify="space-between" gutter={[16, 16]}>
           <Col xs={24} sm={8} md={8} lg={6}>
             <DetailCard />

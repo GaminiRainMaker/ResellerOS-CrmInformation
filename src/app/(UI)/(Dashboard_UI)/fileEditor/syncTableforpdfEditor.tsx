@@ -801,8 +801,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   console.log('23532432432', mergedValue);
   return (
     <>
-      <Suspense fallback={<div>Loading...</div>}>
-        <GlobalLoader loading={nanonetsLoading}>
+      <GlobalLoader loading={nanonetsLoading}>
+        <Suspense fallback={<div>Loading...</div>}>
           <Row
             style={{
               display: 'flex',
@@ -898,8 +898,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
               clickHandler={syncTableDataNew}
             />
           </Row>
-        </GlobalLoader>
-      </Suspense>
+        </Suspense>
+      </GlobalLoader>
     </>
   );
 };

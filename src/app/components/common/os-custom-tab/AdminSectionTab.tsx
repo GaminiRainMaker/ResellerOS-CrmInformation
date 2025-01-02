@@ -116,8 +116,8 @@ const AdminCustomTabs: FC<any> = (tabs) => {
   };
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Row>
+    <Row>
+      <Suspense fallback={<div>Loading...</div>}>
         <Col xs={24} sm={8} md={5} span={5}>
           <CustomTabStyle token={token}>
             <div style={{width: '100%'}}>
@@ -174,8 +174,8 @@ const AdminCustomTabs: FC<any> = (tabs) => {
         <Col xs={24} sm={16} md={19} span={19}>
           {getSuperChild()}
         </Col>
-      </Row>
-    </Suspense>
+      </Suspense>
+    </Row>
   );
 };
 

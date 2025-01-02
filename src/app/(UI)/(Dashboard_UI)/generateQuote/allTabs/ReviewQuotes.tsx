@@ -356,8 +356,8 @@ const ReviewQuotes: FC<any> = ({
   };
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <GlobalLoader loading={quoteFileDataLoading}>
+    <GlobalLoader loading={quoteFileDataLoading}>
+      <Suspense fallback={<div>Loading...</div>}>
         {contextHolder}
         {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
           !selectedFilter ? (
@@ -641,8 +641,8 @@ const ReviewQuotes: FC<any> = ({
           }}
           singleButtonInCenter
         />
-      </GlobalLoader>
-    </Suspense>
+      </Suspense>
+    </GlobalLoader>
   );
 };
 

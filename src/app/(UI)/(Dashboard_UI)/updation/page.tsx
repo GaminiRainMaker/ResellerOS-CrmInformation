@@ -326,8 +326,8 @@ const UpdateGenerateQuote = () => {
   };
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Space size={24} direction="vertical">
+    <Space size={24} direction="vertical">
+      <Suspense fallback={<div>Loading...</div>}>
         <Row justify="space-between" align="middle">
           <Col>
             <OsBreadCrumb items={menuItems} />
@@ -395,8 +395,8 @@ const UpdateGenerateQuote = () => {
             />
           </Col>
         </Row>
-      </Space>
-    </Suspense>
+      </Suspense>
+    </Space>
   );
 };
 

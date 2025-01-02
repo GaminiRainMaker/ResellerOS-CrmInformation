@@ -90,12 +90,12 @@ const BundleSection: FC<any> = ({
   }, [bundleData]);
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Space
-        direction="vertical"
-        size={18}
-        style={{width: '100%', padding: drawer ? '' : '20px'}}
-      >
+    <Space
+      direction="vertical"
+      size={18}
+      style={{width: '100%', padding: drawer ? '' : '20px'}}
+    >
+      <Suspense fallback={<div>Loading...</div>}>
         {!drawer && (
           <Space direction="horizontal" size={18} style={{width: '100%'}}>
             <Radio.Group onChange={onChange} value={radioValue}>
@@ -191,8 +191,8 @@ const BundleSection: FC<any> = ({
             </Row>
           )}
         </Form>
-      </Space>
-    </Suspense>
+      </Suspense>
+    </Space>
   );
 };
 

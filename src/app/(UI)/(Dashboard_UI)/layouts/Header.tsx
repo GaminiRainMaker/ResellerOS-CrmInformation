@@ -294,8 +294,8 @@ const CustomHeader = () => {
   }, [loginUserInformation]);
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Layout>
+    <Layout>
+      <Suspense fallback={<div>Loading...</div>}>
         <Row
           justify="space-between"
           style={{
@@ -559,8 +559,8 @@ const CustomHeader = () => {
             )}
           </Col>
         </Row>
-      </Layout>
-    </Suspense>
+      </Suspense>
+    </Layout>
   );
 };
 
