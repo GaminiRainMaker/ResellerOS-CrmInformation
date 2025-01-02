@@ -452,10 +452,21 @@ export let processScript = (finalObj: {
              const existingPopup = document.getElementById('customMessage-${newLabel}');
       if (existingPopup) {
         existingPopup.style.display = 'none';
+        existingPopup.setAttribute('data-closed', 'true');
+
       }
             });
           });
       }
+
+
+      await page.waitForFunction(() => {
+        const popup = document.getElementById('customMessage-${newLabel}');
+        return popup && popup.getAttribute('data-closed') === 'true';
+      }, { timeout: 900000 });
+
+      console.log('${newLabel} input acknowledged by user.');
+    
                           
                            await page.waitForFunction(async() => {
           const label = Array.from(document.querySelectorAll('label')).find(label => label.innerText.includes('${newLabel}'));
