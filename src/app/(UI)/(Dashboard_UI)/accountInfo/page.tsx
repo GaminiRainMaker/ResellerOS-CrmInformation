@@ -6,7 +6,7 @@ import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import CustomTabs from '@/app/components/common/os-custom-tab/AdminSectionTab';
 import Typography from '@/app/components/common/typography';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import MyProfile from './myProfile';
 import MyTeam from './myTeam';
 import PartnerPassword from './partnerPassword';
@@ -135,18 +135,20 @@ const AccountInfo = () => {
 
   return (
     <>
-      {getRole === 'admin' || getRole === 'superAdmin' ? (
-        <>
-          <Row justify="space-between" align="middle">
-            <Col>
-              <OsBreadCrumb items={menuItems} />
-            </Col>
-          </Row>
-          <MyProfile />
-        </>
-      ) : (
-        <CustomTabs tabs={tabsData} />
-      )}
+      <Suspense fallback={<div>Loading...</div>}>
+        {getRole === 'admin' || getRole === 'superAdmin' ? (
+          <>
+            <Row justify="space-between" align="middle">
+              <Col>
+                <OsBreadCrumb items={menuItems} />
+              </Col>
+            </Row>
+            <MyProfile />
+          </>
+        ) : (
+          <CustomTabs tabs={tabsData} />
+        )}
+      </Suspense>
     </>
   );
 };

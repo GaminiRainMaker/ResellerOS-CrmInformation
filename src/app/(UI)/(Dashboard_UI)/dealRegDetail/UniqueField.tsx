@@ -13,7 +13,7 @@ import {convertToSnakeCase} from '@/app/utils/base';
 import {MailOutlined} from '@ant-design/icons';
 import {Form, Radio, TimePicker} from 'antd';
 import dayjs from 'dayjs';
-import React, {useEffect, useState} from 'react';
+import React, {Suspense, useEffect, useState} from 'react';
 import {UniqueFieldsProps} from './dealReg.interface';
 import {useSearchParams} from 'next/navigation';
 import {Checkbox} from 'antd';
@@ -542,89 +542,93 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
   }, [allContent]);
 
   return (
-    <Form
-      layout="vertical"
-      style={{width: '100%', background: 'white', borderRadius: '12px'}}
-      form={form}
-    >
-      <Row>
-        {allContent?.map((allContentItem: any, itemIndex: number) => {
-          const alignment = allContentItem?.Alignemnt || 'left';
-          const fontSize = allContentItem?.FontSize || 'default';
-          const required = allContentItem?.required;
-          const userfill = allContentItem?.user_fill;
-          if (allContentItem?.name === 'Text Content') {
-            return (
-              <Col
-                span={24}
-                style={{textAlign: alignment, padding: '12px 0px'}}
-              >
-                <p style={{fontSize: fontSize === 'h2' ? 24 : 16}}>
-                  {allContentItem?.sectionTitle}
-                </p>
-              </Col>
-            );
-          }
-          return (
-            <Col
-              span={allContentItem.name === 'Line Break' ? 24 : 12}
-              style={{
-                padding: '12px',
-                paddingTop: '0px',
-              }}
-              key={itemIndex}
-            >
-              <SelectFormItem
-                name={
-                  'u_' +
-                  convertToSnakeCase(allContentItem.label) +
-                  '_' +
-                  itemIndex +
-                  activeKey +
-                  (required ? '_required' : '') +
-                  (userfill ? '_userfill' : '')
-                }
-                label={
-                  <Typography name="Body 4/Medium">
-                    {allContentItem.label}
-                  </Typography>
-                }
-                required={allContentItem.required}
-                rules={[
-                  ...(allContentItem.label === 'Email'
-                    ? [
-                        {
-                          type: 'email' as const, // Ensures 'email' is treated as a specific literal type
-                          message: 'Please enter a valid email address!',
-                        },
-                        {
-                          required: true,
-                          message: 'This field is required!',
-                        },
-                      ]
-                    : allContentItem.required
-                      ? [
-                          {
-                            required: true,
-                            message: 'This field is required!',
-                          },
-                        ]
-                      : []),
-                ]}
-              >
-                {getInputComponent(
-                  allContentItem,
-                  itemIndex,
-                  activeKey,
-                  required,
-                  userfill,
-                )}
-              </SelectFormItem>
-            </Col>
-          );
-        })}
-      </Row>
-    </Form>
+    <>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Form
+          layout="vertical"
+          style={{width: '100%', background: 'white', borderRadius: '12px'}}
+          form={form}
+        >
+          <Row>
+            {allContent?.map((allContentItem: any, itemIndex: number) => {
+              const alignment = allContentItem?.Alignemnt || 'left';
+              const fontSize = allContentItem?.FontSize || 'default';
+              const required = allContentItem?.required;
+              const userfill = allContentItem?.user_fill;
+              if (allContentItem?.name === 'Text Content') {
+                return (
+                  <Col
+                    span={24}
+                    style={{textAlign: alignment, padding: '12px 0px'}}
+                  >
+                    <p style={{fontSize: fontSize === 'h2' ? 24 : 16}}>
+                      {allContentItem?.sectionTitle}
+                    </p>
+                  </Col>
+                );
+              }
+              return (
+                <Col
+                  span={allContentItem.name === 'Line Break' ? 24 : 12}
+                  style={{
+                    padding: '12px',
+                    paddingTop: '0px',
+                  }}
+                  key={itemIndex}
+                >
+                  <SelectFormItem
+                    name={
+                      'u_' +
+                      convertToSnakeCase(allContentItem.label) +
+                      '_' +
+                      itemIndex +
+                      activeKey +
+                      (required ? '_required' : '') +
+                      (userfill ? '_userfill' : '')
+                    }
+                    label={
+                      <Typography name="Body 4/Medium">
+                        {allContentItem.label}
+                      </Typography>
+                    }
+                    required={allContentItem.required}
+                    rules={[
+                      ...(allContentItem.label === 'Email'
+                        ? [
+                            {
+                              type: 'email' as const, // Ensures 'email' is treated as a specific literal type
+                              message: 'Please enter a valid email address!',
+                            },
+                            {
+                              required: true,
+                              message: 'This field is required!',
+                            },
+                          ]
+                        : allContentItem.required
+                          ? [
+                              {
+                                required: true,
+                                message: 'This field is required!',
+                              },
+                            ]
+                          : []),
+                    ]}
+                  >
+                    {getInputComponent(
+                      allContentItem,
+                      itemIndex,
+                      activeKey,
+                      required,
+                      userfill,
+                    )}
+                  </SelectFormItem>
+                </Col>
+              );
+            })}
+          </Row>
+        </Form>
+      </Suspense>
+    </>
   );
 };
 

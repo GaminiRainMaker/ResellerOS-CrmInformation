@@ -26,7 +26,7 @@ import {
 import {TabsProps} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import {queryDealReg} from '../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {SeparatedData} from '../dealRegDetail/dealReg.interface';
@@ -425,99 +425,106 @@ const DealReg: React.FC = () => {
 
   return (
     <>
-      <Space size={24} direction="vertical" style={{width: '100%'}}>
-        <DealRegAnalytics />
-        <Row justify="space-between" align="middle">
-          <Col>
-            <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-              All Registered Forms
-            </Typography>
-          </Col>
-          <Col style={{display: 'flex', alignItems: 'center'}}>
-            <OsButton
-              text="New Registration"
-              buttontype="PRIMARY"
-              icon={<PlusIcon />}
-              clickHandler={() => setShowModal((p) => !p)}
-            />
-          </Col>
-        </Row>
-        <Row
-          style={{background: 'white', padding: '24px', borderRadius: '12px'}}
-        >
-          <OsTabs
-            onChange={(e: any) => {
-              setActiveTab(e);
-            }}
-            activeKey={activeTab}
-            tabBarExtraContent={
-              <Space size={12} align="center">
-                <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">Customer Account</Typography>
-                  <CommonSelect
-                    style={{width: '200px'}}
-                    placeholder="Search here"
-                    showSearch
-                    onSearch={(e: any) => {
-                      setQuery({
-                        ...query,
-                        customer: e,
-                      });
+      <Suspense fallback={<div>Loading...</div>}>
+        <Space size={24} direction="vertical" style={{width: '100%'}}>
+          <DealRegAnalytics />
+          <Row justify="space-between" align="middle">
+            <Col>
+              <Typography
+                name="Heading 3/Medium"
+                color={token?.colorPrimaryText}
+              >
+                All Registered Forms
+              </Typography>
+            </Col>
+            <Col style={{display: 'flex', alignItems: 'center'}}>
+              <OsButton
+                text="New Registration"
+                buttontype="PRIMARY"
+                icon={<PlusIcon />}
+                clickHandler={() => setShowModal((p) => !p)}
+              />
+            </Col>
+          </Row>
+          <Row
+            style={{background: 'white', padding: '24px', borderRadius: '12px'}}
+          >
+            <OsTabs
+              onChange={(e: any) => {
+                setActiveTab(e);
+              }}
+              activeKey={activeTab}
+              tabBarExtraContent={
+                <Space size={12} align="center">
+                  <Space direction="vertical" size={0}>
+                    <Typography name="Body 4/Medium">
+                      Customer Account
+                    </Typography>
+                    <CommonSelect
+                      style={{width: '200px'}}
+                      placeholder="Search here"
+                      showSearch
+                      onSearch={(e: any) => {
+                        setQuery({
+                          ...query,
+                          customer: e,
+                        });
+                      }}
+                      onChange={(e: any) => {
+                        setQuery({
+                          ...query,
+                          customer: e,
+                        });
+                      }}
+                      value={query?.customer}
+                    >
+                      {uniqueCustomer?.map((customer: any) => (
+                        <Option key={customer} value={customer}>
+                          {customer}
+                        </Option>
+                      ))}
+                    </CommonSelect>
+                  </Space>
+                  <div
+                    style={{
+                      marginTop: '15px',
                     }}
-                    onChange={(e: any) => {
-                      setQuery({
-                        ...query,
-                        customer: e,
-                      });
-                    }}
-                    value={query?.customer}
                   >
-                    {uniqueCustomer?.map((customer: any) => (
-                      <Option key={customer} value={customer}>
-                        {customer}
-                      </Option>
-                    ))}
-                  </CommonSelect>
+                    <Typography
+                      cursor="pointer"
+                      name="Button 1"
+                      color={query?.customer ? '#0D0D0D' : '#C6CDD5'}
+                      onClick={() => {
+                        setQuery({
+                          customer: null,
+                        });
+                      }}
+                    >
+                      Reset
+                    </Typography>
+                  </div>
                 </Space>
-                <div
-                  style={{
-                    marginTop: '15px',
-                  }}
-                >
-                  <Typography
-                    cursor="pointer"
-                    name="Button 1"
-                    color={query?.customer ? '#0D0D0D' : '#C6CDD5'}
-                    onClick={() => {
-                      setQuery({
-                        customer: null,
-                      });
-                    }}
-                  >
-                    Reset
-                  </Typography>
-                </div>
-              </Space>
-            }
-            items={tabItems}
-          />
-        </Row>
-      </Space>
+              }
+              items={tabItems}
+            />
+          </Row>
+        </Space>
 
-      <OsModal
-        bodyPadding={22}
-        body={<NewRegistrationForm setShowModal={setShowModal} />}
-        width={583}
-        open={showModal}
-        onOk={() => {}}
-        onCancel={() => {
-          if (!salesForceUrl) {
-            setShowModal((p) => !p);
-          }
-        }}
-        footer={false}
-        isSalesForce={!salesForceUrl}
-      />
+        <OsModal
+          bodyPadding={22}
+          body={<NewRegistrationForm setShowModal={setShowModal} />}
+          width={583}
+          open={showModal}
+          onOk={() => {}}
+          onCancel={() => {
+            if (!salesForceUrl) {
+              setShowModal((p) => !p);
+            }
+          }}
+          footer={false}
+          isSalesForce={!salesForceUrl}
+        />
+      </Suspense>
     </>
   );
 };

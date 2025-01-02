@@ -18,7 +18,7 @@ import {ArrowDownTrayIcon} from '@heroicons/react/24/outline';
 import {Badge, Form, MenuProps, notification} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import {getAllBundle} from '../../../../../redux/actions/bundle';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
 import {
@@ -563,208 +563,210 @@ const GenerateQuote: React.FC = () => {
 
   return (
     <>
-      {contextHolder}
-      <Space size={12} direction="vertical" style={{width: '100%'}}>
-        <GenerateQuoteAnalytics />
+      <Suspense fallback={<div>Loading...</div>}>
+        {contextHolder}
+        <Space size={12} direction="vertical" style={{width: '100%'}}>
+          <GenerateQuoteAnalytics />
 
-        <Row justify="space-between" align="middle">
-          <Col>
-            <OsBreadCrumb items={menuItems} />
-          </Col>
-          <Col>
-            <Space size={8} direction="horizontal">
-              <OsButton
-                text="Edit Quote Header"
-                buttontype="SECONDARY"
-                clickHandler={() => {
-                  if (isView === 'true') {
-                    notification.open({
-                      message: "You can't open setting in view mode.",
-                      type: 'info',
-                    });
-                  } else if (quoteFileUnverifiedById?.length > 0) {
-                    notification.open({
-                      message: 'Please verify all the files first.',
-                      type: 'info',
-                    });
-                  } else {
-                    setOpen(true);
-                  }
-                }}
-              />
-              {isView === 'false' && (
-                <>
-                  <AddQuote
-                    loading={loading}
-                    buttonText="Add Quote"
-                    setUploadFileData={setUploadFileData}
-                    uploadFileData={uploadFileData}
-                    isGenerateQuote
-                    existingGenerateQuoteId={Number(getQuoteID)}
-                    quoteDetails={objectForSyncingValues}
-                    isGenerateQuotePage
-                  />
-                  <OsButton
-                    loading={
-                      statusValue === 'Needs Review'
-                        ? statusUpdateLoading
-                        : false
+          <Row justify="space-between" align="middle">
+            <Col>
+              <OsBreadCrumb items={menuItems} />
+            </Col>
+            <Col>
+              <Space size={8} direction="horizontal">
+                <OsButton
+                  text="Edit Quote Header"
+                  buttontype="SECONDARY"
+                  clickHandler={() => {
+                    if (isView === 'true') {
+                      notification.open({
+                        message: "You can't open setting in view mode.",
+                        type: 'info',
+                      });
+                    } else if (quoteFileUnverifiedById?.length > 0) {
+                      notification.open({
+                        message: 'Please verify all the files first.',
+                        type: 'info',
+                      });
+                    } else {
+                      setOpen(true);
                     }
-                    text=" Mark as Complete"
-                    buttontype="PRIMARY"
-                    clickHandler={() => {
-                      if (
-                        quoteFileUnverifiedById &&
-                        quoteFileUnverifiedById?.length > 0
-                      ) {
-                        notification?.open({
-                          message:
-                            'Please verify all the files first to mark as Complete this Quote',
-                          type: 'info',
-                        });
-                        return;
-                      }
-                      setStatusValue('Needs Review');
-                      commonUpdateCompleteAndDraftMethod('Needs Review');
-                    }}
-                  />
-                </>
-              )}
-
-              <OsButton
-                buttontype="PRIMARY_ICON"
-                clickHandler={() => {
-                  if (isView === 'true') {
-                    notification.open({
-                      message: "You can't use in view mode.",
-                      type: 'info',
-                    });
-                  } else setShowDocumentModal(true);
-                }}
-                icon={<ArrowDownTrayIcon width={24} />}
-              />
-            </Space>
-          </Col>
-        </Row>
-        <Row
-          style={{background: 'white', padding: '24px', borderRadius: '12px'}}
-        >
-          <OsTabs
-            onChange={(e) => {
-              setActiveTab(e);
-            }}
-            activeKey={activeTab}
-            tabBarExtraContent={
-              <Space>
-                {' '}
-                {activeTab === '6' && isView === 'false' && (
-                  <div style={{marginTop: '20px'}}>
+                  }}
+                />
+                {isView === 'false' && (
+                  <>
+                    <AddQuote
+                      loading={loading}
+                      buttonText="Add Quote"
+                      setUploadFileData={setUploadFileData}
+                      uploadFileData={uploadFileData}
+                      isGenerateQuote
+                      existingGenerateQuoteId={Number(getQuoteID)}
+                      quoteDetails={objectForSyncingValues}
+                      isGenerateQuotePage
+                    />
                     <OsButton
-                      text="Add Attachment"
+                      loading={
+                        statusValue === 'Needs Review'
+                          ? statusUpdateLoading
+                          : false
+                      }
+                      text=" Mark as Complete"
                       buttontype="PRIMARY"
                       clickHandler={() => {
-                        setAddNewCustomerQuote(true);
+                        if (
+                          quoteFileUnverifiedById &&
+                          quoteFileUnverifiedById?.length > 0
+                        ) {
+                          notification?.open({
+                            message:
+                              'Please verify all the files first to mark as Complete this Quote',
+                            type: 'info',
+                          });
+                          return;
+                        }
+                        setStatusValue('Needs Review');
+                        commonUpdateCompleteAndDraftMethod('Needs Review');
                       }}
                     />
-                  </div>
+                  </>
                 )}
-                <Space direction="vertical" size={0}>
-                  <Typography
-                    name="Body 4/Medium"
-                    color={token?.colorPrimaryText}
-                  >
-                    {activeTab === '6' ? 'Select Type' : 'Select Grouping'}
-                  </Typography>
-                  <Space size={12}>
-                    {activeTab === '6' ? (
-                      <CommonSelect
-                        key={1}
-                        style={{width: '319px'}}
-                        placeholder="Select Grouping here"
-                        options={AttachmentOptions}
-                        onChange={(e) => {
-                          setTypeForAttachmentFilter(e);
-                        }}
-                        allowClear
-                        defaultValue={'all'}
-                      />
-                    ) : (
-                      <CommonSelect
-                        key={2}
-                        disabled={activeTab === '1'}
-                        style={{width: '319px'}}
-                        placeholder="Select Grouping here"
-                        options={selectData}
-                        onChange={(e) => {
-                          setSelectedFilter(e);
-                          setCollapseActiveKeys([]);
-                        }}
-                        allowClear
-                        value={selectedFilter}
-                      />
-                    )}
 
-                    {(activeTab === '2' || activeTab === '4') &&
-                      isView === 'false' && (
-                        <Space>
-                          <OsDropdown menu={{items}} />
-                        </Space>
+                <OsButton
+                  buttontype="PRIMARY_ICON"
+                  clickHandler={() => {
+                    if (isView === 'true') {
+                      notification.open({
+                        message: "You can't use in view mode.",
+                        type: 'info',
+                      });
+                    } else setShowDocumentModal(true);
+                  }}
+                  icon={<ArrowDownTrayIcon width={24} />}
+                />
+              </Space>
+            </Col>
+          </Row>
+          <Row
+            style={{background: 'white', padding: '24px', borderRadius: '12px'}}
+          >
+            <OsTabs
+              onChange={(e) => {
+                setActiveTab(e);
+              }}
+              activeKey={activeTab}
+              tabBarExtraContent={
+                <Space>
+                  {' '}
+                  {activeTab === '6' && isView === 'false' && (
+                    <div style={{marginTop: '20px'}}>
+                      <OsButton
+                        text="Add Attachment"
+                        buttontype="PRIMARY"
+                        clickHandler={() => {
+                          setAddNewCustomerQuote(true);
+                        }}
+                      />
+                    </div>
+                  )}
+                  <Space direction="vertical" size={0}>
+                    <Typography
+                      name="Body 4/Medium"
+                      color={token?.colorPrimaryText}
+                    >
+                      {activeTab === '6' ? 'Select Type' : 'Select Grouping'}
+                    </Typography>
+                    <Space size={12}>
+                      {activeTab === '6' ? (
+                        <CommonSelect
+                          key={1}
+                          style={{width: '319px'}}
+                          placeholder="Select Grouping here"
+                          options={AttachmentOptions}
+                          onChange={(e) => {
+                            setTypeForAttachmentFilter(e);
+                          }}
+                          allowClear
+                          defaultValue={'all'}
+                        />
+                      ) : (
+                        <CommonSelect
+                          key={2}
+                          disabled={activeTab === '1'}
+                          style={{width: '319px'}}
+                          placeholder="Select Grouping here"
+                          options={selectData}
+                          onChange={(e) => {
+                            setSelectedFilter(e);
+                            setCollapseActiveKeys([]);
+                          }}
+                          allowClear
+                          value={selectedFilter}
+                        />
                       )}
+
+                      {(activeTab === '2' || activeTab === '4') &&
+                        isView === 'false' && (
+                          <Space>
+                            <OsDropdown menu={{items}} />
+                          </Space>
+                        )}
+                    </Space>
                   </Space>
                 </Space>
-              </Space>
-            }
-          >
-            {TabPaneData?.map((item: any) => (
-              <TabPane
-                key={item?.key}
-                tab={
-                  <Typography name="Body 4/Regular">{item?.name}</Typography>
-                }
-              >
-                {item?.children}
-              </TabPane>
-            ))}
-          </OsTabs>
-        </Row>
-      </Space>
-      <OsDrawer
-        title={<Typography name="Body 1/Regular">Quote Settings</Typography>}
-        placement="right"
-        onClose={() => setOpen(false)}
-        open={open}
-        width={450}
-        footer={
-          <Row style={{width: '100%', float: 'right'}}>
-            <OsButton
-              btnStyle={{width: '100%'}}
-              buttontype="PRIMARY"
-              text="Update Changes"
-              clickHandler={form.submit}
-            />
+              }
+            >
+              {TabPaneData?.map((item: any) => (
+                <TabPane
+                  key={item?.key}
+                  tab={
+                    <Typography name="Body 4/Regular">{item?.name}</Typography>
+                  }
+                >
+                  {item?.children}
+                </TabPane>
+              ))}
+            </OsTabs>
           </Row>
-        }
-      >
-        <DrawerContent form={form} onFinish={onFinish} />
-      </OsDrawer>
+        </Space>
+        <OsDrawer
+          title={<Typography name="Body 1/Regular">Quote Settings</Typography>}
+          placement="right"
+          onClose={() => setOpen(false)}
+          open={open}
+          width={450}
+          footer={
+            <Row style={{width: '100%', float: 'right'}}>
+              <OsButton
+                btnStyle={{width: '100%'}}
+                buttontype="PRIMARY"
+                text="Update Changes"
+                clickHandler={form.submit}
+              />
+            </Row>
+          }
+        >
+          <DrawerContent form={form} onFinish={onFinish} />
+        </OsDrawer>
 
-      <OsModal
-        title="Add Template"
-        bodyPadding={30}
-        loading={loading}
-        body={
-          <DownloadFile
-            form={addDocForm}
-            objectForSyncingValues={objectForSyncingValues}
-          />
-        }
-        width={900}
-        open={showDocumentModal}
-        onCancel={() => {
-          setShowDocumentModal(false);
-          addDocForm.resetFields();
-        }}
-      />
+        <OsModal
+          title="Add Template"
+          bodyPadding={30}
+          loading={loading}
+          body={
+            <DownloadFile
+              form={addDocForm}
+              objectForSyncingValues={objectForSyncingValues}
+            />
+          }
+          width={900}
+          open={showDocumentModal}
+          onCancel={() => {
+            setShowDocumentModal(false);
+            addDocForm.resetFields();
+          }}
+        />
+      </Suspense>
     </>
   );
 };

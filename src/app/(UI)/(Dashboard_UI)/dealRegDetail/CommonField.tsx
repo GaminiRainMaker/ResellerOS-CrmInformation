@@ -10,7 +10,7 @@ import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {MailOutlined} from '@ant-design/icons';
 import {Form, Radio, TimePicker} from 'antd';
-import {FC, useEffect, useState} from 'react';
+import {FC, Suspense, useEffect, useState} from 'react';
 import {useAppSelector} from '../../../../../redux/hook';
 import {
   AttributeData,
@@ -176,70 +176,76 @@ const CommonFields: FC<CommonFieldsProps> = ({
   }, [formData]);
 
   return (
-    <Form
-      form={form}
-      layout="vertical"
-      style={{width: '100%', background: 'white', borderRadius: '12px'}}
-    >
-      {template?.map((section, index) => (
-        <ChildCollapse key={index} accordion style={{width: '100%'}} ghost>
-          <Panel
-            header={
-              <Space
-                style={{
-                  display: 'flex',
-                  justifyContent: 'start',
-                }}
+    <>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Form
+          form={form}
+          layout="vertical"
+          style={{width: '100%', background: 'white', borderRadius: '12px'}}
+        >
+          {template?.map((section, index) => (
+            <ChildCollapse key={index} accordion style={{width: '100%'}} ghost>
+              <Panel
+                header={
+                  <Space
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'start',
+                    }}
+                  >
+                    <Typography name="Body 2/Medium">
+                      {section?.title?.replace(/_/g, ' ')}
+                    </Typography>
+                  </Space>
+                }
+                key={index}
               >
-                <Typography name="Body 2/Medium">
-                  {section?.title?.replace(/_/g, ' ')}
-                </Typography>
-              </Space>
-            }
-            key={index}
-          >
-            <Row gutter={[0, 16]}>
-              {section?.children?.map((child, Childndex) => {
-                const required = child?.is_required;
-                return (
-                  <Col span={24} key={child.id}>
-                    <SelectFormItem
-                      name={
-                        'c_' +
-                        convertToSnakeCase(child?.label) + '_' +
-                        Childndex +
-                        activeKey +
-                        (required ? '_required' : '')
-                      }
-                      label={
-                        <Typography name="Body 4/Medium">
-                          {formatStatus(child?.label)}
-                        </Typography>
-                      }
-                      rules={[
-                        child?.name || child.label === 'Email'
-                          ? {
-                              type: 'email',
-                              message: 'Please enter a valid email address!',
-                            }
-                          : {},
-                        {
-                          required: child?.is_required,
-                          message: 'This field is required!',
-                        },
-                      ]}
-                    >
-                      {getInputComponent(child)}
-                    </SelectFormItem>
-                  </Col>
-                );
-              })}
-            </Row>
-          </Panel>
-          <br />
-        </ChildCollapse>
-      ))}
-    </Form>
+                <Row gutter={[0, 16]}>
+                  {section?.children?.map((child, Childndex) => {
+                    const required = child?.is_required;
+                    return (
+                      <Col span={24} key={child.id}>
+                        <SelectFormItem
+                          name={
+                            'c_' +
+                            convertToSnakeCase(child?.label) +
+                            '_' +
+                            Childndex +
+                            activeKey +
+                            (required ? '_required' : '')
+                          }
+                          label={
+                            <Typography name="Body 4/Medium">
+                              {formatStatus(child?.label)}
+                            </Typography>
+                          }
+                          rules={[
+                            child?.name || child.label === 'Email'
+                              ? {
+                                  type: 'email',
+                                  message:
+                                    'Please enter a valid email address!',
+                                }
+                              : {},
+                            {
+                              required: child?.is_required,
+                              message: 'This field is required!',
+                            },
+                          ]}
+                        >
+                          {getInputComponent(child)}
+                        </SelectFormItem>
+                      </Col>
+                    );
+                  })}
+                </Row>
+              </Panel>
+              <br />
+            </ChildCollapse>
+          ))}
+        </Form>
+      </Suspense>
+    </>
   );
 };
 

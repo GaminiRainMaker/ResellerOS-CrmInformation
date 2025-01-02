@@ -1,24 +1,24 @@
 'use client';
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import OsButton from '@/app/components/common/os-button';
 import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
-import { formatDate, getResultedValue } from '@/app/utils/base';
-import { HotTable } from '@handsontable/react';
-import { ArrowDownTrayIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
-import { updateProfitabilityById } from '../../../../../redux/actions/profitability';
-import { getQuoteById } from '../../../../../redux/actions/quote';
-import { updateQuoteLineItemById } from '../../../../../redux/actions/quotelineitem';
-import { updateRebateQuoteLineItemById } from '../../../../../redux/actions/rebateQuoteLineitem';
-import { updateValidationById } from '../../../../../redux/actions/validation';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
-import { registerAllModules } from 'handsontable/registry';
+import {formatDate, getResultedValue} from '@/app/utils/base';
+import {HotTable} from '@handsontable/react';
+import {ArrowDownTrayIcon, TrashIcon} from '@heroicons/react/24/outline';
+import {useRouter, useSearchParams} from 'next/navigation';
+import {Suspense, useEffect, useRef, useState} from 'react';
+import {updateProfitabilityById} from '../../../../../redux/actions/profitability';
+import {getQuoteById} from '../../../../../redux/actions/quote';
+import {updateQuoteLineItemById} from '../../../../../redux/actions/quotelineitem';
+import {updateRebateQuoteLineItemById} from '../../../../../redux/actions/rebateQuoteLineitem';
+import {updateValidationById} from '../../../../../redux/actions/validation';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {registerAllModules} from 'handsontable/registry';
 
 registerAllModules();
 
@@ -27,8 +27,8 @@ const UpdateGenerateQuote = () => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams()!;
   const getUserID = searchParams.get('id');
-  const { quoteById, loading } = useAppSelector((state) => state.quote);
-  const { concernQuoteLineItemData } = useAppSelector(
+  const {quoteById, loading} = useAppSelector((state) => state.quote);
+  const {concernQuoteLineItemData} = useAppSelector(
     (state) => state.quoteLineItem,
   );
   const [inputData, setInputData] = useState<any>(concernQuoteLineItemData);
@@ -91,7 +91,7 @@ const UpdateGenerateQuote = () => {
             setInputData((prev: any) =>
               prev?.map((prevItem: any) => {
                 if (prevItem.id === record?.id) {
-                  return { ...prevItem, line_number: v.target.value };
+                  return {...prevItem, line_number: v.target.value};
                 }
                 return prevItem;
               }),
@@ -116,7 +116,7 @@ const UpdateGenerateQuote = () => {
             setInputData((prev: any) =>
               prev?.map((prevItem: any) => {
                 if (prevItem.id === record?.id) {
-                  return { ...prevItem, product_code: v.target.value };
+                  return {...prevItem, product_code: v.target.value};
                 }
                 return prevItem;
               }),
@@ -139,7 +139,7 @@ const UpdateGenerateQuote = () => {
             setInputData((prev: any) =>
               prev?.map((prevItem: any) => {
                 if (prevItem.id === record?.id) {
-                  return { ...prevItem, quantity: v.target.value };
+                  return {...prevItem, quantity: v.target.value};
                 }
                 return prevItem;
               }),
@@ -164,7 +164,7 @@ const UpdateGenerateQuote = () => {
             setInputData((prev: any) =>
               prev?.map((prevItem: any) => {
                 if (prevItem.id === record?.id) {
-                  return { ...prevItem, list_price: v.target.value };
+                  return {...prevItem, list_price: v.target.value};
                 }
                 return prevItem;
               }),
@@ -188,7 +188,7 @@ const UpdateGenerateQuote = () => {
             setInputData((prev: any) =>
               prev?.map((prevItem: any) => {
                 if (prevItem.id === record?.id) {
-                  return { ...prevItem, adjusted_price: v.target.value };
+                  return {...prevItem, adjusted_price: v.target.value};
                 }
                 return prevItem;
               }),
@@ -212,7 +212,7 @@ const UpdateGenerateQuote = () => {
             setInputData((prev: any) =>
               prev?.map((prevItem: any) => {
                 if (prevItem.id === record?.id) {
-                  return { ...prevItem, line_amount: v.target.value };
+                  return {...prevItem, line_amount: v.target.value};
                 }
                 return prevItem;
               }),
@@ -236,7 +236,7 @@ const UpdateGenerateQuote = () => {
             setInputData((prev: any) =>
               prev?.map((prevItem: any) => {
                 if (prevItem.id === record?.id) {
-                  return { ...prevItem, description: v.target.value };
+                  return {...prevItem, description: v.target.value};
                 }
                 return prevItem;
               }),
@@ -256,11 +256,11 @@ const UpdateGenerateQuote = () => {
             height={24}
             width={24}
             color={token.colorError}
-            style={{ cursor: 'pointer' }}
-          // onClick={() => {
-          //   setSelectedRowIds([record?.id]);
-          //   setIsDeleteInputDetailModal(true);
-          // }}
+            style={{cursor: 'pointer'}}
+            // onClick={() => {
+            //   setSelectedRowIds([record?.id]);
+            //   setIsDeleteInputDetailModal(true);
+            // }}
           />
         </Space>
       ),
@@ -327,73 +327,75 @@ const UpdateGenerateQuote = () => {
 
   return (
     <Space size={24} direction="vertical">
-      <Row justify="space-between" align="middle">
-        <Col>
-          <OsBreadCrumb items={menuItems} />
-        </Col>
-        <Col>
-          <Space size={8} direction="horizontal">
-            <OsButton
-              loading={loading}
-              text="Save"
-              buttontype="SECONDARY"
-              clickHandler={() => {
-                updateData();
-              }}
-            />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Row justify="space-between" align="middle">
+          <Col>
+            <OsBreadCrumb items={menuItems} />
+          </Col>
+          <Col>
+            <Space size={8} direction="horizontal">
+              <OsButton
+                loading={loading}
+                text="Save"
+                buttontype="SECONDARY"
+                clickHandler={() => {
+                  updateData();
+                }}
+              />
 
-            <OsButton
-              buttontype="PRIMARY_ICON"
-              clickHandler={() => { }}
-              icon={<ArrowDownTrayIcon width={24} />}
+              <OsButton
+                buttontype="PRIMARY_ICON"
+                clickHandler={() => {}}
+                icon={<ArrowDownTrayIcon width={24} />}
+              />
+            </Space>
+          </Col>
+        </Row>
+        <Row style={{overflow: 'auto'}}>
+          <Col span={24}>
+            <HotTable
+              data={inputData}
+              ref={hotRef}
+              colWidths={200}
+              columnHeaderHeight={40}
+              height="auto"
+              // colHeaders={InputDetailQuoteLineItemcolumns}
+              width="auto"
+              minSpareRows={0}
+              autoWrapRow
+              autoWrapCol
+              licenseKey="non-commercial-and-evaluation"
+              dropdownMenu
+              hiddenColumns={{
+                indicators: true,
+              }}
+              contextMenu
+              multiColumnSorting
+              filters
+              rowHeaders
+              allowInsertRow={false}
+              allowInsertColumn
+              // afterGetColHeader={alignHeaders}
+              // beforeRenderer={() => {
+              //   addClassesToRows('', '', '', '', '', '', quoteItems);
+              // }}
+              // afterRemoveRow={(change, source) => {
+              //   deleteRowsItems(source, change);
+              // }}
+              // afterChange={(change: any, source) => {
+              //   if (change) {
+              //     updateRowsValue(
+              //       change?.[0]?.[0],
+              //       change?.[0]?.[1],
+              //       change?.[0]?.[3],
+              //     );
+              //   }
+              // }}
+              navigableHeaders
             />
-          </Space>
-        </Col>
-      </Row>
-      <Row style={{ overflow: 'auto' }}>
-        <Col span={24}>
-          <HotTable
-            data={inputData}
-            ref={hotRef}
-            colWidths={200}
-            columnHeaderHeight={40}
-            height="auto"
-            // colHeaders={InputDetailQuoteLineItemcolumns}
-            width="auto"
-            minSpareRows={0}
-            autoWrapRow
-            autoWrapCol
-            licenseKey="non-commercial-and-evaluation"
-            dropdownMenu
-            hiddenColumns={{
-              indicators: true,
-            }}
-            contextMenu
-            multiColumnSorting
-            filters
-            rowHeaders
-            allowInsertRow={false}
-            allowInsertColumn
-            // afterGetColHeader={alignHeaders}
-            // beforeRenderer={() => {
-            //   addClassesToRows('', '', '', '', '', '', quoteItems);
-            // }}
-            // afterRemoveRow={(change, source) => {
-            //   deleteRowsItems(source, change);
-            // }}
-            // afterChange={(change: any, source) => {
-            //   if (change) {
-            //     updateRowsValue(
-            //       change?.[0]?.[0],
-            //       change?.[0]?.[1],
-            //       change?.[0]?.[3],
-            //     );
-            //   }
-            // }}
-            navigableHeaders
-          />
-        </Col>
-      </Row>
+          </Col>
+        </Row>
+      </Suspense>
     </Space>
   );
 };

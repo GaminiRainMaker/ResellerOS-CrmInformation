@@ -19,7 +19,7 @@ import {
 } from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import {getAllOpportunityByOrganization} from '../../../../../../redux/actions/opportunity';
 import {getAllQuotesByOrganization} from '../../../../../../redux/actions/quote';
 import {
@@ -145,131 +145,137 @@ const MyProfile = () => {
 
   return (
     <>
-      <GlobalLoader loading={loading}>
-        <Row justify="space-between" style={{width: '100%'}} gutter={[16, 16]}>
-          <MyProfileCard data={UserDataById} />
-          <Space direction="vertical" size={24} style={{width: '100%'}}>
-            {UserDataById?.master_admin &&
-            UserDataById?.organization === 'rainmakercloud' ? (
-              <></>
-            ) : (
-              <Row gutter={[16, 16]} justify="center">
-                {analyticsData?.map((item: any) => (
-                  <Col xs={24} sm={24} md={24} lg={24} xl={8} xxl={8}>
-                    <DetailAnalyticCard
-                      primaryText={item?.primary}
-                      secondaryText={item?.secondry}
-                      fallbackIcon={item?.icon}
-                      iconBg={item?.iconBg}
+      <Suspense fallback={<div>Loading...</div>}>
+        <GlobalLoader loading={loading}>
+          <Row
+            justify="space-between"
+            style={{width: '100%'}}
+            gutter={[16, 16]}
+          >
+            <MyProfileCard data={UserDataById} />
+            <Space direction="vertical" size={24} style={{width: '100%'}}>
+              {UserDataById?.master_admin &&
+              UserDataById?.organization === 'rainmakercloud' ? (
+                <></>
+              ) : (
+                <Row gutter={[16, 16]} justify="center">
+                  {analyticsData?.map((item: any) => (
+                    <Col xs={24} sm={24} md={24} lg={24} xl={8} xxl={8}>
+                      <DetailAnalyticCard
+                        primaryText={item?.primary}
+                        secondaryText={item?.secondry}
+                        fallbackIcon={item?.icon}
+                        iconBg={item?.iconBg}
+                      />
+                    </Col>
+                  ))}
+                </Row>
+              )}
+
+              {getRole === 'admin' || getRole === 'superAdmin' ? (
+                <></>
+              ) : (
+                <>
+                  <CustomMyProfileContentDiv>
+                    <Row justify="space-between">
+                      <Col>
+                        <Typography
+                          name="Body 2/Medium"
+                          color={token?.colorPrimaryText}
+                        >
+                          Profile Details
+                        </Typography>
+                      </Col>
+                      <Col>
+                        {!profileDetailEditable ? (
+                          <Space size={5}>
+                            <OsButton
+                              text="Cancel"
+                              buttontype="SECONDARY"
+                              clickHandler={() => {
+                                setProfileDetailEditable(true);
+                              }}
+                            />
+                            <OsButton
+                              text="Save"
+                              buttontype="PRIMARY"
+                              clickHandler={userDetailForm?.submit}
+                            />
+                          </Space>
+                        ) : (
+                          <OsButton
+                            text="Edit"
+                            buttontype="PRIMARY"
+                            icon={<PencilSquareIcon width={20} />}
+                            clickHandler={() => {
+                              setProfileDetailEditable(false);
+                            }}
+                          />
+                        )}
+                      </Col>
+                    </Row>
+                    <br />
+                    <br />
+                    <EditUserDetails
+                      onFinish={updateUserDetail}
+                      form={userDetailForm}
+                      isEditable={profileDetailEditable}
                     />
-                  </Col>
-                ))}
-              </Row>
-            )}
+                  </CustomMyProfileContentDiv>
 
-            {getRole === 'admin' || getRole === 'superAdmin' ? (
-              <></>
-            ) : (
-              <>
-                <CustomMyProfileContentDiv>
-                  <Row justify="space-between">
-                    <Col>
-                      <Typography
-                        name="Body 2/Medium"
-                        color={token?.colorPrimaryText}
-                      >
-                        Profile Details
-                      </Typography>
-                    </Col>
-                    <Col>
-                      {!profileDetailEditable ? (
-                        <Space size={5}>
+                  <CustomMyProfileContentDiv>
+                    <Row justify="space-between">
+                      <Col>
+                        <Typography
+                          name="Body 2/Medium"
+                          color={token?.colorPrimaryText}
+                        >
+                          Change Password
+                        </Typography>
+                      </Col>
+                      <Col>
+                        {!changePasswordEditable ? (
+                          <Space size={5}>
+                            <OsButton
+                              text="Cancel"
+                              buttontype="SECONDARY"
+                              clickHandler={() => {
+                                setChangePasswordEditable(true);
+                                changePasswordForm?.resetFields();
+                              }}
+                            />
+                            <OsButton
+                              text="Save"
+                              buttontype="PRIMARY"
+                              clickHandler={changePasswordForm?.submit}
+                            />
+                          </Space>
+                        ) : (
                           <OsButton
-                            text="Cancel"
-                            buttontype="SECONDARY"
+                            text="Edit"
+                            buttontype="PRIMARY"
+                            icon={<PencilSquareIcon width={20} />}
                             clickHandler={() => {
-                              setProfileDetailEditable(true);
+                              setChangePasswordEditable(false);
                             }}
                           />
-                          <OsButton
-                            text="Save"
-                            buttontype="PRIMARY"
-                            clickHandler={userDetailForm?.submit}
-                          />
-                        </Space>
-                      ) : (
-                        <OsButton
-                          text="Edit"
-                          buttontype="PRIMARY"
-                          icon={<PencilSquareIcon width={20} />}
-                          clickHandler={() => {
-                            setProfileDetailEditable(false);
-                          }}
-                        />
-                      )}
-                    </Col>
-                  </Row>
-                  <br />
-                  <br />
-                  <EditUserDetails
-                    onFinish={updateUserDetail}
-                    form={userDetailForm}
-                    isEditable={profileDetailEditable}
-                  />
-                </CustomMyProfileContentDiv>
-
-                <CustomMyProfileContentDiv>
-                  <Row justify="space-between">
-                    <Col>
-                      <Typography
-                        name="Body 2/Medium"
-                        color={token?.colorPrimaryText}
-                      >
-                        Change Password
-                      </Typography>
-                    </Col>
-                    <Col>
-                      {!changePasswordEditable ? (
-                        <Space size={5}>
-                          <OsButton
-                            text="Cancel"
-                            buttontype="SECONDARY"
-                            clickHandler={() => {
-                              setChangePasswordEditable(true);
-                              changePasswordForm?.resetFields();
-                            }}
-                          />
-                          <OsButton
-                            text="Save"
-                            buttontype="PRIMARY"
-                            clickHandler={changePasswordForm?.submit}
-                          />
-                        </Space>
-                      ) : (
-                        <OsButton
-                          text="Edit"
-                          buttontype="PRIMARY"
-                          icon={<PencilSquareIcon width={20} />}
-                          clickHandler={() => {
-                            setChangePasswordEditable(false);
-                          }}
-                        />
-                      )}
-                    </Col>
-                  </Row>
-                  <br />
-                  <br />
-                  <ChangePassword
-                    onFinish={changePasswordValue}
-                    form={changePasswordForm}
-                    isEditable={changePasswordEditable}
-                  />
-                </CustomMyProfileContentDiv>
-              </>
-            )}
-          </Space>
-        </Row>
-      </GlobalLoader>
+                        )}
+                      </Col>
+                    </Row>
+                    <br />
+                    <br />
+                    <ChangePassword
+                      onFinish={changePasswordValue}
+                      form={changePasswordForm}
+                      isEditable={changePasswordEditable}
+                    />
+                  </CustomMyProfileContentDiv>
+                </>
+              )}
+            </Space>
+          </Row>
+        </GlobalLoader>
+      </Suspense>
     </>
   );
 };

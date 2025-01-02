@@ -8,7 +8,7 @@ import Typography from '@/app/components/common/typography';
 import {TrashIcon} from '@heroicons/react/24/outline';
 import {Form, Space, notification} from 'antd';
 import {useSearchParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
+import {FC, Suspense, useEffect, useState} from 'react';
 import {
   deleteAttachDocumentById,
   getAllAttachmentDocument,
@@ -239,52 +239,54 @@ const AttachmentDocument: FC<any> = ({
 
   return (
     <>
-      {contextHolder}
-      {filteredData && (
-        <OsTableWithOutDrag
-          columns={InputDetailQuoteLineItemcolumns}
-          dataSource={filteredData}
-          scroll
-          loading={loadingShow}
-          locale={locale}
-          defaultPageSize={filteredData?.length}
-        />
-      )}
-
-      <OsModal
-        disabledButton={uploadFileData?.length === 0}
-        loading={loading}
-        width={700}
-        open={addNewCustomerQuote}
-        onCancel={() => {
-          setAddNewCustomerQuote(false);
-          setUploadFileData([]);
-        }}
-        bodyPadding={20}
-        title="Add Customer Attachments"
-        primaryButtonText={'Save'}
-        onOk={attachmentForm.submit}
-        body={
-          <Attachments
-            uploadFileData={uploadFileData}
-            setUploadFileData={setUploadFileData}
-            addNewAttachment={addNewAttachment}
-            form={attachmentForm}
+      <Suspense fallback={<div>Loading...</div>}>
+        {contextHolder}
+        {filteredData && (
+          <OsTableWithOutDrag
+            columns={InputDetailQuoteLineItemcolumns}
+            dataSource={filteredData}
+            scroll
+            loading={loadingShow}
+            locale={locale}
+            defaultPageSize={filteredData?.length}
           />
-        }
-      />
+        )}
 
-      <DeleteModal
-        setShowModalDelete={setShowDeleteModal}
-        setDeleteIds={setDeletedData}
-        showModalDelete={showDeleteModal}
-        deleteSelectedIds={deleteSelectedIds}
-        description="Are you sure you want to delete this attachment?"
-        heading="Delete Attachment"
-        setCheckedValue={
-          deletedData?.type === 'Vendor Quote' && setCheckedValue
-        }
-      />
+        <OsModal
+          disabledButton={uploadFileData?.length === 0}
+          loading={loading}
+          width={700}
+          open={addNewCustomerQuote}
+          onCancel={() => {
+            setAddNewCustomerQuote(false);
+            setUploadFileData([]);
+          }}
+          bodyPadding={20}
+          title="Add Customer Attachments"
+          primaryButtonText={'Save'}
+          onOk={attachmentForm.submit}
+          body={
+            <Attachments
+              uploadFileData={uploadFileData}
+              setUploadFileData={setUploadFileData}
+              addNewAttachment={addNewAttachment}
+              form={attachmentForm}
+            />
+          }
+        />
+
+        <DeleteModal
+          setShowModalDelete={setShowDeleteModal}
+          setDeleteIds={setDeletedData}
+          showModalDelete={showDeleteModal}
+          deleteSelectedIds={deleteSelectedIds}
+          description="Are you sure you want to delete this attachment?"
+          heading="Delete Attachment"
+          setCheckedValue={
+            deletedData?.type === 'Vendor Quote' && setCheckedValue
+          }
+        />
+      </Suspense>
     </>
   );
 };

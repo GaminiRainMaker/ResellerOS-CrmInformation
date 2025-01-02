@@ -29,7 +29,7 @@ import {
 } from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import {updateAssignPartnerProgramById} from '../../../../../redux/actions/assignPartnerProgram';
 import {
   deletePartner,
@@ -1111,404 +1111,416 @@ const SuperAdminPartner: React.FC = () => {
 
   return (
     <>
-      <Space size={24} direction="vertical" style={{width: '100%'}}>
-        <SuperAdminPartnerAnalytics data={superAdminPartnerAnalyticData} />
-        <Row justify="space-between" align="middle">
-          <Col>
-            <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-              All Partners
-            </Typography>
-          </Col>
-          <Col style={{display: 'flex', alignItems: 'center'}}>
-            <Space size={12} style={{height: '48px'}}>
-              <OsButton
-                text="New Partner"
-                buttontype="PRIMARY"
-                icon={<PlusIcon />}
-                clickHandler={() => setShowAddPartnerModal((p) => !p)}
-              />
-              <OsButton
-                icon={<PlusIcon color={token?.colorPrimary} />}
-                text="New Partner Program"
-                buttontype="SECONDARY"
-                clickHandler={() => setShowAddProgramModal((p) => !p)}
-              />
-            </Space>
-          </Col>
-        </Row>
-
-        <Row
-          style={{background: 'white', padding: '24px', borderRadius: '12px'}}
-        >
-          <OsTabs
-            activeKey={activeTab?.toString()}
-            items={superAdmintabItems}
-            tabBarExtraContent={
-              <Space size={12} align="center">
-                <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">Partner</Typography>
-                  <CommonSelect
-                    style={{width: '200px'}}
-                    placeholder="Search here"
-                    showSearch
-                    options={partnerOptions}
-                    onSearch={(e) => {
-                      setQueryData({
-                        ...queryDataa,
-                        partnerQuery: e,
-                      });
-                    }}
-                    onChange={(e) => {
-                      setQueryData({
-                        ...queryDataa,
-                        partnerQuery: e,
-                      });
-                    }}
-                    value={queryDataa?.partnerQuery}
-                  />
-                </Space>
-
-                <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium"> Partner Program</Typography>
-                  <CommonSelect
-                    style={{width: '200px'}}
-                    placeholder="Search here"
-                    options={partnerProgramOptions}
-                    showSearch
-                    onSearch={(e) => {
-                      setQueryData({
-                        ...queryDataa,
-                        partnerprogramQuery: e,
-                      });
-                    }}
-                    onChange={(e) => {
-                      setQueryData({
-                        ...queryDataa,
-                        partnerprogramQuery: e,
-                      });
-                    }}
-                    value={queryDataa?.partnerprogramQuery}
-                  />
-                </Space>
-
-                <div
-                  style={{
-                    marginTop: '15px',
-                  }}
-                >
-                  <Typography
-                    cursor="pointer"
-                    name="Button 1"
-                    color={
-                      queryDataa?.partnerQuery ||
-                      queryDataa?.partnerprogramQuery
-                        ? '#0D0D0D'
-                        : '#C6CDD5'
-                    }
-                    onClick={() => {
-                      setQueryData({
-                        partnerQuery: '',
-                        partnerprogramQuery: '',
-                        size: 10,
-                      });
-                    }}
-                  >
-                    Reset
-                  </Typography>
-                </div>
-              </Space>
-              // <Space size={12} align="center">
-              //   <Space direction="vertical" size={0}>
-              //     <Typography name="Body 4/Medium">Partner</Typography>
-              //     <OsInput
-              //       value={queryDataa?.partnerQuery}
-              //       onChange={(e: any) => {
-              //         setQueryData({
-              //           ...queryDataa,
-              //           partnerQuery: e?.target?.value,
-              //         });
-              //       }}
-              //     />
-              //   </Space>
-              //   <Space direction="vertical" size={0}>
-              //     <Typography name="Body 4/Medium">Partner Program</Typography>
-              //     <OsInput
-              //       value={queryDataa?.partnerprogramQuery}
-              //       onChange={(e: any) => {
-              //         setQueryData({
-              //           ...queryDataa,
-              //           partnerprogramQuery: e?.target?.value,
-              //         });
-              //       }}
-              //     />
-              //   </Space>
-              //   <div
-              //     style={{
-              //       display: 'flex',
-              //       alignItems: 'center',
-              //       justifyContent: 'center',
-              //       marginTop: '20px',
-              //     }}
-              //   >
-              //     <Typography
-              //       cursor="pointer"
-              //       name="Button 1"
-              //       style={{cursor: 'pointer'}}
-              //       color={token?.colorLink}
-              //       onClick={() => {
-              //         setQueryData({});
-              //       }}
-              //     >
-              //       Reset
-              //     </Typography>
-              //   </div>
-              // </Space>
-            }
-          />
-        </Row>
-      </Space>
-
-      <OsModal
-        loading={insertPartnerLoading}
-        body={
-          <AddPartner
-            form={form}
-            setOpen={setShowAddPartnerModal}
-            setUpdateTheObject={setUpdateTheObject}
-            updateTheObject={updateTheObject}
-            getPartnerDataForSuperAdmin={getPartnerDataForSuperAdmin}
-          />
-        }
-        width={800}
-        open={showAddPartnerModal}
-        onCancel={() => {
-          setShowAddPartnerModal((p) => !p);
-        }}
-        footer
-        primaryButtonText="Create"
-        onOk={form?.submit}
-        footerPadding={30}
-      />
-
-      <OsModal
-        loading={insertProgramLoading}
-        body={
-          <AddPartnerProgram
-            form={form}
-            setOpen={setShowAddProgramModal}
-            partnerData={allPartnerData?.AllPartner}
-            setUpdateTheObject={setUpdateTheObject}
-            updateTheObject={updateTheObject}
-            getPartnerDataForSuperAdmin={getPartnerDataForSuperAdmin}
-          />
-        }
-        width={800}
-        open={showAddProgramModal}
-        onCancel={() => {
-          setShowAddProgramModal((p) => !p);
-        }}
-        footer
-        primaryButtonText="Create"
-        onOk={form?.submit}
-        footerPadding={30}
-      />
-
-      <OsDrawer
-        title={<Typography name="Body 1/Regular">Update Partner</Typography>}
-        placement="right"
-        onClose={() => {
-          setShowPartnerDrawer((p) => !p);
-          setUpdateTheObject({});
-          form?.resetFields();
-        }}
-        open={showPartnerDrawer}
-        width={450}
-        footer={
-          <Row style={{width: '100%', float: 'right'}}>
-            <OsButton
-              btnStyle={{width: '100%'}}
-              buttontype="PRIMARY"
-              text="Update Changes"
-              clickHandler={form?.submit}
-            />
-          </Row>
-        }
-      >
-        <AddPartner
-          form={form}
-          setOpen={setShowPartnerDrawer}
-          formPartnerData={formPartnerData}
-          drawer={true}
-          setUpdateTheObject={setUpdateTheObject}
-          updateTheObject={updateTheObject}
-          getPartnerDataForSuperAdmin={getPartnerDataForSuperAdmin}
-        />
-      </OsDrawer>
-
-      <OsDrawer
-        title={
-          <Typography name="Body 1/Regular">Update Partner Program</Typography>
-        }
-        placement="right"
-        onClose={() => {
-          setShowPartnerProgramDrawer((p) => !p);
-          setUpdateTheObject({});
-          form?.resetFields();
-        }}
-        open={showPartnerProgramDrawer}
-        width={450}
-        footer={
-          <Row style={{width: '100%', float: 'right'}}>
-            <OsButton
-              btnStyle={{width: '100%'}}
-              buttontype="PRIMARY"
-              text="Update Changes"
-              clickHandler={form?.submit}
-            />
-          </Row>
-        }
-      >
-        <AddPartnerProgram
-          form={form}
-          partnerData={allPartnerData?.AllPartner}
-          setOpen={setShowPartnerProgramDrawer}
-          formPartnerData={formPartnerProgramData}
-          drawer
-          setUpdateTheObject={setUpdateTheObject}
-          updateTheObject={updateTheObject}
-          getPartnerDataForSuperAdmin={getPartnerDataForSuperAdmin}
-        />
-      </OsDrawer>
-
-      <DeleteModal
-        setShowModalDelete={setShowPartnerProgramDeleteModal}
-        setDeleteIds={setDeletePartnerProgramIds}
-        showModalDelete={showPartnerProgramDeleteModal}
-        deleteSelectedIds={deleteSelectedPartnerProgramIds}
-        heading="Delete Partner Program"
-        description="Are you sure you want to delete this partner program?"
-      />
-
-      <DeleteModal
-        setShowModalDelete={setShowPartnerDeleteModal}
-        setDeleteIds={setDeletePartnerIds}
-        showModalDelete={showPartnerDeleteModal}
-        deleteSelectedIds={deleteSelectedPartnerIds}
-        heading="Delete Partner"
-        description="Are you sure you want to delete this partner?"
-      />
-
-      <OsModal
-        bodyPadding={22}
-        loading={loading}
-        body={
-          <>
-            {' '}
-            <FormBuilderMain
-              cartItems={formData?.formObject}
-              form={form}
-              // eslint-disable-next-line react/jsx-boolean-value
-              previewFile
-            />
-            <Space
-              align="end"
-              size={8}
-              style={{display: 'flex', justifyContent: 'end'}}
-            >
-              <OsButton
-                buttontype="PRIMARY"
-                text="Delete"
-                clickHandler={() => {
-                  deletePartnerProgramTemplate(formData?.Id, 'form_data');
-                }}
-              />
-              <OsButton
-                buttontype="SECONDARY"
-                text="EDIT"
-                clickHandler={() => {
-                  router?.push(`/formBuilder?id=${formData?.Id}`);
-                }}
-              />{' '}
-            </Space>
-          </>
-        }
-        width={900}
-        open={openPreviewModal}
-        onCancel={() => {
-          setOpenPreviewModal(false);
-          programScriptForm?.resetFields();
-        }}
-      />
-
-      <OsModal
-        loading={insertProgramLoading}
-        title="Add Script"
-        bodyPadding={22}
-        body={
-          <AddPartnerProgramScript
-            form={programScriptForm}
-            onFinish={programScript}
-          />
-        }
-        width={583}
-        open={showScriptModal}
-        onOk={programScriptForm?.submit}
-        onCancel={() => {
-          setShowScriptModal(false);
-        }}
-        primaryButtonText={'Save'}
-      />
-
-      <OsModal
-        loading={loading}
-        body={
-          <div>
-            <Space
-              direction="vertical"
-              size={12}
-              style={{width: '100%', textAlign: 'center'}}
-            >
+      <Suspense fallback={<div>Loading...</div>}>
+        <Space size={24} direction="vertical" style={{width: '100%'}}>
+          <SuperAdminPartnerAnalytics data={superAdminPartnerAnalyticData} />
+          <Row justify="space-between" align="middle">
+            <Col>
               <Typography
                 name="Heading 3/Medium"
                 color={token?.colorPrimaryText}
               >
-                {`Rejected  Partner Program`}
+                All Partners
               </Typography>
+            </Col>
+            <Col style={{display: 'flex', alignItems: 'center'}}>
+              <Space size={12} style={{height: '48px'}}>
+                <OsButton
+                  text="New Partner"
+                  buttontype="PRIMARY"
+                  icon={<PlusIcon />}
+                  clickHandler={() => setShowAddPartnerModal((p) => !p)}
+                />
+                <OsButton
+                  icon={<PlusIcon color={token?.colorPrimary} />}
+                  text="New Partner Program"
+                  buttontype="SECONDARY"
+                  clickHandler={() => setShowAddProgramModal((p) => !p)}
+                />
+              </Space>
+            </Col>
+          </Row>
 
-              <Typography name="Body 3/Regular" color={token?.colorPrimaryText}>
-                Are you sure you want to "Reject" this partner program?{' '}
-              </Typography>
-            </Space>
+          <Row
+            style={{background: 'white', padding: '24px', borderRadius: '12px'}}
+          >
+            <OsTabs
+              activeKey={activeTab?.toString()}
+              items={superAdmintabItems}
+              tabBarExtraContent={
+                <Space size={12} align="center">
+                  <Space direction="vertical" size={0}>
+                    <Typography name="Body 4/Medium">Partner</Typography>
+                    <CommonSelect
+                      style={{width: '200px'}}
+                      placeholder="Search here"
+                      showSearch
+                      options={partnerOptions}
+                      onSearch={(e) => {
+                        setQueryData({
+                          ...queryDataa,
+                          partnerQuery: e,
+                        });
+                      }}
+                      onChange={(e) => {
+                        setQueryData({
+                          ...queryDataa,
+                          partnerQuery: e,
+                        });
+                      }}
+                      value={queryDataa?.partnerQuery}
+                    />
+                  </Space>
 
-            <Form
-              layout="vertical"
-              onFinish={onFinsh}
+                  <Space direction="vertical" size={0}>
+                    <Typography name="Body 4/Medium">
+                      {' '}
+                      Partner Program
+                    </Typography>
+                    <CommonSelect
+                      style={{width: '200px'}}
+                      placeholder="Search here"
+                      options={partnerProgramOptions}
+                      showSearch
+                      onSearch={(e) => {
+                        setQueryData({
+                          ...queryDataa,
+                          partnerprogramQuery: e,
+                        });
+                      }}
+                      onChange={(e) => {
+                        setQueryData({
+                          ...queryDataa,
+                          partnerprogramQuery: e,
+                        });
+                      }}
+                      value={queryDataa?.partnerprogramQuery}
+                    />
+                  </Space>
+
+                  <div
+                    style={{
+                      marginTop: '15px',
+                    }}
+                  >
+                    <Typography
+                      cursor="pointer"
+                      name="Button 1"
+                      color={
+                        queryDataa?.partnerQuery ||
+                        queryDataa?.partnerprogramQuery
+                          ? '#0D0D0D'
+                          : '#C6CDD5'
+                      }
+                      onClick={() => {
+                        setQueryData({
+                          partnerQuery: '',
+                          partnerprogramQuery: '',
+                          size: 10,
+                        });
+                      }}
+                    >
+                      Reset
+                    </Typography>
+                  </div>
+                </Space>
+                // <Space size={12} align="center">
+                //   <Space direction="vertical" size={0}>
+                //     <Typography name="Body 4/Medium">Partner</Typography>
+                //     <OsInput
+                //       value={queryDataa?.partnerQuery}
+                //       onChange={(e: any) => {
+                //         setQueryData({
+                //           ...queryDataa,
+                //           partnerQuery: e?.target?.value,
+                //         });
+                //       }}
+                //     />
+                //   </Space>
+                //   <Space direction="vertical" size={0}>
+                //     <Typography name="Body 4/Medium">Partner Program</Typography>
+                //     <OsInput
+                //       value={queryDataa?.partnerprogramQuery}
+                //       onChange={(e: any) => {
+                //         setQueryData({
+                //           ...queryDataa,
+                //           partnerprogramQuery: e?.target?.value,
+                //         });
+                //       }}
+                //     />
+                //   </Space>
+                //   <div
+                //     style={{
+                //       display: 'flex',
+                //       alignItems: 'center',
+                //       justifyContent: 'center',
+                //       marginTop: '20px',
+                //     }}
+                //   >
+                //     <Typography
+                //       cursor="pointer"
+                //       name="Button 1"
+                //       style={{cursor: 'pointer'}}
+                //       color={token?.colorLink}
+                //       onClick={() => {
+                //         setQueryData({});
+                //       }}
+                //     >
+                //       Reset
+                //     </Typography>
+                //   </div>
+                // </Space>
+              }
+            />
+          </Row>
+        </Space>
+
+        <OsModal
+          loading={insertPartnerLoading}
+          body={
+            <AddPartner
               form={form}
-              requiredMark={false}
-            >
-              <SelectFormItem
-                label={
-                  <Typography name="Body 4/Medium">
-                    Reason for Rejection{' '}
-                  </Typography>
-                }
-                name="reason"
-                rules={[
-                  {
-                    required: true,
-                    message: 'This is required field!',
-                  },
-                ]}
+              setOpen={setShowAddPartnerModal}
+              setUpdateTheObject={setUpdateTheObject}
+              updateTheObject={updateTheObject}
+              getPartnerDataForSuperAdmin={getPartnerDataForSuperAdmin}
+            />
+          }
+          width={800}
+          open={showAddPartnerModal}
+          onCancel={() => {
+            setShowAddPartnerModal((p) => !p);
+          }}
+          footer
+          primaryButtonText="Create"
+          onOk={form?.submit}
+          footerPadding={30}
+        />
+
+        <OsModal
+          loading={insertProgramLoading}
+          body={
+            <AddPartnerProgram
+              form={form}
+              setOpen={setShowAddProgramModal}
+              partnerData={allPartnerData?.AllPartner}
+              setUpdateTheObject={setUpdateTheObject}
+              updateTheObject={updateTheObject}
+              getPartnerDataForSuperAdmin={getPartnerDataForSuperAdmin}
+            />
+          }
+          width={800}
+          open={showAddProgramModal}
+          onCancel={() => {
+            setShowAddProgramModal((p) => !p);
+          }}
+          footer
+          primaryButtonText="Create"
+          onOk={form?.submit}
+          footerPadding={30}
+        />
+
+        <OsDrawer
+          title={<Typography name="Body 1/Regular">Update Partner</Typography>}
+          placement="right"
+          onClose={() => {
+            setShowPartnerDrawer((p) => !p);
+            setUpdateTheObject({});
+            form?.resetFields();
+          }}
+          open={showPartnerDrawer}
+          width={450}
+          footer={
+            <Row style={{width: '100%', float: 'right'}}>
+              <OsButton
+                btnStyle={{width: '100%'}}
+                buttontype="PRIMARY"
+                text="Update Changes"
+                clickHandler={form?.submit}
+              />
+            </Row>
+          }
+        >
+          <AddPartner
+            form={form}
+            setOpen={setShowPartnerDrawer}
+            formPartnerData={formPartnerData}
+            drawer={true}
+            setUpdateTheObject={setUpdateTheObject}
+            updateTheObject={updateTheObject}
+            getPartnerDataForSuperAdmin={getPartnerDataForSuperAdmin}
+          />
+        </OsDrawer>
+
+        <OsDrawer
+          title={
+            <Typography name="Body 1/Regular">
+              Update Partner Program
+            </Typography>
+          }
+          placement="right"
+          onClose={() => {
+            setShowPartnerProgramDrawer((p) => !p);
+            setUpdateTheObject({});
+            form?.resetFields();
+          }}
+          open={showPartnerProgramDrawer}
+          width={450}
+          footer={
+            <Row style={{width: '100%', float: 'right'}}>
+              <OsButton
+                btnStyle={{width: '100%'}}
+                buttontype="PRIMARY"
+                text="Update Changes"
+                clickHandler={form?.submit}
+              />
+            </Row>
+          }
+        >
+          <AddPartnerProgram
+            form={form}
+            partnerData={allPartnerData?.AllPartner}
+            setOpen={setShowPartnerProgramDrawer}
+            formPartnerData={formPartnerProgramData}
+            drawer
+            setUpdateTheObject={setUpdateTheObject}
+            updateTheObject={updateTheObject}
+            getPartnerDataForSuperAdmin={getPartnerDataForSuperAdmin}
+          />
+        </OsDrawer>
+
+        <DeleteModal
+          setShowModalDelete={setShowPartnerProgramDeleteModal}
+          setDeleteIds={setDeletePartnerProgramIds}
+          showModalDelete={showPartnerProgramDeleteModal}
+          deleteSelectedIds={deleteSelectedPartnerProgramIds}
+          heading="Delete Partner Program"
+          description="Are you sure you want to delete this partner program?"
+        />
+
+        <DeleteModal
+          setShowModalDelete={setShowPartnerDeleteModal}
+          setDeleteIds={setDeletePartnerIds}
+          showModalDelete={showPartnerDeleteModal}
+          deleteSelectedIds={deleteSelectedPartnerIds}
+          heading="Delete Partner"
+          description="Are you sure you want to delete this partner?"
+        />
+
+        <OsModal
+          bodyPadding={22}
+          loading={loading}
+          body={
+            <>
+              {' '}
+              <FormBuilderMain
+                cartItems={formData?.formObject}
+                form={form}
+                // eslint-disable-next-line react/jsx-boolean-value
+                previewFile
+              />
+              <Space
+                align="end"
+                size={8}
+                style={{display: 'flex', justifyContent: 'end'}}
               >
-                <OsInput
-                  value={rejectReason}
-                  onChange={(e: any) => {
-                    setRejectReason(e?.target?.value);
+                <OsButton
+                  buttontype="PRIMARY"
+                  text="Delete"
+                  clickHandler={() => {
+                    deletePartnerProgramTemplate(formData?.Id, 'form_data');
                   }}
                 />
-              </SelectFormItem>
-            </Form>
-            {/* <div style={{marginTop: '10px'}}>
+                <OsButton
+                  buttontype="SECONDARY"
+                  text="EDIT"
+                  clickHandler={() => {
+                    router?.push(`/formBuilder?id=${formData?.Id}`);
+                  }}
+                />{' '}
+              </Space>
+            </>
+          }
+          width={900}
+          open={openPreviewModal}
+          onCancel={() => {
+            setOpenPreviewModal(false);
+            programScriptForm?.resetFields();
+          }}
+        />
+
+        <OsModal
+          loading={insertProgramLoading}
+          title="Add Script"
+          bodyPadding={22}
+          body={
+            <AddPartnerProgramScript
+              form={programScriptForm}
+              onFinish={programScript}
+            />
+          }
+          width={583}
+          open={showScriptModal}
+          onOk={programScriptForm?.submit}
+          onCancel={() => {
+            setShowScriptModal(false);
+          }}
+          primaryButtonText={'Save'}
+        />
+
+        <OsModal
+          loading={loading}
+          body={
+            <div>
+              <Space
+                direction="vertical"
+                size={12}
+                style={{width: '100%', textAlign: 'center'}}
+              >
+                <Typography
+                  name="Heading 3/Medium"
+                  color={token?.colorPrimaryText}
+                >
+                  {`Rejected  Partner Program`}
+                </Typography>
+
+                <Typography
+                  name="Body 3/Regular"
+                  color={token?.colorPrimaryText}
+                >
+                  Are you sure you want to "Reject" this partner program?{' '}
+                </Typography>
+              </Space>
+
+              <Form
+                layout="vertical"
+                onFinish={onFinsh}
+                form={form}
+                requiredMark={false}
+              >
+                <SelectFormItem
+                  label={
+                    <Typography name="Body 4/Medium">
+                      Reason for Rejection{' '}
+                    </Typography>
+                  }
+                  name="reason"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'This is required field!',
+                    },
+                  ]}
+                >
+                  <OsInput
+                    value={rejectReason}
+                    onChange={(e: any) => {
+                      setRejectReason(e?.target?.value);
+                    }}
+                  />
+                </SelectFormItem>
+              </Form>
+              {/* <div style={{marginTop: '10px'}}>
               <Typography name="Body 4/Medium">
                 Reason for Rejection{' '}
               </Typography>
@@ -1519,21 +1531,22 @@ const SuperAdminPartner: React.FC = () => {
                 }}
               />
             </div> */}
-          </div>
-        }
-        bodyPadding={40}
-        width={511}
-        open={showRejectModal}
-        // open={true}
-        onCancel={() => {
-          setShowRejectModal(false);
-        }}
-        destroyOnClose
-        secondaryButtonText="Cancel"
-        primaryButtonText="Reject"
-        onOk={form.submit}
-        styleFooter
-      />
+            </div>
+          }
+          bodyPadding={40}
+          width={511}
+          open={showRejectModal}
+          // open={true}
+          onCancel={() => {
+            setShowRejectModal(false);
+          }}
+          destroyOnClose
+          secondaryButtonText="Cancel"
+          primaryButtonText="Reject"
+          onOk={form.submit}
+          styleFooter
+        />
+      </Suspense>
     </>
   );
 };

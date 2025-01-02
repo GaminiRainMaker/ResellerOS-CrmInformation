@@ -12,7 +12,7 @@ import Typography from '@/app/components/common/typography';
 import {PencilSquareIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useState} from 'react';
+import {useState, Suspense} from 'react';
 import {updateAddress} from '../../../../../redux/actions/address';
 import {
   deleteCustomers,
@@ -141,60 +141,64 @@ const DetailCard = () => {
   };
   return (
     <>
-      <ProfileCard
-        contactCardData={contactCardData}
-        headerIcons={headerIcons}
-        customerData={customerUpdatedData}
-      />
-      <OsModal
-        width={1115}
-        open={showAllContactModal}
-        onCancel={() => {
-          setShowAllContactModal((p) => !p);
-        }}
-        bodyPadding={40}
-        title="All Contacts"
-        body={<OsContactCard data={customerData?.BillingContacts} />}
-      />
-      <DeleteModal
-        setShowModalDelete={setShowModalDelete}
-        setDeleteIds={setDeleteIds}
-        showModalDelete={showModalDelete}
-        deleteSelectedIds={deleteSelectedIds}
-        heading="Delete Account"
-        description="Are you sure you want to delete this account?"
-      />
-
-      <OsDrawer
-        title={<Typography name="Body 1/Regular">Customer Details</Typography>}
-        placement="right"
-        onClose={() => {
-          setShowDrawer(false);
-          setObjectValueForContact({});
-          setActiveKeyForTabs('1');
-        }}
-        open={showDrawer}
-        width={450}
-        footer={
-          <OsButton
-            btnStyle={{width: '100%'}}
-            buttontype="PRIMARY"
-            text="Update Changes"
-            clickHandler={form.submit}
-          />
-        }
-      >
-        <AddCustomer
-          form={form}
-          onFinish={updateCustomerDetails}
-          drawer
-          setActiveKeyForTabs={setActiveKeyForTabs}
-          activeKeyForTabs={activeKeyForTabs}
-          contactDetail={contactDetail}
-          customerData={customerData}
-          setContactDetail={setContactDetail}
+      <Suspense fallback={<div>Loading...</div>}>
+        <ProfileCard
+          contactCardData={contactCardData}
+          headerIcons={headerIcons}
+          customerData={customerUpdatedData}
         />
-      </OsDrawer>
+        <OsModal
+          width={1115}
+          open={showAllContactModal}
+          onCancel={() => {
+            setShowAllContactModal((p) => !p);
+          }}
+          bodyPadding={40}
+          title="All Contacts"
+          body={<OsContactCard data={customerData?.BillingContacts} />}
+        />
+        <DeleteModal
+          setShowModalDelete={setShowModalDelete}
+          setDeleteIds={setDeleteIds}
+          showModalDelete={showModalDelete}
+          deleteSelectedIds={deleteSelectedIds}
+          heading="Delete Account"
+          description="Are you sure you want to delete this account?"
+        />
+
+        <OsDrawer
+          title={
+            <Typography name="Body 1/Regular">Customer Details</Typography>
+          }
+          placement="right"
+          onClose={() => {
+            setShowDrawer(false);
+            setObjectValueForContact({});
+            setActiveKeyForTabs('1');
+          }}
+          open={showDrawer}
+          width={450}
+          footer={
+            <OsButton
+              btnStyle={{width: '100%'}}
+              buttontype="PRIMARY"
+              text="Update Changes"
+              clickHandler={form.submit}
+            />
+          }
+        >
+          <AddCustomer
+            form={form}
+            onFinish={updateCustomerDetails}
+            drawer
+            setActiveKeyForTabs={setActiveKeyForTabs}
+            activeKeyForTabs={activeKeyForTabs}
+            contactDetail={contactDetail}
+            customerData={customerData}
+            setContactDetail={setContactDetail}
+          />
+        </OsDrawer>
+      </Suspense>
     </>
   );
 };

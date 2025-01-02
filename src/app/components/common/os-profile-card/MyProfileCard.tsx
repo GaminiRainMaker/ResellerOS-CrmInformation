@@ -10,7 +10,7 @@ import {notification} from 'antd';
 import ImgCrop from 'antd-img-crop';
 import _debounce from 'lodash/debounce';
 import {useSearchParams} from 'next/navigation';
-import {FC, useCallback, useEffect, useState} from 'react';
+import {FC, Suspense, useCallback, useEffect, useState} from 'react';
 import {uploadToAwsForUserImage} from '../../../../../redux/actions/upload';
 import {getUserByIdLogin} from '../../../../../redux/actions/user';
 import {useAppDispatch} from '../../../../../redux/hook';
@@ -143,125 +143,130 @@ const MyProfileCard: FC<any> = ({data}) => {
 
   return (
     <>
-      <MyProfileCardStyle
-        justify="space-between"
-        align="middle"
-        style={{width: '100%'}}
-        gutter={[0, 16]}
-      >
-        <Col xs={24} sm={24} md={24} lg={12} xl={7} xxl={7}>
-          <Space size={20}>
-            <span style={{position: 'relative'}}>
-              <AvatarStyled
-                cursor="unset"
-                src={data?.profile_image}
-                icon={`${
-                  data?.user_name?.toString()?.charAt(0)?.toUpperCase() ??
-                  data?.user_name?.toString()?.charAt(0)?.toUpperCase()
-                }`}
-                background={data?.profile_image ? '' : '#1EB159'}
-                size={94}
-              />
-              {loginAccount && (
-                <span
-                  style={{
-                    position: 'absolute',
-                    bottom: -2,
-                    right: -5,
-                  }}
-                >
-                  <ImgCrop
-                    onModalOk={(list: any) => {
-                      debounceFn(list);
+      <Suspense fallback={<div>Loading...</div>}>
+        <MyProfileCardStyle
+          justify="space-between"
+          align="middle"
+          style={{width: '100%'}}
+          gutter={[0, 16]}
+        >
+          <Col xs={24} sm={24} md={24} lg={12} xl={7} xxl={7}>
+            <Space size={20}>
+              <span style={{position: 'relative'}}>
+                <AvatarStyled
+                  cursor="unset"
+                  src={data?.profile_image}
+                  icon={`${
+                    data?.user_name?.toString()?.charAt(0)?.toUpperCase() ??
+                    data?.user_name?.toString()?.charAt(0)?.toUpperCase()
+                  }`}
+                  background={data?.profile_image ? '' : '#1EB159'}
+                  size={94}
+                />
+                {loginAccount && (
+                  <span
+                    style={{
+                      position: 'absolute',
+                      bottom: -2,
+                      right: -5,
                     }}
                   >
-                    <CustomUpload showUploadList={false}>
-                      <AvatarStyled
-                        icon={
-                          <CameraIcon
-                            width={20}
-                            color={token?.colorLinkHover}
-                          />
-                        }
-                        background={token?.colorInfoHover}
-                        size={36}
-                      />
-                    </CustomUpload>
-                  </ImgCrop>
-                </span>
-              )}
-            </span>
-            <Space direction="vertical" size={5}>
-              <Typography
-                name="Heading 3/Medium"
-                color={token?.colorPrimaryText}
-              >
-                {data?.first_name && data?.last_name
-                  ? `${data.first_name} ${data.last_name}`
-                  : data?.first_name
-                    ? data.first_name
-                    : data?.user_name}
-              </Typography>
-              <Typography name="Body 4/Bold" color={token?.colorInfo}>
-                {data?.job_title ?? ''}
-              </Typography>
-              <span
-                style={{
-                  padding: '4px 12px',
-                  borderRadius: '50px',
-                  background: token?.colorInfoHover,
-                }}
-              >
-                <Typography name="Body 3/Regular" color={token?.colorLinkHover}>
-                  {userRole ?? ''}
-                </Typography>
+                    <ImgCrop
+                      onModalOk={(list: any) => {
+                        debounceFn(list);
+                      }}
+                    >
+                      <CustomUpload showUploadList={false}>
+                        <AvatarStyled
+                          icon={
+                            <CameraIcon
+                              width={20}
+                              color={token?.colorLinkHover}
+                            />
+                          }
+                          background={token?.colorInfoHover}
+                          size={36}
+                        />
+                      </CustomUpload>
+                    </ImgCrop>
+                  </span>
+                )}
               </span>
-            </Space>
-          </Space>
-        </Col>
-
-        {proileDetailData?.map((proileDetailDataItem) => {
-          return (
-            <Col
-              xs={24}
-              sm={24}
-              md={24}
-              lg={12}
-              xl={5}
-              xxl={5}
-              key={proileDetailDataItem?.key}
-            >
-              <Space direction="vertical" size={4}>
+              <Space direction="vertical" size={5}>
                 <Typography
-                  name="Body 4/Medium"
+                  name="Heading 3/Medium"
                   color={token?.colorPrimaryText}
                 >
-                  {proileDetailDataItem?.title}
+                  {data?.first_name && data?.last_name
+                    ? `${data.first_name} ${data.last_name}`
+                    : data?.first_name
+                      ? data.first_name
+                      : data?.user_name}
                 </Typography>
-                <Space align="center">
-                  <AvatarStyled
-                    icon={proileDetailDataItem?.icon}
-                    background={token?.colorInfoHover}
-                    size={36}
-                  />
-
+                <Typography name="Body 4/Bold" color={token?.colorInfo}>
+                  {data?.job_title ?? ''}
+                </Typography>
+                <span
+                  style={{
+                    padding: '4px 12px',
+                    borderRadius: '50px',
+                    background: token?.colorInfoHover,
+                  }}
+                >
                   <Typography
-                    key={proileDetailDataItem?.key}
+                    name="Body 3/Regular"
+                    color={token?.colorLinkHover}
+                  >
+                    {userRole ?? ''}
+                  </Typography>
+                </span>
+              </Space>
+            </Space>
+          </Col>
+
+          {proileDetailData?.map((proileDetailDataItem) => {
+            return (
+              <Col
+                xs={24}
+                sm={24}
+                md={24}
+                lg={12}
+                xl={5}
+                xxl={5}
+                key={proileDetailDataItem?.key}
+              >
+                <Space direction="vertical" size={4}>
+                  <Typography
                     name="Body 4/Medium"
                     color={token?.colorPrimaryText}
-                    ellipsis
-                    maxWidth={190}
-                    as="div"
-                    tooltip
                   >
-                    {proileDetailDataItem?.data}
+                    {proileDetailDataItem?.title}
                   </Typography>
+                  <Space align="center">
+                    <AvatarStyled
+                      icon={proileDetailDataItem?.icon}
+                      background={token?.colorInfoHover}
+                      size={36}
+                    />
+
+                    <Typography
+                      key={proileDetailDataItem?.key}
+                      name="Body 4/Medium"
+                      color={token?.colorPrimaryText}
+                      ellipsis
+                      maxWidth={190}
+                      as="div"
+                      tooltip
+                    >
+                      {proileDetailDataItem?.data}
+                    </Typography>
+                  </Space>
                 </Space>
-              </Space>
-            </Col>
-          );
-        })}
-      </MyProfileCardStyle>
+              </Col>
+            );
+          })}
+        </MyProfileCardStyle>
+      </Suspense>
     </>
   );
 };

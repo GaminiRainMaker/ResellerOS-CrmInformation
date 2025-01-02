@@ -18,6 +18,7 @@ import {
 import {useSearchParams} from 'next/navigation';
 import React, {
   forwardRef,
+  Suspense,
   useEffect,
   useImperativeHandle,
   useState,
@@ -440,11 +441,15 @@ const DealRegCustomTabs = forwardRef<
   }));
 
   return (
-    <CustmDealRegTab
-      token={token}
-      activeKey={activeKey as any}
-      items={tabItems}
-    />
+    <>
+      <Suspense fallback={<div>Loading...</div>}>
+        <CustmDealRegTab
+          token={token}
+          activeKey={activeKey as any}
+          items={tabItems}
+        />
+      </Suspense>
+    </>
   );
 });
 

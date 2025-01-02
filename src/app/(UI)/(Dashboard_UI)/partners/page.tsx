@@ -22,7 +22,7 @@ import {formatDate, handleDate} from '@/app/utils/base';
 import {MinusIcon, PlusIcon} from '@heroicons/react/24/outline';
 import {Checkbox, Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import {
   insertAssignPartnerProgram,
   updateForTheResellerRequest,
@@ -978,212 +978,217 @@ const Partners: React.FC = () => {
 
   return (
     <>
-      <Space size={24} direction="vertical" style={{width: '100%'}}>
-        <PartnerAnalytics data={allPartnerAnalyticData} />
-        <Row justify="space-between" align="middle">
-          <Col>
-            <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-              All Partners
-            </Typography>
-          </Col>
-
-          {activeTab === 1 && (
-            <Col style={{display: 'flex', alignItems: 'center'}}>
-              <OsButton
-                text="Request Partner and Partner Program"
-                buttontype="PRIMARY"
-                icon={<PlusIcon />}
-                clickHandler={() => setShowModal((p) => !p)}
-              />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Space size={24} direction="vertical" style={{width: '100%'}}>
+          <PartnerAnalytics data={allPartnerAnalyticData} />
+          <Row justify="space-between" align="middle">
+            <Col>
+              <Typography
+                name="Heading 3/Medium"
+                color={token?.colorPrimaryText}
+              >
+                All Partners
+              </Typography>
             </Col>
-          )}
-        </Row>
 
-        <Row
-          style={{background: 'white', padding: '24px', borderRadius: '12px'}}
-        >
-          {userInformation && (
-            <OsTabs
-              activeKey={activeTab?.toString()}
-              items={allTabItem}
-              // items={userInformation?.Admin ? tabItemsAdmin : tabItems}
-              tabBarExtraContent={
-                <Space size={12} align="center">
-                  <Space direction="vertical" size={0}>
-                    <Typography name="Body 4/Medium">Partner</Typography>
-                    <CommonSelect
-                      style={{width: '200px'}}
-                      placeholder="Search here"
-                      showSearch
-                      options={partnerOptions}
-                      onSearch={(e) => {
-                        setQueryData({
-                          ...queryDataa,
-                          partnerQuery: e,
-                        });
-                      }}
-                      onChange={(e) => {
-                        setQueryData({
-                          ...queryDataa,
-                          partnerQuery: e,
-                        });
-                      }}
-                      value={queryDataa?.partnerQuery}
-                    />
-                  </Space>
+            {activeTab === 1 && (
+              <Col style={{display: 'flex', alignItems: 'center'}}>
+                <OsButton
+                  text="Request Partner and Partner Program"
+                  buttontype="PRIMARY"
+                  icon={<PlusIcon />}
+                  clickHandler={() => setShowModal((p) => !p)}
+                />
+              </Col>
+            )}
+          </Row>
 
-                  <Space direction="vertical" size={0}>
-                    <Typography name="Body 4/Medium">
-                      {' '}
-                      Partner Program
-                    </Typography>
-                    <CommonSelect
-                      style={{width: '200px'}}
-                      placeholder="Search here"
-                      options={partnerProgramOptions}
-                      showSearch
-                      onSearch={(e) => {
-                        setQueryData({
-                          ...queryDataa,
-                          partnerprogramQuery: e,
-                        });
-                      }}
-                      onChange={(e) => {
-                        setQueryData({
-                          ...queryDataa,
-                          partnerprogramQuery: e,
-                        });
-                      }}
-                      value={queryDataa?.partnerprogramQuery}
-                    />
-                  </Space>
+          <Row
+            style={{background: 'white', padding: '24px', borderRadius: '12px'}}
+          >
+            {userInformation && (
+              <OsTabs
+                activeKey={activeTab?.toString()}
+                items={allTabItem}
+                // items={userInformation?.Admin ? tabItemsAdmin : tabItems}
+                tabBarExtraContent={
+                  <Space size={12} align="center">
+                    <Space direction="vertical" size={0}>
+                      <Typography name="Body 4/Medium">Partner</Typography>
+                      <CommonSelect
+                        style={{width: '200px'}}
+                        placeholder="Search here"
+                        showSearch
+                        options={partnerOptions}
+                        onSearch={(e) => {
+                          setQueryData({
+                            ...queryDataa,
+                            partnerQuery: e,
+                          });
+                        }}
+                        onChange={(e) => {
+                          setQueryData({
+                            ...queryDataa,
+                            partnerQuery: e,
+                          });
+                        }}
+                        value={queryDataa?.partnerQuery}
+                      />
+                    </Space>
 
-                  <div
-                    style={{
-                      marginTop: '15px',
-                    }}
-                  >
-                    <Typography
-                      cursor="pointer"
-                      name="Button 1"
-                      color={'#C6CDD5'}
-                      onClick={() => {
-                        setQueryData({
-                          partnerQuery: '',
-                          partnerprogramQuery: '',
-                          size: 10,
-                        });
+                    <Space direction="vertical" size={0}>
+                      <Typography name="Body 4/Medium">
+                        {' '}
+                        Partner Program
+                      </Typography>
+                      <CommonSelect
+                        style={{width: '200px'}}
+                        placeholder="Search here"
+                        options={partnerProgramOptions}
+                        showSearch
+                        onSearch={(e) => {
+                          setQueryData({
+                            ...queryDataa,
+                            partnerprogramQuery: e,
+                          });
+                        }}
+                        onChange={(e) => {
+                          setQueryData({
+                            ...queryDataa,
+                            partnerprogramQuery: e,
+                          });
+                        }}
+                        value={queryDataa?.partnerprogramQuery}
+                      />
+                    </Space>
+
+                    <div
+                      style={{
+                        marginTop: '15px',
                       }}
                     >
-                      Reset
-                    </Typography>
-                  </div>
-                </Space>
-                // <Space size={12} align="center">
-                //   <Space direction="vertical" size={0}>
-                //     <Typography name="Body 4/Medium">Partner</Typography>
-                //     <OsInput
-                //       value={queryDataa?.partnerQuery}
-                //       onChange={(e: any) => {
-                //         setQueryData({
-                //           ...queryDataa,
-                //           partnerQuery: e?.target?.value,
-                //         });
-                //       }}
-                //     />
-                //   </Space>
-                //   <Space direction="vertical" size={0}>
-                //     <Typography name="Body 4/Medium">
-                //       Partner Program
-                //     </Typography>
-                //     <OsInput
-                //       value={queryDataa?.partnerprogramQuery}
-                //       onChange={(e: any) => {
-                //         setQueryData({
-                //           ...queryDataa,
-                //           partnerprogramQuery: e?.target?.value,
-                //         });
-                //       }}
-                //     />
-                //   </Space>
-                //   <div
-                //     style={{
-                //       display: 'flex',
-                //       alignItems: 'center',
-                //       justifyContent: 'center',
-                //       marginTop: '20px',
-                //     }}
-                //   >
-                //     <Typography
-                //       cursor="pointer"
-                //       name="Button 1"
-                //       style={{cursor: 'pointer'}}
-                //       color={token?.colorLink}
-                //       onClick={() => {
-                //         setQueryData({
-                //           partnerQuery: '',
-                //           partnerprogramQuery: '',
-                //           size: 10,
-                //         });
-                //       }}
-                //     >
-                //       Reset
-                //     </Typography>
-                //   </div>
-                // </Space>
-              }
-            />
-          )}
-        </Row>
-      </Space>
+                      <Typography
+                        cursor="pointer"
+                        name="Button 1"
+                        color={'#C6CDD5'}
+                        onClick={() => {
+                          setQueryData({
+                            partnerQuery: '',
+                            partnerprogramQuery: '',
+                            size: 10,
+                          });
+                        }}
+                      >
+                        Reset
+                      </Typography>
+                    </div>
+                  </Space>
+                  // <Space size={12} align="center">
+                  //   <Space direction="vertical" size={0}>
+                  //     <Typography name="Body 4/Medium">Partner</Typography>
+                  //     <OsInput
+                  //       value={queryDataa?.partnerQuery}
+                  //       onChange={(e: any) => {
+                  //         setQueryData({
+                  //           ...queryDataa,
+                  //           partnerQuery: e?.target?.value,
+                  //         });
+                  //       }}
+                  //     />
+                  //   </Space>
+                  //   <Space direction="vertical" size={0}>
+                  //     <Typography name="Body 4/Medium">
+                  //       Partner Program
+                  //     </Typography>
+                  //     <OsInput
+                  //       value={queryDataa?.partnerprogramQuery}
+                  //       onChange={(e: any) => {
+                  //         setQueryData({
+                  //           ...queryDataa,
+                  //           partnerprogramQuery: e?.target?.value,
+                  //         });
+                  //       }}
+                  //     />
+                  //   </Space>
+                  //   <div
+                  //     style={{
+                  //       display: 'flex',
+                  //       alignItems: 'center',
+                  //       justifyContent: 'center',
+                  //       marginTop: '20px',
+                  //     }}
+                  //   >
+                  //     <Typography
+                  //       cursor="pointer"
+                  //       name="Button 1"
+                  //       style={{cursor: 'pointer'}}
+                  //       color={token?.colorLink}
+                  //       onClick={() => {
+                  //         setQueryData({
+                  //           partnerQuery: '',
+                  //           partnerprogramQuery: '',
+                  //           size: 10,
+                  //         });
+                  //       }}
+                  //     >
+                  //       Reset
+                  //     </Typography>
+                  //   </div>
+                  // </Space>
+                }
+              />
+            )}
+          </Row>
+        </Space>
 
-      <OsModal
-        loading={requestPartnerLoading}
-        body={
-          <RequestPartner
-            form={form}
-            setOpen={setShowModal}
-            setRequestPartnerLoading={setRequestPartnerLoading}
-            getPartnerData={getPartnerData}
-            setPartnerNewId={setPartnerNewId}
-            partnerNewId={partnerNewId}
-            partnerProgramNewId={partnerProgramNewId}
-            setPartnerProgramNewId={setPartnerProgramNewId}
-            setShowModal={setShowModal}
-          />
-        }
-        width={700}
-        open={showModal}
-        onCancel={() => {
-          setShowModal((p) => !p);
-          setPartnerProgramNewId({});
-          setPartnerNewId({});
-          form.resetFields();
-        }}
-      />
-
-      <OsModal
-        bodyPadding={22}
-        loading={false}
-        body={
-          <>
-            {' '}
-            <FormBuilderMain
-              cartItems={formData?.formObject}
+        <OsModal
+          loading={requestPartnerLoading}
+          body={
+            <RequestPartner
               form={form}
-              // eslint-disable-next-line react/jsx-boolean-value
-              previewFile
+              setOpen={setShowModal}
+              setRequestPartnerLoading={setRequestPartnerLoading}
+              getPartnerData={getPartnerData}
+              setPartnerNewId={setPartnerNewId}
+              partnerNewId={partnerNewId}
+              partnerProgramNewId={partnerProgramNewId}
+              setPartnerProgramNewId={setPartnerProgramNewId}
+              setShowModal={setShowModal}
             />
-          </>
-        }
-        width={900}
-        // primaryButtonText="Edit"
-        open={openPreviewModal}
-        // onOk={() => form.submit()}
-        onCancel={() => {
-          setOpenPreviewModal(false);
-        }}
-      />
+          }
+          width={700}
+          open={showModal}
+          onCancel={() => {
+            setShowModal((p) => !p);
+            setPartnerProgramNewId({});
+            setPartnerNewId({});
+            form.resetFields();
+          }}
+        />
+
+        <OsModal
+          bodyPadding={22}
+          loading={false}
+          body={
+            <>
+              {' '}
+              <FormBuilderMain
+                cartItems={formData?.formObject}
+                form={form}
+                // eslint-disable-next-line react/jsx-boolean-value
+                previewFile
+              />
+            </>
+          }
+          width={900}
+          // primaryButtonText="Edit"
+          open={openPreviewModal}
+          // onOk={() => form.submit()}
+          onCancel={() => {
+            setOpenPreviewModal(false);
+          }}
+        />
+      </Suspense>
     </>
   );
 };

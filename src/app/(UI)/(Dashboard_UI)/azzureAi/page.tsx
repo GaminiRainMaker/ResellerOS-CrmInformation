@@ -34,7 +34,7 @@ import 'handsontable/dist/handsontable.min.css';
 import {registerAllModules} from 'handsontable/registry';
 import dynamic from 'next/dynamic';
 import {useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import {
   fetchAndParseExcel,
   getPDFFileData,
@@ -98,26 +98,25 @@ const EditorFile = () => {
     let result: any = [];
 
     // Iterate over each mapping in newMapped
-    newMapped.forEach((mapping:any) => {
+    newMapped.forEach((mapping: any) => {
       // Check each sub-array in newArr to see if it contains the preVal
-      newArr.forEach((arr:any) => {
-          if (arr.includes(mapping.preVal)) {
-              // Get the index of the preVal
-              const index = arr.indexOf(mapping.preVal);
-              // Loop through the rest of the array to find the next non-null value
-              for (let i = index + 1; i < arr.length; i++) {
-                  if (arr[i] !== null) {
-                      // Add the new key-value pair to the result
-                      let obj:any = {};
-                      obj[mapping.newVal] = arr[i];
-                      result.push(obj);
-                      break; // Exit the loop after finding the first non-null value
-                  }
-              }
+      newArr.forEach((arr: any) => {
+        if (arr.includes(mapping.preVal)) {
+          // Get the index of the preVal
+          const index = arr.indexOf(mapping.preVal);
+          // Loop through the rest of the array to find the next non-null value
+          for (let i = index + 1; i < arr.length; i++) {
+            if (arr[i] !== null) {
+              // Add the new key-value pair to the result
+              let obj: any = {};
+              obj[mapping.newVal] = arr[i];
+              result.push(obj);
+              break; // Exit the loop after finding the first non-null value
+            }
           }
+        }
       });
-  });
-  
+    });
 
     return result;
   };
@@ -430,105 +429,107 @@ const EditorFile = () => {
 
   return (
     <GlobalLoader loading={false}>
-      <Row justify="space-between">
-        <Col>
-          <OsButton
-            text={excelFile === 'true' ? 'Upload Excel' : 'Upload Pdf'}
-            buttontype="PRIMARY"
-            clickHandler={() => {
-              setShowModalForAI(true);
+      <Suspense fallback={<div>Loading...</div>}>
+        <Row justify="space-between">
+          <Col>
+            <OsButton
+              text={excelFile === 'true' ? 'Upload Excel' : 'Upload Pdf'}
+              buttontype="PRIMARY"
+              clickHandler={() => {
+                setShowModalForAI(true);
+              }}
+            />
+          </Col>
+        </Row>
+        {UploadedFileData && UploadedFileData?.length > 0 && (
+          <HotTable
+            data={UploadedFileData}
+            colWidths={[
+              300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300,
+              300, 300, 300,
+            ]}
+            height="auto"
+            formulas={{
+              engine: HyperFormula,
             }}
+            stretchH="all"
+            colHeaders={UploadedFileDataColumn}
+            width="auto"
+            minSpareRows={0}
+            autoWrapRow
+            autoWrapCol
+            licenseKey="non-commercial-and-evaluation"
+            dropdownMenu
+            hiddenColumns={{
+              indicators: true,
+            }}
+            contextMenu
+            multiColumnSorting
+            filters
+            rowHeaders
+            allowInsertRow
+            // allowInsertColumn={true}
+            afterGetColHeader={alignHeaders}
+            beforeRenderer={() => {
+              addClassesToRows('', '', '', '', '', '', UploadedFileData);
+            }}
+            afterRemoveRow={(change, source) => {}}
+            afterChange={(change: any, source) => {}}
           />
-        </Col>
-      </Row>
-      {UploadedFileData && UploadedFileData?.length > 0 && (
-        <HotTable
-          data={UploadedFileData}
-          colWidths={[
-            300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300,
-            300, 300, 300,
-          ]}
-          height="auto"
-          formulas={{
-            engine: HyperFormula,
-          }}
-          stretchH="all"
-          colHeaders={UploadedFileDataColumn}
-          width="auto"
-          minSpareRows={0}
-          autoWrapRow
-          autoWrapCol
-          licenseKey="non-commercial-and-evaluation"
-          dropdownMenu
-          hiddenColumns={{
-            indicators: true,
-          }}
-          contextMenu
-          multiColumnSorting
-          filters
-          rowHeaders
-          allowInsertRow
-          // allowInsertColumn={true}
-          afterGetColHeader={alignHeaders}
-          beforeRenderer={() => {
-            addClassesToRows('', '', '', '', '', '', UploadedFileData);
-          }}
-          afterRemoveRow={(change, source) => {}}
-          afterChange={(change: any, source) => {}}
-        />
-      )}
+        )}
 
-      <OsModal
-        // loading={loading}
-        body={
-          <>
-            {' '}
-            <Space size={24} direction="vertical" style={{width: '100%'}}>
-              <OSDraggerStyle
-                beforeUpload={beforeUpload}
-                showUploadList={false}
-                multiple
-                accept={excelFile === 'true' ? '.xls,.xlsx' : '.pdf'}
-              >
-                <FolderArrowDownIcon
-                  width={24}
-                  color={token?.colorInfoBorder}
-                />
-                <Typography
-                  name="Body 4/Medium"
-                  color={token?.colorPrimaryText}
-                  as="div"
+        <OsModal
+          // loading={loading}
+          body={
+            <>
+              {' '}
+              <Space size={24} direction="vertical" style={{width: '100%'}}>
+                <OSDraggerStyle
+                  beforeUpload={beforeUpload}
+                  showUploadList={false}
+                  multiple
+                  accept={excelFile === 'true' ? '.xls,.xlsx' : '.pdf'}
                 >
+                  <FolderArrowDownIcon
+                    width={24}
+                    color={token?.colorInfoBorder}
+                  />
                   <Typography
                     name="Body 4/Medium"
-                    style={{textDecoration: 'underline', cursor: 'pointer'}}
-                    color={token?.colorPrimary}
+                    color={token?.colorPrimaryText}
+                    as="div"
                   >
-                    Click to Upload
-                  </Typography>{' '}
-                  or Drag and Drop
-                </Typography>
-                <Typography
-                  name="Body 4/Medium"
-                  color={token?.colorPrimaryText}
-                >
-                  XLS, PDF.
-                </Typography>
-              </OSDraggerStyle>
-              {/* <UploadCard
+                    <Typography
+                      name="Body 4/Medium"
+                      style={{textDecoration: 'underline', cursor: 'pointer'}}
+                      color={token?.colorPrimary}
+                    >
+                      Click to Upload
+                    </Typography>{' '}
+                    or Drag and Drop
+                  </Typography>
+                  <Typography
+                    name="Body 4/Medium"
+                    color={token?.colorPrimaryText}
+                  >
+                    XLS, PDF.
+                  </Typography>
+                </OSDraggerStyle>
+                {/* <UploadCard
             uploadFileData={uploadFileData}
             setUploadFileData={setUploadFileData}
           /> */}
-            </Space>
-          </>
-        }
-        width={600}
-        open={showModalForAI}
-        onCancel={() => {
-          setShowModalForAI(false);
-        }}
-        footerPadding={30}
-      />
+              </Space>
+            </>
+          }
+          width={600}
+          open={showModalForAI}
+          onCancel={() => {
+            setShowModalForAI(false);
+          }}
+          footerPadding={30}
+        />
+      </Suspense>
     </GlobalLoader>
   );
 };
