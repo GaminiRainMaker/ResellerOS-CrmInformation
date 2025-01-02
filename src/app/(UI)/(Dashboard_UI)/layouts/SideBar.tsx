@@ -22,7 +22,7 @@ import {
 import {Layout, MenuProps} from 'antd';
 import Image from 'next/image';
 import {usePathname, useRouter, useSearchParams} from 'next/navigation';
-import React, {Suspense, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import ActiveCrmIcon from '../../../../../public/assets/static/activeCrmIcon.svg';
 import InActiveCrmIcon from '../../../../../public/assets/static/inActiveCrmIcon.svg';
 import {
@@ -1422,29 +1422,27 @@ const SideBar = () => {
       theme="light"
       defaultCollapsed
     >
-      <Suspense fallback={<div>Loading...</div>}>
-        <LayoutMenuStyle
-          theme="light"
-          defaultSelectedKeys={['1']}
-          mode="inline"
-          items={items}
-          expandIcon={
-            <ChevronRightIcon
-              className="sideBarMenuIcon"
-              style={{
-                width: '24px',
-                color:
-                  selectedKey?.toString()?.includes('7') ||
-                  selectedKey?.toString()?.includes('8') ||
-                  selectedKey?.toString()?.includes('0') ||
-                  selectedKey?.toString()?.includes('9')
-                    ? token?.colorLink
-                    : token?.colorTextSecondary,
-              }}
-            />
-          }
-        />
-      </Suspense>
+      <LayoutMenuStyle
+        theme="light"
+        defaultSelectedKeys={['1']}
+        mode="inline"
+        items={items}
+        expandIcon={
+          <ChevronRightIcon
+            className="sideBarMenuIcon"
+            style={{
+              width: '24px',
+              color:
+                selectedKey?.toString()?.includes('7') ||
+                selectedKey?.toString()?.includes('8') ||
+                selectedKey?.toString()?.includes('0') ||
+                selectedKey?.toString()?.includes('9')
+                  ? token?.colorLink
+                  : token?.colorTextSecondary,
+            }}
+          />
+        }
+      />
     </Sider>
   );
 };

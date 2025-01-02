@@ -18,7 +18,7 @@ const HotTable = dynamic(() => import('@handsontable/react'), {
 import {HyperFormula} from 'hyperformula';
 
 // import {HotTable} from '@handsontable/react';
-import {Suspense, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import './styles.css';
 
 import {Space} from '@/app/components/common/antd/Space';
@@ -1503,202 +1503,108 @@ const EditorFile = () => {
 
   return (
     <GlobalLoader loading={nanonetsLoading}>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Space size={0} style={{marginBottom: '20px'}}>
-          {' '}
-          <Typography name="Body 1/Bold">{currentFIle?.file_name}</Typography>
-        </Space>
+      <Space size={0} style={{marginBottom: '20px'}}>
+        {' '}
+        <Typography name="Body 1/Bold">{currentFIle?.file_name}</Typography>
+      </Space>
 
-        {(ExistingQuoteItemss === 'true' || EditSalesLineItems === 'true') &&
-        updateLineItemsValue?.length > 0 ? (
-          <>
-            <div
-              style={{
-                position: 'relative',
-                maxHeight: '75vh',
-                overflow: 'auto',
+      {(ExistingQuoteItemss === 'true' || EditSalesLineItems === 'true') &&
+      updateLineItemsValue?.length > 0 ? (
+        <>
+          <div
+            style={{
+              position: 'relative',
+              maxHeight: '75vh',
+              overflow: 'auto',
+            }}
+          >
+            <HotTable
+              data={updateLineItemsValue}
+              colWidths={200}
+              columnHeaderHeight={40}
+              height="auto"
+              colHeaders={updateLineItemColumn}
+              // columns={z}
+              width="auto"
+              minSpareRows={0}
+              autoWrapRow
+              autoWrapCol
+              licenseKey="non-commercial-and-evaluation"
+              dropdownMenu
+              hiddenColumns={{
+                indicators: true,
+                columns: salesForceUrl ? [0, 1] : [0, 1],
               }}
-            >
-              <HotTable
-                data={updateLineItemsValue}
-                colWidths={200}
-                columnHeaderHeight={40}
-                height="auto"
-                colHeaders={updateLineItemColumn}
-                // columns={z}
-                width="auto"
-                minSpareRows={0}
-                autoWrapRow
-                autoWrapCol
-                licenseKey="non-commercial-and-evaluation"
-                dropdownMenu
-                hiddenColumns={{
-                  indicators: true,
-                  columns: salesForceUrl ? [0, 1] : [0, 1],
-                }}
-                contextMenu={true}
-                multiColumnSorting
-                filters
-                rowHeaders
-                allowInsertRow={true}
-                allowInsertColumn
-                afterGetColHeader={alignHeaders}
-                beforeRenderer={() => {
-                  addClassesToRows('', '', '', '', '', '', quoteItems);
-                }}
-                afterRemoveRow={(change, source) => {
-                  deleteRowsItemsForLineItemsa(source, change);
-                }}
-                afterChange={(change: any, source) => {
-                  if (change) {
-                    updateRowsValueForLineItems(
-                      change?.[0]?.[0],
-                      change?.[0]?.[1],
-                      change?.[0]?.[3],
-                    );
-                  }
-                }}
-                // navigableHeaders
-              />
-            </div>
-            <br />
-            <Space
-              onClick={(e) => {
-                e?.preventDefault();
+              contextMenu={true}
+              multiColumnSorting
+              filters
+              rowHeaders
+              allowInsertRow={true}
+              allowInsertColumn
+              afterGetColHeader={alignHeaders}
+              beforeRenderer={() => {
+                addClassesToRows('', '', '', '', '', '', quoteItems);
               }}
-              size={25}
-              style={{
-                display: 'flex',
-                justifyContent: 'end',
-                marginRight: '50px',
-                right: '0',
-                bottom: '0',
-                marginBottom: '20px',
+              afterRemoveRow={(change, source) => {
+                deleteRowsItemsForLineItemsa(source, change);
               }}
-            >
-              {!salesForceUrl && (
-                <OsButton
-                  text="Cancel"
-                  buttontype="SECONDARY"
-                  clickHandler={CancelEditing}
-                />
-              )}
+              afterChange={(change: any, source) => {
+                if (change) {
+                  updateRowsValueForLineItems(
+                    change?.[0]?.[0],
+                    change?.[0]?.[1],
+                    change?.[0]?.[3],
+                  );
+                }
+              }}
+              // navigableHeaders
+            />
+          </div>
+          <br />
+          <Space
+            onClick={(e) => {
+              e?.preventDefault();
+            }}
+            size={25}
+            style={{
+              display: 'flex',
+              justifyContent: 'end',
+              marginRight: '50px',
+              right: '0',
+              bottom: '0',
+              marginBottom: '20px',
+            }}
+          >
+            {!salesForceUrl && (
               <OsButton
-                text="Save Line Items"
-                buttontype="PRIMARY"
-                clickHandler={updateData}
+                text="Cancel"
+                buttontype="SECONDARY"
+                clickHandler={CancelEditing}
               />
-            </Space>{' '}
-          </>
-        ) : (
-          <>
-            {' '}
-            {ExistingQuoteItemss !== 'true' &&
-              EditSalesLineItems !== 'true' && (
+            )}
+            <OsButton
+              text="Save Line Items"
+              buttontype="PRIMARY"
+              clickHandler={updateData}
+            />
+          </Space>{' '}
+        </>
+      ) : (
+        <>
+          {' '}
+          {ExistingQuoteItemss !== 'true' && EditSalesLineItems !== 'true' && (
+            <>
+              {mergedValue && mergedValue?.length > 0 ? (
                 <>
-                  {mergedValue && mergedValue?.length > 0 ? (
-                    <>
-                      <div
-                        style={{
-                          position: 'relative',
-                          maxHeight: '75vh',
-                          overflow: 'auto',
-                        }}
-                      >
-                        {(ExistingQuoteItemss === 'false' ||
-                          EditSalesLineItems === 'false') && (
-                          <Space
-                            onClick={(e) => {
-                              e?.preventDefault();
-                            }}
-                            size={25}
-                            style={{
-                              display: 'flex',
-                              justifyContent: 'end',
-                              marginRight: '50px',
-                              right: '0',
-                              bottom: '0',
-                              marginBottom: '20px',
-                            }}
-                          >
-                            <OsButton
-                              text="Update Column Name"
-                              buttontype="PRIMARY"
-                              clickHandler={() => {
-                                setShowUpdateColumnModal(true);
-                              }}
-                            />
-                            <OsButton
-                              text="Apply Formula"
-                              buttontype="PRIMARY"
-                              clickHandler={() => {
-                                setShowApplyFormula(true);
-                              }}
-                            />
-                            <OsButton
-                              text="Add New Column"
-                              buttontype="PRIMARY"
-                              clickHandler={() => {
-                                setShowAddColumnModal(true);
-                              }}
-                            />
-                          </Space>
-                        )}
-                        <HotTable
-                          data={mergedValue}
-                          allowRemoveColumn
-                          dropdownMenu
-                          colWidths={200}
-                          columnHeaderHeight={40}
-                          height="auto"
-                          colHeaders={mergeedColumn}
-                          width="auto"
-                          minSpareRows={0}
-                          autoWrapRow
-                          formulas={{
-                            engine: HyperFormula,
-                          }}
-                          afterFormulasValuesUpdate={afterFormulasValuesUpdate}
-                          stretchH="all"
-                          autoWrapCol
-                          licenseKey="non-commercial-and-evaluation"
-                          hiddenColumns={{
-                            indicators: true,
-                          }}
-                          contextMenu={true}
-                          multiColumnSorting
-                          filters
-                          rowHeaders
-                          allowInsertRow
-                          allowInsertColumn
-                          afterGetColHeader={alignHeaders}
-                          beforeRenderer={() => {
-                            addClassesToRows(
-                              '',
-                              '',
-                              '',
-                              '',
-                              '',
-                              '',
-                              quoteItems,
-                            );
-                          }}
-                          afterRemoveRow={(change, source) => {
-                            deleteRowsItems(source, change);
-                          }}
-                          afterChange={(change: any, source) => {
-                            if (change) {
-                              updateRowsValue(
-                                change?.[0]?.[0],
-                                change?.[0]?.[1],
-                                change?.[0]?.[3],
-                              );
-                            }
-                          }}
-                          // navigableHeaders
-                        />
-                      </div>
-                      <br />
+                  <div
+                    style={{
+                      position: 'relative',
+                      maxHeight: '75vh',
+                      overflow: 'auto',
+                    }}
+                  >
+                    {(ExistingQuoteItemss === 'false' ||
+                      EditSalesLineItems === 'false') && (
                       <Space
                         onClick={(e) => {
                           e?.preventDefault();
@@ -1713,357 +1619,284 @@ const EditorFile = () => {
                           marginBottom: '20px',
                         }}
                       >
+                        <OsButton
+                          text="Update Column Name"
+                          buttontype="PRIMARY"
+                          clickHandler={() => {
+                            setShowUpdateColumnModal(true);
+                          }}
+                        />
+                        <OsButton
+                          text="Apply Formula"
+                          buttontype="PRIMARY"
+                          clickHandler={() => {
+                            setShowApplyFormula(true);
+                          }}
+                        />
+                        <OsButton
+                          text="Add New Column"
+                          buttontype="PRIMARY"
+                          clickHandler={() => {
+                            setShowAddColumnModal(true);
+                          }}
+                        />
+                      </Space>
+                    )}
+                    <HotTable
+                      data={mergedValue}
+                      allowRemoveColumn
+                      dropdownMenu
+                      colWidths={200}
+                      columnHeaderHeight={40}
+                      height="auto"
+                      colHeaders={mergeedColumn}
+                      width="auto"
+                      minSpareRows={0}
+                      autoWrapRow
+                      formulas={{
+                        engine: HyperFormula,
+                      }}
+                      afterFormulasValuesUpdate={afterFormulasValuesUpdate}
+                      stretchH="all"
+                      autoWrapCol
+                      licenseKey="non-commercial-and-evaluation"
+                      hiddenColumns={{
+                        indicators: true,
+                      }}
+                      contextMenu={true}
+                      multiColumnSorting
+                      filters
+                      rowHeaders
+                      allowInsertRow
+                      allowInsertColumn
+                      afterGetColHeader={alignHeaders}
+                      beforeRenderer={() => {
+                        addClassesToRows('', '', '', '', '', '', quoteItems);
+                      }}
+                      afterRemoveRow={(change, source) => {
+                        deleteRowsItems(source, change);
+                      }}
+                      afterChange={(change: any, source) => {
+                        if (change) {
+                          updateRowsValue(
+                            change?.[0]?.[0],
+                            change?.[0]?.[1],
+                            change?.[0]?.[3],
+                          );
+                        }
+                      }}
+                      // navigableHeaders
+                    />
+                  </div>
+                  <br />
+                  <Space
+                    onClick={(e) => {
+                      e?.preventDefault();
+                    }}
+                    size={25}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'end',
+                      marginRight: '50px',
+                      right: '0',
+                      bottom: '0',
+                      marginBottom: '20px',
+                    }}
+                  >
+                    {!salesForceUrl && (
+                      <OsButton
+                        text="Cancel"
+                        buttontype="SECONDARY"
+                        clickHandler={() => {
+                          syncShow('cancel');
+                        }}
+                      />
+                    )}
+                    <OsButton
+                      text="Sync Table"
+                      buttontype="PRIMARY"
+                      clickHandler={() => {
+                        syncShow('sync');
+                        // addNewValueForChangesHit();
+                      }}
+                    />
+                  </Space>
+                </>
+              ) : (
+                <div style={{position: 'absolute', width: '100%'}}>
+                  <div
+                    style={{
+                      position: 'relative',
+                      maxHeight: '75vh',
+                      overflow: 'auto',
+                    }}
+                  >
+                    {quoteItems &&
+                      quoteItems?.map((itemss: any, indexOFTable: number) => {
+                        const allHeaderValue: any = [];
+                        const keysData =
+                          itemss?.[0] && Object?.keys(itemss?.[0]);
+                        if (keysData) {
+                          keysData?.map((item: any) => {
+                            if (item) {
+                              allHeaderValue?.push(formatStatus(item));
+                            }
+                          });
+                        }
+
+                        console.log('54353432423', quoteItems);
+                        return (
+                          <div>
+                            <Space
+                              direction="horizontal"
+                              style={{width: '100%'}}
+                            >
+                              <Typography
+                                name="Body 3/Regular"
+                                onClick={() => mergeTableData(quoteItems)}
+                              >
+                                Table {indexOFTable + 1}
+                              </Typography>
+                              <TrashIcon
+                                style={{color: 'red', width: '20px'}}
+                                onClick={() => {
+                                  deleteTable(indexOFTable);
+                                }}
+                              />
+                            </Space>
+
+                            <div style={{overflow: 'auto'}}>
+                              <HotTable
+                                data={itemss}
+                                colWidths={[
+                                  200, 200, 400, 200, 200, 200, 200, 200, 200,
+                                  200, 200, 200, 200, 200, 200, 200,
+                                ]}
+                                height="auto"
+                                colHeaders={allHeaderValue}
+                                width="auto"
+                                minSpareRows={0}
+                                formulas={{
+                                  engine: HyperFormula,
+                                }}
+                                stretchH="all"
+                                autoWrapRow
+                                autoWrapCol
+                                licenseKey="non-commercial-and-evaluation"
+                                fillHandle
+                                dropdownMenu={true}
+                                hiddenColumns={{
+                                  indicators: true,
+                                }}
+                                contextMenu={true}
+                                multiColumnSorting
+                                filters
+                                rowHeaders
+                                allowInsertRow
+                                allowInsertColumn={false}
+                                afterGetColHeader={alignHeaders}
+                                beforeRenderer={() => {
+                                  addClassesToRows(
+                                    '',
+                                    '',
+                                    '',
+                                    '',
+                                    '',
+                                    '',
+                                    quoteItems,
+                                  );
+                                }}
+                                afterRemoveRow={(change, source) => {
+                                  deleteRowsItemsForTable(
+                                    indexOFTable,
+                                    change,
+                                    source,
+                                  );
+                                }}
+                                afterChange={(change: any, source) => {
+                                  if (change) {
+                                    updateRowsValueforTable(
+                                      indexOFTable,
+                                      change?.[0]?.[0],
+                                      change?.[0]?.[1],
+                                      change?.[0]?.[3],
+                                    );
+                                  }
+                                }}
+                                // navigableHeaders
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
+                  {quoteItems && (
+                    <>
+                      <br />
+                      <Space
+                        size={25}
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'end',
+                          marginRight: '50px',
+                          right: '0',
+                          bottom: '0',
+                          marginBottom: '20px',
+                        }}
+                      >
+                        {' '}
                         {!salesForceUrl && (
                           <OsButton
                             text="Cancel"
                             buttontype="SECONDARY"
-                            clickHandler={() => {
-                              syncShow('cancel');
+                            clickHandler={(e: void) => {
+                              CancelEditing();
                             }}
                           />
                         )}
-                        <OsButton
-                          text="Sync Table"
-                          buttontype="PRIMARY"
-                          clickHandler={() => {
-                            syncShow('sync');
-                            // addNewValueForChangesHit();
-                          }}
-                        />
+                        {quoteItems?.length > 0 && (
+                          <OsButton
+                            text="Merge Table"
+                            buttontype="PRIMARY"
+                            clickHandler={() => mergeTableData(quoteItems)}
+                          />
+                        )}
                       </Space>
                     </>
-                  ) : (
-                    <div style={{position: 'absolute', width: '100%'}}>
-                      <div
-                        style={{
-                          position: 'relative',
-                          maxHeight: '75vh',
-                          overflow: 'auto',
-                        }}
-                      >
-                        {quoteItems &&
-                          quoteItems?.map(
-                            (itemss: any, indexOFTable: number) => {
-                              const allHeaderValue: any = [];
-                              const keysData =
-                                itemss?.[0] && Object?.keys(itemss?.[0]);
-                              if (keysData) {
-                                keysData?.map((item: any) => {
-                                  if (item) {
-                                    allHeaderValue?.push(formatStatus(item));
-                                  }
-                                });
-                              }
-
-                              console.log('54353432423', quoteItems);
-                              return (
-                                <div>
-                                  <Space
-                                    direction="horizontal"
-                                    style={{width: '100%'}}
-                                  >
-                                    <Typography
-                                      name="Body 3/Regular"
-                                      onClick={() => mergeTableData(quoteItems)}
-                                    >
-                                      Table {indexOFTable + 1}
-                                    </Typography>
-                                    <TrashIcon
-                                      style={{color: 'red', width: '20px'}}
-                                      onClick={() => {
-                                        deleteTable(indexOFTable);
-                                      }}
-                                    />
-                                  </Space>
-
-                                  <div style={{overflow: 'auto'}}>
-                                    <HotTable
-                                      data={itemss}
-                                      colWidths={[
-                                        200, 200, 400, 200, 200, 200, 200, 200,
-                                        200, 200, 200, 200, 200, 200, 200, 200,
-                                      ]}
-                                      height="auto"
-                                      colHeaders={allHeaderValue}
-                                      width="auto"
-                                      minSpareRows={0}
-                                      formulas={{
-                                        engine: HyperFormula,
-                                      }}
-                                      stretchH="all"
-                                      autoWrapRow
-                                      autoWrapCol
-                                      licenseKey="non-commercial-and-evaluation"
-                                      fillHandle
-                                      dropdownMenu={true}
-                                      hiddenColumns={{
-                                        indicators: true,
-                                      }}
-                                      contextMenu={true}
-                                      multiColumnSorting
-                                      filters
-                                      rowHeaders
-                                      allowInsertRow
-                                      allowInsertColumn={false}
-                                      afterGetColHeader={alignHeaders}
-                                      beforeRenderer={() => {
-                                        addClassesToRows(
-                                          '',
-                                          '',
-                                          '',
-                                          '',
-                                          '',
-                                          '',
-                                          quoteItems,
-                                        );
-                                      }}
-                                      afterRemoveRow={(change, source) => {
-                                        deleteRowsItemsForTable(
-                                          indexOFTable,
-                                          change,
-                                          source,
-                                        );
-                                      }}
-                                      afterChange={(change: any, source) => {
-                                        if (change) {
-                                          updateRowsValueforTable(
-                                            indexOFTable,
-                                            change?.[0]?.[0],
-                                            change?.[0]?.[1],
-                                            change?.[0]?.[3],
-                                          );
-                                        }
-                                      }}
-                                      // navigableHeaders
-                                    />
-                                  </div>
-                                </div>
-                              );
-                            },
-                          )}
-                      </div>
-                      {quoteItems && (
-                        <>
-                          <br />
-                          <Space
-                            size={25}
-                            style={{
-                              display: 'flex',
-                              justifyContent: 'end',
-                              marginRight: '50px',
-                              right: '0',
-                              bottom: '0',
-                              marginBottom: '20px',
-                            }}
-                          >
-                            {' '}
-                            {!salesForceUrl && (
-                              <OsButton
-                                text="Cancel"
-                                buttontype="SECONDARY"
-                                clickHandler={(e: void) => {
-                                  CancelEditing();
-                                }}
-                              />
-                            )}
-                            {quoteItems?.length > 0 && (
-                              <OsButton
-                                text="Merge Table"
-                                buttontype="PRIMARY"
-                                clickHandler={() => mergeTableData(quoteItems)}
-                              />
-                            )}
-                          </Space>
-                        </>
-                      )}
-                    </div>
                   )}
-                </>
-              )}
-          </>
-        )}
-        {showModal && (
-          <OsModal
-            // loading={loading}
-            body={
-              <SyncTableData
-                mergedValue={finalArrForMerged}
-                setMergedVaalues={setMergedVaalues}
-                setNanonetsLoading={setNanonetsLoading}
-                nanonetsLoading={nanonetsLoading}
-                routingConditions={checkForNewFile}
-                checkForNewFileForSalesForce={checkForNewFileForSalesForce}
-                manualFlow={false}
-                lineItemSyncingData={lineItemSyncingData}
-                CurrentFileId={currentFIle}
-                currentFileData={currentFIle}
-                accoutSyncOptions={accoutSyncOptions}
-              />
-            }
-            width={600}
-            open={showModal}
-            onCancel={() => {
-              setShowModal((p) => !p);
-            }}
-          />
-        )}
-        {!salesForceUrl && (
-          <OsModal
-            body={
-              <Row style={{width: '100%', padding: '15px'}}>
-                <Space
-                  style={{width: '100%'}}
-                  size={24}
-                  direction="vertical"
-                  align="center"
-                >
-                  <Space direction="vertical" align="center" size={1}>
-                    <Typography
-                      name="Body 3/Regular"
-                      style={{fontSize: '20px', textAlign: 'center'}}
-                    >
-                      {
-                        'This file is already updated. Please review the other file on Review Quotes'
-                      }
-                    </Typography>
-                  </Space>
-
-                  <Space size={12}>
-                    <OsButton
-                      // loading={loading}
-                      text="Return to Review Quotes"
-                      buttontype="PRIMARY"
-                      clickHandler={() => {
-                        router?.push(
-                          `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue()}`,
-                        );
-                        CancelEditing();
-                      }}
-                    />
-                  </Space>
-                </Space>
-              </Row>
-            }
-            width={600}
-            onCancel={() => {
-              router?.push(
-                `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue()}`,
-              );
-            }}
-            open={returnBackModal}
-            // open={false}
-          />
-        )}
-        <OsModal
-          title="Update  Column Name"
-          bodyPadding={30}
-          body={
-            <Row gutter={[16, 24]} justify="space-between">
-              <Col span={12}>
-                <Typography name="Body 3/Regular">Select column</Typography>
-                <CommonSelect
-                  style={{width: '100%'}}
-                  value={oldColumnName}
-                  placeholder="Please select the column header name"
-                  options={existingColumnOptions}
-                  onChange={(e: any) => {
-                    setNewHeaderName('');
-                    setOldColumnName(e);
-                  }}
-                />
-              </Col>
-              <Col span={12}>
-                <Typography name="Body 3/Regular">Column New name</Typography>
-
-                <OsInput
-                  style={{width: '100%'}}
-                  placeholder="Please add new column header name"
-                  value={newHeaderName}
-                  onChange={(e: any) => {
-                    setNewHeaderName(e?.target?.value);
-                  }}
-                />
-              </Col>
-              <div
-                style={{
-                  display: 'flex',
-                  width: '100%',
-                  justifyContent: 'flex-end',
-                }}
-              >
-                {' '}
-                <div style={{marginRight: '30px'}}>
-                  <OsButton
-                    // style={{marginRight: '100px'}}
-                    disabled={
-                      newHeaderName?.length > 0 && oldColumnName?.length > 0
-                        ? false
-                        : true
-                    }
-                    text="Update"
-                    buttontype="SECONDARY"
-                    clickHandler={() => {
-                      UpdateTheColumnName('open', oldColumnName, newHeaderName);
-                    }}
-                  />{' '}
                 </div>
-                <OsButton
-                  disabled={
-                    newHeaderName?.length > 0 && oldColumnName?.length > 0
-                      ? false
-                      : true
-                  }
-                  text="Update & Close"
-                  buttontype="PRIMARY"
-                  clickHandler={() => {
-                    UpdateTheColumnName('close', oldColumnName, newHeaderName);
-                  }}
-                />
-              </div>
-            </Row>
-          }
-          width={900}
-          open={showUpdateColumnModal}
-          onCancel={() => {
-            setShowUpdateColumnModal(false);
-            setNewHeaderName('');
-            setOldColumnName('');
-          }}
-        />
+              )}
+            </>
+          )}
+        </>
+      )}
+      {showModal && (
         <OsModal
-          title="Add New Column"
-          bodyPadding={30}
+          // loading={loading}
           body={
-            <Row gutter={[16, 24]} justify="space-between">
-              <Col span={21}>
-                <OsInput
-                  style={{width: '100%'}}
-                  placeholder="Please add the column header name"
-                  onChange={(e: any) => {
-                    setNewHeaderName(e?.target?.value);
-                  }}
-                />
-              </Col>
-              <OsButton
-                disabled={newHeaderName?.length > 0 ? false : true}
-                text="Add"
-                buttontype="PRIMARY"
-                clickHandler={() => {
-                  AddNewCloumnToMergedTable(newHeaderName);
-                }}
-              />
-            </Row>
+            <SyncTableData
+              mergedValue={finalArrForMerged}
+              setMergedVaalues={setMergedVaalues}
+              setNanonetsLoading={setNanonetsLoading}
+              nanonetsLoading={nanonetsLoading}
+              routingConditions={checkForNewFile}
+              checkForNewFileForSalesForce={checkForNewFileForSalesForce}
+              manualFlow={false}
+              lineItemSyncingData={lineItemSyncingData}
+              CurrentFileId={currentFIle}
+              currentFileData={currentFIle}
+              accoutSyncOptions={accoutSyncOptions}
+            />
           }
-          width={900}
-          open={showAddColumnModal}
+          width={600}
+          open={showModal}
           onCancel={() => {
-            setShowAddColumnModal(false);
+            setShowModal((p) => !p);
           }}
         />
-
+      )}
+      {!salesForceUrl && (
         <OsModal
-          title="Store New Formula "
-          bodyPadding={30}
           body={
             <Row style={{width: '100%', padding: '15px'}}>
               <Space
@@ -2073,192 +1906,342 @@ const EditorFile = () => {
                 align="center"
               >
                 <Space direction="vertical" align="center" size={1}>
-                  <Typography name="Body 2/Regular">
-                    {'Store New Formula'}
-                  </Typography>
-                  <Typography name="Body 3/Regular">
+                  <Typography
+                    name="Body 3/Regular"
+                    style={{fontSize: '20px', textAlign: 'center'}}
+                  >
                     {
-                      'Would you like to save this formula to our stored collection?'
+                      'This file is already updated. Please review the other file on Review Quotes'
                     }
                   </Typography>
                 </Space>
 
                 <Space size={12}>
                   <OsButton
-                    text={`No`}
-                    buttontype="SECONDARY"
-                    clickHandler={() => {
-                      let newArrr: any =
-                        decliendFormulas?.length > 0
-                          ? [...decliendFormulas]
-                          : [];
-
-                      newArrr?.push(valueOfNewFormula);
-                      setDecliendFormulas(newArrr);
-                      setValueOfNewFormula('');
-                      setOpenAddNewFormulaModal(false);
-                    }}
-                  />
-                  <OsButton
-                    text="Yes, Add"
+                    // loading={loading}
+                    text="Return to Review Quotes"
                     buttontype="PRIMARY"
                     clickHandler={() => {
-                      addFormulaTOStoredFormulas(valueOfNewFormula);
+                      router?.push(
+                        `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue()}`,
+                      );
+                      CancelEditing();
                     }}
                   />
                 </Space>
               </Space>
             </Row>
           }
-          width={700}
-          open={openAddNewFormulaModal}
+          width={600}
           onCancel={() => {
-            setOpenAddNewFormulaModal(false);
+            router?.push(
+              `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue()}`,
+            );
           }}
+          open={returnBackModal}
+          // open={false}
         />
+      )}
+      <OsModal
+        title="Update  Column Name"
+        bodyPadding={30}
+        body={
+          <Row gutter={[16, 24]} justify="space-between">
+            <Col span={12}>
+              <Typography name="Body 3/Regular">Select column</Typography>
+              <CommonSelect
+                style={{width: '100%'}}
+                value={oldColumnName}
+                placeholder="Please select the column header name"
+                options={existingColumnOptions}
+                onChange={(e: any) => {
+                  setNewHeaderName('');
+                  setOldColumnName(e);
+                }}
+              />
+            </Col>
+            <Col span={12}>
+              <Typography name="Body 3/Regular">Column New name</Typography>
 
-        <OsModal
-          title="Apply Formula"
-          bodyPadding={30}
-          body={
-            <Row gutter={[16, 24]} justify="space-between">
-              <Col span={24}>
-                <Typography name="Body 1/Regular"> Formula</Typography>
-                <CommonSelect
-                  style={{width: '100%'}}
-                  value={formulaSelected}
-                  placeholder="Please select the formula"
-                  options={formulaOptions}
-                  onChange={(e: any, label: any) => {
-                    setNewHeaderName('');
-                    setOldColumnName('');
-                    setFormulaSelected(e);
-                    setTypeOfFormula(label?.label);
+              <OsInput
+                style={{width: '100%'}}
+                placeholder="Please add new column header name"
+                value={newHeaderName}
+                onChange={(e: any) => {
+                  setNewHeaderName(e?.target?.value);
+                }}
+              />
+            </Col>
+            <div
+              style={{
+                display: 'flex',
+                width: '100%',
+                justifyContent: 'flex-end',
+              }}
+            >
+              {' '}
+              <div style={{marginRight: '30px'}}>
+                <OsButton
+                  // style={{marginRight: '100px'}}
+                  disabled={
+                    newHeaderName?.length > 0 && oldColumnName?.length > 0
+                      ? false
+                      : true
+                  }
+                  text="Update"
+                  buttontype="SECONDARY"
+                  clickHandler={() => {
+                    UpdateTheColumnName('open', oldColumnName, newHeaderName);
+                  }}
+                />{' '}
+              </div>
+              <OsButton
+                disabled={
+                  newHeaderName?.length > 0 && oldColumnName?.length > 0
+                    ? false
+                    : true
+                }
+                text="Update & Close"
+                buttontype="PRIMARY"
+                clickHandler={() => {
+                  UpdateTheColumnName('close', oldColumnName, newHeaderName);
+                }}
+              />
+            </div>
+          </Row>
+        }
+        width={900}
+        open={showUpdateColumnModal}
+        onCancel={() => {
+          setShowUpdateColumnModal(false);
+          setNewHeaderName('');
+          setOldColumnName('');
+        }}
+      />
+      <OsModal
+        title="Add New Column"
+        bodyPadding={30}
+        body={
+          <Row gutter={[16, 24]} justify="space-between">
+            <Col span={21}>
+              <OsInput
+                style={{width: '100%'}}
+                placeholder="Please add the column header name"
+                onChange={(e: any) => {
+                  setNewHeaderName(e?.target?.value);
+                }}
+              />
+            </Col>
+            <OsButton
+              disabled={newHeaderName?.length > 0 ? false : true}
+              text="Add"
+              buttontype="PRIMARY"
+              clickHandler={() => {
+                AddNewCloumnToMergedTable(newHeaderName);
+              }}
+            />
+          </Row>
+        }
+        width={900}
+        open={showAddColumnModal}
+        onCancel={() => {
+          setShowAddColumnModal(false);
+        }}
+      />
+
+      <OsModal
+        title="Store New Formula "
+        bodyPadding={30}
+        body={
+          <Row style={{width: '100%', padding: '15px'}}>
+            <Space
+              style={{width: '100%'}}
+              size={24}
+              direction="vertical"
+              align="center"
+            >
+              <Space direction="vertical" align="center" size={1}>
+                <Typography name="Body 2/Regular">
+                  {'Store New Formula'}
+                </Typography>
+                <Typography name="Body 3/Regular">
+                  {
+                    'Would you like to save this formula to our stored collection?'
+                  }
+                </Typography>
+              </Space>
+
+              <Space size={12}>
+                <OsButton
+                  text={`No`}
+                  buttontype="SECONDARY"
+                  clickHandler={() => {
+                    let newArrr: any =
+                      decliendFormulas?.length > 0 ? [...decliendFormulas] : [];
+
+                    newArrr?.push(valueOfNewFormula);
+                    setDecliendFormulas(newArrr);
+                    setValueOfNewFormula('');
+                    setOpenAddNewFormulaModal(false);
                   }}
                 />
-              </Col>
-              {formulaSelected && (
-                <>
-                  {' '}
+                <OsButton
+                  text="Yes, Add"
+                  buttontype="PRIMARY"
+                  clickHandler={() => {
+                    addFormulaTOStoredFormulas(valueOfNewFormula);
+                  }}
+                />
+              </Space>
+            </Space>
+          </Row>
+        }
+        width={700}
+        open={openAddNewFormulaModal}
+        onCancel={() => {
+          setOpenAddNewFormulaModal(false);
+        }}
+      />
+
+      <OsModal
+        title="Apply Formula"
+        bodyPadding={30}
+        body={
+          <Row gutter={[16, 24]} justify="space-between">
+            <Col span={24}>
+              <Typography name="Body 1/Regular"> Formula</Typography>
+              <CommonSelect
+                style={{width: '100%'}}
+                value={formulaSelected}
+                placeholder="Please select the formula"
+                options={formulaOptions}
+                onChange={(e: any, label: any) => {
+                  setNewHeaderName('');
+                  setOldColumnName('');
+                  setFormulaSelected(e);
+                  setTypeOfFormula(label?.label);
+                }}
+              />
+            </Col>
+            {formulaSelected && (
+              <>
+                {' '}
+                <Col span={12}>
+                  <Typography name="Body 3/Regular">
+                    {typeOfFormula?.toString()?.toLowerCase() !== 'split'
+                      ? 'Apply formula from'
+                      : 'Apply formula on'}
+                  </Typography>
+
+                  <CommonSelect
+                    style={{width: '100%'}}
+                    value={oldColumnName}
+                    placeholder={
+                      typeOfFormula?.toString()?.toLowerCase() === 'split'
+                        ? 'Please select the column header name'
+                        : 'Please select the column you want to map from'
+                    }
+                    options={existingColumnOptions}
+                    onChange={(e: any) => {
+                      setNewHeaderName('');
+                      setOldColumnName(e);
+                    }}
+                  />
+                </Col>
+                {typeOfFormula?.toString()?.toLowerCase() !== 'split' && (
                   <Col span={12}>
                     <Typography name="Body 3/Regular">
                       {typeOfFormula?.toString()?.toLowerCase() !== 'split'
-                        ? 'Apply formula from'
+                        ? 'Apply formula to'
                         : 'Apply formula on'}
                     </Typography>
 
+                    {/* <Typography name='Body 3/Regular' > New column name</Typography> */}
+
                     <CommonSelect
                       style={{width: '100%'}}
-                      value={oldColumnName}
-                      placeholder={
-                        typeOfFormula?.toString()?.toLowerCase() === 'split'
-                          ? 'Please select the column header name'
-                          : 'Please select the column you want to map from'
-                      }
+                      value={oldColumnName1}
+                      placeholder="Please select the column to you want to map"
                       options={existingColumnOptions}
                       onChange={(e: any) => {
                         setNewHeaderName('');
-                        setOldColumnName(e);
+                        setOldColumnName1(e);
                       }}
                     />
                   </Col>
-                  {typeOfFormula?.toString()?.toLowerCase() !== 'split' && (
-                    <Col span={12}>
-                      <Typography name="Body 3/Regular">
-                        {typeOfFormula?.toString()?.toLowerCase() !== 'split'
-                          ? 'Apply formula to'
-                          : 'Apply formula on'}
-                      </Typography>
+                )}
+                <Col
+                  span={
+                    typeOfFormula?.toString()?.toLowerCase() === 'split'
+                      ? 12
+                      : 24
+                  }
+                >
+                  <Typography name="Body 3/Regular">
+                    {' '}
+                    New column name
+                  </Typography>
 
-                      {/* <Typography name='Body 3/Regular' > New column name</Typography> */}
-
-                      <CommonSelect
-                        style={{width: '100%'}}
-                        value={oldColumnName1}
-                        placeholder="Please select the column to you want to map"
-                        options={existingColumnOptions}
-                        onChange={(e: any) => {
-                          setNewHeaderName('');
-                          setOldColumnName1(e);
-                        }}
-                      />
-                    </Col>
-                  )}
-                  <Col
-                    span={
-                      typeOfFormula?.toString()?.toLowerCase() === 'split'
-                        ? 12
-                        : 24
-                    }
-                  >
-                    <Typography name="Body 3/Regular">
-                      {' '}
-                      New column name
-                    </Typography>
-
-                    <OsInput
-                      style={{width: '100%'}}
-                      placeholder="Please add new column header name"
-                      value={newHeaderName}
-                      onChange={(e: any) => {
-                        setNewHeaderName(e?.target?.value);
-                      }}
-                    />
-                  </Col>
-                </>
-              )}
-
-              <div
-                style={{
-                  display: 'flex',
-                  width: '100%',
-                  justifyContent: 'flex-end',
-                }}
-              >
-                {' '}
-                <div style={{marginRight: '30px'}}>
-                  <OsButton
-                    // style={{marginRight: '100px'}}
-                    disabled={
-                      newHeaderName?.length > 0 && oldColumnName?.length > 0
-                        ? false
-                        : true
-                    }
-                    text="Apply"
-                    buttontype="PRIMARY"
-                    clickHandler={() => {
-                      if (
-                        typeOfFormula?.toString()?.toLowerCase() === 'split'
-                      ) {
-                        applyFormula(
-                          formulaSelected,
-                          oldColumnName,
-                          newHeaderName,
-                        );
-                      } else {
-                        applyformulaforSumAverage(
-                          formulaSelected,
-                          oldColumnName,
-                          newHeaderName,
-                          oldColumnName1,
-                        );
-                      }
+                  <OsInput
+                    style={{width: '100%'}}
+                    placeholder="Please add new column header name"
+                    value={newHeaderName}
+                    onChange={(e: any) => {
+                      setNewHeaderName(e?.target?.value);
                     }}
-                  />{' '}
-                </div>
+                  />
+                </Col>
+              </>
+            )}
+
+            <div
+              style={{
+                display: 'flex',
+                width: '100%',
+                justifyContent: 'flex-end',
+              }}
+            >
+              {' '}
+              <div style={{marginRight: '30px'}}>
+                <OsButton
+                  // style={{marginRight: '100px'}}
+                  disabled={
+                    newHeaderName?.length > 0 && oldColumnName?.length > 0
+                      ? false
+                      : true
+                  }
+                  text="Apply"
+                  buttontype="PRIMARY"
+                  clickHandler={() => {
+                    if (typeOfFormula?.toString()?.toLowerCase() === 'split') {
+                      applyFormula(
+                        formulaSelected,
+                        oldColumnName,
+                        newHeaderName,
+                      );
+                    } else {
+                      applyformulaforSumAverage(
+                        formulaSelected,
+                        oldColumnName,
+                        newHeaderName,
+                        oldColumnName1,
+                      );
+                    }
+                  }}
+                />{' '}
               </div>
-            </Row>
-          }
-          width={900}
-          open={showApplyFormula}
-          onCancel={() => {
-            setShowApplyFormula(false);
-            setFormulaSelected('');
-            setNewHeaderName('');
-            setOldColumnName('');
-          }}
-        />
-      </Suspense>
+            </div>
+          </Row>
+        }
+        width={900}
+        open={showApplyFormula}
+        onCancel={() => {
+          setShowApplyFormula(false);
+          setFormulaSelected('');
+          setNewHeaderName('');
+          setOldColumnName('');
+        }}
+      />
     </GlobalLoader>
   );
 };

@@ -5,7 +5,7 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import OsDrawer from '@/app/components/common/os-drawer';
 import Typography from '@/app/components/common/typography';
-import {FC, Suspense} from 'react';
+import {FC} from 'react';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setOpenDealRegDrawer} from '../../../../../redux/slices/dealReg';
 import CommonFields from './CommonField';
@@ -82,54 +82,52 @@ const DealRegDetailForm: FC<any> = ({
 
   return (
     <>
-      <Suspense fallback={<div>Loading...</div>}>
-        {!salesForceUrl && (
-          <Space
-            style={{
-              width: '100%',
-              background: 'white',
-              padding: '24px',
-              borderRadius: '12px',
-            }}
-            size={24}
-            direction="vertical"
-          >
-            <OsCollapseAdmin items={ResponseDetails} />
-          </Space>
-        )}
-        <>
-          {data?.PartnerProgram?.form_data &&
-            data?.type !== 'self_registered' && (
-              <Space
-                size={24}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                  marginTop: '30px',
-                  background: 'white',
-                  padding: '24px',
-                  borderRadius: '12px',
-                }}
-              >
-                <OsCollapseAdmin items={UniqueFieldsItems} />
-              </Space>
-            )}
-        </>
-
-        <OsDrawer
-          title={<Typography name="Body 1/Regular">Form Settings</Typography>}
-          placement="right"
-          onClose={() => {
-            dispatch(setOpenDealRegDrawer(false));
+      {!salesForceUrl && (
+        <Space
+          style={{
+            width: '100%',
+            background: 'white',
+            padding: '24px',
+            borderRadius: '12px',
           }}
-          open={openDealRegDrawer}
-          width={450}
+          size={24}
+          direction="vertical"
         >
-          <Space style={{width: '100%'}} size={24} direction="vertical">
-            <OsCollapseAdmin items={CommonFieldsItems} />
-          </Space>
-        </OsDrawer>
-      </Suspense>
+          <OsCollapseAdmin items={ResponseDetails} />
+        </Space>
+      )}
+      <>
+        {data?.PartnerProgram?.form_data &&
+          data?.type !== 'self_registered' && (
+            <Space
+              size={24}
+              direction="vertical"
+              style={{
+                width: '100%',
+                marginTop: '30px',
+                background: 'white',
+                padding: '24px',
+                borderRadius: '12px',
+              }}
+            >
+              <OsCollapseAdmin items={UniqueFieldsItems} />
+            </Space>
+          )}
+      </>
+
+      <OsDrawer
+        title={<Typography name="Body 1/Regular">Form Settings</Typography>}
+        placement="right"
+        onClose={() => {
+          dispatch(setOpenDealRegDrawer(false));
+        }}
+        open={openDealRegDrawer}
+        width={450}
+      >
+        <Space style={{width: '100%'}} size={24} direction="vertical">
+          <OsCollapseAdmin items={CommonFieldsItems} />
+        </Space>
+      </OsDrawer>
     </>
   );
 };

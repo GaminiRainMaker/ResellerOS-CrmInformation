@@ -20,7 +20,7 @@ import {
 import {CheckIcon, XMarkIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {FC, Suspense, useEffect, useState} from 'react';
+import {FC, useEffect, useState} from 'react';
 import GreenCheckIcon from '../../../../../../public/assets/static/greenCheckIcon.svg';
 import RaiseConcernImg from '../../../../../../public/assets/static/raiseConcern.svg';
 import {
@@ -357,291 +357,286 @@ const ReviewQuotes: FC<any> = ({
 
   return (
     <GlobalLoader loading={quoteFileDataLoading}>
-      <Suspense fallback={<div>Loading...</div>}>
-        {contextHolder}
-        {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
-          !selectedFilter ? (
-            <div>
-              <OsTableWithOutDrag
-                loading={quoteFileDataLoading}
-                columns={finalReviewCol}
-                dataSource={quoteFileUnverifiedById?.[0]?.QuoteLineItems}
-                scroll
-                locale={locale}
-                defaultPageSize={
-                  quoteFileUnverifiedById?.[0]?.QuoteLineItems?.length
-                }
-              />
-            </div>
-          ) : selectedFilter && reviewQuotesData?.length > 0 ? (
-            <>
-              {reviewQuotesData?.map((finalDataItem: any, index: number) => {
-                return (
-                  <OsCollapse
-                    key={index}
-                    items={[
-                      {
-                        key: index,
-                        label: (
-                          <Row justify="space-between">
-                            <Col span={10}>
-                              <p>{finalDataItem?.title}</p>
-                            </Col>
-                            <Col span={4}>
-                              <p>
-                                Line Items:{' '}
-                                {finalDataItem?.QuoteLineItem?.length}
-                              </p>
-                            </Col>
-                            <Col span={4}>
-                              <p>
-                                Total Cost: $
-                                {abbreviate(
-                                  Number(
-                                    finalDataItem?.totalAdjustedPrice ?? 0.0,
-                                  ),
-                                )}
-                              </p>
-                            </Col>
-                            <Col
-                              span={4}
-                              style={{
-                                justifyContent: 'end',
-                                display: 'flex',
-                              }}
-                            >
-                              <Space>
-                                <AvatarStyled
-                                  shape="square"
-                                  background={token?.colorSuccess}
-                                  size={28}
-                                  icon={
-                                    <CheckIcon
-                                      width={25}
-                                      color={token?.colorBgContainer}
-                                      onClick={(e) => {
-                                        e?.stopPropagation();
-                                        if (isView === 'true') {
-                                          notification.open({
-                                            message:
-                                              "You can't use in view mode.",
-                                            type: 'info',
-                                          });
-                                        } else {
-                                          setShowVerificationFileModal(true);
-                                          setFileData(finalDataItem);
-                                        }
-                                      }}
-                                    />
-                                  }
-                                />
-                                <AvatarStyled
-                                  shape="square"
-                                  background={token?.colorError}
-                                  size={28}
-                                  icon={
-                                    <XMarkIcon
-                                      width={25}
-                                      color={token?.colorBgContainer}
-                                      onClick={(e) => {
-                                        if (isView === 'true') {
-                                          notification.open({
-                                            message:
-                                              "You can't use in view mode.",
-                                            type: 'info',
-                                          });
-                                        } else {
-                                          if (!finalDataItem?.maunalAdded) {
-                                            if (
-                                              finalDataItem?.QuoteLineItem
-                                                ?.length === 0
-                                            ) {
-                                              setConditionsForTheButtons({
-                                                ...conditionsForTheButtons,
-                                                exportAs: false,
-                                              });
-                                              setShowExportAs(false);
-                                            } else {
-                                              setConditionsForTheButtons({
-                                                ...conditionsForTheButtons,
-                                                exportAs: true,
-                                              });
-                                              setShowExportAs(true);
-                                            }
-                                            if (
-                                              !finalDataItem?.title
-                                                ?.toLowerCase()
-                                                ?.split('.')
-                                                ?.includes('pdf')
-                                            ) {
-                                              setConditionsForTheButtons({
-                                                ...conditionsForTheButtons,
-                                                exportTable: false,
-                                              });
-                                              setShowExportToTable(false);
-                                            } else {
-                                              setConditionsForTheButtons({
-                                                ...conditionsForTheButtons,
-                                                exportTable: true,
-                                              });
-                                              setShowExportToTable(true);
-                                            }
-                                            if (
-                                              finalDataItem?.QuoteLineItem
-                                                ?.length === 0 &&
-                                              !finalDataItem?.title
-                                                ?.toLowerCase()
-                                                ?.split('.')
-                                                ?.includes('pdf')
-                                            ) {
-                                              setConditionsForTheButtons({
-                                                ...conditionsForTheButtons,
-                                                maunalExport: true,
-                                              });
-                                              setShowSubmitButton(true);
-                                            } else {
-                                              setConditionsForTheButtons({
-                                                ...conditionsForTheButtons,
-                                                maunalExport: false,
-                                              });
-                                              setShowSubmitButton(false);
-                                            }
-                                          }
-                                          if (finalDataItem?.maunalAdded) {
+      {contextHolder}
+      {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
+        !selectedFilter ? (
+          <div>
+            <OsTableWithOutDrag
+              loading={quoteFileDataLoading}
+              columns={finalReviewCol}
+              dataSource={quoteFileUnverifiedById?.[0]?.QuoteLineItems}
+              scroll
+              locale={locale}
+              defaultPageSize={
+                quoteFileUnverifiedById?.[0]?.QuoteLineItems?.length
+              }
+            />
+          </div>
+        ) : selectedFilter && reviewQuotesData?.length > 0 ? (
+          <>
+            {reviewQuotesData?.map((finalDataItem: any, index: number) => {
+              return (
+                <OsCollapse
+                  key={index}
+                  items={[
+                    {
+                      key: index,
+                      label: (
+                        <Row justify="space-between">
+                          <Col span={10}>
+                            <p>{finalDataItem?.title}</p>
+                          </Col>
+                          <Col span={4}>
+                            <p>
+                              Line Items: {finalDataItem?.QuoteLineItem?.length}
+                            </p>
+                          </Col>
+                          <Col span={4}>
+                            <p>
+                              Total Cost: $
+                              {abbreviate(
+                                Number(
+                                  finalDataItem?.totalAdjustedPrice ?? 0.0,
+                                ),
+                              )}
+                            </p>
+                          </Col>
+                          <Col
+                            span={4}
+                            style={{
+                              justifyContent: 'end',
+                              display: 'flex',
+                            }}
+                          >
+                            <Space>
+                              <AvatarStyled
+                                shape="square"
+                                background={token?.colorSuccess}
+                                size={28}
+                                icon={
+                                  <CheckIcon
+                                    width={25}
+                                    color={token?.colorBgContainer}
+                                    onClick={(e) => {
+                                      e?.stopPropagation();
+                                      if (isView === 'true') {
+                                        notification.open({
+                                          message:
+                                            "You can't use in view mode.",
+                                          type: 'info',
+                                        });
+                                      } else {
+                                        setShowVerificationFileModal(true);
+                                        setFileData(finalDataItem);
+                                      }
+                                    }}
+                                  />
+                                }
+                              />
+                              <AvatarStyled
+                                shape="square"
+                                background={token?.colorError}
+                                size={28}
+                                icon={
+                                  <XMarkIcon
+                                    width={25}
+                                    color={token?.colorBgContainer}
+                                    onClick={(e) => {
+                                      if (isView === 'true') {
+                                        notification.open({
+                                          message:
+                                            "You can't use in view mode.",
+                                          type: 'info',
+                                        });
+                                      } else {
+                                        if (!finalDataItem?.maunalAdded) {
+                                          if (
+                                            finalDataItem?.QuoteLineItem
+                                              ?.length === 0
+                                          ) {
                                             setConditionsForTheButtons({
                                               ...conditionsForTheButtons,
                                               exportAs: false,
+                                            });
+                                            setShowExportAs(false);
+                                          } else {
+                                            setConditionsForTheButtons({
+                                              ...conditionsForTheButtons,
+                                              exportAs: true,
+                                            });
+                                            setShowExportAs(true);
+                                          }
+                                          if (
+                                            !finalDataItem?.title
+                                              ?.toLowerCase()
+                                              ?.split('.')
+                                              ?.includes('pdf')
+                                          ) {
+                                            setConditionsForTheButtons({
+                                              ...conditionsForTheButtons,
                                               exportTable: false,
+                                            });
+                                            setShowExportToTable(false);
+                                          } else {
+                                            setConditionsForTheButtons({
+                                              ...conditionsForTheButtons,
+                                              exportTable: true,
+                                            });
+                                            setShowExportToTable(true);
+                                          }
+                                          if (
+                                            finalDataItem?.QuoteLineItem
+                                              ?.length === 0 &&
+                                            !finalDataItem?.title
+                                              ?.toLowerCase()
+                                              ?.split('.')
+                                              ?.includes('pdf')
+                                          ) {
+                                            setConditionsForTheButtons({
+                                              ...conditionsForTheButtons,
                                               maunalExport: true,
                                             });
                                             setShowSubmitButton(true);
-                                            setShowExportToTable(false);
-                                            setShowExportAs(false);
+                                          } else {
+                                            setConditionsForTheButtons({
+                                              ...conditionsForTheButtons,
+                                              maunalExport: false,
+                                            });
+                                            setShowSubmitButton(false);
                                           }
-
-                                          setShowRaiseConcernModal(true);
-                                          setFileData(finalDataItem);
                                         }
-                                        e?.stopPropagation();
-                                      }}
-                                    />
-                                  }
-                                />
-                              </Space>
-                            </Col>
-                          </Row>
-                        ),
-                        children: (
-                          <OsTableWithOutDrag
-                            loading={quoteFileDataLoading}
-                            columns={finalReviewCol}
-                            dataSource={finalDataItem?.QuoteLineItem}
-                            scroll
-                            locale={locale}
-                            defaultPageSize={
-                              finalDataItem?.QuoteLineItem?.length
-                            }
-                            setPageChange={setPageChange}
-                            pageChange={pageChange}
-                            uniqueId={finalDataItem?.name}
-                          />
-                        ),
-                      },
-                    ]}
-                  />
-                );
-              })}
-            </>
-          ) : (
-            <EmptyContainer
-              title={
-                selectedFilter
-                  ? `There is no data for ${selectedFilter}.`
-                  : 'There is no data.'
-              }
-            />
-          )
+                                        if (finalDataItem?.maunalAdded) {
+                                          setConditionsForTheButtons({
+                                            ...conditionsForTheButtons,
+                                            exportAs: false,
+                                            exportTable: false,
+                                            maunalExport: true,
+                                          });
+                                          setShowSubmitButton(true);
+                                          setShowExportToTable(false);
+                                          setShowExportAs(false);
+                                        }
+
+                                        setShowRaiseConcernModal(true);
+                                        setFileData(finalDataItem);
+                                      }
+                                      e?.stopPropagation();
+                                    }}
+                                  />
+                                }
+                              />
+                            </Space>
+                          </Col>
+                        </Row>
+                      ),
+                      children: (
+                        <OsTableWithOutDrag
+                          loading={quoteFileDataLoading}
+                          columns={finalReviewCol}
+                          dataSource={finalDataItem?.QuoteLineItem}
+                          scroll
+                          locale={locale}
+                          defaultPageSize={finalDataItem?.QuoteLineItem?.length}
+                          setPageChange={setPageChange}
+                          pageChange={pageChange}
+                          uniqueId={finalDataItem?.name}
+                        />
+                      ),
+                    },
+                  ]}
+                />
+              );
+            })}
+          </>
         ) : (
           <EmptyContainer
-            title="There is no columns for Review Quotes"
-            subTitle="Please update the columns from the Admin Configuration Tab or request the admin to do so."
+            title={
+              selectedFilter
+                ? `There is no data for ${selectedFilter}.`
+                : 'There is no data.'
+            }
           />
-        )}
-
-        <OsModal
-          loading={quoteFileDataLoading}
-          thirdLoading={nanonetsLoading}
-          body={
-            <RaiseConcern
-              title="Report an issue"
-              description="We are here to assist you! Please write your concern regarding this quote to us. Also, you can update the quote manually."
-              image={RaiseConcernImg}
-              form={form}
-              onClick={addConcernData}
-            />
-          }
-          bodyPadding={40}
-          width={638}
-          open={showRaiseConcernModal}
-          onCancel={() => {
-            setShowRaiseConcernModal(false);
-            form?.resetFields();
-          }}
-          destroyOnClose
-          thirdButtonText={
-            // conditionsForTheButtons?.exportTable ? 'Export File to Tables' : ''
-            showExportToTable ? 'Export File to Tables' : ''
-          }
-          primaryButtonText={
-            // conditionsForTheButtons?.exportAs ? 'Edit Data As-Is' : ''
-            showExportAs ? 'Edit Data As-Is' : ''
-          }
-          fourthButtonText={
-            // conditionsForTheButtons?.maunalExport ? 'Submit Issue' : ''
-            showSubmitButton ? 'Submit Issue' : ''
-          }
-          fifthButtonText={'Update Manually'}
-          onOk={() => {
-            form?.submit();
-            setButtonType('primary');
-          }}
-          thirdButtonfunction={() => {
-            form?.submit();
-          }}
-          fourthButtonfunction={() => {
-            form?.submit();
-            setButtonType('fourth');
-          }}
-          fifthButtonfunction={() => {
-            form?.submit();
-            setButtonType('fifth');
-          }}
+        )
+      ) : (
+        <EmptyContainer
+          title="There is no columns for Review Quotes"
+          subTitle="Please update the columns from the Admin Configuration Tab or request the admin to do so."
         />
+      )}
 
-        <OsModal
-          loading={fileVerificationLoading}
-          body={
-            <OSDialog
-              title="Are you sure you want to verify this file?"
-              description="Please acknowledge before proceeding."
-              image={GreenCheckIcon}
-            />
-          }
-          bodyPadding={40}
-          width={638}
-          open={showVerificationFileModal}
-          onCancel={() => {
-            setShowVerificationFileModal(false);
-          }}
-          destroyOnClose
-          secondaryButtonText="Cancel"
-          primaryButtonText="Yes"
-          onOk={() => {
-            updateAllTablesData();
-          }}
-          singleButtonInCenter
-        />
-      </Suspense>
+      <OsModal
+        loading={quoteFileDataLoading}
+        thirdLoading={nanonetsLoading}
+        body={
+          <RaiseConcern
+            title="Report an issue"
+            description="We are here to assist you! Please write your concern regarding this quote to us. Also, you can update the quote manually."
+            image={RaiseConcernImg}
+            form={form}
+            onClick={addConcernData}
+          />
+        }
+        bodyPadding={40}
+        width={638}
+        open={showRaiseConcernModal}
+        onCancel={() => {
+          setShowRaiseConcernModal(false);
+          form?.resetFields();
+        }}
+        destroyOnClose
+        thirdButtonText={
+          // conditionsForTheButtons?.exportTable ? 'Export File to Tables' : ''
+          showExportToTable ? 'Export File to Tables' : ''
+        }
+        primaryButtonText={
+          // conditionsForTheButtons?.exportAs ? 'Edit Data As-Is' : ''
+          showExportAs ? 'Edit Data As-Is' : ''
+        }
+        fourthButtonText={
+          // conditionsForTheButtons?.maunalExport ? 'Submit Issue' : ''
+          showSubmitButton ? 'Submit Issue' : ''
+        }
+        fifthButtonText={'Update Manually'}
+        onOk={() => {
+          form?.submit();
+          setButtonType('primary');
+        }}
+        thirdButtonfunction={() => {
+          form?.submit();
+        }}
+        fourthButtonfunction={() => {
+          form?.submit();
+          setButtonType('fourth');
+        }}
+        fifthButtonfunction={() => {
+          form?.submit();
+          setButtonType('fifth');
+        }}
+      />
+
+      <OsModal
+        loading={fileVerificationLoading}
+        body={
+          <OSDialog
+            title="Are you sure you want to verify this file?"
+            description="Please acknowledge before proceeding."
+            image={GreenCheckIcon}
+          />
+        }
+        bodyPadding={40}
+        width={638}
+        open={showVerificationFileModal}
+        onCancel={() => {
+          setShowVerificationFileModal(false);
+        }}
+        destroyOnClose
+        secondaryButtonText="Cancel"
+        primaryButtonText="Yes"
+        onOk={() => {
+          updateAllTablesData();
+        }}
+        singleButtonInCenter
+      />
     </GlobalLoader>
   );
 };

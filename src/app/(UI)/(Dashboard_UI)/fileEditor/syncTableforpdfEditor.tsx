@@ -28,7 +28,7 @@ import {
 } from '@/app/utils/base';
 import {Col, Row, Select, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {FC, Suspense, useEffect, useState} from 'react';
+import {FC, useEffect, useState} from 'react';
 import {
   insertLineItemSyncing,
   insertLineItemSyncingForSalesForce,
@@ -802,103 +802,101 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   return (
     <>
       <GlobalLoader loading={nanonetsLoading}>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Row
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              padding: '20px',
-            }}
-          >
-            <Col>
+        <Row
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            padding: '20px',
+          }}
+        >
+          <Col>
+            <Row style={{marginTop: '6px'}}>
+              {' '}
+              <Typography
+                style={{marginLeft: '10px'}}
+                align="center"
+                name="Body 3/Medium"
+              >
+                Your Pdf Header
+              </Typography>
+            </Row>
+            <Divider />
+            {mergeedColumn?.map((item: any) => (
               <Row style={{marginTop: '6px'}}>
-                {' '}
-                <Typography
-                  style={{marginLeft: '10px'}}
-                  align="center"
-                  name="Body 3/Medium"
-                >
-                  Your Pdf Header
-                </Typography>
+                <OsInput disabled value={formatStatus(item)} />
               </Row>
-              <Divider />
-              {mergeedColumn?.map((item: any) => (
+            ))}
+          </Col>
+
+          <Col>
+            <Row style={{marginTop: '6px'}}>
+              {' '}
+              <Typography
+                style={{marginLeft: '10px'}}
+                align="center"
+                name="Body 3/Medium"
+              >
+                Quote Line Item Header
+              </Typography>
+            </Row>
+            <Divider />
+            {syncedNewValue?.map((item: any, indexOfCol: number) => {
+              let newLabel = syncTableQuoteLItemValues?.find(
+                (items: any) =>
+                  items?.value?.toString()?.toUpperCase() ===
+                  item?.newVal?.toString()?.toUpperCase(),
+              );
+
+              return (
                 <Row style={{marginTop: '6px'}}>
-                  <OsInput disabled value={formatStatus(item)} />
-                </Row>
-              ))}
-            </Col>
-
-            <Col>
-              <Row style={{marginTop: '6px'}}>
-                {' '}
-                <Typography
-                  style={{marginLeft: '10px'}}
-                  align="center"
-                  name="Body 3/Medium"
-                >
-                  Quote Line Item Header
-                </Typography>
-              </Row>
-              <Divider />
-              {syncedNewValue?.map((item: any, indexOfCol: number) => {
-                let newLabel = syncTableQuoteLItemValues?.find(
-                  (items: any) =>
-                    items?.value?.toString()?.toUpperCase() ===
-                    item?.newVal?.toString()?.toUpperCase(),
-                );
-
-                return (
-                  <Row style={{marginTop: '6px'}}>
-                    <CommonSelect
-                      onChange={(e) => {
-                        syncTableToLineItems(item, e, indexOfCol);
-                      }}
-                      allowClear
-                      onClear={() => {
-                        if (!item?.newVal) {
-                          return;
-                        }
-                        if (item?.newVal) {
-                          handleChange();
-                        }
-                      }}
-                      defaultValue={formatStatus(
-                        newLabel?.label?.toString()?.toUpperCase(),
-                      )}
-                      // value={formatStatus(
-                      //   newLabel?.label?.toString()?.toUpperCase(),
-                      // )}
-                      style={{width: '250px'}}
-                      options={
-                        salesFOrceAccoutFlow === 'true' || salesForceUrl
-                          ? accoutSyncOptions
-                          : syncTableQuoteLItemValues
+                  <CommonSelect
+                    onChange={(e) => {
+                      syncTableToLineItems(item, e, indexOfCol);
+                    }}
+                    allowClear
+                    onClear={() => {
+                      if (!item?.newVal) {
+                        return;
                       }
-                    />
-                  </Row>
-                );
-              })}
-            </Col>
-          </Row>
-          <Row
+                      if (item?.newVal) {
+                        handleChange();
+                      }
+                    }}
+                    defaultValue={formatStatus(
+                      newLabel?.label?.toString()?.toUpperCase(),
+                    )}
+                    // value={formatStatus(
+                    //   newLabel?.label?.toString()?.toUpperCase(),
+                    // )}
+                    style={{width: '250px'}}
+                    options={
+                      salesFOrceAccoutFlow === 'true' || salesForceUrl
+                        ? accoutSyncOptions
+                        : syncTableQuoteLItemValues
+                    }
+                  />
+                </Row>
+              );
+            })}
+          </Col>
+        </Row>
+        <Row
+          style={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          <OsButton
+            loading={nanonetsLoading}
+            text="Sync And Save"
             style={{
               width: '100%',
-              display: 'flex',
-              justifyContent: 'center',
             }}
-          >
-            <OsButton
-              loading={nanonetsLoading}
-              text="Sync And Save"
-              style={{
-                width: '100%',
-              }}
-              buttontype="PRIMARY"
-              clickHandler={syncTableDataNew}
-            />
-          </Row>
-        </Suspense>
+            buttontype="PRIMARY"
+            clickHandler={syncTableDataNew}
+          />
+        </Row>
       </GlobalLoader>
     </>
   );

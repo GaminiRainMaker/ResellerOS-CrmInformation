@@ -8,7 +8,7 @@ import Typography from '@/app/components/common/typography';
 import {Form, Space} from 'antd';
 import axios from 'axios';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {FC, Suspense, useEffect, useState} from 'react';
+import {FC, useEffect, useState} from 'react';
 import {insertAttachmentDocument} from '../../../../../redux/actions/attachmentDocument';
 import {getAllFormStack} from '../../../../../redux/actions/formStackSync';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
@@ -274,108 +274,98 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
       <GlobalLoader
         loading={formStackSyncLoading || GeneralSettingLoading || loading}
       >
-        <Suspense fallback={<div>Loading...</div>}>
-          {FormstackDataOptions ? (
-            <Form layout="vertical" requiredMark={false} form={form}>
-              <Row gutter={[16, 24]} justify="space-between">
-                <Col span={24}>
-                  <SelectFormItem
-                    label={
-                      <Typography name="Body 4/Medium">Document</Typography>
-                    }
-                    name="document_id"
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Document is required!',
-                      },
-                    ]}
-                  >
-                    <CommonSelect
-                      style={{width: '100%'}}
-                      placeholder="Select Document"
-                      allowClear
-                      options={formStackOptions}
-                      onChange={(e: any, data: any) => {
-                        // dowloadFunction(data, 'preview');
-                        setSelectedDoc(data);
-                        setPdfUrl('');
-                      }}
-                    />
-                  </SelectFormItem>
-                </Col>
-              </Row>
-              <br />
-              {pdfUrl && <iframe src={pdfUrl} width="100%" height="500px" />}
-              <br />
-
-              {selectedDoc && (
-                <Space
-                  align="end"
-                  style={{
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent: 'end',
-                  }}
+        {FormstackDataOptions ? (
+          <Form layout="vertical" requiredMark={false} form={form}>
+            <Row gutter={[16, 24]} justify="space-between">
+              <Col span={24}>
+                <SelectFormItem
+                  label={<Typography name="Body 4/Medium">Document</Typography>}
+                  name="document_id"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Document is required!',
+                    },
+                  ]}
                 >
-                  {' '}
-                  <Row justify={'end'}>
-                    <OsButton
-                      text="Preview"
-                      buttontype="SECONDARY"
-                      clickHandler={() =>
-                        dowloadFunction(selectedDoc, 'preview')
-                      }
-                    />
-                  </Row>
-                  <Row justify={'end'}>
-                    <OsButton
-                      text="Download"
-                      buttontype="PRIMARY"
-                      clickHandler={() => {
-                        dowloadFunction(selectedDoc, 'download');
-                        setPdfUrl('');
-                      }}
-                    />
-                  </Row>
-                </Space>
-              )}
-            </Form>
-          ) : (
-            <div style={{display: 'flex', flexDirection: 'column'}}>
-              <Typography
-                name="Body 3/Bold"
-                color={token?.colorLink}
-                style={{marginBottom: '6px'}}
+                  <CommonSelect
+                    style={{width: '100%'}}
+                    placeholder="Select Document"
+                    allowClear
+                    options={formStackOptions}
+                    onChange={(e: any, data: any) => {
+                      // dowloadFunction(data, 'preview');
+                      setSelectedDoc(data);
+                      setPdfUrl('');
+                    }}
+                  />
+                </SelectFormItem>
+              </Col>
+            </Row>
+            <br />
+            {pdfUrl && <iframe src={pdfUrl} width="100%" height="500px" />}
+            <br />
+
+            {selectedDoc && (
+              <Space
+                align="end"
+                style={{width: '100%', display: 'flex', justifyContent: 'end'}}
               >
-                Note:
-              </Typography>
-              <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
-                <ul style={{listStyleType: 'disc', marginLeft: '20px'}}>
-                  <li>
-                    You haven't provided the secret key and API yet, or the
-                    provided keys are invalid. Please verify and update them.
-                  </li>
-                  <li>
-                    You can{' '}
-                    <Typography
-                      name="Body 4/Medium"
-                      color={token?.colorLink}
-                      style={{textDecoration: 'underline'}}
-                      hoverOnText
-                      onClick={() => {
-                        router.push('/admin?tab=formstack');
-                      }}
-                    >
-                      click here
-                    </Typography>{' '}
-                    to update the keys.
-                  </li>
-                </ul>
-              </Typography>
-            </div>
-          )}
-        </Suspense>
+                {' '}
+                <Row justify={'end'}>
+                  <OsButton
+                    text="Preview"
+                    buttontype="SECONDARY"
+                    clickHandler={() => dowloadFunction(selectedDoc, 'preview')}
+                  />
+                </Row>
+                <Row justify={'end'}>
+                  <OsButton
+                    text="Download"
+                    buttontype="PRIMARY"
+                    clickHandler={() => {
+                      dowloadFunction(selectedDoc, 'download');
+                      setPdfUrl('');
+                    }}
+                  />
+                </Row>
+              </Space>
+            )}
+          </Form>
+        ) : (
+          <div style={{display: 'flex', flexDirection: 'column'}}>
+            <Typography
+              name="Body 3/Bold"
+              color={token?.colorLink}
+              style={{marginBottom: '6px'}}
+            >
+              Note:
+            </Typography>
+            <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
+              <ul style={{listStyleType: 'disc', marginLeft: '20px'}}>
+                <li>
+                  You haven't provided the secret key and API yet, or the
+                  provided keys are invalid. Please verify and update them.
+                </li>
+                <li>
+                  You can{' '}
+                  <Typography
+                    name="Body 4/Medium"
+                    color={token?.colorLink}
+                    style={{textDecoration: 'underline'}}
+                    hoverOnText
+                    onClick={() => {
+                      router.push('/admin?tab=formstack');
+                    }}
+                  >
+                    click here
+                  </Typography>{' '}
+                  to update the keys.
+                </li>
+              </ul>
+            </Typography>
+          </div>
+        )}
       </GlobalLoader>
     </>
   );

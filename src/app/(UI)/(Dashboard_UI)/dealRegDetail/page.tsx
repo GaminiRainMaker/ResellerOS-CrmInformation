@@ -13,7 +13,7 @@ import {PlusIcon} from '@heroicons/react/24/outline';
 import {Button, MenuProps} from 'antd';
 import Form from 'antd/es/form';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {Suspense, useEffect, useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {
   dealRegFormScript,
   getDealRegByOpportunityId,
@@ -158,109 +158,107 @@ const DealRegDetail = () => {
 
   return (
     <div>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Row justify="space-between" align="middle">
-          <Col>
-            <OsBreadCrumb items={OsBreadCrumbItems as any} />
-          </Col>
-          <Col>
-            <Space size={8}>
-              {salesForceUrl && (
-                <OsButton
-                  text="Save"
-                  buttontype="SECONDARY"
-                  clickHandler={() => {
-                    handleButtonClick();
-                  }}
-                />
-              )}
+      <Row justify="space-between" align="middle">
+        <Col>
+          <OsBreadCrumb items={OsBreadCrumbItems as any} />
+        </Col>
+        <Col>
+          <Space size={8}>
+            {salesForceUrl && (
               <OsButton
-                text="Intial Setup"
+                text="Save"
                 buttontype="SECONDARY"
                 clickHandler={() => {
-                  showElectronBotModal(true);
+                  handleButtonClick();
                 }}
               />
-
-              <OsButton
-                text="Submit Form"
-                buttontype="SECONDARY"
-                clickHandler={() => {
-                  setShowSubmitFormModal(true);
-                }}
-              />
-              {!salesForceUrl && (
-                <OsButton
-                  text="Add New Form"
-                  buttontype="PRIMARY"
-                  icon={<PlusIcon width={24} />}
-                  clickHandler={() => {
-                    setShowModal(true);
-                  }}
-                />
-              )}
-              <OsDropdown menu={{items: dropDownItemss}} />
-            </Space>
-          </Col>
-        </Row>
-        <GlobalLoader loading={getDealRegForNewLoading}>
-          <DealRegCustomTabs
-            form={getFormData}
-            formData={formData}
-            setFormData={setFormData}
-            setSalesForceDealregData={setSalesForceDealregData}
-            ref={dealRegTabsRef}
-          />
-        </GlobalLoader>
-
-        <OsModal
-          loading={dealRegLoading}
-          bodyPadding={22}
-          body={
-            <NewRegistrationForm isDealRegDetail setShowModal={setShowModal} />
-          }
-          width={583}
-          open={showModal}
-          onOk={() => {}}
-          onCancel={() => {
-            setShowModal((p) => !p);
-          }}
-          footer={false}
-        />
-        <OsModal
-          loading={dealRegLoading}
-          title="Submit DealReg Forms"
-          bodyPadding={22}
-          body={
-            <SubmitDealRegForms
-              form={submitDealRegForm}
-              onFinish={submitDealRegFormFun}
+            )}
+            <OsButton
+              text="Intial Setup"
+              buttontype="SECONDARY"
+              clickHandler={() => {
+                showElectronBotModal(true);
+              }}
             />
-          }
-          width={583}
-          open={showSubmitFormModal}
-          onOk={submitDealRegForm?.submit}
-          onCancel={() => {
-            setShowSubmitFormModal(false);
-            submitDealRegForm?.resetFields();
-          }}
-          primaryButtonText={'Submit'}
-        />
 
-        <OsModal
-          // loading={dealRegLoading}
-          title="DealregAI Bot Setup"
-          bodyPadding={22}
-          body={<ElectronBot />}
-          width={583}
-          open={electronBotModal}
-          // onOk={submitDealRegForm?.submit}
-          onCancel={() => {
-            showElectronBotModal(false);
-          }}
-          // primaryButtonText={'Save'}
+            <OsButton
+              text="Submit Form"
+              buttontype="SECONDARY"
+              clickHandler={() => {
+                setShowSubmitFormModal(true);
+              }}
+            />
+            {!salesForceUrl && (
+              <OsButton
+                text="Add New Form"
+                buttontype="PRIMARY"
+                icon={<PlusIcon width={24} />}
+                clickHandler={() => {
+                  setShowModal(true);
+                }}
+              />
+            )}
+            <OsDropdown menu={{items: dropDownItemss}} />
+          </Space>
+        </Col>
+      </Row>
+      <GlobalLoader loading={getDealRegForNewLoading}>
+        <DealRegCustomTabs
+          form={getFormData}
+          formData={formData}
+          setFormData={setFormData}
+          setSalesForceDealregData={setSalesForceDealregData}
+          ref={dealRegTabsRef}
         />
-      </Suspense>
+      </GlobalLoader>
+
+      <OsModal
+        loading={dealRegLoading}
+        bodyPadding={22}
+        body={
+          <NewRegistrationForm isDealRegDetail setShowModal={setShowModal} />
+        }
+        width={583}
+        open={showModal}
+        onOk={() => {}}
+        onCancel={() => {
+          setShowModal((p) => !p);
+        }}
+        footer={false}
+      />
+      <OsModal
+        loading={dealRegLoading}
+        title="Submit DealReg Forms"
+        bodyPadding={22}
+        body={
+          <SubmitDealRegForms
+            form={submitDealRegForm}
+            onFinish={submitDealRegFormFun}
+          />
+        }
+        width={583}
+        open={showSubmitFormModal}
+        onOk={submitDealRegForm?.submit}
+        onCancel={() => {
+          setShowSubmitFormModal(false);
+          submitDealRegForm?.resetFields();
+        }}
+        primaryButtonText={'Submit'}
+      />
+
+      <OsModal
+        // loading={dealRegLoading}
+        title="DealregAI Bot Setup"
+        bodyPadding={22}
+        body={<ElectronBot />}
+        width={583}
+        open={electronBotModal}
+        // onOk={submitDealRegForm?.submit}
+        onCancel={() => {
+          showElectronBotModal(false);
+        }}
+        // primaryButtonText={'Save'}
+      />
     </div>
   );
 };

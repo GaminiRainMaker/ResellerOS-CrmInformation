@@ -20,7 +20,7 @@ const HotTable = dynamic(() => import('@handsontable/react'), {
 // import {HotTable} from '@handsontable/react';
 import {HyperFormula} from 'hyperformula';
 
-import {Suspense, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import './styles.css';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {addClassesToRows, alignHeaders} from '../fileEditor/hooksCallbacks';
@@ -426,394 +426,389 @@ const EditorFile = () => {
 
   return (
     <GlobalLoader loading={nanonetsLoading}>
-      <Suspense fallback={<div>Loading...</div>}>
-        {currentFileData && (
-          <Typography
-            name="Body 1/Bold"
-            // color={token?.colorLink}
-            style={{marginBottom: '6px'}}
-          >
-            {currentFileData?.file_name}
-          </Typography>
-        )}
-        <Row
-          gutter={[32, 16]}
-          style={{marginTop: '10px', marginBottom: '40px'}}
+      {currentFileData && (
+        <Typography
+          name="Body 1/Bold"
+          // color={token?.colorLink}
+          style={{marginBottom: '6px'}}
         >
-          <Col span={12}>
-            <div style={{display: 'flex', flexDirection: 'column'}}>
-              <Typography
-                name="Body 3/Bold"
-                color={token?.colorLink}
-                style={{marginBottom: '6px'}}
-              >
-                Note:
-              </Typography>
-              <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
-                <ul style={{listStyleType: 'disc', marginLeft: '20px'}}>
-                  <li>Data needs to be copied from an Excel file only.</li>
-                  <li>
-                    The first row will contain the headers of your file data.
-                  </li>
-                </ul>
-              </Typography>
-            </div>
-          </Col>
-
-          <Col span={12}>
-            {' '}
-            <Space
-              onClick={(e) => {
-                e?.preventDefault();
-              }}
-              size={25}
-              style={{
-                display: 'flex',
-                justifyContent: 'end',
-                marginRight: '50px',
-                right: '0',
-                bottom: '0',
-                marginBottom: '20px',
-              }}
+          {currentFileData?.file_name}
+        </Typography>
+      )}
+      <Row gutter={[32, 16]} style={{marginTop: '10px', marginBottom: '40px'}}>
+        <Col span={12}>
+          <div style={{display: 'flex', flexDirection: 'column'}}>
+            <Typography
+              name="Body 3/Bold"
+              color={token?.colorLink}
+              style={{marginBottom: '6px'}}
             >
-              {' '}
-              {!saveNewHeader ? (
-                <OsButton
-                  text="Save Header"
-                  buttontype="PRIMARY"
-                  clickHandler={() => {
-                    if (arrayOflineItem?.length > 1) {
-                      setShowConfirmHeader(true);
-                    } else {
-                      notification?.open({
-                        message: 'Please add data fisrt to save the headers',
-                        type: 'info',
-                      });
-                    }
+              Note:
+            </Typography>
+            <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
+              <ul style={{listStyleType: 'disc', marginLeft: '20px'}}>
+                <li>Data needs to be copied from an Excel file only.</li>
+                <li>
+                  The first row will contain the headers of your file data.
+                </li>
+              </ul>
+            </Typography>
+          </div>
+        </Col>
 
-                    // AddNewHeaderToTheObject();
+        <Col span={12}>
+          {' '}
+          <Space
+            onClick={(e) => {
+              e?.preventDefault();
+            }}
+            size={25}
+            style={{
+              display: 'flex',
+              justifyContent: 'end',
+              marginRight: '50px',
+              right: '0',
+              bottom: '0',
+              marginBottom: '20px',
+            }}
+          >
+            {' '}
+            {!saveNewHeader ? (
+              <OsButton
+                text="Save Header"
+                buttontype="PRIMARY"
+                clickHandler={() => {
+                  if (arrayOflineItem?.length > 1) {
+                    setShowConfirmHeader(true);
+                  } else {
+                    notification?.open({
+                      message: 'Please add data fisrt to save the headers',
+                      type: 'info',
+                    });
+                  }
+
+                  // AddNewHeaderToTheObject();
+                }}
+              />
+            ) : (
+              <>
+                {' '}
+                <Space
+                  onClick={(e) => {
+                    e?.preventDefault();
                   }}
-                />
-              ) : (
-                <>
-                  {' '}
-                  <Space
-                    onClick={(e) => {
-                      e?.preventDefault();
+                  size={25}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'end',
+                    marginRight: '50px',
+                    right: '0',
+                    bottom: '0',
+                    marginBottom: '20px',
+                  }}
+                >
+                  <OsButton
+                    text="Update Column Name"
+                    buttontype="PRIMARY"
+                    clickHandler={() => {
+                      setShowUpdateColumnModal(true);
                     }}
-                    size={25}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'end',
-                      marginRight: '50px',
-                      right: '0',
-                      bottom: '0',
-                      marginBottom: '20px',
-                    }}
-                  >
-                    <OsButton
-                      text="Update Column Name"
-                      buttontype="PRIMARY"
-                      clickHandler={() => {
-                        setShowUpdateColumnModal(true);
-                      }}
-                    />
-                    {/* <OsButton
+                  />
+                  {/* <OsButton
                     text="Apply Formula"
                     buttontype="PRIMARY"
                     clickHandler={() => {
                       setShowAddFormula(true);
                     }}
                   /> */}
-                    <OsButton
-                      text="Add New Column"
-                      buttontype="PRIMARY"
-                      clickHandler={() => {
-                        setShowAddColumnModal(true);
-                      }}
-                    />
-                  </Space>
-                </>
-              )}
-            </Space>
-          </Col>
-        </Row>
-        <HotTable
-          data={arrayOflineItem}
-          colWidths={[
-            300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300,
-            300, 300, 300,
-          ]}
-          height="auto"
-          formulas={{
-            engine: HyperFormula,
-          }}
-          stretchH="all"
-          colHeaders={mergeedColumnHeader}
-          width="auto"
-          minSpareRows={0}
-          autoWrapRow
-          autoWrapCol
-          licenseKey="non-commercial-and-evaluation"
-          dropdownMenu
-          hiddenColumns={{
-            indicators: true,
-          }}
-          contextMenu
-          multiColumnSorting
-          filters
-          rowHeaders
-          allowInsertRow
-          // allowInsertColumn={true}
-          afterGetColHeader={alignHeaders}
-          beforeRenderer={() => {
-            addClassesToRows('', '', '', '', '', '', arrayOflineItem);
-          }}
-          afterRemoveRow={(change, source) => {
-            if (arrayOflineItem?.length > 1) {
-              deleteRowsItems(source, change);
-            } else {
-              // notification?.open({
-              //   message: 'You can not delete only row from table',
-              //   type: 'error',
-              // });
-              addNewLine();
-            }
-          }}
-          afterChange={(change: any, source) => {
-            if (change) {
-              updateRowsValue(
-                change?.[0]?.[0],
-                change?.[0]?.[1],
-                change?.[0]?.[3],
-              );
-            }
-          }}
-        />
-        <br />
-        <Space
-          onClick={(e) => {
-            e?.preventDefault();
-          }}
-          size={25}
-          style={{
-            display: 'flex',
-            justifyContent: 'end',
-            marginRight: '50px',
-            right: '0',
-            bottom: '0',
-            marginBottom: '20px',
-          }}
-        >
-          {/* <OsButton
+                  <OsButton
+                    text="Add New Column"
+                    buttontype="PRIMARY"
+                    clickHandler={() => {
+                      setShowAddColumnModal(true);
+                    }}
+                  />
+                </Space>
+              </>
+            )}
+          </Space>
+        </Col>
+      </Row>
+      <HotTable
+        data={arrayOflineItem}
+        colWidths={[
+          300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300,
+          300, 300,
+        ]}
+        height="auto"
+        formulas={{
+          engine: HyperFormula,
+        }}
+        stretchH="all"
+        colHeaders={mergeedColumnHeader}
+        width="auto"
+        minSpareRows={0}
+        autoWrapRow
+        autoWrapCol
+        licenseKey="non-commercial-and-evaluation"
+        dropdownMenu
+        hiddenColumns={{
+          indicators: true,
+        }}
+        contextMenu
+        multiColumnSorting
+        filters
+        rowHeaders
+        allowInsertRow
+        // allowInsertColumn={true}
+        afterGetColHeader={alignHeaders}
+        beforeRenderer={() => {
+          addClassesToRows('', '', '', '', '', '', arrayOflineItem);
+        }}
+        afterRemoveRow={(change, source) => {
+          if (arrayOflineItem?.length > 1) {
+            deleteRowsItems(source, change);
+          } else {
+            // notification?.open({
+            //   message: 'You can not delete only row from table',
+            //   type: 'error',
+            // });
+            addNewLine();
+          }
+        }}
+        afterChange={(change: any, source) => {
+          if (change) {
+            updateRowsValue(
+              change?.[0]?.[0],
+              change?.[0]?.[1],
+              change?.[0]?.[3],
+            );
+          }
+        }}
+      />
+      <br />
+      <Space
+        onClick={(e) => {
+          e?.preventDefault();
+        }}
+        size={25}
+        style={{
+          display: 'flex',
+          justifyContent: 'end',
+          marginRight: '50px',
+          right: '0',
+          bottom: '0',
+          marginBottom: '20px',
+        }}
+      >
+        {/* <OsButton
           text="Cancel"
           buttontype="SECONDARY"
           clickHandler={() => {
             syncShow('cancel');
           }}
         /> */}
-          <OsButton
-            text="Sync Table"
-            buttontype="PRIMARY"
-            clickHandler={() => {
-              if (saveNewHeader) {
-                syncShow('sync');
-              } else {
-                notification?.open({
-                  message:
-                    'Please add the data from excel and save the header first.',
-                  type: 'info',
-                });
-              }
-            }}
-          />
-        </Space>
-        <OsModal
-          // title={'Share Credentials in Team'}
-          body={
-            <Row style={{width: '100%', padding: '15px'}}>
-              <Space
-                style={{width: '100%'}}
-                size={24}
-                direction="vertical"
-                align="center"
-              >
-                <Space direction="vertical" align="center" size={1}>
-                  <Typography
-                    name="Heading 3/Medium"
-                    style={{display: 'flex', textAlign: 'center'}}
-                  >
-                    Your first row is going to be the headers of the data.
-                  </Typography>
-                  <Typography name="Body 3/Regular">
-                    Are you sure you want to save the headers?
-                  </Typography>
-                </Space>
-
-                <Space size={12}>
-                  <OsButton
-                    text={`Don't Save`}
-                    buttontype="SECONDARY"
-                    clickHandler={() => {
-                      setShowConfirmHeader(false);
-                    }}
-                  />
-                  <OsButton
-                    text="Yes, Save"
-                    buttontype="PRIMARY"
-                    clickHandler={() => {
-                      AddNewHeaderToTheObject();
-                    }}
-                  />
-                </Space>
+        <OsButton
+          text="Sync Table"
+          buttontype="PRIMARY"
+          clickHandler={() => {
+            if (saveNewHeader) {
+              syncShow('sync');
+            } else {
+              notification?.open({
+                message:
+                  'Please add the data from excel and save the header first.',
+                type: 'info',
+              });
+            }
+          }}
+        />
+      </Space>
+      <OsModal
+        // title={'Share Credentials in Team'}
+        body={
+          <Row style={{width: '100%', padding: '15px'}}>
+            <Space
+              style={{width: '100%'}}
+              size={24}
+              direction="vertical"
+              align="center"
+            >
+              <Space direction="vertical" align="center" size={1}>
+                <Typography
+                  name="Heading 3/Medium"
+                  style={{display: 'flex', textAlign: 'center'}}
+                >
+                  Your first row is going to be the headers of the data.
+                </Typography>
+                <Typography name="Body 3/Regular">
+                  Are you sure you want to save the headers?
+                </Typography>
               </Space>
-            </Row>
+
+              <Space size={12}>
+                <OsButton
+                  text={`Don't Save`}
+                  buttontype="SECONDARY"
+                  clickHandler={() => {
+                    setShowConfirmHeader(false);
+                  }}
+                />
+                <OsButton
+                  text="Yes, Save"
+                  buttontype="PRIMARY"
+                  clickHandler={() => {
+                    AddNewHeaderToTheObject();
+                  }}
+                />
+              </Space>
+            </Space>
+          </Row>
+        }
+        width={600}
+        open={showConfirmHeader}
+        // open={true}
+        onCancel={() => {
+          setShowConfirmHeader(false);
+        }}
+        onOk={AddNewHeaderToTheObject}
+        // primaryButtonText=""
+        bodyPadding={40}
+      />
+
+      {showModal && (
+        <OsModal
+          // loading={loading}
+          body={
+            <SyncTableData
+              mergedValue={arrayOflineItem}
+              setMergedVaalues={setArrayOflineItem}
+              setNanonetsLoading={setNanonetsLoading}
+              nanonetsLoading={nanonetsLoading}
+              routingConditions={checkForNewFile}
+              currentFileId={currentFileData?.FileId}
+              currentFileName={currentFileData?.file_name}
+              manualFlow={true}
+              checkForNewFileForSalesForce={checkForNewFileForSalesForce}
+              currentFileData={currentFileData}
+              accoutSyncOptions={accoutSyncOptions}
+              lineItemSyncingData={lineItemSyncingData}
+            />
           }
           width={600}
-          open={showConfirmHeader}
-          // open={true}
+          open={showModal}
           onCancel={() => {
-            setShowConfirmHeader(false);
-          }}
-          onOk={AddNewHeaderToTheObject}
-          // primaryButtonText=""
-          bodyPadding={40}
-        />
-
-        {showModal && (
-          <OsModal
-            // loading={loading}
-            body={
-              <SyncTableData
-                mergedValue={arrayOflineItem}
-                setMergedVaalues={setArrayOflineItem}
-                setNanonetsLoading={setNanonetsLoading}
-                nanonetsLoading={nanonetsLoading}
-                routingConditions={checkForNewFile}
-                currentFileId={currentFileData?.FileId}
-                currentFileName={currentFileData?.file_name}
-                manualFlow={true}
-                checkForNewFileForSalesForce={checkForNewFileForSalesForce}
-                currentFileData={currentFileData}
-                accoutSyncOptions={accoutSyncOptions}
-                lineItemSyncingData={lineItemSyncingData}
-              />
-            }
-            width={600}
-            open={showModal}
-            onCancel={() => {
-              setShowModal((p) => !p);
-            }}
-          />
-        )}
-        <OsModal
-          title="Add New Column"
-          bodyPadding={30}
-          body={
-            <Row gutter={[16, 24]} justify="space-between">
-              <Col span={21}>
-                <OsInput
-                  style={{width: '100%'}}
-                  placeholder="Please add the column header name"
-                  onChange={(e: any) => {
-                    setNewHeaderName(e?.target?.value);
-                  }}
-                />
-              </Col>
-              <OsButton
-                disabled={newHeaderName?.length > 0 ? false : true}
-                text="Add"
-                buttontype="PRIMARY"
-                clickHandler={() => {
-                  AddNewCloumnToMergedTable(newHeaderName);
-                }}
-              />
-            </Row>
-          }
-          width={900}
-          open={showAddColumnModal}
-          onCancel={() => {
-            setShowAddColumnModal(false);
+            setShowModal((p) => !p);
           }}
         />
-        <OsModal
-          title="Update  Column Name"
-          bodyPadding={30}
-          body={
-            <Row gutter={[16, 24]} justify="space-between">
-              <Col span={12}>
-                <Typography name="Body 3/Regular">Select column</Typography>
-
-                <CommonSelect
-                  style={{width: '100%'}}
-                  value={oldColumnName}
-                  placeholder="Please select the column header name"
-                  options={existingColumnOptions}
-                  onChange={(e: any) => {
-                    setNewHeaderName('');
-                    setOldColumnName(e);
-                  }}
-                />
-              </Col>
-              <Col span={12}>
-                <Typography name="Body 3/Regular">Column New name</Typography>
-
-                <OsInput
-                  style={{width: '100%'}}
-                  placeholder="Please add new column header name"
-                  value={newHeaderName}
-                  onChange={(e: any) => {
-                    setNewHeaderName(e?.target?.value);
-                  }}
-                />
-              </Col>
-              <div
-                style={{
-                  display: 'flex',
-                  width: '100%',
-                  justifyContent: 'flex-end',
+      )}
+      <OsModal
+        title="Add New Column"
+        bodyPadding={30}
+        body={
+          <Row gutter={[16, 24]} justify="space-between">
+            <Col span={21}>
+              <OsInput
+                style={{width: '100%'}}
+                placeholder="Please add the column header name"
+                onChange={(e: any) => {
+                  setNewHeaderName(e?.target?.value);
                 }}
-              >
-                {' '}
-                <div style={{marginRight: '30px'}}>
-                  <OsButton
-                    // style={{marginRight: '100px'}}
-                    disabled={
-                      newHeaderName?.length > 0 && oldColumnName?.length > 0
-                        ? false
-                        : true
-                    }
-                    text="Update"
-                    buttontype="SECONDARY"
-                    clickHandler={() => {
-                      UpdateTheColumnName('open', oldColumnName, newHeaderName);
-                    }}
-                  />{' '}
-                </div>
+              />
+            </Col>
+            <OsButton
+              disabled={newHeaderName?.length > 0 ? false : true}
+              text="Add"
+              buttontype="PRIMARY"
+              clickHandler={() => {
+                AddNewCloumnToMergedTable(newHeaderName);
+              }}
+            />
+          </Row>
+        }
+        width={900}
+        open={showAddColumnModal}
+        onCancel={() => {
+          setShowAddColumnModal(false);
+        }}
+      />
+      <OsModal
+        title="Update  Column Name"
+        bodyPadding={30}
+        body={
+          <Row gutter={[16, 24]} justify="space-between">
+            <Col span={12}>
+              <Typography name="Body 3/Regular">Select column</Typography>
+
+              <CommonSelect
+                style={{width: '100%'}}
+                value={oldColumnName}
+                placeholder="Please select the column header name"
+                options={existingColumnOptions}
+                onChange={(e: any) => {
+                  setNewHeaderName('');
+                  setOldColumnName(e);
+                }}
+              />
+            </Col>
+            <Col span={12}>
+              <Typography name="Body 3/Regular">Column New name</Typography>
+
+              <OsInput
+                style={{width: '100%'}}
+                placeholder="Please add new column header name"
+                value={newHeaderName}
+                onChange={(e: any) => {
+                  setNewHeaderName(e?.target?.value);
+                }}
+              />
+            </Col>
+            <div
+              style={{
+                display: 'flex',
+                width: '100%',
+                justifyContent: 'flex-end',
+              }}
+            >
+              {' '}
+              <div style={{marginRight: '30px'}}>
                 <OsButton
+                  // style={{marginRight: '100px'}}
                   disabled={
                     newHeaderName?.length > 0 && oldColumnName?.length > 0
                       ? false
                       : true
                   }
-                  text="Update & Close"
-                  buttontype="PRIMARY"
+                  text="Update"
+                  buttontype="SECONDARY"
                   clickHandler={() => {
-                    UpdateTheColumnName('close', oldColumnName, newHeaderName);
+                    UpdateTheColumnName('open', oldColumnName, newHeaderName);
                   }}
-                />
+                />{' '}
               </div>
-            </Row>
-          }
-          width={900}
-          open={showUpdateColumnModal}
-          onCancel={() => {
-            setShowUpdateColumnModal(false);
-            setNewHeaderName('');
-            setOldColumnName('');
-          }}
-        />
-      </Suspense>
+              <OsButton
+                disabled={
+                  newHeaderName?.length > 0 && oldColumnName?.length > 0
+                    ? false
+                    : true
+                }
+                text="Update & Close"
+                buttontype="PRIMARY"
+                clickHandler={() => {
+                  UpdateTheColumnName('close', oldColumnName, newHeaderName);
+                }}
+              />
+            </div>
+          </Row>
+        }
+        width={900}
+        open={showUpdateColumnModal}
+        onCancel={() => {
+          setShowUpdateColumnModal(false);
+          setNewHeaderName('');
+          setOldColumnName('');
+        }}
+      />
     </GlobalLoader>
   );
 };

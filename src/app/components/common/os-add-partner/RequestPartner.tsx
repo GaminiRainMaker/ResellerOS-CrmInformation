@@ -7,7 +7,7 @@ import OsButton from '@/app/components/common/os-button';
 import Typography from '@/app/components/common/typography';
 import {mergeArrayWithObject} from '@/app/utils/base';
 import {Form} from 'antd';
-import {Suspense, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 
 import {formatStatus} from '@/app/utils/CONSTANTS';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
@@ -307,374 +307,368 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
 
   return (
     <>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Row
-          justify="space-between"
-          style={{
-            padding: '24px 40px 20px 40px',
-            backgroundColor: '#F0F4F7',
-            borderRadius: '10px 10px 0px 0px',
-          }}
-          gutter={[0, 16]}
+      <Row
+        justify="space-between"
+        style={{
+          padding: '24px 40px 20px 40px',
+          backgroundColor: '#F0F4F7',
+          borderRadius: '10px 10px 0px 0px',
+        }}
+        gutter={[0, 16]}
+      >
+        <Typography
+          name="Body 1/Regular"
+          align="left"
+          color={token?.colorLinkHover}
         >
-          <Typography
-            name="Body 1/Regular"
-            align="left"
-            color={token?.colorLinkHover}
-          >
-            Add new Partner and Partner Program
-          </Typography>
-        </Row>
+          Add new Partner and Partner Program
+        </Typography>
+      </Row>
 
-        <Space
-          size={16}
-          direction="vertical"
-          style={{width: '100%', padding: '24px 40px 20px 40px'}}
+      <Space
+        size={16}
+        direction="vertical"
+        style={{width: '100%', padding: '24px 40px 20px 40px'}}
+      >
+        <Form
+          layout="vertical"
+          form={form}
+          onFinish={onFinish}
+          requiredMark={false}
         >
-          <Form
-            layout="vertical"
-            form={form}
-            onFinish={onFinish}
-            requiredMark={false}
-          >
-            {salesForceUrl ? (
-              <OsTabs
-                defaultActiveKey="1"
-                onChange={onChange}
-                items={[
-                  {
-                    label: (
-                      <Typography name="Body 4/Regular">
-                        Existing Partner
-                      </Typography>
-                    ),
-                    key: '1',
-                    children: (
-                      <div>
-                        {rows.map((row, index) => (
-                          <Row
-                            align="middle"
-                            gutter={[16, 16]}
-                            key={index}
-                            style={{
-                              marginBottom: '8px',
-                            }}
-                            justify={'space-between'}
-                          >
-                            <Col span={10}>
-                              <CommonSelect
-                                value={row.partner}
-                                onChange={(value) =>
-                                  handleSelectChange(value, index, 'partner')
-                                }
-                                style={{width: '100%'}}
-                                placeholder="Select Partner"
-                                allowClear
-                              >
-                                {filteredPartners?.map((partner: any) => (
-                                  <Option key={partner?.id} value={partner?.id}>
-                                    <CustomTextCapitalization
-                                      text={partner?.partner}
-                                    />
-                                  </Option>
-                                ))}
-                              </CommonSelect>
-                            </Col>
-
-                            <Col span={10}>
-                              <CommonSelect
-                                value={row.program}
-                                onChange={(value) =>
-                                  handleSelectChange(value, index, 'program')
-                                }
-                                style={{width: '100%'}}
-                                placeholder="Select Program"
-                                allowClear
-                                disabled={!row.partner} // Disable Program select if no Partner is selected
-                              >
-                                {row?.partner &&
-                                  filteredPartners
-                                    .find(
-                                      (partner: any) =>
-                                        partner.id === row.partner,
-                                    )
-                                    ?.PartnerPrograms?.map((program: any) => {
-                                      // Check if PartnerPrograms is an array of objects or strings
-                                      if (typeof program === 'object') {
-                                        return (
-                                          <Option
-                                            key={program?.id}
-                                            value={JSON.stringify(program)}
-                                          >
-                                            <CustomTextCapitalization
-                                              text={program?.partner_program}
-                                            />
-
-                                            {/* Assuming program.name contains the program name */}
-                                          </Option>
-                                        );
-                                      } else {
-                                        // If it's already a string (e.g., program name)
-                                        return (
-                                          <Option key={program} value={program}>
-                                            {program}
-                                          </Option>
-                                        );
-                                      }
-                                    })}
-                              </CommonSelect>
-                            </Col>
-
-                            <Col
-                              span={4}
-                              style={{
-                                paddingTop: '5px',
-                              }}
-                            >
-                              <TrashIcon
-                                width={25}
-                                color={token?.colorError}
-                                onClick={() => handleDeleteRow(index)}
-                                cursor="pointer"
-                              />
-                            </Col>
-                          </Row>
-                        ))}
-
-                        <Space
-                          size={4}
+          {salesForceUrl ? (
+            <OsTabs
+              defaultActiveKey="1"
+              onChange={onChange}
+              items={[
+                {
+                  label: (
+                    <Typography name="Body 4/Regular">
+                      Existing Partner
+                    </Typography>
+                  ),
+                  key: '1',
+                  children: (
+                    <div>
+                      {rows.map((row, index) => (
+                        <Row
+                          align="middle"
+                          gutter={[16, 16]}
+                          key={index}
                           style={{
-                            width: '100%',
-                            cursor: 'pointer',
+                            marginBottom: '8px',
                           }}
-                          onClick={handleAddRow}
+                          justify={'space-between'}
                         >
-                          <PlusIcon
-                            width={24}
-                            color={token?.colorLink}
-                            style={{marginTop: '5px'}}
-                          />
-                          <Typography
-                            name="Body 3/Bold"
-                            color={token?.colorLink}
-                            cursor="pointer"
-                          >
-                            Add Partner and Partner Program
-                          </Typography>
-                        </Space>
-                      </div>
-                    ),
-                  },
-                  {
-                    label: (
-                      <Typography name="Body 4/Regular">New Partner</Typography>
-                    ),
-                    key: '2',
-                    children: (
-                      <>
-                        <Row justify="space-between" gutter={[24, 24]}>
-                          <Col sm={24} md={12}>
-                            <SelectFormItem
-                              label={
-                                <Typography name="Body 4/Medium">
-                                  Partner
-                                </Typography>
+                          <Col span={10}>
+                            <CommonSelect
+                              value={row.partner}
+                              onChange={(value) =>
+                                handleSelectChange(value, index, 'partner')
                               }
+                              style={{width: '100%'}}
+                              placeholder="Select Partner"
+                              allowClear
                             >
-                              {partnerNewId?.value ? (
-                                <OsInput
-                                  disabled
-                                  style={{width: '70%'}}
-                                  value={formatStatus(partnerNewId?.name)}
-                                />
-                              ) : (
-                                <Typography
-                                  name="Body 3/Regular"
-                                  color={token?.colorLinkHover}
-                                  onClick={() => setOpenAddPartnerModal(true)}
-                                >
-                                  {' '}
-                                  + Add New Partner
-                                </Typography>
-                              )}
-                            </SelectFormItem>
+                              {filteredPartners?.map((partner: any) => (
+                                <Option key={partner?.id} value={partner?.id}>
+                                  <CustomTextCapitalization
+                                    text={partner?.partner}
+                                  />
+                                </Option>
+                              ))}
+                            </CommonSelect>
                           </Col>
 
-                          <Col sm={24} md={12}>
-                            <SelectFormItem
-                              label={
-                                <Typography name="Body 4/Medium">
-                                  Partner Program
-                                </Typography>
+                          <Col span={10}>
+                            <CommonSelect
+                              value={row.program}
+                              onChange={(value) =>
+                                handleSelectChange(value, index, 'program')
                               }
+                              style={{width: '100%'}}
+                              placeholder="Select Program"
+                              allowClear
+                              disabled={!row.partner} // Disable Program select if no Partner is selected
                             >
-                              {partnerProgramNewId?.value ? (
-                                <OsInput
-                                  disabled
-                                  style={{width: '70%'}}
-                                  value={formatStatus(
-                                    partnerProgramNewId?.name,
-                                  )}
-                                />
-                              ) : (
-                                <Typography
-                                  name="Body 3/Regular"
-                                  color={token?.colorLinkHover}
-                                  onClick={() => {
-                                    if (partnerNewId?.value) {
-                                      setOpenAddProgramModal(true);
+                              {row?.partner &&
+                                filteredPartners
+                                  .find(
+                                    (partner: any) =>
+                                      partner.id === row.partner,
+                                  )
+                                  ?.PartnerPrograms?.map((program: any) => {
+                                    // Check if PartnerPrograms is an array of objects or strings
+                                    if (typeof program === 'object') {
+                                      return (
+                                        <Option
+                                          key={program?.id}
+                                          value={JSON.stringify(program)}
+                                        >
+                                          <CustomTextCapitalization
+                                            text={program?.partner_program}
+                                          />
+
+                                          {/* Assuming program.name contains the program name */}
+                                        </Option>
+                                      );
+                                    } else {
+                                      // If it's already a string (e.g., program name)
+                                      return (
+                                        <Option key={program} value={program}>
+                                          {program}
+                                        </Option>
+                                      );
                                     }
-                                  }}
-                                >
-                                  {' '}
-                                  + Add New Program Partner
-                                </Typography>
-                              )}
-                            </SelectFormItem>
+                                  })}
+                            </CommonSelect>
+                          </Col>
+
+                          <Col
+                            span={4}
+                            style={{
+                              paddingTop: '5px',
+                            }}
+                          >
+                            <TrashIcon
+                              width={25}
+                              color={token?.colorError}
+                              onClick={() => handleDeleteRow(index)}
+                              cursor="pointer"
+                            />
                           </Col>
                         </Row>
+                      ))}
 
-                        {salesForceUrl && (
-                          <Row
-                            style={{
-                              marginTop: '40px',
-                            }}
-                          >
-                            <Space size={15}>
-                              <Checkbox
-                                onChange={(e) => {
-                                  setDealerRelationShip(e?.target?.checked);
-                                }}
-                              />
-                              <Typography name="Body 4/Medium">
-                                Do you have authorized dealer relationship with
-                                these entities?
-                              </Typography>
-                            </Space>
-                          </Row>
-                        )}
-                      </>
-                    ),
-                  },
-                ]}
-              />
-            ) : (
-              <Row justify="space-between" gutter={[24, 24]}>
-                <Col sm={24} md={12}>
-                  <SelectFormItem
-                    label={
-                      <Typography name="Body 4/Medium">Partner</Typography>
-                    }
-                  >
-                    {partnerNewId?.value ? (
-                      <OsInput
-                        disabled
-                        style={{width: '70%'}}
-                        value={formatStatus(partnerNewId?.name)}
-                      />
-                    ) : (
-                      <Typography
-                        name="Body 3/Regular"
-                        color={token?.colorLinkHover}
-                        onClick={() => setOpenAddPartnerModal(true)}
-                      >
-                        {' '}
-                        + Add New Partner
-                      </Typography>
-                    )}
-                  </SelectFormItem>
-                </Col>
-
-                <Col sm={24} md={12}>
-                  <SelectFormItem
-                    label={
-                      <Typography name="Body 4/Medium">
-                        Partner Program
-                      </Typography>
-                    }
-                  >
-                    {partnerProgramNewId?.value ? (
-                      <OsInput
-                        disabled
-                        style={{width: '70%'}}
-                        value={formatStatus(partnerProgramNewId?.name)}
-                      />
-                    ) : (
-                      <Typography
-                        name="Body 3/Regular"
-                        color={token?.colorLinkHover}
-                        onClick={() => {
-                          if (partnerNewId?.value) {
-                            setOpenAddProgramModal(true);
-                          }
+                      <Space
+                        size={4}
+                        style={{
+                          width: '100%',
+                          cursor: 'pointer',
                         }}
+                        onClick={handleAddRow}
                       >
-                        {' '}
-                        + Add New Program Partner
-                      </Typography>
-                    )}
-                  </SelectFormItem>
-                </Col>
-              </Row>
-            )}
-          </Form>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'end',
-              width: '100%',
-            }}
-          >
-            <OsButton
-              loading={requestLoading}
-              text="Request"
-              buttontype="PRIMARY"
-              clickHandler={requestForNewPartnerAndPartnerProgram}
-            />
-          </div>
-        </Space>
+                        <PlusIcon
+                          width={24}
+                          color={token?.colorLink}
+                          style={{marginTop: '5px'}}
+                        />
+                        <Typography
+                          name="Body 3/Bold"
+                          color={token?.colorLink}
+                          cursor="pointer"
+                        >
+                          Add Partner and Partner Program
+                        </Typography>
+                      </Space>
+                    </div>
+                  ),
+                },
+                {
+                  label: (
+                    <Typography name="Body 4/Regular">New Partner</Typography>
+                  ),
+                  key: '2',
+                  children: (
+                    <>
+                      <Row justify="space-between" gutter={[24, 24]}>
+                        <Col sm={24} md={12}>
+                          <SelectFormItem
+                            label={
+                              <Typography name="Body 4/Medium">
+                                Partner
+                              </Typography>
+                            }
+                          >
+                            {partnerNewId?.value ? (
+                              <OsInput
+                                disabled
+                                style={{width: '70%'}}
+                                value={formatStatus(partnerNewId?.name)}
+                              />
+                            ) : (
+                              <Typography
+                                name="Body 3/Regular"
+                                color={token?.colorLinkHover}
+                                onClick={() => setOpenAddPartnerModal(true)}
+                              >
+                                {' '}
+                                + Add New Partner
+                              </Typography>
+                            )}
+                          </SelectFormItem>
+                        </Col>
 
-        <OsModal
-          loading={insertPartnerLoading}
-          body={
-            <AddPartner
-              form={addPartnerform}
-              setPartnerNewId={setPartnerNewId}
-              setOpen={setOpenAddPartnerModal}
-            />
-          }
-          width={600}
-          open={openAddPartnerModal}
-          onCancel={() => {
-            setOpenAddPartnerModal((p) => !p);
-          }}
-          footer
-          primaryButtonText="Create"
-          onOk={addPartnerform?.submit}
-          footerPadding={30}
-        />
+                        <Col sm={24} md={12}>
+                          <SelectFormItem
+                            label={
+                              <Typography name="Body 4/Medium">
+                                Partner Program
+                              </Typography>
+                            }
+                          >
+                            {partnerProgramNewId?.value ? (
+                              <OsInput
+                                disabled
+                                style={{width: '70%'}}
+                                value={formatStatus(partnerProgramNewId?.name)}
+                              />
+                            ) : (
+                              <Typography
+                                name="Body 3/Regular"
+                                color={token?.colorLinkHover}
+                                onClick={() => {
+                                  if (partnerNewId?.value) {
+                                    setOpenAddProgramModal(true);
+                                  }
+                                }}
+                              >
+                                {' '}
+                                + Add New Program Partner
+                              </Typography>
+                            )}
+                          </SelectFormItem>
+                        </Col>
+                      </Row>
 
-        <OsModal
-          loading={insertProgramLoading}
-          body={
-            <AddPartnerProgram
-              form={addPartnerProgram}
-              setOpen={setOpenAddProgramModal}
-              partnerId={partnerVal}
-              setPartnerProgramNewId={setPartnerProgramNewId}
+                      {salesForceUrl && (
+                        <Row
+                          style={{
+                            marginTop: '40px',
+                          }}
+                        >
+                          <Space size={15}>
+                            <Checkbox
+                              onChange={(e) => {
+                                setDealerRelationShip(e?.target?.checked);
+                              }}
+                            />
+                            <Typography name="Body 4/Medium">
+                              Do you have authorized dealer relationship with
+                              these entities?
+                            </Typography>
+                          </Space>
+                        </Row>
+                      )}
+                    </>
+                  ),
+                },
+              ]}
             />
-          }
-          width={600}
-          open={openAddProgramModal}
-          onCancel={() => {
-            setOpenAddProgramModal((p) => !p);
+          ) : (
+            <Row justify="space-between" gutter={[24, 24]}>
+              <Col sm={24} md={12}>
+                <SelectFormItem
+                  label={<Typography name="Body 4/Medium">Partner</Typography>}
+                >
+                  {partnerNewId?.value ? (
+                    <OsInput
+                      disabled
+                      style={{width: '70%'}}
+                      value={formatStatus(partnerNewId?.name)}
+                    />
+                  ) : (
+                    <Typography
+                      name="Body 3/Regular"
+                      color={token?.colorLinkHover}
+                      onClick={() => setOpenAddPartnerModal(true)}
+                    >
+                      {' '}
+                      + Add New Partner
+                    </Typography>
+                  )}
+                </SelectFormItem>
+              </Col>
+
+              <Col sm={24} md={12}>
+                <SelectFormItem
+                  label={
+                    <Typography name="Body 4/Medium">
+                      Partner Program
+                    </Typography>
+                  }
+                >
+                  {partnerProgramNewId?.value ? (
+                    <OsInput
+                      disabled
+                      style={{width: '70%'}}
+                      value={formatStatus(partnerProgramNewId?.name)}
+                    />
+                  ) : (
+                    <Typography
+                      name="Body 3/Regular"
+                      color={token?.colorLinkHover}
+                      onClick={() => {
+                        if (partnerNewId?.value) {
+                          setOpenAddProgramModal(true);
+                        }
+                      }}
+                    >
+                      {' '}
+                      + Add New Program Partner
+                    </Typography>
+                  )}
+                </SelectFormItem>
+              </Col>
+            </Row>
+          )}
+        </Form>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'end',
+            width: '100%',
           }}
-          footer
-          primaryButtonText="Create"
-          onOk={addPartnerProgram?.submit}
-          footerPadding={30}
-        />
-      </Suspense>
+        >
+          <OsButton
+            loading={requestLoading}
+            text="Request"
+            buttontype="PRIMARY"
+            clickHandler={requestForNewPartnerAndPartnerProgram}
+          />
+        </div>
+      </Space>
+
+      <OsModal
+        loading={insertPartnerLoading}
+        body={
+          <AddPartner
+            form={addPartnerform}
+            setPartnerNewId={setPartnerNewId}
+            setOpen={setOpenAddPartnerModal}
+          />
+        }
+        width={600}
+        open={openAddPartnerModal}
+        onCancel={() => {
+          setOpenAddPartnerModal((p) => !p);
+        }}
+        footer
+        primaryButtonText="Create"
+        onOk={addPartnerform?.submit}
+        footerPadding={30}
+      />
+
+      <OsModal
+        loading={insertProgramLoading}
+        body={
+          <AddPartnerProgram
+            form={addPartnerProgram}
+            setOpen={setOpenAddProgramModal}
+            partnerId={partnerVal}
+            setPartnerProgramNewId={setPartnerProgramNewId}
+          />
+        }
+        width={600}
+        open={openAddProgramModal}
+        onCancel={() => {
+          setOpenAddProgramModal((p) => !p);
+        }}
+        footer
+        primaryButtonText="Create"
+        onOk={addPartnerProgram?.submit}
+        footerPadding={30}
+      />
     </>
   );
 };

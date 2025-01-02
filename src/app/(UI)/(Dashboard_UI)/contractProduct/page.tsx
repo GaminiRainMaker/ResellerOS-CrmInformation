@@ -12,7 +12,7 @@ import OsModal from '@/app/components/common/os-modal';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
-import {useRouter} from 'next/navigation';
+import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
@@ -40,6 +40,7 @@ const ContractProductMain: React.FC = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
+  const searchParams = useSearchParams()!;
   const [showModal, setShowModal] = useState<boolean>(false);
   const [contractObject, setContractObject] = useState<any>();
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
