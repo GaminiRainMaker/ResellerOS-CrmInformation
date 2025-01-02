@@ -88,8 +88,8 @@ const ShareCredential: FC<any> = ({
   };
 
   return (
-    <GlobalLoader loading={loading}>
-      <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>Loading...</div>}>
+      <GlobalLoader loading={loading}>
         <Row gutter={[16, 16]}>
           {requireThePass?.length > 0 ? (
             <>
@@ -162,8 +162,8 @@ const ShareCredential: FC<any> = ({
             </>
           )}
         </Row>
-      </Suspense>
-    </GlobalLoader>
+      </GlobalLoader>
+    </Suspense>
   );
 };
 

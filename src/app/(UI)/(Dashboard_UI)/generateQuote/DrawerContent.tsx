@@ -123,8 +123,8 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
   }, [quoteById]);
 
   return (
-    <GlobalLoader loading={quoteByIdLoading}>
-      <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>Loading...</div>}>
+      <GlobalLoader loading={quoteByIdLoading}>
         <Form
           layout="vertical"
           wrapperCol={{flex: 1}}
@@ -230,8 +230,8 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
             </Col>
           </Row>
         </Form>
-      </Suspense>
-    </GlobalLoader>
+      </GlobalLoader>
+    </Suspense>
   );
 };
 

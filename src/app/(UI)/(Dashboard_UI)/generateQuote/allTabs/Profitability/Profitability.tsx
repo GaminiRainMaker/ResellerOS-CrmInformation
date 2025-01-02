@@ -1392,8 +1392,8 @@ const Profitablity: FC<any> = ({
   };
 
   return (
-    <GlobalLoader loading={profitibilityDataa?.length < 0}>
-      <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>Loading...</div>}>
+      <GlobalLoader loading={profitibilityDataa?.length < 0}>
         {finalProfitTableCol && finalProfitTableCol?.length > 0 ? (
           !selectedFilter ? (
             <div key={JSON.stringify(finalData)}>{renderFinalData()}</div>
@@ -1764,8 +1764,8 @@ const Profitablity: FC<any> = ({
           description="Are you sure you want to delete line item from this Bundle?"
           heading="Delete Line Item from Bundle"
         />
-      </Suspense>
-    </GlobalLoader>
+      </GlobalLoader>
+    </Suspense>
   );
 };
 

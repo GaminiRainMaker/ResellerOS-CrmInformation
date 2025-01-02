@@ -428,8 +428,8 @@ const EditorFile = () => {
   ];
 
   return (
-    <GlobalLoader loading={false}>
-      <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>Loading...</div>}>
+      <GlobalLoader loading={false}>
         <Row justify="space-between">
           <Col>
             <OsButton
@@ -529,8 +529,8 @@ const EditorFile = () => {
           }}
           footerPadding={30}
         />
-      </Suspense>
-    </GlobalLoader>
+      </GlobalLoader>
+    </Suspense>
   );
 };
 export default EditorFile;

@@ -1502,8 +1502,8 @@ const EditorFile = () => {
   };
 
   return (
-    <GlobalLoader loading={nanonetsLoading}>
-      <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>Loading...</div>}>
+      <GlobalLoader loading={nanonetsLoading}>
         <Space size={0} style={{marginBottom: '20px'}}>
           {' '}
           <Typography name="Body 1/Bold">{currentFIle?.file_name}</Typography>
@@ -2258,8 +2258,8 @@ const EditorFile = () => {
             setOldColumnName('');
           }}
         />
-      </Suspense>
-    </GlobalLoader>
+      </GlobalLoader>
+    </Suspense>
   );
 };
 export default EditorFile;

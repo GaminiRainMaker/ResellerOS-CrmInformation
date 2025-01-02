@@ -148,8 +148,8 @@ const OrganizationUsers = () => {
   );
 
   return (
-    <Space direction="vertical" size={24} style={{width: '100%'}}>
-      <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Space direction="vertical" size={24} style={{width: '100%'}}>
         <Row justify="space-between" align="middle">
           <Col>
             <OsBreadCrumb items={menuItems} />
@@ -230,8 +230,8 @@ const OrganizationUsers = () => {
             loading={loading}
           />
         </div>
-      </Suspense>
-    </Space>
+      </Space>
+    </Suspense>
   );
 };
 

@@ -157,8 +157,8 @@ const DealRegDetail = () => {
   };
 
   return (
-    <div>
-      <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>Loading...</div>}>
+      <div>
         <Row justify="space-between" align="middle">
           <Col>
             <OsBreadCrumb items={OsBreadCrumbItems as any} />
@@ -260,8 +260,8 @@ const DealRegDetail = () => {
           }}
           // primaryButtonText={'Save'}
         />
-      </Suspense>
-    </div>
+      </div>
+    </Suspense>
   );
 };
 

@@ -1414,15 +1414,15 @@ const SideBar = () => {
   ];
 
   return (
-    <Sider
-      width={316}
-      collapsible
-      collapsed={collapsed}
-      onCollapse={() => setCollapsed((p) => !p)}
-      theme="light"
-      defaultCollapsed
-    >
-      <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Sider
+        width={316}
+        collapsible
+        collapsed={collapsed}
+        onCollapse={() => setCollapsed((p) => !p)}
+        theme="light"
+        defaultCollapsed
+      >
         <LayoutMenuStyle
           theme="light"
           defaultSelectedKeys={['1']}
@@ -1444,8 +1444,8 @@ const SideBar = () => {
             />
           }
         />
-      </Suspense>
-    </Sider>
+      </Sider>
+    </Suspense>
   );
 };
 
