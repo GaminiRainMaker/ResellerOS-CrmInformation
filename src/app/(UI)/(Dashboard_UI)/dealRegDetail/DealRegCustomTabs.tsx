@@ -72,8 +72,6 @@ const DealRegCustomTabs = forwardRef<
     (state) => state.canvas,
   );
 
-  console.log({isDecryptedRecord});
-
   // Initialize variables with default values
   let salesForceinstanceUrl: string | undefined;
   let salesForceToken: string | undefined;

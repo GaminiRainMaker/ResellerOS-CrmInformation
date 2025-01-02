@@ -184,7 +184,6 @@ const DealRegDetail = () => {
             },
           );
         }
-        console.log('response data', response);
       } catch (error) {
         console.error('Error running script:', error);
       }
@@ -278,7 +277,6 @@ const DealRegDetail = () => {
         script: PartnerProgram?.script,
         isLoginStep: PartnerProgram?.login_step,
       };
-      console.log('finalData', finalData);
       const processScriptData = processScript(finalData);
       if (processScriptData) {
         return processScriptData;

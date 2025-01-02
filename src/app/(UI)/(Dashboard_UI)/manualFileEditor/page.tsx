@@ -84,11 +84,10 @@ const EditorFile = () => {
   const [existingColumnOptions, setExistingColumnName] = useState<any>();
   const [formulaOptions, setFormulaOptions] = useState<any>();
 
-  const {isCanvas, isDecryptedRecord, navigationKey} = useAppSelector(
+  const {isCanvas, isDecryptedRecord} = useAppSelector(
     (state) => state.canvas,
   );
 
-  console.log({isDecryptedRecord});
 
   // Initialize variables with default values
   let salesForceinstanceUrl: string | undefined;

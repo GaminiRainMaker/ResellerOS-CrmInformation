@@ -145,7 +145,6 @@ const EditorFile = () => {
     (state) => state.canvas,
   );
 
-  console.log({isDecryptedRecord});
 
   // Initialize variables with default values
   let salesForceinstanceUrl: string | undefined;

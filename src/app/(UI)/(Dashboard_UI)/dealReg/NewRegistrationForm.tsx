@@ -97,7 +97,6 @@ const NewRegistrationForm: FC<any> = ({
     salesForceOrganizationName = organization?.name;
     salesForceUserId = user?.userId;
   }
-  console.log({isDecryptedRecord});
 
   useEffect(() => {
     if (isCanvas) {

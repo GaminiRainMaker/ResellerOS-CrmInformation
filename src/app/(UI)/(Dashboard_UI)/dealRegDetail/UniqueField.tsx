@@ -438,7 +438,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           <></>
         )}
         {dependentArrValOrMulti?.map((itemsDeCh: any, indexDepCh: number) => {
-          console.log('');
           return (
             <SelectFormItem
               name={

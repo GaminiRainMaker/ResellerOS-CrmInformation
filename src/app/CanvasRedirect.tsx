@@ -36,7 +36,6 @@ const CanvasRedirectWrapper = ({children}: Props) => {
           const part = sr.split('.')[1];
 
           const decryptData = globalThis.JSON.parse(Sfdc.canvas.decode(part));
-          console.log({sr}, {decryptData});
           const navigationKey = getNavigationKey(
             decryptData?.context?.environment?.locationUrl,
           );
@@ -47,9 +46,6 @@ const CanvasRedirectWrapper = ({children}: Props) => {
           );
           let NavigationUrls =
             decryptData?.context?.environment?.parameters?.locationUrl;
-
-          // NavigationUrls == "EditDataAsIs"
-          console.log('43543432', NavigationUrls);
           dispatch(setIsCanvas(true));
           if (navigationKey === 'Opportunity') {
             router.replace('/dealReg');
@@ -72,7 +68,7 @@ const CanvasRedirectWrapper = ({children}: Props) => {
         }
       });
 
-      console.log('Inside Salesforce Canvas1234');
+      console.log('Inside Salesforce Canvas');
     }
   }, [router, dispatch]);
 
