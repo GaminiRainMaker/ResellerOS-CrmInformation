@@ -386,7 +386,7 @@ const DealRegDetail = () => {
           submitDealRegForm?.submit();
         }}
         primaryButtonText={'Submit Form'}
-        // thirdButtonText="Submit Login Form"
+        thirdButtonText="Submit Login Form"
       />
 
       <OsModal
