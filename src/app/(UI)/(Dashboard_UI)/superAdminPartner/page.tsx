@@ -667,38 +667,38 @@ const SuperAdminPartner: React.FC = () => {
         </Typography>
       ),
     },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Login Script
-        </Typography>
-      ),
-      dataIndex: 'login_script',
-      key: 'login_script',
-      render: (text: string, record: any) => (
-        <Typography
-          name="Body 4/Medium"
-          hoverOnText
-          color={token?.colorLink}
-          onClick={() => {
-            if (record?.login_script && !record?.login_script?.includes(null)) {
-              programLoginScriptForm?.setFieldsValue({
-                login_script: JSON.parse(record?.login_script),
-              });
-            } else {
-              programLoginScriptForm?.resetFields();
-            }
-            setSelectPartnerProgramId(record?.id);
-            setShowLoginScriptModal(true);
-          }}
-        >
-          {record?.login_script?.length > 0 &&
-          !record?.login_script?.includes(null)
-            ? 'View Login Script'
-            : 'Create Login Script'}
-        </Typography>
-      ),
-    },
+    // {
+    //   title: (
+    //     <Typography name="Body 4/Medium" className="dragHandler">
+    //       Login Script
+    //     </Typography>
+    //   ),
+    //   dataIndex: 'login_script',
+    //   key: 'login_script',
+    //   render: (text: string, record: any) => (
+    //     <Typography
+    //       name="Body 4/Medium"
+    //       hoverOnText
+    //       color={token?.colorLink}
+    //       onClick={() => {
+    //         if (record?.login_script && !record?.login_script?.includes(null)) {
+    //           programLoginScriptForm?.setFieldsValue({
+    //             login_script: JSON.parse(record?.login_script),
+    //           });
+    //         } else {
+    //           programLoginScriptForm?.resetFields();
+    //         }
+    //         setSelectPartnerProgramId(record?.id);
+    //         setShowLoginScriptModal(true);
+    //       }}
+    //     >
+    //       {record?.login_script?.length > 0 &&
+    //       !record?.login_script?.includes(null)
+    //         ? 'View Login Script'
+    //         : 'Create Login Script'}
+    //     </Typography>
+    //   ),
+    // },
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
