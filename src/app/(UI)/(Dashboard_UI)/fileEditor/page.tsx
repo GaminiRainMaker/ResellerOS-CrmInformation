@@ -33,7 +33,6 @@ import {
   base64ToArrayBuffer1,
   checkFunctionInArray,
   concatenateAfterFirstWithSpace,
-  decrypt,
   decryptFromSalesforce,
   encrypt,
   encryptForSalesforce,

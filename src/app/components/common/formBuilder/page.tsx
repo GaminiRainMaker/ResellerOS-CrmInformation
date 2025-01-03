@@ -123,27 +123,16 @@ const FormBuilderMain: React.FC<any> = ({
     setCollapsed(false);
   };
 
-  console.log('isLoginTemplate', isLoginTemplate === 'true');
-
   useEffect(() => {
     if (!openPreviewModal && getPartnerProgramID) {
       setFormLoading(true);
       dispatch(getPartnerProgramById(Number(getPartnerProgramID)))?.then(
         (payload: any) => {
-          if (isLoginTemplate === 'true') {
-            if (payload?.payload?.login_template?.[0]?.[0]) {
-              const formData: any = JSON?.parse(
-                payload?.payload?.login_template?.[0]?.[0],
-              );
-              setCartItems(formData);
-            }
-          } else {
-            if (payload?.payload?.form_data?.[0]?.[0]) {
-              const formData: any = JSON?.parse(
-                payload?.payload?.form_data?.[0]?.[0],
-              );
-              setCartItems(formData);
-            }
+          if (payload?.payload?.form_data?.[0]?.[0]) {
+            const formData: any = JSON?.parse(
+              payload?.payload?.form_data?.[0]?.[0],
+            );
+            setCartItems(formData);
           }
         },
       );
@@ -208,18 +197,13 @@ const FormBuilderMain: React.FC<any> = ({
 
   const addFormData = async () => {
     let objNew = {};
-    if (isLoginTemplate === 'true') {
-      objNew = {
-        login_template: [JSON?.stringify(cartItems)],
-        id: Number(getPartnerProgramID),
-      };
-    } else {
-      objNew = {
-        form_data: [JSON?.stringify(cartItems)],
-        id: Number(getPartnerProgramID),
-        date: handleDate(),
-      };
-    }
+
+    objNew = {
+      form_data: [JSON?.stringify(cartItems)],
+      id: Number(getPartnerProgramID),
+      date: handleDate(),
+    };
+
     if (cartItems?.[0]?.content?.length > 0) {
       dispatch(updatePartnerProgramById(objNew));
       router.push(`/superAdminPartner`);

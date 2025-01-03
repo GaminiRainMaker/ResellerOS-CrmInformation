@@ -565,6 +565,11 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         setNanonetsLoading(false);
         return;
       } else {
+        const jsonstring = JSON.stringify(newArrWIthFileName);
+        const newSalesEncryptedData = encryptForSalesforce(
+          jsonstring,
+          'CghhpgRahZKN0P8SaquPX/k30H+v2QWcKpcH42H9q0w=',
+        );
         let newdata = {
           token: salesForceToken,
           // documentId: salesForceFiledId,

@@ -6,8 +6,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
 import {FormInstance, InputNumberProps} from 'antd';
-import axios from 'axios';
 import * as CryptoJS from 'crypto-js';
+import axios from 'axios';
 
 import moment from 'moment';
 import {getContractInBulkByProductCode} from '../../../redux/actions/contractProduct';
@@ -1734,134 +1734,6 @@ export const processScript1 = (finalObj: FinalObj) => {
           checkboxRegex,
           `getByText('${label}').click()`,
         );
-      }
-    }
-  }
-
-  return processedScript;
-};
-
-export const processScript = async (finalObj: FinalObj, page: any) => {
-  // Escape special characters in labels for use in regular expressions
-  const escapeRegExp = (string: string) => {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  };
-
-  // Join the script array into a single string
-  let processedScript = finalObj.script.join('\n');
-
-  // Function to create and display a custom message
-  const showMessage = async () => {
-    await page.evaluate(() => {
-      const messageDiv = document.createElement('div');
-      messageDiv.id = 'customMessage';
-      messageDiv.style.position = 'fixed';
-      messageDiv.style.top = '20px';
-      messageDiv.style.left = '20px';
-      messageDiv.style.padding = '10px';
-      messageDiv.style.backgroundColor = 'white';
-      messageDiv.style.width = '250px';
-      messageDiv.style.height = '120px';
-      messageDiv.style.border = '1px solid #000';
-      messageDiv.style.borderRadius = '12px';
-      messageDiv.style.zIndex = '1000';
-      messageDiv.innerHTML = `
-        <h3>Verification Code</h3>
-        <p>Please Enter the verification code.</p>
-        <button id="close-popup">Close</button>
-      `;
-      document.body.appendChild(messageDiv);
-      // document.getElementById('close-popup').addEventListener('click', () => {
-      //   messageDiv.style.display = 'none';
-      // });
-    });
-  };
-
-  // Function to wait for user input in a given selector
-  const waitForUserInput = async (
-    selector: string,
-    timeout = 900000,
-    typingDelay = 2000,
-  ) => {
-    console.log('Waiting for user input in selector:', selector);
-    const start = Date.now();
-    let lastValue = '';
-    let lastTypedTime = Date.now();
-    while (Date.now() - start < timeout) {
-      const inputElement = await page?.$(`#${selector}`);
-      const value = await inputElement?.inputValue();
-      console.log('Current input value:', value);
-      if (value !== lastValue) {
-        lastValue = value;
-        lastTypedTime = Date?.now();
-      }
-      if (value?.trim() !== '' && Date?.now() - lastTypedTime >= typingDelay) {
-        return true;
-      }
-      await page.waitForTimeout(500);
-    }
-    throw new Error(
-      `Timeout: Input field did not get a value within ${timeout / 1000} seconds.`,
-    );
-  };
-
-  // Iterate over the data array
-  for (const dataObj of finalObj.data) {
-    for (const [label, value] of Object.entries(dataObj)) {
-      // Skip the 'userFill' key as it's not used for replacements
-      if (label === 'userFill') continue;
-
-      const escapedLabel = escapeRegExp(label);
-      console.log('Processing', escapedLabel, '====>', value);
-
-      // Handle `fill` actions
-      const fillRegex = new RegExp(
-        `getByLabel\\('${escapedLabel}'\\)\\.fill\\(.+?\\)`,
-        'i',
-      );
-      processedScript = processedScript.replace(
-        fillRegex,
-        `getByLabel('${label}').fill('${value}')`,
-      );
-
-      // Handle `selectOption` actions
-      const selectOptionRegex = new RegExp(
-        `getByLabel\\('${escapedLabel}'\\)\\.selectOption\\(.+?\\)`,
-        'i',
-      );
-      processedScript = processedScript.replace(
-        selectOptionRegex,
-        `getByLabel('${label}').selectOption('${value}')`,
-      );
-
-      // Handle `click` actions for radio buttons when the label contains 'Radio'
-      if (label.includes('Radio')) {
-        const radioButtonRegex = new RegExp(
-          `getByText\\(''\\)\\.click\\(\\)`,
-          'i',
-        );
-        processedScript = processedScript.replace(
-          radioButtonRegex,
-          `getByText('${value}').click()`,
-        );
-      }
-
-      // Handle `click` actions for checkboxes where value is 'on'
-      if (value === 'on') {
-        const checkboxRegex = new RegExp(
-          `getByLabel\\('${escapedLabel}'\\)\\.click\\(\\)`,
-          'i',
-        );
-        processedScript = processedScript.replace(
-          checkboxRegex,
-          `getByText('${label}').click()`,
-        );
-      }
-
-      // Handle `waitForUserInput` if userFill is true
-      if (dataObj.userFill) {
-        await showMessage(); // Show the custom message
-        await waitForUserInput(label); // Wait for the user input based on the label
       }
     }
   }

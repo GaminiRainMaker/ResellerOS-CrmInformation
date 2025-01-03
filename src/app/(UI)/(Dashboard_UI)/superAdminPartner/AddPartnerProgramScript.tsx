@@ -4,7 +4,7 @@ import {Form} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import React, {FC} from 'react';
 
-const AddPartnerProgramScript: FC<any> = ({form, onFinish}) => {
+const AddPartnerProgramScript: FC<any> = ({form, onFinish, loginScript}) => {
   const [token] = useThemeToken();
   return (
     <Form
@@ -20,7 +20,7 @@ const AddPartnerProgramScript: FC<any> = ({form, onFinish}) => {
             message: 'Please write the script',
           },
         ]}
-        name="script"
+        name={loginScript ? 'login_script' : 'script'}
         label={
           <Typography name="Body 4/Regular" color={token?.colorPrimaryText}>
             Automation Script
