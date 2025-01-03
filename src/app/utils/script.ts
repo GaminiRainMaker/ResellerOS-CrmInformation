@@ -163,6 +163,8 @@ export let processScript = (finalObj: {
           }
         } else if (
           !loginDetailsFilled &&
+          finalObj.username &&
+          finalObj.password &&
           (currentLine.toLowerCase().includes('username') ||
             currentLine.toLowerCase().includes('email') ||
             currentLine.toLowerCase().includes('password'))
