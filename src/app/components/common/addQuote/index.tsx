@@ -83,10 +83,12 @@ const AddQuote: FC<AddQuoteInterface> = ({
     searchValue: string;
     asserType: boolean;
     salesforce: boolean;
+    lifeboatsalesforce: boolean;
   }>({
     searchValue: '',
     asserType: false,
     salesforce: false,
+    lifeboatsalesforce: false,
   });
   useEffect(() => {
     if (existingQuoteId || existingGenerateQuoteId) {
@@ -234,6 +236,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
             },
           ],
         };
+
         if (singleQuote || quoteId) {
           if (i === 0) {
             quotesArr.push(quoteObj);
@@ -289,8 +292,10 @@ const AddQuote: FC<AddQuoteInterface> = ({
           let allProductCodeDataa: any = [];
           lineItem?.map((itemsPro: any) => {
             allProductCodes?.push(
-              itemsPro?.product_code
-                ? itemsPro?.product_code?.replace(/\s/g, '')
+              itemsPro?.product_code &&
+                itemsPro?.product_code !== null &&
+                itemsPro?.product_code !== undefined
+                ? itemsPro?.product_code?.toString()?.replace(/\s/g, '')
                 : 'NEWCODE0123',
             );
           });
@@ -332,12 +337,16 @@ const AddQuote: FC<AddQuoteInterface> = ({
           if (lineItem) {
             lineItem?.map((itemssProduct: any) => {
               let productCode = itemssProduct?.product_code
-                ? itemssProduct?.product_code?.replace(/\s/g, '')
+                ? itemssProduct?.product_code &&
+                  itemssProduct?.product_code !== null &&
+                  itemssProduct?.product_code !== undefined &&
+                  itemssProduct?.product_code?.toString()?.replace(/\s/g, '')
                 : 'NEWCODE0123';
               let itemsToAdd = allProductCodeDataa?.find(
                 (productItemFind: any) =>
-                  productItemFind?.product_code?.replace(/\s/g, '') ===
-                  productCode,
+                  productItemFind?.product_code
+                    ?.toString()
+                    ?.replace(/\s/g, '') === productCode,
               );
               const obj1: any = {
                 quote_id: quotesArr[i]?.id,
@@ -425,7 +434,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
     await dispatch(getQuotesByDateFilter({}));
     setShowModal(false);
     setUploadFileData([]);
-
     if ((singleQuote || quoteId) && newArrWithManual?.length > 0) {
       let latestestFIleId: any;
       let quoteIdForManualss: any;
@@ -670,8 +678,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           quotesArr.push(quoteObj);
         }
       }
-      // console.log('3242342312', quotesArr);
-      // return;
+
       if (quotesArr.length > 0 && !quoteId) {
         for (let i = 0; i < quotesArr.length; i++) {
           let newObj = {
@@ -694,26 +701,36 @@ const AddQuote: FC<AddQuoteInterface> = ({
       }
 
       const finalLineItems: any = [];
+
       for (let i = 0; i < quotesArr?.length; i++) {
         for (let k = 0; k < quotesArr[i].quoteFileObj.length; k++) {
           singleAddOnQuoteId = quotesArr[i]?.id;
+
           const quoteFile = {
             ...quotesArr[i].quoteFileObj[k],
             quote_id: quotesArr[i]?.id,
           };
+
           const insertedQuoteFile = await dispatch(insertQuoteFile(quoteFile));
           // ===============To get LineItems WIth non- repeative objects
+          console.log('23432234322', quoteFile, insertedQuoteFile);
+
           let newArrValues = getLineItemsWithNonRepitive(
             quotesArr[i].quoteFileObj[k]?.lineItems,
           );
+          console.log('23432234322', newArrValues);
 
           const lineItem = quotesArr[i].quoteFileObj[k]?.lineItems;
+
           let allProductCodes: any = [];
           let allProductCodeDataa: any = [];
+          // return;
           lineItem?.map((itemsPro: any) => {
             allProductCodes?.push(
-              itemsPro?.product_code
-                ? itemsPro?.product_code?.replace(/\s/g, '')
+              itemsPro?.product_code &&
+                itemsPro?.product_code !== null &&
+                itemsPro?.product_code !== undefined
+                ? itemsPro?.product_code?.toString()?.replace(/\s/g, '')
                 : 'NEWCODE0123',
             );
           });
@@ -756,12 +773,16 @@ const AddQuote: FC<AddQuoteInterface> = ({
           if (lineItem) {
             lineItem?.map((itemssProduct: any) => {
               let productCode = itemssProduct?.product_code
-                ? itemssProduct?.product_code?.replace(/\s/g, '')
+                ? itemssProduct?.product_code &&
+                  itemssProduct?.product_code !== null &&
+                  itemssProduct?.product_code !== undefined &&
+                  itemssProduct?.product_code?.toString()?.replace(/\s/g, '')
                 : 'NEWCODE0123';
               let itemsToAdd = allProductCodeDataa?.find(
                 (productItemFind: any) =>
-                  productItemFind?.product_code?.replace(/\s/g, '') ===
-                  productCode,
+                  productItemFind?.product_code
+                    ?.toString()
+                    ?.replace(/\s/g, '') === productCode,
               );
               const obj1: any = {
                 quote_id: quotesArr[i]?.id,
@@ -893,7 +914,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
           latestestFIleId = payload?.payload?.id;
         });
       }
-
       if (countOfExportFiles > 0) {
         router.push(
           `/fileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${null}&quoteExist=false&manualFlow=true`,
@@ -949,7 +969,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
         );
       }
       setLoading(false);
-
       if (newArrWithManual?.length > 0) {
         if (countOfExportFiles > 0) {
           router.push(

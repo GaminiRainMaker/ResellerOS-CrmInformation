@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
-import {Upload} from 'antd';
-import {Avatar} from '../antd/Avatar';
+import {Avatar, Upload} from 'antd';
 import {Col} from '../antd/Grid';
 
 const {Dragger} = Upload;

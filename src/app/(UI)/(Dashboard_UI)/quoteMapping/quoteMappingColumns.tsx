@@ -5,6 +5,7 @@ import OsStatusWrapper from '@/app/components/common/os-status';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import {formatDate, handleDate} from '@/app/utils/base';
+import {formatStatus} from '@/app/utils/CONSTANTS';
 import {CheckIcon, XMarkIcon} from '@heroicons/react/24/outline';
 import {Checkbox, GlobalToken} from 'antd';
 import {SetStateAction} from 'react';
@@ -27,14 +28,25 @@ function newQuoteMappingColumns(
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          PDF Headers
+          Doc Headers
         </Typography>
       ),
       dataIndex: 'pdf_header',
       key: 'pdf_header',
       width: 173,
       render: (text: string) => (
-        <Typography name="Body 4/Regular">{text}</Typography>
+        <Typography name="Body 4/Regular">
+          {' '}
+          {formatStatus(
+            text === 'product_code'
+              ? 'SKU'
+              : text === 'adjusted_price'
+                ? 'Cost'
+                : text === 'list_price'
+                  ? 'MSRP'
+                  : text,
+          )}
+        </Typography>
       ),
     },
     {
@@ -111,6 +123,22 @@ function newQuoteMappingColumns(
       width: 173,
       render: (text: string, record: any) => (
         <Checkbox disabled checked={record?.is_salesforce ? true : false} />
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Life Boat Salesforce
+        </Typography>
+      ),
+      dataIndex: 'life_boat_salesforce',
+      key: 'life_boat_salesforce',
+      width: 173,
+      render: (text: string, record: any) => (
+        <Checkbox
+          disabled
+          checked={record?.life_boat_salesforce ? true : false}
+        />
       ),
     },
     {
@@ -194,14 +222,27 @@ function approvedQuoteMappingColumns(
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          PDF Headers
+          Doc Headers
         </Typography>
       ),
       dataIndex: 'pdf_header',
       key: 'pdf_header',
       width: 173,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text}</Typography>
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">
+          {' '}
+          {record?.is_salesforce
+            ? formatStatus(text)
+            : formatStatus(
+                text === 'product_code'
+                  ? 'SKU'
+                  : text === 'adjusted_price'
+                    ? 'Cost'
+                    : text === 'list_price'
+                      ? 'MSRP'
+                      : text,
+              )}
+        </Typography>
       ),
     },
     {
@@ -213,7 +254,7 @@ function approvedQuoteMappingColumns(
       dataIndex: 'quote_header',
       key: 'quote_header',
       width: 220,
-      render: (text: string) => (
+      render: (text: string, record: any) => (
         <CustomTextCapitalization
           text={
             text === 'product_code'
@@ -298,6 +339,22 @@ function approvedQuoteMappingColumns(
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
+          Life Boat Salesforce
+        </Typography>
+      ),
+      dataIndex: 'life_boat_salesforce',
+      key: 'life_boat_salesforce',
+      width: 173,
+      render: (text: string, record: any) => (
+        <Checkbox
+          disabled
+          checked={record?.life_boat_salesforce ? true : false}
+        />
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
           Status
         </Typography>
       ),
@@ -364,14 +421,24 @@ function rejectQuoteMappingColumns(
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          PDF Headers
+          Doc Headers
         </Typography>
       ),
       dataIndex: 'pdf_header',
       key: 'pdf_header',
       width: 173,
       render: (text: string) => (
-        <Typography name="Body 4/Regular">{text}</Typography>
+        <Typography name="Body 4/Regular">
+          {formatStatus(
+            text === 'product_code'
+              ? 'SKU'
+              : text === 'adjusted_price'
+                ? 'Cost'
+                : text === 'list_price'
+                  ? 'MSRP'
+                  : text,
+          )}
+        </Typography>
       ),
     },
     {
@@ -463,6 +530,22 @@ function rejectQuoteMappingColumns(
       width: 173,
       render: (text: string, record: any) => (
         <Checkbox disabled checked={record?.is_salesforce ? true : false} />
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Life Boat Salesforce
+        </Typography>
+      ),
+      dataIndex: 'life_boat_salesforce',
+      key: 'life_boat_salesforce',
+      width: 173,
+      render: (text: string, record: any) => (
+        <Checkbox
+          disabled
+          checked={record?.life_boat_salesforce ? true : false}
+        />
       ),
     },
     {

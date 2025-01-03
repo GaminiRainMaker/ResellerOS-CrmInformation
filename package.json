@@ -15,8 +15,7 @@
     "prepare": "husky install"
   },
   "engines": {
-    "npm": "please-use-yarn",
-    "node": ">=18.0.0"
+    "node": ">=17.0.0 <21.0.0"
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
@@ -32,7 +31,7 @@
     "@heroicons/react": "^2.0.18",
     "@react-pdf/renderer": "^3.4.4",
     "@reduxjs/toolkit": "^1.9.7",
-    "antd": "^5.17.4",
+    "antd": "^5.22.2",
     "antd-img-crop": "^4.21.0",
     "aws": "^0.0.3-2",
     "aws-amplify": "^6.0.5",
@@ -45,10 +44,11 @@
     "handsontable": "14.5.0",
     "hyperformula": "^2.7.1",
     "js-cookie": "^3.0.5",
+    "jsforce": "^3.6.3",
     "jwt-decode": "^3.1.2",
     "lodash.throttle": "^4.1.1",
     "moment": "^2.30.1",
-    "next": "14.0.1",
+    "next": "^14.0.3",
     "next-auth": "^4.24.5",
     "os": "^0.1.2",
     "papaparse": "^5.4.1",

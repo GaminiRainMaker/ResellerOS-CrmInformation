@@ -10,7 +10,7 @@ import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
 import Typography from '@/app/components/common/typography';
 import {PlusIcon} from '@heroicons/react/24/outline';
-import {Button, MenuProps} from 'antd';
+import {MenuProps, notification} from 'antd';
 import Form from 'antd/es/form';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useRef, useState} from 'react';
@@ -28,7 +28,16 @@ import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import DealRegCustomTabs, {DealRegCustomTabsHandle} from './DealRegCustomTabs';
 import ElectronBot from './ElectronBot';
 import SubmitDealRegForms from './SubmitDealRegForms';
-import {getSalesForcePartnerCredentials} from '../../../../../redux/actions/salesForce';
+import {
+  getSalesForceDealregById,
+  getSalesForcePartnerCredentials,
+} from '../../../../../redux/actions/salesForce';
+import {decrypt, encrypt} from '@/app/utils/base';
+import {
+  dependentFieldProcess,
+  processFormData,
+  processScript,
+} from '@/app/utils/script';
 
 const DealRegDetail = () => {
   const [getFormData] = Form.useForm();
@@ -47,16 +56,25 @@ const DealRegDetail = () => {
   const [electronBotModal, showElectronBotModal] = useState(false);
   const searchParams = useSearchParams()!;
   const getOpportunityId = searchParams && searchParams.get('opportunityId');
-  const salesForceUrl = searchParams.get('instance_url');
-  const salesForceKey = searchParams.get('key');
-  const salesForceUserId = searchParams.get('user_id');
-
   const [formData, setFormData] = useState<any>();
   const {userInformation} = useAppSelector((state) => state.user);
   const [salesForceDealregData, setSalesForceDealregData] = useState<any>();
+  const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
+  // Initialize variables with default values
+  let userId: string | undefined;
+  let salesForceinstanceUrl: string | undefined;
+  let salesForceToken: string | undefined;
+
+  if (isCanvas && isDecryptedRecord) {
+    const {userId: decryptedUserId, client} = isDecryptedRecord as any;
+    userId = decryptedUserId;
+    salesForceinstanceUrl = client?.instanceUrl;
+    salesForceToken = client?.oauthToken;
+  }
+  const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
 
   useEffect(() => {
-    if (getOpportunityId && !salesForceUrl) {
+    if (getOpportunityId && !isCanvas) {
       dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
     }
   }, []);
@@ -66,7 +84,7 @@ const DealRegDetail = () => {
   }, [DealRegData]);
 
   const OsBreadCrumbItems = [
-    !salesForceUrl && {
+    !isCanvas && {
       key: '1',
       title: (
         <Typography
@@ -85,7 +103,7 @@ const DealRegDetail = () => {
       key: '2',
       title: (
         <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-          {!salesForceUrl
+          {!isCanvas
             ? DealRegData?.[0]?.Opportunity?.title
             : salesForceDealregData?.[0]?.opportunity_name}
         </Typography>
@@ -117,19 +135,47 @@ const DealRegDetail = () => {
       ...FinalSubmitDealRegForm,
       status: 'Submitted',
     };
-
+    let salesforceData: any = {};
     if (SubmitDealRegFormData) {
       try {
-        const finalAppData = {
+        let finalAppData: any = {
           dealRegId: SubmitDealRegFormData?.id,
-          userId: userInformation?.id ?? salesForceUserId,
-          token: salesForceKey,
-          baseURL: salesForceUrl,
+          token: salesForceToken,
+          baseURL: salesForceinstanceUrl,
+          userId: userId,
           partnerId: SubmitDealRegFormData?.partner_id,
           partnerProgramId: SubmitDealRegFormData?.partner_program_id,
         };
-        const response = await dispatch(dealRegFormScript(finalAppData));
-        if (response && !salesForceUrl) {
+
+        if (isCanvas) {
+          const dealregData: any = await dispatch(
+            getSalesForceDealregById(finalAppData),
+          );
+          const res: any = await dispatch(
+            getSalesForcePartnerCredentials(finalAppData),
+          );
+          if (dealregData?.payload && res?.payload) {
+            salesforceData.data = dealregData?.payload?.[0];
+            salesforceData.credentials = res?.payload?.data;
+            salesforceData.PartnerProgram =
+              SubmitDealRegFormData?.PartnerProgram;
+          }
+        }
+        const createScriptData = await createScript(
+          isCanvas ? salesforceData : SubmitDealRegFormData,
+          isCanvas,
+        );
+        const scriptEncryption = await encrypt(
+          createScriptData as string,
+          SECRET_KEY as string,
+        );
+        const desktopAppData = {
+          isCanvas: isCanvas,
+          userId: userInformation?.id ?? userId,
+          script: JSON.stringify(scriptEncryption),
+        };
+        const response = await dispatch(dealRegFormScript(desktopAppData));
+        if (response && !isCanvas) {
           await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
             (response: {payload: any}) => {
               if (response?.payload) {
@@ -138,7 +184,6 @@ const DealRegDetail = () => {
             },
           );
         }
-        console.log('response data', response);
       } catch (error) {
         console.error('Error running script:', error);
       }
@@ -153,6 +198,92 @@ const DealRegDetail = () => {
     // Call the child's onFinish function using the ref
     if (dealRegTabsRef.current) {
       dealRegTabsRef.current.onFinish();
+      notification?.open({
+        message: 'The form has been saved successfully.',
+        type: 'info',
+      });
+    }
+  };
+
+  const createScript = async (dealData: any, isSalesForce: any) => {
+    try {
+      let finalMainData = {...dealData}; // Initialize with a shallow copy of dealData
+      if (isSalesForce) {
+        // Process and decrypt unique form data
+        const uniqueDataRaw = dealData?.data?.unique_form_data?.replace(
+          /^"|"$/g,
+          '',
+        ); // Remove quotes
+        if (uniqueDataRaw) {
+          const [uniqueIv, uniqueEncryptedData] = uniqueDataRaw.split(':');
+          if (uniqueIv && uniqueEncryptedData) {
+            const uniqueDecryptedString = await decrypt(
+              uniqueEncryptedData,
+              SECRET_KEY as string,
+              uniqueIv,
+            );
+            finalMainData.unique_form_data = uniqueDecryptedString;
+          } else {
+            console.error('Invalid unique_form_data format:', uniqueDataRaw);
+          }
+        } else {
+          console.error('unique_form_data is missing or invalid');
+        }
+      }
+      const {PartnerProgram, unique_form_data} = finalMainData;
+      let finalUniqueData;
+      finalUniqueData = unique_form_data && JSON.parse(unique_form_data);
+      if (isSalesForce) {
+        finalUniqueData = finalUniqueData && JSON.parse(finalUniqueData);
+      }
+      const template =
+        PartnerProgram?.form_data &&
+        JSON.parse(PartnerProgram?.form_data)?.[0]?.content;
+
+      if (PartnerProgram?.PartnerPassword?.password && !isSalesForce) {
+        const [iv, encryptedData] =
+          PartnerProgram.PartnerPassword.password.split(':');
+        if (iv && encryptedData) {
+          try {
+            finalMainData.password = await decrypt(
+              encryptedData,
+              SECRET_KEY as string,
+              iv,
+            );
+          } catch (error) {
+            console.error('Error decrypting PartnerPassword:', error);
+          }
+        } else {
+          console.error(
+            'Invalid PartnerPassword format:',
+            PartnerProgram.PartnerPassword.password,
+          );
+        }
+      }
+
+      const newFormData = processFormData(template, finalUniqueData);
+      let updatedData;
+      if (newFormData) {
+        updatedData = dependentFieldProcess(template, newFormData);
+      }
+      const finalData = {
+        username: isSalesForce
+          ? finalMainData?.credentials?.username
+          : PartnerProgram?.PartnerPassword?.username,
+        password: isSalesForce
+          ? finalMainData?.credentials?.password
+          : finalMainData.password,
+        data: updatedData,
+        script: PartnerProgram?.script,
+        isLoginStep: PartnerProgram?.login_step,
+      };
+      const processScriptData = processScript(finalData);
+      if (processScriptData) {
+        return processScriptData;
+      }
+    } catch (error) {
+      console.error('Error in createScript:', error);
+      throw error; // Rethrow the error for the caller to handle
     }
   };
 
@@ -164,7 +295,7 @@ const DealRegDetail = () => {
         </Col>
         <Col>
           <Space size={8}>
-            {salesForceUrl && (
+            {isCanvas && (
               <OsButton
                 text="Save"
                 buttontype="SECONDARY"
@@ -188,7 +319,7 @@ const DealRegDetail = () => {
                 setShowSubmitFormModal(true);
               }}
             />
-            {!salesForceUrl && (
+            {!isCanvas && (
               <OsButton
                 text="Add New Form"
                 buttontype="PRIMARY"

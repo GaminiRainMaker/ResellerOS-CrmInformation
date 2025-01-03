@@ -2,13 +2,13 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/no-unstable-nested-components */
-import { Form, notification } from 'antd';
+import {Form, notification} from 'antd';
 import Image from 'next/image';
-import { FC, useEffect, useState } from 'react';
+import {FC, useEffect, useState} from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { CheckCircleIcon } from '@heroicons/react/24/outline';
+import {CheckCircleIcon} from '@heroicons/react/24/outline';
 import Cookies from 'js-cookie';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import OSResellerLogo from '../../../../../public/assets/static/ResellerOsText.svg';
 import eyeSlashIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye-slash.svg';
 import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
@@ -21,17 +21,17 @@ import {
   getUserByTokenAccess,
   updateUserPassword,
 } from '../../../../../redux/actions/user';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
-import { setUserInformation } from '../../../../../redux/slices/user';
-import { Space } from '../../common/antd/Space';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {setUserInformation} from '../../../../../redux/slices/user';
+import {Space} from '../../common/antd/Space';
 import useThemeToken from '../../common/hooks/useThemeToken';
 import OsButton from '../../common/os-button';
 import OsInput from '../../common/os-input';
 import OsInputPassword from '../../common/os-input/InputPassword';
 import DailogModal from '../../common/os-modal/DialogModal';
 import Typography from '../../common/typography';
-import { AuthLayoutInterface } from './authLayout.interface';
-import { ContentSectionWrapper, CustomCheckbox } from './styled-components';
+import {AuthLayoutInterface} from './authLayout.interface';
+import {ContentSectionWrapper, CustomCheckbox} from './styled-components';
 import React from 'react';
 
 const ContentSection: FC<AuthLayoutInterface> = ({
@@ -52,7 +52,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   const getUserId = searchParams && searchParams.get('id');
   const [signUpData, setSignUpData] = useState<any>();
   const [showDailogModal, setShowDailogModal] = useState<boolean>(false);
-  const { loading } = useAppSelector((state) => state.auth);
+  const {loading} = useAppSelector((state) => state.auth);
   const rememberPass: any = Cookies.get('remeber');
 
   useEffect(() => {
@@ -225,7 +225,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
               : payload?.payload?.is_email_invite
                 ? `/newPassword?${payload?.payload?.id}`
                 : payload?.payload?.role === 'reseller' &&
-                  payload?.payload?.is_quote
+                    payload?.payload?.is_quote
                   ? '/crmInAccount'
                   : '/dashboard',
           );
@@ -249,10 +249,20 @@ const ContentSection: FC<AuthLayoutInterface> = ({
       });
     } else if (type === 'Reset Password') {
       dispatch(
-        sendForgotPasswordEmail({ recipientEmail: formValues?.email?.toLowerCase() }),
+        sendForgotPasswordEmail({
+          recipientEmail: formValues?.email?.toLowerCase(),
+          urlToGo: window.location.origin,
+        }),
       ).then((d: any) => {
         if (d?.payload) {
           setShowDailogModal(true);
+        } else {
+          notification?.open({
+            message:
+              'User does not exist with this email address. Please try again with correct email!',
+            type: 'error',
+          });
+          return;
         }
       });
     } else if (
@@ -317,7 +327,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                 <Typography name="Heading 1/Medium">{heading}</Typography>
               )}
               {description && (
-                <Typography name="Body 3/Regular" style={{ padding: '0px 20px' }}>
+                <Typography name="Body 3/Regular" style={{padding: '0px 20px'}}>
                   {description}
                 </Typography>
               )}
@@ -371,7 +381,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                               alt="eyeIcon"
                               width={24}
                               height={24}
-                              style={{ cursor: 'pointer' }}
+                              style={{cursor: 'pointer'}}
                             />
                           ) : (
                             <Image
@@ -379,7 +389,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                               alt="eyeSlashIcon"
                               width={24}
                               height={24}
-                              style={{ cursor: 'pointer' }}
+                              style={{cursor: 'pointer'}}
                             />
                           )
                         }
@@ -401,7 +411,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                             alt={item.name}
                             width={24}
                             height={24}
-                            style={{ cursor: 'pointer' }}
+                            style={{cursor: 'pointer'}}
                           />
                         }
                       />
@@ -443,10 +453,10 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                 </Space>
               )}
 
-              <Form.Item style={{ marginTop: '80px' }}>
+              <Form.Item style={{marginTop: '80px'}}>
                 <OsButton
                   loading={loading}
-                  style={{ marginTop: '80px' }}
+                  style={{marginTop: '80px'}}
                   text={buttonText}
                   buttontype="PRIMARY"
                   htmlType="submit"
@@ -468,7 +478,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                       onClick={() => router?.push('/login')}
                       color={token?.colorLink}
                       cursor="pointer"
-                      style={{ cursor: 'pointer' }}
+                      style={{cursor: 'pointer'}}
                     >
                       {' '}
                       Login
@@ -485,7 +495,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                       name="Body 3/Bold"
                       color={token?.colorLink}
                       cursor="pointer"
-                      style={{ cursor: 'pointer' }}
+                      style={{cursor: 'pointer'}}
                       onClick={() => {
                         setSignUpData('');
                         router?.push('/signUp');

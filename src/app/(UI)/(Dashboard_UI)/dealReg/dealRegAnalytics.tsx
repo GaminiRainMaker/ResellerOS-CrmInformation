@@ -105,8 +105,8 @@ const DealRegAnalytics = () => {
       }}
       gutter={[0, 16]}
     >
-      {analyticsData?.map((item) => (
-        <Col>
+      {analyticsData?.map((item, index) => (
+        <Col key={index}>
           <TableNameColumn
             primaryText={item?.primary}
             secondaryText={item?.secondry}

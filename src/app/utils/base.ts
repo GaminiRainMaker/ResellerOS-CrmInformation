@@ -8,6 +8,8 @@
 import {FormInstance, InputNumberProps} from 'antd';
 import * as CryptoJS from 'crypto-js';
 import axios from 'axios';
+import * as CryptoJS from 'crypto-js';
+
 import moment from 'moment';
 import {getContractInBulkByProductCode} from '../../../redux/actions/contractProduct';
 import {
@@ -138,6 +140,7 @@ export const formbuildernewObject = (newItem: string) => {
   if (newItem === 'Table') {
     newObjAddedon = {
       name: newItem,
+      customFieldName: '',
       label: 'Label',
       required: false,
       user_fill: false,
@@ -164,8 +167,10 @@ export const formbuildernewObject = (newItem: string) => {
   } else if (newItem === 'Multi-Select' || newItem === 'Drop Down') {
     newObjAddedon = {
       name: newItem,
+      customFieldName: '',
+
       label: 'Label',
-      type: 'multiple',
+      type: 'tag',
       user_fill: false,
       required: false,
       requiredLabel: true,
@@ -178,10 +183,13 @@ export const formbuildernewObject = (newItem: string) => {
   } else if (newItem === 'Line Break') {
     newObjAddedon = {
       name: newItem,
+      customFieldName: '',
     };
   } else if (newItem === 'Time') {
     newObjAddedon = {
       name: newItem,
+      customFieldName: '',
+
       label: 'Label',
       user_fill: false,
       type: 'Time',
@@ -195,6 +203,8 @@ export const formbuildernewObject = (newItem: string) => {
   } else if (newItem === 'Date') {
     newObjAddedon = {
       name: newItem,
+      customFieldName: '',
+
       label: 'Label',
       user_fill: false,
       type: 'Date',
@@ -210,6 +220,8 @@ export const formbuildernewObject = (newItem: string) => {
   } else if (newItem === 'Contact') {
     newObjAddedon = {
       name: newItem,
+      customFieldName: '',
+
       label: 'Label',
       type: 'number',
       required: false,
@@ -222,6 +234,8 @@ export const formbuildernewObject = (newItem: string) => {
   } else if (newItem === 'Currency') {
     newObjAddedon = {
       name: newItem,
+      customFieldName: '',
+
       label: 'Label',
       user_fill: false,
       type: 'text',
@@ -235,6 +249,8 @@ export const formbuildernewObject = (newItem: string) => {
   } else if (newItem === 'Radio Button' || newItem === 'Toggle') {
     newObjAddedon = {
       name: newItem,
+      customFieldName: '',
+
       label: 'Label',
       type: 'multiple',
       required: false,
@@ -249,6 +265,7 @@ export const formbuildernewObject = (newItem: string) => {
   } else if (newItem === 'Text Content') {
     newObjAddedon = {
       name: newItem,
+      customFieldName: '',
 
       sectionTitle: 'Section Title',
       Alignemnt: 'left',
@@ -257,6 +274,8 @@ export const formbuildernewObject = (newItem: string) => {
   } else if (newItem === 'Checkbox') {
     newObjAddedon = {
       name: newItem,
+      customFieldName: '',
+
       placeholdertext: 'placeholder text',
       labelOptions: [],
       user_fill: false,
@@ -269,9 +288,15 @@ export const formbuildernewObject = (newItem: string) => {
       dependentFiledArr: [],
       dependentFiled: false,
     };
-  } else if (newItem === 'Text' || newItem === 'Email') {
+  } else if (
+    newItem === 'Text' ||
+    newItem === 'Textarea' ||
+    newItem === 'Email'
+  ) {
     newObjAddedon = {
       name: newItem,
+      customFieldName: '',
+
       label: 'Label',
       type: 'text',
       required: false,
@@ -283,10 +308,13 @@ export const formbuildernewObject = (newItem: string) => {
   } else if (newItem === 'Attachment') {
     newObjAddedon = {
       pdfUrl: null,
+
       required: false,
       user_fill: false,
+      label: 'Label',
       type: 'Attachment',
       name: newItem,
+      customFieldName: '',
     };
   }
   return newObjAddedon;
@@ -939,17 +967,23 @@ export const getLineItemsWithNonRepitive = (arrayValue: any) => {
 
     let finIndexForAlreadyPushed = checkAlreadyExist?.findIndex(
       (checkExistItem: any) =>
-        checkExistItem?.product_code?.replace(/\s/g, '') ===
-        itemsPro?.product_code?.replace(/\s/g, ''),
+        itemsPro?.product_code &&
+        itemsPro?.product_code !== null &&
+        itemsPro?.product_code !== undefined &&
+        checkExistItem?.product_code?.toString()?.replace(/\s/g, '') ===
+          itemsPro?.product_code?.toString()?.replace(/\s/g, ''),
     );
     let nulllProductAdded: boolean = false;
 
     if (finIndexForAlreadyPushed === -1 && !nulllProductAdded) {
       newArrValues?.push({
         ...itemsPro,
-        product_code: itemsPro?.product_code
-          ? itemsPro?.product_code?.replace(/\s/g, '')
-          : 'NEWCODE0123',
+        product_code:
+          itemsPro?.product_code &&
+          itemsPro?.product_code !== null &&
+          itemsPro?.product_code !== undefined
+            ? itemsPro?.product_code?.toString()?.replace(/\s/g, '')
+            : 'NEWCODE0123',
       });
     }
     if (!itemsPro?.product_code) {
@@ -979,11 +1013,17 @@ export const getValuesOFLineItemsThoseNotAddedBefore = (
   for (let i = 0; i < lineItem?.length; i++) {
     let allLineItems = lineItem[i];
     let productCode = allLineItems?.product_code
-      ? allLineItems?.product_code.replace(/\s/g, '')
+      ? allLineItems?.product_code &&
+        allLineItems?.product_code !== null &&
+        allLineItems?.product_code !== undefined &&
+        allLineItems?.product_code?.toString()?.replace(/\s/g, '')
       : 'NEWCODE0123';
     let finIndexOfItem = allProductCodeDataa?.findIndex(
       (itemIndex: any) =>
-        itemIndex?.product_code?.replace(/\s/g, '') === productCode,
+        itemIndex?.product_code &&
+        itemIndex?.product_code !== null &&
+        itemIndex?.product_code !== undefined &&
+        itemIndex?.product_code?.toString()?.replace(/\s/g, '') === productCode,
     );
     if (finIndexOfItem === -1) {
       newInsertionData?.push(allLineItems);
@@ -1005,7 +1045,7 @@ export const getValuesOFLineItemsThoseNotAddedBefore = (
 
 // Helper functions to encode/decode base64
 const base64ToArrayBuffer = (base64: string): ArrayBuffer => {
-  const binaryString = window?.atob(base64);
+  const binaryString = window.atob(base64); // Decode base64
   const bytes = new Uint8Array(binaryString.length);
   for (let i = 0; i < binaryString.length; i++) {
     bytes[i] = binaryString.charCodeAt(i);
@@ -1014,31 +1054,32 @@ const base64ToArrayBuffer = (base64: string): ArrayBuffer => {
 };
 
 const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
-  const bytes = new Uint8Array(buffer);
+  const bytes = new Uint8Array(buffer); // Convert ArrayBuffer to Uint8Array
   let binary = '';
   for (let i = 0; i < bytes.byteLength; i++) {
     binary += String.fromCharCode(bytes[i]);
   }
-  return window.btoa(binary);
+  return window.btoa(binary); // Encode to base64
 };
 
-// Ensure key is 16 or 32 bytes long
+// Ensure key is 16 or 32 bytes long for AES-GCM
 const getKey = (key: string): Uint8Array => {
-  let keyBytes = new TextEncoder().encode(key);
+  // Ensure consistent input formatting
+  const sanitizedKey = key.replace(/^"|"$/g, '').replace(/;$/, ''); // Remove quotes and trailing semicolon
+  const keyBytes = new TextEncoder().encode(sanitizedKey);
+  if (keyBytes.length === 16 || keyBytes.length === 32) return keyBytes; // Valid key length
   if (keyBytes.length < 16) {
-    keyBytes = new Uint8Array([
+    return new Uint8Array([
       ...keyBytes,
       ...new Uint8Array(16 - keyBytes.length),
-    ]);
-  } else if (keyBytes.length > 16 && keyBytes.length < 32) {
-    keyBytes = new Uint8Array([
+    ]); // Pad to 16 bytes
+  } else if (keyBytes.length < 32) {
+    return new Uint8Array([
       ...keyBytes,
       ...new Uint8Array(32 - keyBytes.length),
-    ]);
-  } else if (keyBytes.length > 32) {
-    keyBytes = keyBytes.slice(0, 32);
+    ]); // Pad to 32 bytes
   }
-  return keyBytes;
+  return keyBytes.slice(0, 32); // Trim to 32 bytes
 };
 
 // Encrypt function
@@ -1046,25 +1087,32 @@ export const encrypt = async (
   text: string,
   key: string,
 ): Promise<{iv: string; data: string}> => {
-  const enc = new TextEncoder();
-  const encoded = enc.encode(text);
-  const cryptoKey = await crypto.subtle.importKey(
-    'raw',
-    getKey(key),
-    {name: 'AES-GCM'},
-    false,
-    ['encrypt'],
-  );
-  const iv = crypto.getRandomValues(new Uint8Array(12));
-  const encrypted = await crypto.subtle.encrypt(
-    {name: 'AES-GCM', iv},
-    cryptoKey,
-    encoded,
-  );
-  return {
-    iv: arrayBufferToBase64(iv as any),
-    data: arrayBufferToBase64(encrypted),
-  };
+  try {
+    const encoder = new TextEncoder();
+    const encodedText = encoder.encode(text); // Encode plain text
+    const cryptoKey = await crypto.subtle.importKey(
+      'raw',
+      getKey(key),
+      {name: 'AES-GCM'},
+      false,
+      ['encrypt'],
+    );
+
+    const iv = crypto.getRandomValues(new Uint8Array(12)); // AES-GCM requires a 12-byte IV
+    const encrypted = await crypto.subtle.encrypt(
+      {name: 'AES-GCM', iv},
+      cryptoKey,
+      encodedText,
+    );
+
+    return {
+      iv: arrayBufferToBase64(iv.buffer), // Pass the `ArrayBuffer` from the `Uint8Array`
+      data: arrayBufferToBase64(encrypted), // `encrypted` is already an `ArrayBuffer`
+    };
+  } catch (error) {
+    console.error('Encryption error:', error);
+    throw error;
+  }
 };
 
 // Decrypt function
@@ -1073,20 +1121,27 @@ export const decrypt = async (
   key: string,
   iv: string,
 ): Promise<string> => {
-  const cryptoKey = await crypto.subtle.importKey(
-    'raw',
-    getKey(key),
-    {name: 'AES-GCM'},
-    false,
-    ['decrypt'],
-  );
-  const decrypted = await crypto.subtle.decrypt(
-    {name: 'AES-GCM', iv: base64ToArrayBuffer(iv)},
-    cryptoKey,
-    base64ToArrayBuffer(encrypted),
-  );
-  const dec = new TextDecoder();
-  return dec.decode(decrypted);
+  try {
+    const cryptoKey = await crypto.subtle.importKey(
+      'raw',
+      getKey(key),
+      {name: 'AES-GCM'},
+      false,
+      ['decrypt'],
+    );
+    const decrypted = await crypto.subtle.decrypt(
+      {
+        name: 'AES-GCM',
+        iv: base64ToArrayBuffer(iv), // Decode base64 IV
+      },
+      cryptoKey,
+      base64ToArrayBuffer(encrypted), // Decode base64 encrypted data
+    );
+    return new TextDecoder().decode(decrypted); // Decode decrypted text
+  } catch (error) {
+    console.error('Decryption error:', error);
+    throw error;
+  }
 };
 
 export const getContractStatus = (
@@ -1502,7 +1557,9 @@ export const calculateTabBarPercentage = (
   const filteredObj2 = filterRequiredAndNonEmptyValues(commonFormData);
 
   const mergedObj = {...filteredObj1, ...filteredObj2};
-
+  if (Object.keys(mergedObj).length === 0) {
+    return 100;
+  }
   const filledValueLength = Object.keys(mergedObj).length;
   const fillupPercentage = (filledValueLength / totalCount?.length) * 100;
   return Math.round(fillupPercentage);
@@ -1862,18 +1919,24 @@ export const convertToSnakeCase = (input: string): string => {
   // Safely check for a match and get the punctuation (if any)
   const endingPunctuation = input?.match(punctuation)?.[0] ?? '';
 
+  // Check if there's a space before the punctuation (if it's a question mark)
+  const spaceBeforePunctuation =
+    endingPunctuation === '?' && input.endsWith(' ?');
+
   // Remove punctuation from the input temporarily
   const cleanInput = input?.replace(punctuation, '');
 
-  // Convert to snake case and add an underscore only if punctuation is absent
+  // Convert to snake case
   const result = cleanInput
     ?.replace(/([a-z0-9])([A-Z])/g, '$1_$2') // Handle camelCase and PascalCase
     ?.replace(/\s+/g, '_') // Replace spaces with underscores
-    ?.replace(/[^a-zA-Z0-9_]/g, '') // Remove non-alphanumeric characters except underscores
     ?.replace(/_+/g, '_') // Remove multiple consecutive underscores
     ?.replace(/^_+|_+$/g, ''); // Remove leading and trailing underscores
 
-  return endingPunctuation ? result + endingPunctuation : result;
+  // Add punctuation back, with a space if necessary
+  return endingPunctuation
+    ? result + (spaceBeforePunctuation ? ' ' : '') + endingPunctuation
+    : result;
 };
 
 export const radioValidator = (data: any, value: any, form: FormInstance) => {
@@ -1930,20 +1993,101 @@ interface PartnerProgram {
   id: string;
   [key: string]: any;
 }
+export async function fetchAndDecryptRecords(
+  encryptedRecords: Array<{
+    id: string;
+    opportunity_id: string;
+    opportunity_name: string;
+    partner_id: string;
+    partner_program_id: string;
+    unique_form_data: string | null;
+    common_form_data: string | null;
+    percentage: string;
+  }>,
+  SECRET_KEY: string,
+) {
+  try {
+    // Decrypt each record
+    const decryptedRecords = await Promise.all(
+      encryptedRecords?.map(async (record) => {
+        try {
+          const updatedRecord = {...record};
+          // Decrypt `unique_form_data` if it exists
+          if (record && record?.unique_form_data) {
+            const uniqueDataRaw = record?.unique_form_data?.replace(
+              /^"|"$/g,
+              '',
+            ); // Remove leading and trailing quotes
+            if (uniqueDataRaw.includes(':')) {
+              const [uniqueIv, uniqueEncryptedData] = uniqueDataRaw?.split(':');
+              const uniqueDecryptedString = await decrypt(
+                uniqueEncryptedData,
+                SECRET_KEY,
+                uniqueIv,
+              );
+              updatedRecord.unique_form_data = JSON.parse(
+                uniqueDecryptedString,
+              );
+            } else {
+              console.warn(
+                `Invalid format for unique_form_data in record with id: ${record?.id}`,
+              );
+            }
+          }
+
+          // Decrypt `common_form_data` if it exists
+          if (record && record?.common_form_data) {
+            const commonDataRaw = record?.common_form_data?.replace(
+              /^"|"$/g,
+              '',
+            ); // Remove leading and trailing quotes
+            if (commonDataRaw.includes(':')) {
+              const [commonIv, commonEncryptedData] = commonDataRaw.split(':');
+              const commonDecryptedString = await decrypt(
+                commonEncryptedData,
+                SECRET_KEY,
+                commonIv,
+              );
+              updatedRecord.common_form_data = JSON.parse(
+                commonDecryptedString,
+              );
+            } else {
+              console.warn(
+                `Invalid format for common_form_data in record with id: ${record.id}`,
+              );
+            }
+          }
+
+          return updatedRecord; // Return the updated record with decrypted data
+        } catch (error) {
+          console.error(
+            `Failed to decrypt data for record with id: ${record.id}`,
+            error,
+          );
+
+          // Return the record as-is in case of decryption failure
+          return record;
+        }
+      }),
+    );
+    return decryptedRecords;
+  } catch (error) {
+    console.error('Failed to decrypt records:', error);
+    throw error; // Re-throw the error to handle it further up the chain
+  }
+}
 
 export const updateSalesForceData = async (
-  res: {payload: PayloadItem[]} | undefined,
+  res: any | undefined,
   allPartnersById: Partner[],
   allPartnerProgramById: PartnerProgram[],
   dispatch: any,
   setIsData?: any,
 ) => {
-  if (!res?.payload) return;
+  if (!res) return;
 
-  const partnerArray = res?.payload?.map((item: any) => item?.partner_id);
-  const partnerProgramArray = res?.payload?.map(
-    (item: any) => item?.partner_program_id,
-  );
+  const partnerArray = res?.map((item: any) => item?.partner_id);
+  const partnerProgramArray = res?.map((item: any) => item?.partner_program_id);
   // Dispatch actions to get all partners and partner programs by id
   let partnerData: any = [];
   let partnerProgramData: any = [];
@@ -1967,7 +2111,7 @@ export const updateSalesForceData = async (
   setIsData(true);
 
   // Updating main data with matching partner and partner program
-  const newData = res?.payload?.map((item: any) => {
+  const newData = res?.map((item: any) => {
     const updatedItem = {...item};
     // Find matching partner data
     const partner = partnerData?.find((p: any) => p?.id == item?.partner_id);
@@ -1985,14 +2129,13 @@ export const updateSalesForceData = async (
 
     return updatedItem;
   });
-  console.log('newData', newData);
-
   return newData;
 };
 
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import {Ubuntu_Condensed} from 'next/font/google';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -2054,6 +2197,7 @@ export const arrayBufferToBase641 = function (arrayBuffer: any) {
   );
 };
 
+// Encrypts the message with the given secret (Base64 encoded)
 export const encryptForSalesforce = function (msg: any, base64Secret: any) {
   var iv = CryptoJS.lib.WordArray.random(16); // Generate a random IV
   var aes_options = {
@@ -2098,4 +2242,11 @@ export const decryptFromSalesforce = function (
   );
 
   return decryptObj.toString(CryptoJS.enc.Utf8); // Return decrypted string
+};
+
+export const formatMailString = (input: string) => {
+  return input
+    .split('_') // Split the string by underscores
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize the first letter of each word
+    .join(' '); // Join the words with spaces
 };

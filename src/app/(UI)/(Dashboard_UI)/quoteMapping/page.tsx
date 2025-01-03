@@ -34,6 +34,7 @@ import {
   formatStatus,
   quoteLineItemColumnForSync,
   quoteLineItemColumnForSyncFOrSalesFporceUpdatedOnce,
+  QuoteMappingRejectOption,
 } from '@/app/utils/CONSTANTS';
 import CommonSelect from '@/app/components/common/os-select';
 import {handleDate} from '@/app/utils/base';
@@ -63,6 +64,8 @@ const QuoteMappings = () => {
   const [manualRecord, setManualRecord] = useState<any>();
   const [showSyncModal, setShowSyncModal] = useState<boolean>(false);
   const [showError, setShowError] = useState<boolean>(false);
+  const [rejectedReason, setRejectedReason] = useState<any>();
+  const [errorField, setErrorField] = useState<boolean>(false);
 
   useEffect(() => {
     dispatch(queryLineItemSyncing(searchQuery));
@@ -233,18 +236,43 @@ const QuoteMappings = () => {
       ),
     },
   ];
-
+  useEffect(() => {
+    if (
+      rejectedReason?.type === 'Other' &&
+      rejectedReason &&
+      rejectedReason?.reason?.length > 0 &&
+      rejectedReason?.reason
+    ) {
+      setErrorField(false);
+    }
+  }, [rejectedReason, JSON?.stringify(rejectedReason)]);
   const updateLineItemStatus = () => {
     const reason = form?.getFieldsValue()?.reason;
+
     if (selectedId?.length > 0) {
-      const status = reason ? 'Rejected' : 'Approved';
+      const status = rejectedReason?.type ? 'Rejected' : 'Approved';
+      if (
+        rejectedReason?.type === 'Other' &&
+        rejectedReason &&
+        !rejectedReason?.reason
+      ) {
+        setErrorField(true);
+        return;
+      }
+      // rejectedReason
+
       const obj = {
         quote_header: recordData?.quote_header,
         pdf_header: recordData?.pdf_header,
         id: selectedId,
         status: status,
         status_date: handleDate(),
-        ...(reason && {reason: reason}),
+        ...(rejectedReason?.type && {
+          reason:
+            rejectedReason?.type === 'Other'
+              ? rejectedReason?.reason
+              : rejectedReason?.type,
+        }),
       };
 
       dispatch(updateLineItemSyncing(obj)).then((d) => {
@@ -256,6 +284,7 @@ const QuoteMappings = () => {
           });
           return;
         }
+        setRejectedReason({});
         if (d?.payload) {
           dispatch(queryLineItemSyncing(searchQuery));
         }
@@ -413,18 +442,71 @@ const QuoteMappings = () => {
       <OsModal
         loading={loading}
         body={
-          <OSDialog
-            title="Change Status to"
-            description={`Are you sure you want to mark the status to "Rejected" for the following mapping?`}
-            thirdLineText={
-              recordData
-                ? `“${recordData?.pdf_header}” to  “${formatHeader(recordData?.quote_header)}”`
-                : ''
-            }
-            form={form}
-            onFinish={updateLineItemStatus}
-            statusText={'“Rejected”'}
-          />
+          <div>
+            <Space
+              direction="vertical"
+              size={12}
+              style={{width: '100%', textAlign: 'center'}}
+            >
+              <Typography
+                name="Heading 3/Medium"
+                color={token?.colorPrimaryText}
+              >
+                Change Status to
+                <Typography name="Heading 3/Medium" color={token?.colorError}>
+                  "Rejected"
+                </Typography>
+              </Typography>
+
+              <Typography name="Body 3/Regular" color={token?.colorPrimaryText}>
+                Are you sure you want to mark the status to "Rejected" for the
+                following mapping?
+              </Typography>
+              <Typography name="Body 3/Bold" color={token?.colorPrimaryText}>
+                {recordData
+                  ? `“${recordData?.pdf_header}” to  “${formatHeader(recordData?.quote_header)}”`
+                  : ''}
+              </Typography>
+            </Space>
+            <Space
+              direction="vertical"
+              style={{width: '100%', marginTop: '10px'}}
+            >
+              <Typography name="Body 4/Medium">
+                Reason for Rejection{' '}
+              </Typography>
+              <CommonSelect
+                allowClear
+                placeholder="Please Select Reason"
+                style={{width: '100%'}}
+                onChange={(e: any) => {
+                  if (e !== 'Other') {
+                    setErrorField(false);
+                  }
+                  setRejectedReason({...rejectedReason, type: e});
+                }}
+                options={QuoteMappingRejectOption}
+              />
+              {rejectedReason?.type === 'Other' && (
+                <>
+                  {' '}
+                  <OsInput
+                    // style={{border: '1px solid red'}}
+                    placeholder="Please Select Reason"
+                    onChange={(e: any) => {
+                      setRejectedReason({
+                        ...rejectedReason,
+                        reason: e?.target?.value,
+                      });
+                    }}
+                  />
+                  {errorField && (
+                    <div style={{color: 'red'}}>This field is required!</div>
+                  )}
+                </>
+              )}
+            </Space>
+          </div>
         }
         bodyPadding={40}
         width={511}
@@ -437,7 +519,7 @@ const QuoteMappings = () => {
         destroyOnClose
         secondaryButtonText="Cancel"
         primaryButtonText="Reject"
-        onOk={form.submit}
+        onOk={updateLineItemStatus}
         styleFooter
       />
 
@@ -532,9 +614,7 @@ const QuoteMappings = () => {
                             quote_header: '',
                           });
                         }}
-                        defaultValue={formatStatus(
-                          manualRecord?.quote_header?.toString()?.toUpperCase(),
-                        )}
+                        value={manualRecord?.quote_header}
                         // value={formatStatus(
                         //   newLabel?.label?.toString()?.toUpperCase(),
                         // )}
@@ -555,9 +635,7 @@ const QuoteMappings = () => {
                             quote_header: '',
                           });
                         }}
-                        defaultValue={formatStatus(
-                          manualRecord?.quote_header?.toString()?.toUpperCase(),
-                        )}
+                        value={manualRecord?.quote_header}
                         // value={formatStatus(
                         //   newLabel?.label?.toString()?.toUpperCase(),
                         // )}
@@ -589,6 +667,7 @@ const QuoteMappings = () => {
                     setManualRecord({
                       ...manualRecord,
                       is_salesforce: e.target.checked,
+                      quote_header: '',
                     });
                   }}
                 />{' '}

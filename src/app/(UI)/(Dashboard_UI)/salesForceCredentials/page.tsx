@@ -30,6 +30,8 @@ import AddSalesForceCredentials, {
 import EditSalesForceCredentials from './EditSalesForceCredentials';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsCollapse from '@/app/components/common/os-collapse';
+import {getSalesForceUserDetails} from '../../../../../redux/actions/user';
+import {formatStatus} from '@/app/utils/CONSTANTS';
 
 const AddUser = () => {
   const csvUploadRef = useRef<AddSalesForceCredentialsRef>(null);
@@ -37,6 +39,8 @@ const AddUser = () => {
   const [form] = Form.useForm();
   const [token] = useThemeToken();
   const [showAddUserModal, setShowAddUserModal] = useState<boolean>(false);
+  const [showAddSingleUserModal, setShowAddSingleUserModal] =
+    useState<boolean>(false);
   const {data: salesForceCredentials, loading} = useAppSelector(
     (state) => state.salesForceCredentials,
   );
@@ -44,6 +48,7 @@ const AddUser = () => {
   const [deleteIds, setDeleteIds] = useState<any>();
   const [userData, setUserData] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
+  const [salesDetailOptions, setSalesDetailOptions] = useState<any>();
 
   const deleteSelectedIds = async () => {
     const dataa = {id: deleteIds};
@@ -56,6 +61,32 @@ const AddUser = () => {
     setShowModalDelete(false);
   };
 
+  const getSalesForceCredentialsData = async () => {
+    await dispatch(getSalesForceUserDetails(''))?.then((payload: any) => {
+      let newArr: any = [];
+      payload?.payload?.map((items: any) => {
+        newArr?.push({
+          label: formatStatus(items?.org_name),
+          value: items?.org_id,
+        });
+      });
+
+      // Sort by the 'name' property in alphabetical order
+      newArr.sort((a: any, b: any) => {
+        if (a.label.toLowerCase() < b.label.toLowerCase()) return -1;
+        if (a.label.toLowerCase() > b.label.toLowerCase()) return 1;
+        return 0;
+      });
+
+      console.log(newArr);
+
+      setSalesDetailOptions(newArr);
+    });
+  };
+
+  useEffect(() => {
+    getSalesForceCredentialsData();
+  }, []);
   const UserColumns = [
     {
       title: (
@@ -111,8 +142,9 @@ const AddUser = () => {
                 login_url: record?.login_url,
                 saleforce_org_Id: record?.saleforce_org_Id,
                 is_sso: record?.is_sso,
-                base_url: record?.base_url,
+                instance_url: record?.instance_url,
                 password: record?.password,
+                salesforce_org_name: record?.salesforce_org_name,
               });
             }}
           />
@@ -149,15 +181,24 @@ const AddUser = () => {
 
   const updateData = () => {
     const getformData = form.getFieldsValue();
+    let orgName = salesDetailOptions?.find(
+      (item: any) => item?.value === getformData?.saleforce_org_Id,
+    );
     let obj = {
       ...getformData,
       id: userData?.id,
+      login_url: getformData?.login_url,
+      instance_url: getformData?.instance_url,
+      salesforce_org_name: orgName?.label,
     };
+
     dispatch(updateSalesForceCredentialsId(obj)).then((res) => {
       if (res?.payload) {
         dispatch(queryAddSalesForceCredentials(''));
       }
       setOpen(false);
+      setShowAddSingleUserModal(false);
+      setUserData('');
       form.resetFields();
     });
   };
@@ -174,6 +215,7 @@ const AddUser = () => {
     } else {
       acc.push({
         OrganizationId: item?.saleforce_org_Id,
+        OrganizationName: item?.salesforce_org_name,
         is_sso: item?.is_sso,
         credentialsData: [item],
       });
@@ -205,14 +247,24 @@ const AddUser = () => {
             </Typography>
           </Col>
           <Col>
-            <OsButton
-              text="Upload File"
-              buttontype="PRIMARY"
-              icon={<PlusIcon />}
-              clickHandler={() => {
-                setShowAddUserModal(true);
-              }}
-            />
+            <Space size={20}>
+              <OsButton
+                text="Add User Credentials"
+                buttontype="PRIMARY"
+                icon={<PlusIcon />}
+                clickHandler={() => {
+                  setShowAddSingleUserModal(true);
+                }}
+              />
+              <OsButton
+                text="Upload Credentials File"
+                buttontype="PRIMARY"
+                icon={<PlusIcon />}
+                clickHandler={() => {
+                  setShowAddUserModal(true);
+                }}
+              />
+            </Space>
           </Col>
         </Row>
         <div
@@ -241,7 +293,20 @@ const AddUser = () => {
                             as="div"
                             maxWidth={240}
                           >
-                            {finalDataItem?.OrganizationId}
+                            Org Name: {finalDataItem?.OrganizationName}
+                          </Typography>
+                        </Col>
+                        <Col>
+                          <Typography
+                            style={{padding: '5px 8px 0px 0px'}}
+                            name="Body 4/Medium"
+                            color={token?.colorBgContainer}
+                            ellipsis
+                            tooltip
+                            as="div"
+                            maxWidth={240}
+                          >
+                            Org Id: {finalDataItem?.OrganizationId}
                           </Typography>
                         </Col>
                         <Col>
@@ -300,11 +365,35 @@ const AddUser = () => {
         open={showAddUserModal}
         onCancel={() => {
           setShowAddUserModal((p) => !p);
+          setUserData('');
         }}
         onOk={handleSaveClick}
         primaryButtonText="Save"
         bodyPadding={24}
       />
+
+      <OsModal
+        title="Add SalesForce Credentials"
+        loading={loading}
+        body={
+          <EditSalesForceCredentials
+            onFinish={updateData}
+            form={form}
+            salesDetailOptions={salesDetailOptions}
+          />
+        }
+        width={696}
+        open={showAddSingleUserModal}
+        onCancel={() => {
+          setShowAddSingleUserModal((p) => !p);
+          form.resetFields();
+          setUserData('');
+        }}
+        onOk={form.submit}
+        primaryButtonText="Save"
+        bodyPadding={24}
+      />
+
       <DeleteModal
         loading={loading}
         setShowModalDelete={setShowModalDelete}
@@ -322,6 +411,7 @@ const AddUser = () => {
         placement="right"
         onClose={() => {
           setOpen(false);
+          setUserData('');
           form.resetFields();
         }}
         open={open}
@@ -337,7 +427,12 @@ const AddUser = () => {
           </Row>
         }
       >
-        <EditSalesForceCredentials onFinish={updateData} form={form} />
+        <EditSalesForceCredentials
+          onFinish={updateData}
+          form={form}
+          drawer
+          salesDetailOptions={salesDetailOptions}
+        />
       </OsDrawer>
     </>
   );

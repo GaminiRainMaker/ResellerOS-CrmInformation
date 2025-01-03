@@ -202,3 +202,16 @@ export const updateAdvancedSetting = createAsyncThunk(
     }
   },
 );
+
+
+export const getSalesForceUserDetails = createAsyncThunk(
+  'user/getSalesForceUserDetails',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await USERAPI.getSalesForceUserDetails();
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);

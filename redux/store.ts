@@ -43,6 +43,7 @@ import attachmentDocument from './slices/attachmentDocument';
 import LineItemSyncing from './slices/LineItemSyncing';
 import formulas from './slices/formulas';
 import salesForceCredentials from './slices/salesForceCredentials';
+import canvas from './slices/canvas';
 
 // Configure redux store
 const store = configureStore({
@@ -89,6 +90,7 @@ const store = configureStore({
     LineItemSyncing,
     formulas,
     salesForceCredentials,
+    canvas,
   },
   middleware: [thunk],
   devTools: true,

@@ -25,11 +25,33 @@ export const getAllAddress = createAsyncThunk(
     }
   },
 );
+export const getAddressByCustomerId = createAsyncThunk(
+  'address/getAddressByCustomerId',
+  async (id: any, thunkApi) => {
+    try {
+      const res = await ADDRESS_API.getAddressByCustomerId(id);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
 export const updateAddress = createAsyncThunk(
   'address/updateAddress',
   async (data: any, thunkApi) => {
     try {
       const res = await ADDRESS_API.patch(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+export const deleteAddress = createAsyncThunk(
+  'address/deleteAddress',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await ADDRESS_API.deleteAddress(data);
       return res.data;
     } catch (error: any) {
       return thunkApi.rejectWithValue(error?.message);

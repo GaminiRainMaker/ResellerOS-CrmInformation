@@ -71,6 +71,7 @@ export const API = {
     GetAllOrganizations: '/user/queryAllOrganizations',
     CreateNewOrganization: '/user/createNewOrganization',
     updateAdvancedSetting: '/user/updateAdvancedSetting',
+    getSalesForceUserDetails: '/user/getSalesForceUserDetails',
   },
   PRODUCT: {
     INDEX: '/product',
@@ -142,6 +143,8 @@ export const API = {
   },
   ADDRESS: {
     INDEX: '/address',
+    GetAddressByCustomerId: '/address/getAddressByCustomerId',
+    DeleteAddress: '/address/deleteAddress',
   },
   ATTACHMENTDOCUMENT: {
     INDEX: '/AttachmentDocument',
@@ -216,7 +219,8 @@ export const API = {
     upadteRequestForOrgNewPartnerApproval:
       'partner/upadteRequestForOrgNewPartnerApproval',
     GetAllPartnerById: 'partner/getAllPartnerById',
-    GetAllPartnerandProgramApprovedDataSalesForce: 'partner/getAllPartnerandProgramApprovedDataSalesForce',
+    GetAllPartnerandProgramApprovedDataSalesForce:
+      'partner/getAllPartnerandProgramApprovedDataSalesForce',
   },
   PARTNER_PROGRAM: {
     INDEX: '/partnerProgram',
@@ -271,9 +275,9 @@ export const API = {
       '/assignPartnerProgram/updateAssignPartnerProgramById',
     updateForTheResellerRequest:
       '/assignPartnerProgram/updateForTheResellerRequest',
-      GetAllOrgApprovedDataSalesForce:
+    GetAllOrgApprovedDataSalesForce:
       '/assignPartnerProgram/getAllOrgApprovedDataSalesForce',
-      AddAssignPartnerProgramSalesForce:
+    AddAssignPartnerProgramSalesForce:
       '/assignPartnerProgram/addAssignPartnerProgramSalesForce',
   },
   ATTRIBUTE_SECTION: {
@@ -326,6 +330,12 @@ export const API = {
     SalesForceGet: '/lineItemSyncing/queryLineItemSyncinForSalesFOrce',
     postManual: '/lineItemSyncing/addLineItemSyncingManualy',
   },
+  MAPPED_OPTIONS: {
+    INDEX: '/MappedOptions',
+    deleteMappedOption: '/MappedOptions/deleteMappedOption',
+    getMappedOptionById: '/MappedOptions/getMappedOptionById',
+    QUERY: 'MappedOptions/query',
+  },
   SALESFORCE: {
     INDEX: '/salesForce',
     CreateSalesForcePartner: '/salesForce/createSalesForcePartner',
@@ -338,6 +348,8 @@ export const API = {
     UpdateSalesForceDealregById: '/salesForce/updateSalesForceDealregById',
     GetSalesForcePartnerCredentials:
       '/salesForce/getSalesForcePartnerCredentials',
+    GetSalesForceActivePartners: '/salesForce/getSalesForceActivePartners',
+    UpdatePartnersandProgramIdFromFS: '/salesForce/updatePartnersandProgramIdFromFS',
   },
   SALESFORCE_CREDENTIALS: {
     INDEX: '/salesForceCredential',
@@ -345,7 +357,7 @@ export const API = {
     UpdateSalesForceSSOLogin: '/salesForceCredential/updateSalesForceSSOLogin',
     DeleteSalesForceCredentials:
       '/salesForceCredential/deleteSalesForceCredentials',
-      GetSalesForceCrendenialsByOrgId:
+    GetSalesForceCrendenialsByOrgId:
       '/salesForceCredential/getSalesForceCrendenialsByOrgId',
     GetSalesForceAccessToken: '/salesForceCredential/getSalesForceAccessToken',
   },

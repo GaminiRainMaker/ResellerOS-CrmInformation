@@ -5,12 +5,15 @@ import {
   insertAddAddress,
   getAllAddress,
   updateAddress,
+  getAddressByCustomerId,
+  deleteAddress,
 } from '../actions/address';
 
 type AddressState = {
   loading: boolean;
   error: string | null;
   data: any;
+  addressByCustomerId: any;
   address: any;
 };
 const initialState: AddressState = {
@@ -18,6 +21,7 @@ const initialState: AddressState = {
   error: null,
   data: [],
   address: [],
+  addressByCustomerId: [],
 };
 
 const addressSlice = createSlice({
@@ -69,6 +73,36 @@ const addressSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(updateAddress.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(getAddressByCustomerId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getAddressByCustomerId.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.addressByCustomerId = action.payload;
+        },
+      )
+      .addCase(
+        getAddressByCustomerId.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(deleteAddress.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteAddress.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        // state.addressByCustomerId = action.payload;
+      })
+      .addCase(deleteAddress.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
       });

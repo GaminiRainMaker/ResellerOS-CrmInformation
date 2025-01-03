@@ -32,11 +32,11 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setUserInformation} from '../../../../../redux/slices/user';
 import {LayoutMenuStyle} from './styled-components';
-import {
-  getAllCustomerOfCacheFlow,
-  getProposalForSubscription,
-  getSubsvriptionForCustomer,
-} from '../../../../../redux/actions/cacheFlow';
+// import {
+//   getAllCustomerOfCacheFlow,
+//   getProposalForSubscription,
+//   getSubsvriptionForCustomer,
+// } from '../../../../../redux/actions/cacheFlow';
 import {
   setCacheAvailableSeats,
   setIsSubscribed,
@@ -55,13 +55,14 @@ const SideBar = () => {
   const [crmChildKey, setCrmChildKey] = useState<number>(0);
   const {userInformation} = useAppSelector((state) => state.user);
   const {cacheAvailableSeats} = useAppSelector((state) => state.cacheFLow);
+  const {isCanvas} = useAppSelector((state) => state.canvas);
   const searchParams = useSearchParams()!;
   const salesForceUrl = searchParams.get('instance_url');
 
   type MenuItem = Required<MenuProps>['items'][number];
 
   useEffect(() => {
-    if (!!userInformation && !salesForceUrl) {
+    if (!!userInformation && !isCanvas && !salesForceUrl) {
       dispatch(getUserByTokenAccess('')).then((payload: any) => {
         const relevantData = {
           QuoteAI: payload?.payload?.is_quote,
@@ -178,99 +179,100 @@ const SideBar = () => {
     }
   }, [pathname]);
 
-  const getSubsCriptionForCustomer = async (SubId: any) => {
-    try {
-      let allSubscriptionForCustomer = await dispatch(
-        getSubsvriptionForCustomer(SubId),
-      )?.then((payload: any) => {
-        return payload?.payload?.sucess;
-      });
-      if (allSubscriptionForCustomer) {
-        dispatch(setIsSubscribed(true));
-      }
+  // const getSubsCriptionForCustomer = async (SubId: any) => {
+  //   try {
+  //     let allSubscriptionForCustomer = await dispatch(
+  //       getSubsvriptionForCustomer(SubId),
+  //     )?.then((payload: any) => {
+  //       return payload?.payload?.sucess;
+  //     });
+  //     if (allSubscriptionForCustomer) {
+  //       dispatch(setIsSubscribed(true));
+  //     }
 
-      let activeSubscription = allSubscriptionForCustomer?.find(
-        (item: any) => item?.status === 'active',
-      );
+  //     let activeSubscription = allSubscriptionForCustomer?.find(
+  //       (item: any) => item?.status === 'active',
+  //     );
 
-      if (activeSubscription) {
-        let allProposalData = await dispatch(
-          getProposalForSubscription(activeSubscription?.id),
-        )?.then((payload: any) => {
-          return payload?.payload?.sucess;
-        });
+  //     if (activeSubscription) {
+  //       let allProposalData = await dispatch(
+  //         getProposalForSubscription(activeSubscription?.id),
+  //       )?.then((payload: any) => {
+  //         return payload?.payload?.sucess;
+  //       });
 
-        if (allProposalData) {
-          allProposalData?.[0]?.proposalItems?.map((items: any) => {
-            if (items?.name === 'QuoteAI') {
-              dispatch(
-                setCacheTotalQuoteSeats({
-                  TotalQuoteSeats: items?.quantity,
-                }),
-              );
-            }
-            if (items?.name === 'DealRegAI') {
-              dispatch(
-                setCacheTotalDealRegSeats({TotalDealRegSeats: items?.quantity}),
-              );
-            }
-          });
-        }
-      }
-    } catch (error) {
-      console.log('error', error);
-    }
-  };
+  //       if (allProposalData) {
+  //         allProposalData?.[0]?.proposalItems?.map((items: any) => {
+  //           if (items?.name === 'QuoteAI') {
+  //             dispatch(
+  //               setCacheTotalQuoteSeats({
+  //                 TotalQuoteSeats: items?.quantity,
+  //               }),
+  //             );
+  //           }
+  //           if (items?.name === 'DealRegAI') {
+  //             dispatch(
+  //               setCacheTotalDealRegSeats({TotalDealRegSeats: items?.quantity}),
+  //             );
+  //           }
+  //         });
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.log('error', error);
+  //   }
+  // };
 
-  const getAllCustomerByCache = async () => {
-    try {
-      let CustomerData = await dispatch(getAllCustomerOfCacheFlow(''))?.then(
-        (customerPayload: any) => {
-          if (customerPayload?.payload) {
-            return customerPayload?.payload?.sucess;
-          }
-        },
-      );
+  // const getAllCustomerByCache = async () => {
+  //   try {
+  //     let CustomerData = await dispatch(getAllCustomerOfCacheFlow(''))?.then(
+  //       (customerPayload: any) => {
+  //         if (customerPayload?.payload) {
+  //           return customerPayload?.payload?.sucess;
+  //         }
+  //       },
+  //     );
 
-      let loggedInOrganization = CustomerData?.find(
-        (items: any) =>
-          items?.name
-            ?.replace(/\s/g, '')
-            ?.replace(/[^\w\s]/gi, '')
-            ?.toLowerCase() == userInformation?.organization?.toLowerCase(),
-      );
+  //     let loggedInOrganization = CustomerData?.find(
+  //       (items: any) =>
+  //         items?.name
+  //           ?.replace(/\s/g, '')
+  //           ?.replace(/[^\w\s]/gi, '')
+  //           ?.toLowerCase() == userInformation?.organization?.toLowerCase(),
+  //     );
 
-      if (loggedInOrganization) {
-        getSubsCriptionForCustomer(loggedInOrganization?.id);
-      } else if (!loggedInOrganization) {
-        dispatch(setIsSubscribed(false));
-      }
-    } catch (error: any) {
-      console.log('error', error.message);
-    }
-  };
-  useEffect(() => {
-    if (!salesForceUrl) {
-      getAllCustomerByCache();
-    }
-  }, [userInformation]);
+  //     if (loggedInOrganization) {
+  //       getSubsCriptionForCustomer(loggedInOrganization?.id);
+  //     } else if (!loggedInOrganization) {
+  //       dispatch(setIsSubscribed(false));
+  //     }
+  //   } catch (error: any) {
+  //     console.log('error', error.message);
+  //   }
+  // };
+  // useEffect(() => {
+  //   if (!isCanvas && !salesForceUrl) {
+  //     getAllCustomerByCache();
+  //   }
+  // }, [userInformation]);
 
-  useEffect(() => {
-    if (!salesForceUrl) {
-      dispatch(getOranizationSeats(''))?.then((payload: any) => {
-        dispatch(
-          setCacheAvailableSeats({
-            ...cacheAvailableSeats,
-            DealRegSeats: payload?.payload?.DealRegAIBundle,
-            QuoteAISeats: payload?.payload?.QuoteAI,
-          }),
-        );
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!isCanvas && !salesForceUrl) {
+  //     dispatch(getOranizationSeats(''))?.then((payload: any) => {
+  //       dispatch(
+  //         setCacheAvailableSeats({
+  //           ...cacheAvailableSeats,
+  //           DealRegSeats: payload?.payload?.DealRegAIBundle,
+  //           QuoteAISeats: payload?.payload?.QuoteAI,
+  //         }),
+  //       );
+  //     });
+  //   }
+  // }, []);
 
   const items: MenuItem[] = [
     Role !== 'superAdmin' &&
+      !isCanvas &&
       !salesForceUrl &&
       getItem(
         <Typography
@@ -639,6 +641,46 @@ const SideBar = () => {
               </Typography>
             </Space>,
             '8',
+          ),
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setSelectedKey(9);
+                router?.push('/mappedOptions');
+              }}
+              color={token?.colorTextSecondary}
+            >
+              <OsAvatar
+                icon={
+                  selectedKey === 9 ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
+              />
+              <Typography
+                cursor="pointer"
+                name="Button 1"
+                color={
+                  selectedKey?.toString()?.includes('7')
+                    ? token.colorPrimaryBorder
+                    : token?.colorTextSecondary
+                }
+              >
+                Mapped Options
+              </Typography>
+            </Space>,
+            '9',
           ),
         ],
       ),

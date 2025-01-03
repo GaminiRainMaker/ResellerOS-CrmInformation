@@ -39,8 +39,7 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
   const pathname = usePathname();
   const {userInformation} = useAppSelector((state) => state.user);
   const [partnerValue, setPartnerValue] = useState<number>();
-
-  const salesForceUrl = searchParams.get('instance_url');
+  const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
 
   useEffect(() => {
     form?.resetFields();
@@ -74,11 +73,15 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
       if (pathname === '/superAdminPartner') {
         partnerProgramObj.admin_approved = true;
       }
-      if (!userInformation?.Admin ) {
+      if (!userInformation?.Admin) {
         partnerProgramObj.admin_request = false;
       }
-      if (salesForceUrl) {
+      if (isCanvas) {
         partnerProgramObj.admin_request = true;
+        (partnerProgramObj.organization =
+          isDecryptedRecord?.context?.organization?.name),
+          (partnerProgramObj.salesforce_username =
+            isDecryptedRecord?.context?.user?.userName);
       }
       dispatch(insertPartnerProgram(partnerProgramObj)).then((d: any) => {
         if (d?.payload) {

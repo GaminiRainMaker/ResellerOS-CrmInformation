@@ -3,18 +3,18 @@
 
 'use client';
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import { Form } from 'antd';
-import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {Form} from 'antd';
+import {useSearchParams} from 'next/navigation';
+import {useEffect, useState} from 'react';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AddContract from './addContract';
 import OsButton from '@/app/components/common/os-button';
 import {
@@ -37,13 +37,15 @@ const ContractMain: React.FC = () => {
   const searchParams = useSearchParams()!;
   const [showModal, setShowModal] = useState<boolean>(false);
   const [contractObject, setContractObject] = useState<any>();
-  const { data: contactData, loading } = useAppSelector((state) => state.contract);
+  const {data: contactData, loading} = useAppSelector(
+    (state) => state.contract,
+  );
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deleteId, setDeleteId] = useState<any>();
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [recordId, setRecordId] = useState<any>();
-  const { userInformation } = useAppSelector((state) => state.user);
-  const [contractFinalData, setContractFinalData] = useState<any>()
+  const {userInformation} = useAppSelector((state) => state.user);
+  const [contractFinalData, setContractFinalData] = useState<any>();
 
   useEffect(() => {
     dispatch(getAllContract());
@@ -61,12 +63,14 @@ const ContractMain: React.FC = () => {
 
   useEffect(() => {
     if (userInformation?.Role === 'superAdmin') {
-      setContractFinalData(contactData)
+      setContractFinalData(contactData);
     } else {
-      const finalData = contactData?.filter((item: any) => item?.organization === userInformation?.organization)
-      setContractFinalData(finalData)
+      const finalData = contactData?.filter(
+        (item: any) => item?.organization === userInformation?.organization,
+      );
+      setContractFinalData(finalData);
     }
-  }, [contactData])
+  }, [contactData]);
 
   const ContractColumns = [
     {
@@ -74,7 +78,7 @@ const ContractMain: React.FC = () => {
       dataIndex: 'contract_vehicle_name',
       key: 'contract_vehicle_name',
       render: (text: string) => <CustomTextCapitalization text={text} />,
-      width: 150
+      width: 150,
     },
 
     {
@@ -83,7 +87,8 @@ const ContractMain: React.FC = () => {
       key: 'contract',
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ), width: 150
+      ),
+      width: 150,
     },
     {
       title: 'Action',
@@ -99,25 +104,26 @@ const ContractMain: React.FC = () => {
               form.setFieldsValue({
                 contract_vehicle_name: record?.contract_vehicle_name,
                 contract: record?.contract,
-                organization: record?.organization
+                organization: record?.organization,
               });
               setOpenDrawer(true);
             }}
             color={token.colorInfoBorder}
-            style={{ cursor: 'pointer' }}
+            style={{cursor: 'pointer'}}
           />
           <TrashIcon
             height={24}
             width={24}
             color={token.colorError}
-            style={{ cursor: 'pointer' }}
+            style={{cursor: 'pointer'}}
             onClick={() => {
               setDeleteId(record?.id);
               setShowModalDelete(true);
             }}
           />
         </Space>
-      ), width: 150
+      ),
+      width: 150,
     },
   ];
 
@@ -126,7 +132,10 @@ const ContractMain: React.FC = () => {
     const FormData = form?.getFieldsValue();
     let newObj: any = {
       ...FormData,
-      organization: userInformation?.Role !== 'superAdmin' ? userInformation?.organization : FormData?.organization
+      organization:
+        userInformation?.Role !== 'superAdmin'
+          ? userInformation?.organization
+          : FormData?.organization,
     };
     if (recordId) {
       newObj.id = recordId;
@@ -147,14 +156,14 @@ const ContractMain: React.FC = () => {
 
   return (
     <>
-      <Space size={24} direction="vertical" style={{ width: '100%' }}>
+      <Space size={24} direction="vertical" style={{width: '100%'}}>
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
               All Contract
             </Typography>
           </Col>
-          <Col style={{ display: 'flex', alignItems: 'center' }}>
+          <Col style={{display: 'flex', alignItems: 'center'}}>
             <OsButton
               text="Add Contract"
               buttontype="PRIMARY"
@@ -164,22 +173,13 @@ const ContractMain: React.FC = () => {
           </Col>
         </Row>
 
-        <Row
-          style={{
-            background: 'white',
-            padding: '24px',
-            borderRadius: '12px',
-            overflow: 'auto',
-          }}
-        >
-          <OsTable
-            columns={ContractColumns}
-            dataSource={contractFinalData || []}
-            scroll
-            locale={locale}
-            loading={loading}
-          />
-        </Row>
+        <OsTable
+          columns={ContractColumns}
+          dataSource={contractFinalData || []}
+          scroll
+          locale={locale}
+          loading={loading}
+        />
       </Space>
 
       <OsModal
@@ -218,11 +218,11 @@ const ContractMain: React.FC = () => {
         open={openDrawer}
         width={450}
         footer={
-          <Row style={{ width: '100%', float: 'right' }}>
+          <Row style={{width: '100%', float: 'right'}}>
             {' '}
             <OsButton
               loading={loading}
-              btnStyle={{ width: '100%' }}
+              btnStyle={{width: '100%'}}
               buttontype="PRIMARY"
               text="Update Changes"
               clickHandler={() => {

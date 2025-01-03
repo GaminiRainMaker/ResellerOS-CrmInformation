@@ -12,16 +12,13 @@ import Typography from '@/app/components/common/typography';
 import {formatStatus} from '@/app/utils/CONSTANTS';
 import {
   calculateTabBarPercentage,
-  filterRadioData,
+  encrypt,
+  fetchAndDecryptRecords,
   updateSalesForceData,
 } from '@/app/utils/base';
 import {useSearchParams} from 'next/navigation';
-import React, {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from 'react';
+import {forwardRef, useEffect, useImperativeHandle, useState} from 'react';
+import {queryAttributeFieldForForm} from '../../../../../redux/actions/attributeField';
 import {
   getDealRegById,
   updateDealRegById,
@@ -35,7 +32,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setFinalUpdatedDealRegData} from '../../../../../redux/slices/dealReg';
 import DealRegDetailForm from './DealRegDetailForm';
-import {queryAttributeFieldForForm} from '../../../../../redux/actions/attributeField';
+const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
 
 // Define the prop types for DealRegCustomTabs
 type DealRegCustomTabsProps = {
@@ -56,9 +53,6 @@ const DealRegCustomTabs = forwardRef<
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const searchParams = useSearchParams()!;
-  const salesForceUrl = searchParams.get('instance_url');
-  const getOpportunityId = searchParams && searchParams.get('opportunityId');
-  const salesForceKey = searchParams.get('key');
   const {
     data: DealRegData,
     getDealRegForNew,
@@ -74,14 +68,44 @@ const DealRegCustomTabs = forwardRef<
   );
   const getDealRegId = searchParams && searchParams.get('id');
   const [salesForceDealregById, setSalesForceDealregById] = useState<any>();
+  const {isCanvas, isDecryptedRecord, navigationKey} = useAppSelector(
+    (state) => state.canvas,
+  );
+
+  // Initialize variables with default values
+  let salesForceinstanceUrl: string | undefined;
+  let salesForceToken: string | undefined;
+  let salesForceParamsId: string | any;
+
+  if (isCanvas && isDecryptedRecord) {
+    const {client, context} = isDecryptedRecord as any;
+    salesForceinstanceUrl = client?.instanceUrl;
+    salesForceToken = client?.oauthToken;
+
+    const {environment} = context || {};
+    const {parameters} = environment || {};
+    salesForceParamsId = parameters?.recordId;
+  }
+
+  const [salesforceOpportunityId, setSalesForceOpportunityId] =
+    useState<string>();
 
   useEffect(() => {
     if (
-      getDealRegId &&
-      DealRegData &&
-      DealRegData.length > 0 &&
-      !salesForceUrl
+      navigationKey === 'rosdealregai__Partner_Registration__c' &&
+      isDecryptedRecord
     ) {
+      setSalesForceOpportunityId(
+        isDecryptedRecord?.context?.environment?.parameters?.recordData
+          ?.rosdealregai__Opportunity__c,
+      );
+    } else {
+      setSalesForceOpportunityId(salesForceParamsId);
+    }
+  }, [navigationKey, isDecryptedRecord]);
+
+  useEffect(() => {
+    if (getDealRegId && DealRegData && DealRegData.length > 0 && !isCanvas) {
       setActiveKey(Number(getDealRegId));
     } else if (DealRegData && DealRegData.length > 0) {
       setActiveKey(DealRegData[0]?.id);
@@ -94,18 +118,22 @@ const DealRegCustomTabs = forwardRef<
   useEffect(() => {
     const fetchData = async () => {
       const obj = {
-        baseURL: salesForceUrl,
-        token: salesForceKey,
-        opportunityId: getOpportunityId,
+        baseURL: salesForceinstanceUrl,
+        token: salesForceToken,
+        opportunityId: salesforceOpportunityId,
       };
-      if (getOpportunityId && salesForceUrl && salesForceKey) {
+      if (salesforceOpportunityId && salesForceinstanceUrl && salesForceToken) {
         try {
           const res: any = await dispatch(
             getSalesForceDealregByOpportunityId(obj),
           );
-          if (res?.payload) {
+          const newdata = await fetchAndDecryptRecords(
+            res?.payload,
+            SECRET_KEY as string,
+          );
+          if (newdata) {
             const finalData = await updateSalesForceData(
-              res,
+              newdata,
               allPartnersById,
               allPartnerProgramById,
               dispatch,
@@ -127,17 +155,19 @@ const DealRegCustomTabs = forwardRef<
     };
 
     fetchData();
-  }, [salesForceUrl, isData]);
+  }, [isData, salesforceOpportunityId]);
 
   const callDealregApi = async (obj: any) => {
     try {
       // Wait for the dispatch to complete and get the result
       const d: any = await dispatch(getSalesForceDealregById(obj));
-
-      // If the payload is present, call updateSalesForceData
-      if (d?.payload) {
+      const newdata = await fetchAndDecryptRecords(
+        d?.payload,
+        SECRET_KEY as string,
+      );
+      if (newdata) {
         const finalData = await updateSalesForceData(
-          d,
+          newdata,
           allPartnersById,
           allPartnerProgramById,
           dispatch,
@@ -146,7 +176,6 @@ const DealRegCustomTabs = forwardRef<
         // console.log('finalData3333', finalData, d?.payload);
         setSalesForceDealregById(finalData);
       }
-
       // Set salesForceDealregById after the update
     } catch (error) {
       console.error('Error calling Dealreg API:', error);
@@ -154,13 +183,13 @@ const DealRegCustomTabs = forwardRef<
   };
 
   useEffect(() => {
-    if (activeKey && !salesForceUrl) {
+    if (activeKey && !salesForceinstanceUrl) {
       dispatch(getDealRegById(activeKey));
-    } else if (activeKey && salesForceUrl) {
+    } else if (activeKey && salesForceinstanceUrl) {
       // call salesforce API get dealreg By id
       let obj = {
-        baseURL: salesForceUrl,
-        token: salesForceKey,
+        baseURL: salesForceinstanceUrl,
+        token: salesForceToken,
         dealRegId: activeKey,
       };
       callDealregApi(obj);
@@ -191,7 +220,6 @@ const DealRegCustomTabs = forwardRef<
             ? []
             : finalDealReg?.unique_form_data;
 
-      console.log('finalDealReg', finalDealReg);
       const obj = {
         common_form_data:
           commonFormData && commonFormData.length > 0
@@ -210,11 +238,19 @@ const DealRegCustomTabs = forwardRef<
         common_template: queryData,
         Partner: finalDealReg?.Partner,
         PartnerProgram: finalDealReg?.PartnerProgram,
-        partner_approval_id: finalDealReg?.partner_approval_id,
-        partner_deal_id: finalDealReg?.partner_deal_id,
-        expiration_date: finalDealReg?.expiration_date,
-        submitted_date: finalDealReg?.submitted_date,
-        status: finalDealReg?.status,
+        partner_approval_id:
+          finalDealReg?.partner_approval_id ??
+          finalDealReg?.rosdealregai__Partner_Approval_ID__c,
+        partner_deal_id:
+          finalDealReg?.partner_deal_id ??
+          finalDealReg?.rosdealregai__Partner_Deal_ID__c,
+        expiration_date:
+          finalDealReg?.expiration_date ??
+          finalDealReg?.rosdealregai__Expiration_Date__c,
+        submitted_date:
+          finalDealReg?.submitted_date ??
+          finalDealReg?.rosdealregai__Submitted_Date__c,
+        status: finalDealReg?.status ?? finalDealReg?.rosdealregai__Status__c,
         type: finalDealReg?.type,
       };
       setFormData(obj);
@@ -314,11 +350,19 @@ const DealRegCustomTabs = forwardRef<
         common_template: queryData,
         Partner: finalDealReg?.Partner,
         PartnerProgram: finalDealReg?.PartnerProgram,
-        partner_approval_id: finalDealReg?.partner_approval_id,
-        partner_deal_id: finalDealReg?.partner_deal_id,
-        expiration_date: finalDealReg?.expiration_date,
-        submitted_date: finalDealReg?.submitted_date,
-        status: finalDealReg?.status,
+        partner_approval_id:
+          finalDealReg?.partner_approval_id ??
+          finalDealReg?.rosdealregai__Partner_Approval_ID__c,
+        partner_deal_id:
+          finalDealReg?.partner_deal_id ??
+          finalDealReg?.rosdealregai__Partner_Deal_ID__c,
+        expiration_date:
+          finalDealReg?.expiration_date ??
+          finalDealReg?.rosdealregai__Expiration_Date__c,
+        submitted_date:
+          finalDealReg?.submitted_date ??
+          finalDealReg?.rosdealregai__Submitted_Date__c,
+        status: finalDealReg?.status ?? finalDealReg?.rosdealregai__Status__c,
       };
       const newObj = {
         common_form_data: [JSON.stringify(finalCommonFieldObject)],
@@ -328,18 +372,26 @@ const DealRegCustomTabs = forwardRef<
         common_template: queryData,
         Partner: finalDealReg?.Partner,
         PartnerProgram: finalDealReg?.PartnerProgram,
-        partner_approval_id: finalDealReg?.partner_approval_id,
-        partner_deal_id: finalDealReg?.partner_deal_id,
-        expiration_date: finalDealReg?.expiration_date,
-        submitted_date: finalDealReg?.submitted_date,
-        status: finalDealReg?.status,
+        partner_approval_id:
+          finalDealReg?.partner_approval_id ??
+          finalDealReg?.rosdealregai__Partner_Approval_ID__c,
+        partner_deal_id:
+          finalDealReg?.partner_deal_id ??
+          finalDealReg?.rosdealregai__Partner_Deal_ID__c,
+        expiration_date:
+          finalDealReg?.expiration_date ??
+          finalDealReg?.rosdealregai__Expiration_Date__c,
+        submitted_date:
+          finalDealReg?.submitted_date ??
+          finalDealReg?.rosdealregai__Submitted_Date__c,
+        status: finalDealReg?.status ?? finalDealReg?.rosdealregai__Status__c,
         percentage: tabPercentage,
       };
 
       setFormData(formObj);
       updateDealRegFinalData(activeKey, newObj);
 
-      if (obj && !salesForceUrl) {
+      if (obj && !isCanvas) {
         await dispatch(updateDealRegById(obj));
         if (activeKey && tabPercentage > 0 && tabPercentage < 100) {
           const statusObj = {
@@ -348,13 +400,39 @@ const DealRegCustomTabs = forwardRef<
           };
           dispatch(updateDealRegStatus(statusObj));
         }
-      } else if (newObj && salesForceUrl) {
-        let finalObj = {
-          data: newObj,
-          baseURL: salesForceUrl,
-          token: salesForceKey,
+      } else if (newObj && isCanvas) {
+        const finalObj: any = {
+          common_form_data: [JSON.stringify(finalCommonFieldObject)],
+          unique_form_data: [JSON.stringify(finalUniqueFieldObject)],
+          id: activeKey,
+          baseURL: salesForceinstanceUrl,
+          token: salesForceToken,
+          percentage: tabPercentage,
         };
-        console.log('finalObj', finalObj);
+
+        // Encrypt and replace `common_form_data` if it exists
+        if (finalObj?.common_form_data) {
+          const commonFormDataString = JSON.stringify(
+            finalObj.common_form_data,
+          ); // Convert to string
+          const {iv, data} = await encrypt(
+            commonFormDataString,
+            SECRET_KEY as string,
+          ); // Encrypt
+          finalObj.common_form_data = `${iv}:${data}`; // Replace with encrypted value
+        }
+
+        // Encrypt and replace `unique_form_data` if it exists
+        if (finalObj?.unique_form_data) {
+          const uniqueFormDataString = JSON.stringify(
+            finalObj.unique_form_data,
+          ); // Convert to string
+          const {iv, data} = await encrypt(
+            uniqueFormDataString,
+            SECRET_KEY as string,
+          ); // Encrypt
+          finalObj.unique_form_data = `${iv}:${data}`; // Replace with encrypted value
+        }
         dispatch(updateSalesForceDealregById(finalObj));
       }
     }

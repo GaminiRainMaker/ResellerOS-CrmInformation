@@ -3,7 +3,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {convertFileToBase64, sendDataToNanonets} from '@/app/utils/base';
 import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
-import {Form, message} from 'antd';
+import {Form, message, notification} from 'antd';
 import React, {useEffect, useState} from 'react';
 import {getQuotesByExistingQuoteFilter} from '../../../../../redux/actions/quote';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -99,8 +99,8 @@ const OsUpload: React.FC<any> = ({
         obj.name = file?.name;
         await dispatch(uploadExcelFileToAws({document: base64String})).then(
           async (payload: any) => {
-            const doc_url = payload?.payload?.data?.Location;
-            uploadedUrl = payload?.payload?.data?.Location;
+            const doc_url = payload?.payload?.data;
+            uploadedUrl = payload?.payload?.data;
             if (doc_url) {
               await dispatch(fetchAndParseExcel({Url: doc_url}))?.then(
                 (payload: any) => {
@@ -112,6 +112,7 @@ const OsUpload: React.FC<any> = ({
                       newArrCheck?.push(resultString);
                     });
                   }
+
                   const normalize = (str: any) => {
                     return str
                       ?.toString()
@@ -119,35 +120,47 @@ const OsUpload: React.FC<any> = ({
                       .replace(/[\s_]+/g, ' ')
                       .trim();
                   };
-
+                  let lastCount = 0;
+                  let bestTab = 0;
+                  let allTimeBestRow = -1;
                   // Normalize the newArrCheck values
                   let normalizedCheckArr = newArrCheck.map(normalize);
                   // check for best matching row
                   let maxMatches = 0;
                   let bestRowIndex = -1;
+                  payload?.payload?.map((itemsMain: any, indexMain: number) => {
+                    for (let i = 0; i < itemsMain.length; i++) {
+                      let currentRow = itemsMain[i];
+                      let matchCount = 0;
 
-                  for (let i = 0; i < payload?.payload.length; i++) {
-                    let currentRow = payload?.payload[i];
-                    let matchCount = 0;
+                      for (let item of currentRow) {
+                        let normalizedItem = normalize(item);
+                        // Check if normalizedItem matches any normalized check item
+                        if (
+                          normalizedCheckArr.some(
+                            (checkItem: any) =>
+                              normalizedItem
+                                ?.toString()
+                                .replace(/\s+/g, '')
+                                .replace('.', '')
+                                .toLowerCase() === normalize(checkItem),
+                          )
+                        ) {
+                          matchCount++;
+                        }
+                      }
 
-                    for (let item of currentRow) {
-                      let normalizedItem = normalize(item);
-                      // Check if normalizedItem matches any normalized check item
-                      if (
-                        normalizedCheckArr.some(
-                          (checkItem: any) =>
-                            normalizedItem === normalize(checkItem),
-                        )
-                      ) {
-                        matchCount++;
+                      if (matchCount > maxMatches) {
+                        maxMatches = matchCount;
+                        bestRowIndex = i;
                       }
                     }
-
-                    if (matchCount > maxMatches) {
-                      maxMatches = matchCount;
-                      bestRowIndex = i;
+                    if (lastCount < maxMatches) {
+                      lastCount = maxMatches;
+                      allTimeBestRow = bestRowIndex;
+                      bestTab = indexMain;
                     }
-                  }
+                  });
 
                   // trim the arrr for valid lineItems
 
@@ -156,13 +169,16 @@ const OsUpload: React.FC<any> = ({
                       (item: any) => item === null || item === '',
                     );
                   };
-
+                  let bestTabsRawData = payload?.payload[bestTab];
                   let indexFrom = -1;
+
+                  console.log('2343242432', bestTabsRawData, bestTab);
+
                   // Find the index of the first row that is null or empty
-                  for (let i = 0; i < payload?.payload?.length; i++) {
+                  for (let i = 0; i < bestTabsRawData?.length; i++) {
                     if (
-                      isNullOrEmptyRow(payload?.payload[i]) &&
-                      bestRowIndex + 3 < i
+                      isNullOrEmptyRow(bestTabsRawData[i]) &&
+                      allTimeBestRow + 3 < i
                     ) {
                       indexFrom = i;
                       break;
@@ -170,27 +186,69 @@ const OsUpload: React.FC<any> = ({
                   }
 
                   // Slice the array from the found index
+
+                  let undefinedValesExist =
+                    bestTabsRawData[allTimeBestRow]?.includes(undefined) ||
+                    bestTabsRawData[allTimeBestRow]?.includes(null);
+
                   let result =
                     indexFrom > 0
-                      ? payload?.payload?.slice(bestRowIndex + 1, indexFrom)
-                      : payload?.payload?.slice(
-                          bestRowIndex + 1,
-                          payload?.payload?.length,
+                      ? bestTabsRawData?.slice(bestRowIndex + 1, indexFrom)
+                      : bestTabsRawData?.slice(
+                          allTimeBestRow + 1,
+                          bestTabsRawData?.length,
                         );
 
-                  let requiredOutput = result
-                    ?.map((subArray: any) =>
-                      subArray.filter((item: any) => item !== null),
-                    )
-                    .filter((subArray: any) => subArray.length > 0);
+                  let requiredOutput: any;
+                  if (undefinedValesExist) {
+                    requiredOutput = result
+                      ?.map((subArray: any) =>
+                        subArray.filter(
+                          (item: any) =>
+                            item !== null &&
+                            item !== undefined &&
+                            item?.toString()?.toLowerCase() !== 'om',
+                        ),
+                      )
+                      .filter((subArray: any) => subArray.length > 0);
+                  } else {
+                    requiredOutput = result
+                      ?.map((subArray: any) =>
+                        subArray.filter(
+                          (item: any) =>
+                            // item !== null &&
+                            // item !== undefined &&
+                            item?.toString()?.toLowerCase() !== 'om',
+                        ),
+                      )
+                      .filter((subArray: any) => subArray.length > 0);
+                  }
+
                   // let headerKeys: any = payload?.payload[bestRowIndex];
 
                   let headerKeys: any = [];
-                  payload?.payload[bestRowIndex]?.filter((items: any) => {
-                    if (!headerKeys?.includes(items)) {
-                      headerKeys?.push(items);
-                    }
-                  });
+                  if (undefinedValesExist) {
+                    bestTabsRawData[allTimeBestRow]?.filter((items: any) => {
+                      if (
+                        !headerKeys?.includes(items) &&
+                        items !== null &&
+                        items !== undefined
+                      ) {
+                        headerKeys?.push(items?.trim());
+                      }
+                    });
+                  } else {
+                    bestTabsRawData[allTimeBestRow]?.filter((items: any) => {
+                      if (
+                        !headerKeys?.includes(items)
+                        //  &&
+                        // items !== null &&
+                        // items !== undefined
+                      ) {
+                        headerKeys?.push(items?.trim());
+                      }
+                    });
+                  }
 
                   // return;
 
@@ -204,8 +262,8 @@ const OsUpload: React.FC<any> = ({
 
                   // replace the syncing valueesss ========================
 
-                  let syncedHeaderValue = headerKeys
-                    .map((item: any, index: number) => {
+                  let syncedHeaderValue = headerKeys.map(
+                    (item: any, index: number) => {
                       const match = lineItemSyncingData.find(
                         (obj: any) =>
                           obj.pdf_header ===
@@ -216,17 +274,9 @@ const OsUpload: React.FC<any> = ({
                       // } else {
                       return match ? match.quote_header : item ? item : null;
                       // }
-                    })
-                    .filter(Boolean); // Remove any undefined values
-
-                  // end of above
-                  // Transform newArr into an array of objects
-                  // console.log(
-                  //   'requiredOutputrequiredOutput',
-                  //   headerKeys,
-                  //   syncedHeaderValue,
-                  //   requiredOutput,
-                  // );
+                    },
+                  );
+                  // .filter(Boolean); // Remove any undefined values
 
                   resultantValues = requiredOutput.map((row: any) => {
                     let obj: any = {};
@@ -242,7 +292,12 @@ const OsUpload: React.FC<any> = ({
         );
       })
       .catch((error: any) => {
-        message.error('Error converting file to base64', error);
+        console.log('324342', error);
+        notification?.open({
+          message: 'Error converting file to base64',
+          type: 'error',
+        });
+        // message.error('Error converting file to base64', error);
       });
 
     function containsLetterAndNumber(str: string): boolean {
@@ -268,6 +323,65 @@ const OsUpload: React.FC<any> = ({
     };
   };
 
+  const beforeUploadDataForExcelFile = async (file: File) => {
+    const obj: any = {...file};
+    let resultantValues: any;
+    let uploadedUrl: any;
+    await convertFileToBase64(file)
+      .then(async (base64String: string) => {
+        obj.base64 = base64String;
+        obj.name = file?.name;
+        await dispatch(uploadExcelFileToAws({document: base64String})).then(
+          async (payload: any) => {
+            const doc_url = payload?.payload?.data;
+            uploadedUrl = payload?.payload?.data;
+          },
+        );
+      })
+      .catch((error: any) => {
+        console.log('324342', error);
+        notification?.open({
+          message: 'Error converting file to base64',
+          type: 'error',
+        });
+        // message.error('Error converting file to base64', error);
+      });
+
+    return {
+      file_name: file?.name,
+      pdf_url: uploadedUrl,
+    };
+  };
+
+  const beforeUploadDataForPDFFile = async (file: File) => {
+    const obj: any = {...file};
+    let resultantValues: any;
+    let uploadedUrl: any;
+    await convertFileToBase64(file)
+      .then(async (base64String: string) => {
+        obj.base64 = base64String;
+        obj.name = file?.name;
+        await dispatch(uploadToAws({document: base64String})).then(
+          async (payload: any) => {
+            const doc_url = payload?.payload?.data;
+            uploadedUrl = payload?.payload?.data;
+          },
+        );
+      })
+      .catch((error: any) => {
+        console.log('324342', error);
+        notification?.open({
+          message: 'Error converting file to base64',
+          type: 'error',
+        });
+        // message.error('Error converting file to base64', error);
+      });
+
+    return {
+      file_name: file?.name,
+      pdf_url: uploadedUrl,
+    };
+  };
   function transformString(str: any) {
     return str.toLowerCase().replace(/[^a-z0-9]/g, '');
   }
@@ -283,8 +397,8 @@ const OsUpload: React.FC<any> = ({
 
         await dispatch(uploadToAws({document: base64String})).then(
           async (payload: any) => {
-            const doc_url = payload?.payload?.data?.Location;
-            uploadedUrl = payload?.payload?.data?.Location;
+            const doc_url = payload?.payload?.data;
+            uploadedUrl = payload?.payload?.data;
             if (doc_url) {
               await dispatch(getPDFFileData({pdfUrl: doc_url}))?.then(
                 (payload: any) => {
@@ -299,8 +413,6 @@ const OsUpload: React.FC<any> = ({
 
                   let mainItem = payload?.payload?.analyzeResult?.tables;
                   let globalArr: any = [];
-                  // console.log('35435324234', mainItem);
-
                   let resultTantArrr: any = [];
 
                   for (let i = 0; i < mainItem?.length; i++) {
@@ -312,7 +424,7 @@ const OsUpload: React.FC<any> = ({
                       let headers: any = {};
                       innerIntems?.cells.forEach((item: any) => {
                         if (item.kind === 'columnHeader') {
-                          headers[item.columnIndex] = item.content; // Store headers by their column index
+                          headers[item.columnIndex] = item.content?.trim(); // Store headers by their column index
                         }
                       });
 
@@ -393,8 +505,30 @@ const OsUpload: React.FC<any> = ({
                   } else {
                     resultTantArrr = [...globalArr?.[0]];
                   }
+                  const removeSpecialCharactersFromArrayOfObjects = (
+                    arr: any,
+                  ) => {
+                    return arr.map((obj: any) => {
+                      const cleanedObj: any = {};
 
-                  let transformedArrForLOwerCase = resultTantArrr.map(
+                      // Iterate over the keys of each object
+                      for (const key in obj) {
+                        if (obj.hasOwnProperty(key)) {
+                          // Clean the key by removing special characters
+                          const cleanedKey = key.replace(/[^a-zA-Z0-9_]/g, ''); // Only allow alphanumeric characters and underscores
+
+                          // Add the cleaned key and its value to the new object
+                          cleanedObj[cleanedKey] = obj[key];
+                        }
+                      }
+
+                      return cleanedObj;
+                    });
+                  };
+                  const cleanedArr =
+                    removeSpecialCharactersFromArrayOfObjects(resultTantArrr);
+
+                  let transformedArrForLOwerCase = cleanedArr.map(
                     (item: any) => {
                       let newItem: any = {};
                       for (let key in item) {
@@ -402,15 +536,15 @@ const OsUpload: React.FC<any> = ({
                         let newKey = key
                           .replace(/[^\w\s]/g, '')
                           .replace(/\s+/g, '')
-                          .toLowerCase();
+                          .toLowerCase()
+                          ?.trim();
 
                         // Assign the value to the new key
-                        newItem[newKey] = item[key];
+                        newItem[newKey?.trim()] = item[key].trim();
                       }
                       return newItem;
                     },
                   );
-                  console.log('35435324234', transformedArrForLOwerCase);
 
                   resultantValues = transformedArrForLOwerCase?.map(
                     (obj: any) => {
@@ -506,29 +640,40 @@ const OsUpload: React.FC<any> = ({
         }
       }
 
+      console.log('werwwwwe', obj);
       if (
         !obj.error &&
         obj?.model_id &&
         (obj?.model_id !== 'a02fffb7-5221-44a2-8eb1-85781a0ecd67' ||
           obj?.file?.type.includes('spreadsheetml'))
       ) {
-        // if (obj?.file?.type.includes('spreadsheetml')) {
-        //   const dataa = await beforeUploadDataForExcel(obj?.file);
+        if (obj?.file?.type.includes('spreadsheetml')) {
+          const dataa = await beforeUploadDataForExcelFile(obj?.file);
+          const response: any = await sendDataToNanonets(
+            obj?.model_id,
+            obj?.file,
+          );
+          obj = {...obj, ...dataa, ...response};
+        } else {
+          // eslint-disable-next-line no-await-in-loop
+          const dataa = await beforeUploadDataForPDFFile(obj?.file);
 
-        //   obj = {...obj, ...dataa};
-        // } else {
-        // eslint-disable-next-line no-await-in-loop
-        const response: any = await sendDataToNanonets(
-          obj?.model_id,
-          obj?.file,
-        );
+          const response: any = await sendDataToNanonets(
+            obj?.model_id,
+            obj?.file,
+          );
 
-        obj = {...obj, ...response};
-        // }
+          obj = {...obj, ...response, ...dataa};
+        }
+      } else {
+        const dataa = await beforeUploadDataForPDFFile(obj?.file);
+
+        obj = {...obj, ...dataa};
       }
 
       newArr.push(obj);
     }
+
     setLoading(false);
     const index = newArr.findIndex((item) => item.error);
 
@@ -594,7 +739,6 @@ const OsUpload: React.FC<any> = ({
       ) {
         if (obj?.file?.type.includes('spreadsheetml')) {
           const dataa = await beforeUploadDataForExcel(obj?.file);
-          console.log('43534324324', dataa);
 
           obj = {...obj, ...dataa};
         } else {
@@ -602,6 +746,10 @@ const OsUpload: React.FC<any> = ({
 
           obj = {...obj, ...dataa};
         }
+      } else {
+        const dataa = await beforeUploadDataForPDFFile(obj?.file);
+
+        obj = {...obj, ...dataa};
       }
 
       newArr.push(obj);

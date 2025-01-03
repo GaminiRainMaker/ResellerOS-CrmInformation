@@ -11,7 +11,11 @@ import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {EyeIcon, UsersIcon} from '@heroicons/react/24/outline';
+import {
+  EyeIcon,
+  PencilSquareIcon,
+  UsersIcon,
+} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
@@ -25,17 +29,21 @@ import {
 import {
   createNewOrganization,
   getAdminUserOfAllOrganization,
+  updateUserById,
 } from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setAllResellerRecord} from '../../../../../redux/slices/user';
 import AddNewOrganization from './AddNewOrganization';
 import AssignPartnerProgram from './AssignPartnerProgram';
+import OsDrawer from '@/app/components/common/os-drawer';
+import EditOrgDetail from './EditOrgDetail';
 
 const UserManagement = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const router = useRouter();
   const [form] = Form.useForm();
+  const [editOrgForm] = Form.useForm();
   const [newOrganizationFormData] = Form.useForm();
   const {data: userData, loading} = useAppSelector((state) => state.user);
   const {loading: AssignPartnerProgramLoading} = useAppSelector(
@@ -43,7 +51,9 @@ const UserManagement = () => {
   );
   const [showPartnerProgramAssignModal, setShowPartnerProgramAssignModal] =
     useState<boolean>(false);
-
+  const [showEditDrawer, setShowEditDrawer] = useState<boolean>(false);
+  const [editRecordData, setEditRecordData] = useState<any>();
+  const [activeKey, setActiveKey] = useState<string>('1');
   const [selectedRecordData, setSelectedRecordData] = useState<any>();
   const [showNewOrganizationModal, setShowNewOrganizationModal] =
     useState<boolean>(false);
@@ -151,7 +161,6 @@ const UserManagement = () => {
         return <Checkbox checked={text} />;
       },
     },
-
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -160,9 +169,25 @@ const UserManagement = () => {
       ),
       dataIndex: 'actions',
       key: 'actions',
-      width: 101,
+      width: 250,
       render: (text: string, record: any) => (
-        <Space size={18}>
+        <Space size={30}>
+          <PencilSquareIcon
+            height={24}
+            width={24}
+            onClick={() => {
+              setShowEditDrawer(true);
+              setEditRecordData(record);
+              editOrgForm.setFieldsValue({
+                org_id: record?.org_id,
+                organization: record?.organization,
+                email: record?.email,
+                user_name: record?.user_name,
+              });
+            }}
+            color={token.colorInfoBorder}
+            style={{cursor: 'pointer'}}
+          />
           <EyeIcon
             height={24}
             width={24}
@@ -213,9 +238,9 @@ const UserManagement = () => {
       );
       if (res?.payload) {
         const credentials = {
-          base_url: res.payload.base_url,
-          consumer_key: res.payload.consumer_key,
-          consumer_secret: res.payload.consumer_secret,
+          login_url: res.payload.login_url,
+          consumer_key: process.env.NEXT_PUBLIC_APP_SALESFORCE_CONSUMER_KEY,
+          consumer_secret: process.env.NEXT_PUBLIC_APP_SALESFORCE_SECRET,
           username: res.payload.username,
           password: res.payload.password,
         };
@@ -373,11 +398,12 @@ const UserManagement = () => {
     if (dataa?.org_id) {
       obj = {
         organization: organizationValue,
-        password: `${dataa?.user_name}@123`,
+        password: `${dataa?.salesforce_user_name}@123`,
         is_admin: true,
         master_admin: true,
         is_salesforce: true,
         org_id: dataa?.org_id,
+        org_name: dataa?.org_name,
         email: dataa?.salesforce_email,
         user_name: dataa?.salesforce_user_name,
       };
@@ -393,6 +419,20 @@ const UserManagement = () => {
       }
       setShowNewOrganizationModal(false);
       newOrganizationFormData.resetFields();
+    });
+  };
+  const updateData = () => {
+    const orgData = editOrgForm.getFieldsValue();
+    let finalUpdateData = {
+      ...orgData,
+      id: editRecordData?.id,
+    };
+    dispatch(updateUserById(finalUpdateData))?.then((res) => {
+      if (res?.payload) {
+        dispatch(getAdminUserOfAllOrganization(searchQuery));
+        setShowEditDrawer(false);
+        editOrgForm?.resetFields();
+      }
     });
   };
 
@@ -530,7 +570,9 @@ const UserManagement = () => {
           <AssignPartnerProgram
             form={form}
             onFinish={onFinish}
-            organizationCurrent={selectedRecordData?.organization}
+            selectedRowRecord={selectedRecordData}
+            activeKey={activeKey}
+            setActiveKey={setActiveKey}
           />
         }
         bodyPadding={40}
@@ -541,7 +583,7 @@ const UserManagement = () => {
           form.resetFields();
         }}
         destroyOnClose
-        primaryButtonText="Assign"
+        primaryButtonText={activeKey === '1' ? 'Assign' : ''}
         onOk={() => {
           form?.submit();
         }}
@@ -569,6 +611,38 @@ const UserManagement = () => {
           newOrganizationFormData?.submit();
         }}
       />
+
+      <OsDrawer
+        title={
+          <Typography name="Body 1/Regular">
+            Update User Organization
+          </Typography>
+        }
+        placement="right"
+        onClose={() => {
+          setShowEditDrawer(false);
+          editOrgForm.resetFields();
+        }}
+        open={showEditDrawer}
+        width={450}
+        footer={
+          <Row style={{width: '100%', float: 'right'}}>
+            <OsButton
+              btnStyle={{width: '100%'}}
+              buttontype="PRIMARY"
+              text="Update Changes"
+              clickHandler={() => editOrgForm.submit()}
+            />
+          </Row>
+        }
+      >
+        <EditOrgDetail
+          onFinish={updateData}
+          form={editOrgForm}
+          drawer
+          editRecordData={editRecordData}
+        />
+      </OsDrawer>
     </>
   );
 };

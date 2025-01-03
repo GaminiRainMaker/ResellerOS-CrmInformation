@@ -20,6 +20,7 @@ import {EditableFiledsCommonInterface} from '../formBuilder.interface';
 import {uploadToAws} from '../../../../../../redux/actions/upload';
 import {useAppDispatch} from '../../../../../../redux/hook';
 import {CollapseSpaceStyle} from '../../dealRegDetail/styled-component';
+import OsInput from '@/app/components/common/os-input';
 
 const AttachmentEditFileds: React.FC<EditableFiledsCommonInterface> = ({
   sectionIndex,
@@ -139,32 +140,61 @@ const AttachmentEditFileds: React.FC<EditableFiledsCommonInterface> = ({
         </Typography>
       ),
       children: (
-        <Form layout="vertical" form={form}>
-          <OSDraggerStyle
-            beforeUpload={beforeUpload}
-            showUploadList={false}
-            multiple
-          >
-            <FolderArrowDownIcon width={24} color={token?.colorInfoBorder} />
-            <Typography
-              name="Body 4/Medium"
-              color={token?.colorPrimaryText}
-              as="div"
+        <>
+          {' '}
+          <Col sm={24}>
+            {' '}
+            <Typography name="Body 4/Medium">Change Label</Typography>
+            <OsInput
+              style={{width: '100%', marginBottom: '20px'}}
+              placeholder="name"
+              defaultValue={CommonIndexOfUse?.label}
+              value={CommonIndexOfUse?.label}
+              onChange={(e: any) => {
+                changeFieldValues(e?.target?.value, 'label');
+              }}
+            />
+          </Col>{' '}
+          <Col sm={24}>
+            {' '}
+            <Typography name="Body 4/Medium">Change Name</Typography>
+            <OsInput
+              style={{width: '100%', marginBottom: '20px'}}
+              placeholder="name"
+              defaultValue={CommonIndexOfUse?.customFieldName}
+              value={CommonIndexOfUse?.customFieldName}
+              onChange={(e: any) => {
+                changeFieldValues(e?.target?.value, 'customFieldName');
+              }}
+            />
+          </Col>{' '}
+          <Form layout="vertical" form={form}>
+            <OSDraggerStyle
+              beforeUpload={beforeUpload}
+              showUploadList={false}
+              multiple
             >
+              <FolderArrowDownIcon width={24} color={token?.colorInfoBorder} />
               <Typography
                 name="Body 4/Medium"
-                style={{textDecoration: 'underline', cursor: 'pointer'}}
-                color={token?.colorPrimary}
+                color={token?.colorPrimaryText}
+                as="div"
               >
-                Click to Upload
-              </Typography>{' '}
-              or Drag and Drop
-            </Typography>
-            <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
-              XLS, PDF.
-            </Typography>
-          </OSDraggerStyle>
-        </Form>
+                <Typography
+                  name="Body 4/Medium"
+                  style={{textDecoration: 'underline', cursor: 'pointer'}}
+                  color={token?.colorPrimary}
+                >
+                  Click to Upload
+                </Typography>{' '}
+                or Drag and Drop
+              </Typography>
+              <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
+                XLS, PDF.
+              </Typography>
+            </OSDraggerStyle>
+          </Form>
+        </>
       ),
     },
   ];

@@ -24,14 +24,17 @@ import './styles.css';
 import {Space} from '@/app/components/common/antd/Space';
 import OsButton from '@/app/components/common/os-button';
 import OsModal from '@/app/components/common/os-modal';
+
 import {
   changeTheALpabetsFromFormula,
   formatStatus,
 } from '@/app/utils/CONSTANTS';
 import {
+  base64ToArrayBuffer1,
   checkFunctionInArray,
   concatenateAfterFirstWithSpace,
   decryptFromSalesforce,
+  encrypt,
   encryptForSalesforce,
   getLineItemsWithNonRepitive,
   getResultedValue,
@@ -99,6 +102,7 @@ const EditorFile = () => {
   const getQUoteId = searchParams.get('id');
   const getQuoteFileId = searchParams.get('fileId');
   const [quoteItems, setQuoteItems] = useState<any>([]);
+  const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
   const [mergedValue, setMergedVaalues] = useState<any>();
   const router = useRouter();
   const ExistingQuoteItemss = searchParams.get('quoteExist');
@@ -117,12 +121,7 @@ const EditorFile = () => {
   const [oldColumnName, setOldColumnName] = useState<any>();
   const [oldColumnName1, setOldColumnName1] = useState<any>();
   const [typeOfFormula, setTypeOfFormula] = useState<any>();
-  const salesToken = searchParams.get('key');
-  const SaleQuoteId = searchParams.get('quote_Id');
-  const EditSalesLineItems = searchParams.get('editLine');
-  const salesFOrceManual = searchParams.get('manual');
-  const salesForceUrl = searchParams.get('instance_url');
-  const salesForceFiledId = searchParams.get('file_Id');
+
   const fullStackManul = searchParams.get('manualFlow');
   const [lineItemSyncingData, setLineItemSyncingData] = useState<any>();
   const [formulaOptions, setFormulaOptions] = useState<any>();
@@ -141,14 +140,52 @@ const EditorFile = () => {
   const [finalArrForMerged, setFinalArrayForMerged] = useState<any>();
   const [currentFIle, setCurrentFile] = useState<any>();
 
+  const {isCanvas, isDecryptedRecord, navigationKey} = useAppSelector(
+    (state) => state.canvas,
+  );
+
+
+  // Initialize variables with default values
+  let salesForceinstanceUrl: string | undefined;
+  let salesForceToken: string | undefined;
+  let salesForceParamsId: string | any;
+  let salesFOrceAccoutId: string | undefined;
+  let salesFOrceAccoutFlow: string | undefined;
+  let salesForceEDitDAta: string | any;
+  let salesForceFiledId: string | any;
+  let salesFOrceManual: boolean | any;
+  let SaleQuoteId: string | any;
+  let EditSalesLineItems: boolean | any;
+
+  if (isCanvas && isDecryptedRecord) {
+    const {client, context} = isDecryptedRecord as any;
+
+    salesForceinstanceUrl = client?.instanceUrl;
+    salesForceToken = client?.oauthToken;
+
+    const {environment} = context || {};
+    const {parameters} = environment || {};
+
+    salesForceParamsId = parameters?.recordId;
+    salesFOrceAccoutId = parameters?.AccountId;
+    salesFOrceAccoutFlow = parameters?.accoutFlow;
+    salesForceEDitDAta = parameters?.editLine;
+    salesForceFiledId = parameters?.file_Id;
+    salesFOrceManual = parameters?.manual;
+    SaleQuoteId = parameters?.quote_Id;
+    EditSalesLineItems = parameters?.editLine;
+  }
+
   const [query, setQuery] = useState<{
     searchValue: string;
     asserType: boolean;
     salesforce: boolean;
+    lifeboatsalesforce: boolean;
   }>({
     searchValue: '',
     asserType: false,
-    salesforce: salesForceUrl ? true : false,
+    salesforce: salesForceinstanceUrl ? true : false,
+    lifeboatsalesforce: salesForceinstanceUrl ? true : false,
   });
 
   const getQuoteFileByIdForFormulads = async () => {
@@ -186,12 +223,12 @@ const EditorFile = () => {
     }
     setNanonetsLoading(true);
 
-    if (EditSalesLineItems === 'true') {
+    if (EditSalesLineItems === 'true' || EditSalesLineItems) {
       // Work In Case of Edit Data As It Is
       let newdata = {
-        token: salesToken,
+        token: salesForceToken,
         // documentId: salesForceFiledId,
-        urls: salesForceUrl,
+        urls: salesForceinstanceUrl,
         QuoteId: SaleQuoteId,
         FileId: salesForceFiledId,
       };
@@ -230,26 +267,28 @@ const EditorFile = () => {
       );
       return;
     }
+
     // Work in case of export to tables
     let dataSingle = {
-      token: salesToken,
+      token: salesForceToken,
       FileId: salesForceFiledId,
-      urls: salesForceUrl,
+      urls: salesForceinstanceUrl,
       quoteId: null,
       file_type: null,
     };
     let data = {
-      token: salesToken,
+      token: salesForceToken,
       FileId: null,
-      urls: salesForceUrl,
+      urls: salesForceinstanceUrl,
       quoteId: SaleQuoteId,
       file_type: 'ExportFileToTable',
     };
 
-    let pathTOGo = salesFOrceManual === 'true' ? data : dataSingle;
+    let pathTOGo =
+      salesFOrceManual === 'true' || salesFOrceManual ? data : dataSingle;
     dispatch(getSalesForceFileData(pathTOGo))?.then(async (payload: any) => {
       if (!payload?.payload?.body) {
-        if (salesFOrceManual === 'false') {
+        if (salesFOrceManual === 'false' || !salesFOrceManual) {
           notification?.open({
             message: 'Please close the modal!. All the files are updated',
             type: 'info',
@@ -258,9 +297,9 @@ const EditorFile = () => {
         }
 
         let newObj = {
-          token: salesToken,
+          token: salesForceToken,
           FileId: null,
-          urls: salesForceUrl,
+          urls: salesForceinstanceUrl,
           quoteId: SaleQuoteId,
           file_type: 'Manual',
         };
@@ -276,7 +315,7 @@ const EditorFile = () => {
             window.history.replaceState(
               null,
               '',
-              `/manualFileEditor?quote_Id=${SaleQuoteId}&key=${salesToken}&instance_url=${salesForceUrl}&file_Id=${null}&editLine=false&manual=true`,
+              `/manualFileEditor?quote_Id=${SaleQuoteId}&key=${salesForceToken}&instance_url=${salesForceinstanceUrl}&file_Id=${null}&editLine=false&manual=true`,
             );
             location?.reload();
           }
@@ -285,6 +324,7 @@ const EditorFile = () => {
         return;
         setMergedVaalues([]);
       }
+
       if (payload?.payload) {
         let newObjFromSalesFOrce = JSON.parse(payload?.payload?.qliFields);
         let keysss = Object.keys(newObjFromSalesFOrce);
@@ -408,7 +448,7 @@ const EditorFile = () => {
   };
 
   useEffect(() => {
-    if (salesForceUrl && !getQuoteFileId) {
+    if (salesForceinstanceUrl && !getQuoteFileId) {
       fetchSaleForceDataa();
     } else {
       getQuoteFileByIdForFormulads();
@@ -433,7 +473,7 @@ const EditorFile = () => {
         setNanonetsLoading(true);
 
         dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
-          if (payload?.payload?.advanced_excel) {
+          if (payload?.payload?.advanced_excel || true) {
             dispatch(getPDFFileData({pdfUrl: quoteFileById?.pdf_url}))?.then(
               (payload: any) => {
                 let newArrCheck: any = [];
@@ -490,7 +530,10 @@ const EditorFile = () => {
             );
           } else {
             setNanonetsLoading(true);
-            fetch(quoteFileById?.pdf_url)
+            fetch(quoteFileById?.pdf_url, {
+              method: 'GET',
+              mode: 'no-cors', // Disables CORS checks
+            })
               .then((res) => res.blob())
               .then(async (file) => {
                 const finalFile = new File([file], quoteFileById?.file_name, {
@@ -584,7 +627,7 @@ const EditorFile = () => {
         });
       }
     }
-  }, [ExistingQuoteItemss, quoteFileById]);
+  }, [ExistingQuoteItemss, quoteFileById, salesForceinstanceUrl]);
 
   let newArrForAlpa = [
     'A :',
@@ -703,7 +746,7 @@ const EditorFile = () => {
     }
   }, [updateLineItemsValue]);
   useEffect(() => {
-    if (!salesForceUrl) {
+    if (!salesForceinstanceUrl) {
       if (fullStackManul === 'true') {
         let data = {
           id: getQUoteId,
@@ -916,7 +959,7 @@ const EditorFile = () => {
             const dataObj = {data: item};
             updateLineItemColumnData?.push(dataObj);
           }
-          if (salesForceUrl) {
+          if (salesForceinstanceUrl) {
             let cleanedString = item.replace(/^rosquoteai__|__c$/g, '');
             let finalResult = cleanedString.replace(/_/g, ' ');
             updateLineItemColumnArr?.push(formatStatus(finalResult));
@@ -1002,7 +1045,7 @@ const EditorFile = () => {
     let newArrFOrUpdation: any = [];
     let newArrForAddition: any = [];
 
-    if (EditSalesLineItems === 'true') {
+    if (EditSalesLineItems === 'true' || EditSalesLineItems) {
       let newArrWithFileId: any = [];
       updateLineItemsValue?.map((itemss: any) => {
         let newObj = {
@@ -1011,6 +1054,7 @@ const EditorFile = () => {
         };
         newArrWithFileId?.push(newObj);
       });
+
       const jsonstring = JSON.stringify(newArrWithFileId);
       const newSalesEncryptedData = encryptForSalesforce(
         jsonstring,
@@ -1018,16 +1062,22 @@ const EditorFile = () => {
       );
 
       let newdata = {
-        token: salesToken,
+        token: salesForceToken,
         // documentId: salesForceFiledId,
-        urls: salesForceUrl,
+        urls: salesForceinstanceUrl,
         QuoteId: SaleQuoteId,
         FileId: salesForceFiledId,
         action: 'EditDataAsIs',
         lineItem: newSalesEncryptedData,
       };
       // file_id
-      dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {});
+      await dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {
+        notification?.open({
+          message: payload?.payload?.message,
+          type: 'success',
+        });
+      });
+      notification?.open({message: 'Please Close the Modal', type: 'info'});
       setNanonetsLoading(false);
       return;
     }
@@ -1184,7 +1234,7 @@ const EditorFile = () => {
     //   message: 'The Line Items are created! Please close the modal!',
     // });
 
-    if (salesFOrceManual === 'false') {
+    if (salesFOrceManual === 'false' || !salesFOrceManual) {
       notification?.open({
         message: 'Please close the modal!. All the files are updated',
         type: 'info',
@@ -1194,9 +1244,9 @@ const EditorFile = () => {
       return;
     } else {
       let data = {
-        token: salesToken,
+        token: salesForceToken,
         FileId: null,
-        urls: salesForceUrl,
+        urls: salesForceinstanceUrl,
         quoteId: SaleQuoteId,
         file_type: 'ExportFileToTable',
       };
@@ -1204,9 +1254,9 @@ const EditorFile = () => {
       dispatch(getSalesForceFileData(data))?.then(async (payload: any) => {
         if (!payload?.payload?.body) {
           let newObj = {
-            token: salesToken,
+            token: salesForceToken,
             FileId: null,
-            urls: salesForceUrl,
+            urls: salesForceinstanceUrl,
             quoteId: SaleQuoteId,
             file_type: 'Manual',
           };
@@ -1221,7 +1271,7 @@ const EditorFile = () => {
               window.history.replaceState(
                 null,
                 '',
-                `/manualFileEditor?quote_Id=${SaleQuoteId}&key=${salesToken}&instance_url=${salesForceUrl}&file_Id=${null}&editLine=false&manual=true`,
+                `/manualFileEditor?quote_Id=${SaleQuoteId}&key=${salesForceToken}&instance_url=${salesForceinstanceUrl}&file_Id=${null}&editLine=false&manual=true`,
               );
               location?.reload();
             }
@@ -1508,7 +1558,9 @@ const EditorFile = () => {
         <Typography name="Body 1/Bold">{currentFIle?.file_name}</Typography>
       </Space>
 
-      {(ExistingQuoteItemss === 'true' || EditSalesLineItems === 'true') &&
+      {(ExistingQuoteItemss === 'true' ||
+        EditSalesLineItems === 'true' ||
+        EditSalesLineItems) &&
       updateLineItemsValue?.length > 0 ? (
         <>
           <div
@@ -1533,7 +1585,7 @@ const EditorFile = () => {
               dropdownMenu
               hiddenColumns={{
                 indicators: true,
-                columns: salesForceUrl ? [0, 1] : [0, 1],
+                columns: salesForceinstanceUrl ? [0, 1] : [0, 1],
               }}
               contextMenu={true}
               multiColumnSorting
@@ -1575,7 +1627,7 @@ const EditorFile = () => {
               marginBottom: '20px',
             }}
           >
-            {!salesForceUrl && (
+            {!salesForceinstanceUrl && (
               <OsButton
                 text="Cancel"
                 buttontype="SECONDARY"
@@ -1591,8 +1643,9 @@ const EditorFile = () => {
         </>
       ) : (
         <>
-          {' '}
-          {ExistingQuoteItemss !== 'true' && EditSalesLineItems !== 'true' && (
+          {(ExistingQuoteItemss !== 'true' ||
+            (salesForceinstanceUrl &&
+              (EditSalesLineItems === 'false' || !EditSalesLineItems))) && (
             <>
               {mergedValue && mergedValue?.length > 0 ? (
                 <>
@@ -1604,7 +1657,8 @@ const EditorFile = () => {
                     }}
                   >
                     {(ExistingQuoteItemss === 'false' ||
-                      EditSalesLineItems === 'false') && (
+                      EditSalesLineItems === 'false' ||
+                      !EditSalesLineItems) && (
                       <Space
                         onClick={(e) => {
                           e?.preventDefault();
@@ -1703,7 +1757,7 @@ const EditorFile = () => {
                       marginBottom: '20px',
                     }}
                   >
-                    {!salesForceUrl && (
+                    {!salesForceinstanceUrl && (
                       <OsButton
                         text="Cancel"
                         buttontype="SECONDARY"
@@ -1845,7 +1899,7 @@ const EditorFile = () => {
                         }}
                       >
                         {' '}
-                        {!salesForceUrl && (
+                        {!salesForceinstanceUrl && (
                           <OsButton
                             text="Cancel"
                             buttontype="SECONDARY"
@@ -1895,7 +1949,7 @@ const EditorFile = () => {
           }}
         />
       )}
-      {!salesForceUrl && (
+      {!salesForceinstanceUrl && (
         <OsModal
           body={
             <Row style={{width: '100%', padding: '15px'}}>

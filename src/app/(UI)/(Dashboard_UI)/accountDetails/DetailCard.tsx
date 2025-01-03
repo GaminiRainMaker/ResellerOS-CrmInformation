@@ -54,21 +54,26 @@ const DetailCard = () => {
     },
   ];
 
+  const defaultAddress =
+    customerData?.Addresses?.find(
+      (address: any) => address?.is_default_address,
+    ) || customerData?.Addresses?.[0];
+
   const customerUpdatedData = {
     id: customerData?.id,
     name: customerData?.name,
     currency: customerData?.currency,
-    shiping_address_line: customerData?.Addresses?.[0]?.shiping_address_line,
-    shiping_city: customerData?.Addresses?.[0]?.shiping_city,
-    shiping_state: customerData?.Addresses?.[0]?.shiping_state,
-    shiping_pin_code: customerData?.Addresses?.[0]?.shiping_pin_code,
-    shiping_country: customerData?.Addresses?.[0]?.shiping_country,
-    billing_address_line: customerData?.Addresses?.[0]?.billing_address_line,
-    billing_city: customerData?.Addresses?.[0]?.billing_city,
-    billing_state: customerData?.Addresses?.[0]?.billing_state,
-    billing_pin_code: customerData?.Addresses?.[0]?.billing_pin_code,
-    billing_country: customerData?.Addresses?.[0]?.billing_country,
     BillingContacts: customerData?.BillingContacts,
+    shiping_address_line: defaultAddress?.shiping_address_line,
+    shiping_city: defaultAddress?.shiping_city,
+    shiping_state: defaultAddress?.shiping_state,
+    shiping_pin_code: defaultAddress?.shiping_pin_code,
+    shiping_country: defaultAddress?.shiping_country,
+    billing_address_line: defaultAddress?.billing_address_line,
+    billing_city: defaultAddress?.billing_city,
+    billing_state: defaultAddress?.billing_state,
+    billing_pin_code: defaultAddress?.billing_pin_code,
+    billing_country: defaultAddress?.billing_country,
   };
 
   const editCustomerFileds = (record: any) => {

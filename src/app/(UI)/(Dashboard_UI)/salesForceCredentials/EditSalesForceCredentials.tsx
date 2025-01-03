@@ -1,20 +1,22 @@
 import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Switch} from '@/app/components/common/antd/Switch';
 import OsInput from '@/app/components/common/os-input';
 import OsInputPassword from '@/app/components/common/os-input/InputPassword';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
+import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {Form} from 'antd';
-import {FormInstance} from 'antd/lib';
 import Image from 'next/image';
-import {FC} from 'react';
 import eyeSlashIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye-slash.svg';
 import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
+import {Form} from 'antd';
+import {FormInstance} from 'antd/lib';
+import {FC} from 'react';
 
 const EditSalesForceCredentials: FC<{
   onFinish: any;
   form: FormInstance;
-}> = ({form, onFinish}) => {
+  drawer?: boolean;
+  salesDetailOptions?: any;
+}> = ({form, onFinish, drawer, salesDetailOptions}) => {
   return (
     <Form
       layout="vertical"
@@ -23,7 +25,7 @@ const EditSalesForceCredentials: FC<{
       onFinish={onFinish}
     >
       <Row gutter={[12, 12]} justify="space-between">
-        <Col span={24}>
+        <Col span={drawer ? 24 : 12}>
           <SelectFormItem
             label={<Typography name="Body 4/Medium">Username</Typography>}
             name={'username'}
@@ -37,7 +39,7 @@ const EditSalesForceCredentials: FC<{
             <OsInput placeholder="Enter Username" />
           </SelectFormItem>
         </Col>
-        <Col span={24}>
+        {/* <Col span={drawer ? 24 : 12}>
           <SelectFormItem
             label={
               <Typography name="Body 4/Medium">Salesforce Org ID</Typography>
@@ -52,8 +54,25 @@ const EditSalesForceCredentials: FC<{
           >
             <OsInput placeholder="Enter Salesforce Org ID" />
           </SelectFormItem>
+        </Col> */}
+        <Col span={drawer ? 24 : 12}>
+          <SelectFormItem
+            label={
+              <Typography name="Body 4/Medium">Salesforce Org Name</Typography>
+            }
+            name={'saleforce_org_Id'}
+            // rules={[
+            //   {
+            //     required: true,
+            //     message: 'Salesforce Org Name is required!',
+            //   },
+            // ]}
+          >
+            <CommonSelect options={salesDetailOptions} />
+            {/* <OsInput placeholder="Enter Salesforce Org ID" /> */}
+          </SelectFormItem>
         </Col>
-        <Col span={24}>
+        {/* <Col span={drawer ? 24 : 12}>
           <SelectFormItem
             label={<Typography name="Body 4/Medium">Consumer Key</Typography>}
             name={'consumer_key'}
@@ -67,7 +86,7 @@ const EditSalesForceCredentials: FC<{
             <OsInput placeholder="Enter Salesforce Org ID" />
           </SelectFormItem>
         </Col>
-        <Col span={24}>
+        <Col span={drawer ? 24 : 12}>
           <SelectFormItem
             label={
               <Typography name="Body 4/Medium">Consumer Secret</Typography>
@@ -82,36 +101,36 @@ const EditSalesForceCredentials: FC<{
           >
             <OsInput placeholder="Enter Consumer Secret" />
           </SelectFormItem>
-        </Col>
-        <Col span={24}>
+        </Col> */}
+        <Col span={drawer ? 24 : 12}>
           <SelectFormItem
             label={<Typography name="Body 4/Medium">Login URL</Typography>}
             name={'login_url'}
-            rules={[
-              {
-                required: true,
-                message: 'Login URL is required!',
-              },
-            ]}
+            // rules={[
+            //   {
+            //     required: true,
+            //     message: 'Login URL is required!',
+            //   },
+            // ]}
           >
             <OsInput placeholder="Enter Login URL" />
           </SelectFormItem>
         </Col>
-        <Col span={24}>
+        <Col span={drawer ? 24 : 12}>
           <SelectFormItem
-            label={<Typography name="Body 4/Medium">Base URL</Typography>}
-            name={'base_url'}
-            rules={[
-              {
-                required: true,
-                message: 'Base URL is required!',
-              },
-            ]}
+            label={<Typography name="Body 4/Medium">Instance URL</Typography>}
+            name={'instance_url'}
+            // rules={[
+            //   {
+            //     required: true,
+            //     message: 'Instance URL is required!',
+            //   },
+            // ]}
           >
             <OsInput placeholder="Enter Base URL" />
           </SelectFormItem>
         </Col>
-        <Col span={24}>
+        <Col span={drawer ? 24 : 12}>
           <SelectFormItem
             label={<Typography name="Body 4/Medium">Password</Typography>}
             name={'password'}

@@ -20,6 +20,9 @@ import {
   quoteLineItemColumnForSync,
 } from '@/app/utils/CONSTANTS';
 import {
+  decrypt,
+  decryptFromSalesforce,
+  encrypt,
   encryptForSalesforce,
   getLineItemsWithNonRepitive,
   getValuesOFLineItemsThoseNotAddedBefore,
@@ -72,6 +75,8 @@ type SalesUpdatedDataItem = {
   quote_header: string;
   status: string;
   is_salesforce: boolean;
+  life_boat_salesforce: boolean;
+  assert_mapping: boolean;
 };
 
 interface EditPdfDataInterface {
@@ -107,6 +112,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
   const [syncedNewValue, setNewSyncedValue] = useState<any>();
+  const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
+
   const {quoteFileById} = useAppSelector((state) => state.quoteFile);
 
   const {data: syncTableData, loading: syncDataLoading} = useAppSelector(
@@ -118,20 +125,54 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const getQuoteID = searchParams.get('id');
   const getQuoteFileId = searchParams.get('fileId');
 
-  const salesToken = searchParams.get('key');
-  const salesForceFiledId = searchParams.get('file_Id');
-  const SaleQuoteId = searchParams.get('quote_Id');
-  const salesFOrceManual = searchParams.get('manual');
+  const {isCanvas, isDecryptedRecord, navigationKey} = useAppSelector(
+    (state) => state.canvas,
+  );
+
+  // Initialize variables with default values
+  let salesForceinstanceUrl: string | undefined;
+  let salesForceToken: string | undefined;
+  let salesForceParamsId: string | any;
+  let salesFOrceAccoutId: string | undefined;
+  let salesFOrceAccoutFlow: string | undefined | boolean;
+  let salesForceEDitDAta: string | any;
+  let salesForceFiledId: string | any;
+  let salesFOrceManual: boolean | any;
+  let SaleQuoteId: string | any;
+
+  if (isCanvas && isDecryptedRecord) {
+    const {client, context} = isDecryptedRecord as any;
+
+    salesForceinstanceUrl = client?.instanceUrl;
+    salesForceToken = client?.oauthToken;
+
+    const {environment} = context || {};
+    const {parameters} = environment || {};
+
+    salesForceParamsId = parameters?.recordId;
+    salesFOrceAccoutId = parameters?.AccountId;
+    salesFOrceAccoutFlow = parameters?.accoutFlow;
+    salesForceEDitDAta = parameters?.editLine;
+    salesForceFiledId = parameters?.file_Id;
+    salesFOrceManual = parameters?.manual;
+    SaleQuoteId = parameters?.quote_Id;
+  }
+
+  // const salesForceFiledId = searchParams.get('file_Id');
+  // const SaleQuoteId = searchParams.get('quote_Id');
+  // const salesFOrceManual === true = searchParams.get('manual');
   const fullStackManul = searchParams.get('manualFlow');
-  const salesFOrceAccoutId = searchParams.get('AccountId');
-  const salesFOrceAccoutFlow = searchParams.get('accoutFlow');
-  const salesForceUrl = searchParams.get('instance_url');
 
   const ApprovedQuoteMappingData: any =
     lineItemSyncingData &&
     lineItemSyncingData?.filter(
       (LineItemSyncingItem: any) => LineItemSyncingItem?.status === 'Approved',
     );
+
+  console.log(
+    'ApprovedQuoteMappingDataApprovedQuoteMappingData',
+    ApprovedQuoteMappingData,
+  );
   const [syncTableQuoteLItemValues, setSyncTableQuoteLItemValues] =
     useState<any>(
       SaleQuoteId
@@ -153,8 +194,10 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   }
   useEffect(() => {
     if (
-      (salesFOrceAccoutFlow && salesFOrceAccoutFlow === 'true') ||
-      salesForceUrl
+      salesFOrceAccoutFlow === 'true' ||
+      salesFOrceAccoutFlow ||
+      salesFOrceManual ||
+      salesForceinstanceUrl
     ) {
       setSyncTableQuoteLItemValues(accoutSyncOptions);
     }
@@ -163,7 +206,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     const newSyncTableData =
       syncedNewValue?.length > 0 ? [...syncedNewValue] : [];
     let newSyncOptionChecks =
-      salesFOrceAccoutFlow === 'true' || salesForceUrl
+      salesFOrceAccoutFlow === 'true' ||
+      salesFOrceManual ||
+      salesForceinstanceUrl
         ? accoutSyncOptions
         : syncTableQuoteLItemValues;
 
@@ -288,12 +333,22 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             quote_file_id:
               fullStackManul === 'true'
                 ? currentFileData?.id
-                : salesFOrceManual === 'true'
+                : salesFOrceManual === true
                   ? currentFileData?.FileId
                   : Number(getQuoteFileId),
             is_salesforce:
-              SaleQuoteId || salesFOrceAccoutFlow === 'true' ? true : false,
-            assert_mapping: salesFOrceAccoutFlow === 'true' ? true : false,
+              SaleQuoteId ||
+              salesFOrceAccoutFlow === 'true' ||
+              salesFOrceAccoutFlow ||
+              salesFOrceManual
+                ? true
+                : false,
+            assert_mapping:
+              salesFOrceAccoutFlow === 'true' ||
+              salesFOrceAccoutFlow ||
+              salesFOrceManual
+                ? true
+                : false,
           }),
         );
     let updatedArrForAddingLineItemSync: any = [];
@@ -306,7 +361,10 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         // (itemInn?.status === 'Pending' || itemInn?.status === 'Approved'),
       );
       if (!findThevalue) {
-        updatedArrForAddingLineItemSync?.push(items);
+        updatedArrForAddingLineItemSync?.push({
+          ...items,
+          life_boat_salesforce: true,
+        });
       }
     });
 
@@ -324,6 +382,13 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
               quote_header: newVal,
               status: 'Pending',
               is_salesforce: SaleQuoteId ? true : false,
+              life_boat_salesforce: true,
+              assert_mapping:
+                salesFOrceAccoutFlow === 'true' ||
+                salesFOrceAccoutFlow ||
+                salesFOrceManual
+                  ? true
+                  : false,
             }),
           );
 
@@ -332,14 +397,22 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         let findThevalue = lineItemSyncingData?.find(
           (itemInn: any) =>
             itemInn?.pdf_header ===
-              items?.pdf_header?.toString()?.toLowerCase &&
-            itemInn?.is_salesforce,
-          // &&
-          //   itemInn?.quote_header === items?.quote_header &&
-          //   (itemInn?.status === 'Pending' || itemInn?.status === 'Approved'),
+              items?.pdf_header?.toString()?.toLowerCase() &&
+            itemInn?.is_salesforce &&
+            itemInn?.life_boat_salesforce,
         );
         if (!findThevalue) {
-          updatedArrForAddingLineItemSync?.push(items);
+          updatedArrForAddingLineItemSyncFOrSales?.push({
+            ...items,
+            pdf_header: items?.pdf_header?.toLowerCase(),
+            life_boat_salesforce: true,
+            assert_mapping:
+              salesFOrceAccoutFlow === 'true' ||
+              salesFOrceAccoutFlow ||
+              salesFOrceManual
+                ? true
+                : false,
+          });
         }
       });
 
@@ -384,12 +457,17 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       let newObj = {
         ...items,
       };
-      if (salesFOrceAccoutFlow === 'true') {
+      if (
+        salesFOrceAccoutFlow === 'true' ||
+        salesFOrceAccoutFlow ||
+        salesFOrceManual ||
+        salesFOrceManual === 'true'
+      ) {
         newObj.AccountId = salesFOrceAccoutId;
       } else {
         (newObj.rosquoteai__File_Name__c = currentFileData?.file_name),
           (newObj.rosquoteai__SF_File_Id__c =
-            salesFOrceManual === 'true'
+            salesFOrceManual === true
               ? currentFileData?.FileId
               : salesForceFiledId);
       }
@@ -407,7 +485,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       //   ...items,
       //   file_name: currentFileData?.file_name,
       //   file_id:
-      //     salesFOrceManual === 'true'
+      //     salesFOrceManual === true
       //       ? currentFileData?.FileId
       //       : salesForceFiledId,
       // });
@@ -415,7 +493,11 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
 
     if (
       (SaleQuoteId && newArrWIthFileName?.length > 0) ||
-      (salesFOrceAccoutFlow === 'true' && newArrWIthFileName?.length > 0)
+      ((salesFOrceManual ||
+        salesFOrceManual === 'true' ||
+        salesFOrceAccoutFlow ||
+        salesFOrceAccoutFlow === 'true') &&
+        newArrWIthFileName?.length > 0)
     ) {
       const findProduct = syncedNewValue?.find(
         (items: any) => items?.newVal === 'rosquoteai__Product_Code__c',
@@ -426,7 +508,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
 
       if (
         (!findName || findName === undefined) &&
-        salesFOrceAccoutFlow === 'true'
+        (salesFOrceAccoutFlow === 'true' || salesFOrceAccoutFlow)
       ) {
         notification.open({
           message:
@@ -438,7 +520,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       }
       if (
         (!findProduct || findProduct === undefined) &&
-        salesFOrceAccoutFlow !== 'true'
+        (salesFOrceManual === 'true' || salesFOrceManual)
       ) {
         notification.open({
           message:
@@ -448,18 +530,19 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         setNanonetsLoading(false);
         return;
       }
+      setNanonetsLoading(false);
+      const jsonstring = JSON.stringify(newArrWIthFileName);
 
-      if (salesFOrceAccoutFlow === 'true') {
-        const jsonstring = JSON.stringify(newArrWIthFileName);
-        const newSalesEncryptedData = encryptForSalesforce(
-          jsonstring,
-          'CghhpgRahZKN0P8SaquPX/k30H+v2QWcKpcH42H9q0w=',
-        );
+      const newSalesEncryptedData = encryptForSalesforce(
+        jsonstring,
+        'CghhpgRahZKN0P8SaquPX/k30H+v2QWcKpcH42H9q0w=',
+      );
 
+      if (salesFOrceAccoutFlow === 'true' || salesFOrceAccoutFlow) {
         let newdata = {
-          token: salesToken,
+          token: salesForceToken,
           AccountId: salesFOrceAccoutId,
-          urls: salesForceUrl,
+          urls: salesForceinstanceUrl,
           lineItem: newSalesEncryptedData,
         };
 
@@ -470,7 +553,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
               message: messgaeForApi,
               type: 'info',
             });
-            if (salesFOrceManual === 'false') {
+            if (salesFOrceManual === 'false' || !salesFOrceManual) {
               notification.open({
                 message: 'Please close the  window',
                 type: 'info',
@@ -488,12 +571,12 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           'CghhpgRahZKN0P8SaquPX/k30H+v2QWcKpcH42H9q0w=',
         );
         let newdata = {
-          token: salesToken,
+          token: salesForceToken,
           // documentId: salesForceFiledId,
-          urls: salesForceUrl,
+          urls: salesForceinstanceUrl,
           QuoteId: SaleQuoteId,
           FileId:
-            salesFOrceManual === 'true'
+            salesFOrceManual === 'true' || salesFOrceManual
               ? currentFileData?.FileId
               : salesForceFiledId,
           // FileId: '0Q09I0000002Bc5SAE',
@@ -507,7 +590,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             message: messgaeForApi,
             type: 'info',
           });
-          if (salesFOrceManual === 'false') {
+          if (salesFOrceManual === 'false' || !salesFOrceManual) {
             notification.open({
               message: 'Please close the review quotes window',
               type: 'info',
@@ -516,7 +599,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         });
 
         setNanonetsLoading(false);
-        if (salesFOrceManual === 'true') {
+        if (salesFOrceManual === 'true' || salesFOrceManual) {
           setTimeout(() => {
             checkForNewFileForSalesForce();
           }, 2000);
@@ -618,7 +701,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
               quote_file_id:
                 fullStackManul === 'true'
                   ? currentFileData?.id
-                  : salesFOrceManual === 'true'
+                  : salesFOrceManual === true
                     ? currentFileData?.FileId
                     : getQuoteFileId
                       ? getQuoteFileId
@@ -765,7 +848,10 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const handleChange = () => {
     // This defines which option we are using salesforce or full stack
     let optionsTOAdd = SaleQuoteId
-      ? salesFOrceAccoutFlow === 'true' || salesForceUrl
+      ? salesFOrceAccoutFlow === 'true' ||
+        salesFOrceAccoutFlow ||
+        salesFOrceManual ||
+        salesForceinstanceUrl
         ? accoutSyncOptions
         : SaleForceQuoteLineItemColumnSync
       : quoteLineItemColumnForSync;
@@ -870,7 +956,10 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
                     // )}
                     style={{width: '250px'}}
                     options={
-                      salesFOrceAccoutFlow === 'true' || salesForceUrl
+                      salesFOrceAccoutFlow === 'true' ||
+                      salesFOrceAccoutFlow ||
+                      salesFOrceManual ||
+                      salesForceinstanceUrl
                         ? accoutSyncOptions
                         : syncTableQuoteLItemValues
                     }
