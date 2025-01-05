@@ -33,6 +33,7 @@ import {
   base64ToArrayBuffer1,
   checkFunctionInArray,
   concatenateAfterFirstWithSpace,
+  convertToBoolean,
   decryptFromSalesforce,
   encrypt,
   encryptForSalesforce,
@@ -144,13 +145,12 @@ const EditorFile = () => {
     (state) => state.canvas,
   );
 
-
   // Initialize variables with default values
   let salesForceinstanceUrl: string | undefined;
   let salesForceToken: string | undefined;
   let salesForceParamsId: string | any;
   let salesFOrceAccoutId: string | undefined;
-  let salesFOrceAccoutFlow: string | undefined;
+  let salesFOrceAccoutFlow: string | undefined | any;
   let salesForceEDitDAta: string | any;
   let salesForceFiledId: string | any;
   let salesFOrceManual: boolean | any;
@@ -168,12 +168,12 @@ const EditorFile = () => {
 
     salesForceParamsId = parameters?.recordId;
     salesFOrceAccoutId = parameters?.AccountId;
-    salesFOrceAccoutFlow = parameters?.accoutFlow;
-    salesForceEDitDAta = parameters?.editLine;
+    salesFOrceAccoutFlow = convertToBoolean(parameters?.accoutFlow);
+    salesForceEDitDAta = convertToBoolean(parameters?.editLine);
     salesForceFiledId = parameters?.file_Id;
-    salesFOrceManual = parameters?.manual;
+    salesFOrceManual = convertToBoolean(parameters?.manual);
     SaleQuoteId = parameters?.quote_Id;
-    EditSalesLineItems = parameters?.editLine;
+    EditSalesLineItems = convertToBoolean(parameters?.editLine);
   }
 
   const [query, setQuery] = useState<{
@@ -223,7 +223,7 @@ const EditorFile = () => {
     }
     setNanonetsLoading(true);
 
-    if (EditSalesLineItems === 'true' || EditSalesLineItems) {
+    if (EditSalesLineItems === 'true' || EditSalesLineItems === true) {
       // Work In Case of Edit Data As It Is
       let newdata = {
         token: salesForceToken,
@@ -284,8 +284,10 @@ const EditorFile = () => {
       file_type: 'ExportFileToTable',
     };
 
-    let pathTOGo =
-      salesFOrceManual === 'true' || salesFOrceManual ? data : dataSingle;
+    let pathTOGo = data;
+    salesFOrceManual === true || salesFOrceManual === 'true'
+      ? data
+      : dataSingle;
     dispatch(getSalesForceFileData(pathTOGo))?.then(async (payload: any) => {
       if (!payload?.payload?.body) {
         if (salesFOrceManual === 'false' || !salesFOrceManual) {
@@ -1045,7 +1047,7 @@ const EditorFile = () => {
     let newArrFOrUpdation: any = [];
     let newArrForAddition: any = [];
 
-    if (EditSalesLineItems === 'true' || EditSalesLineItems) {
+    if (EditSalesLineItems === 'true' || EditSalesLineItems === true) {
       let newArrWithFileId: any = [];
       updateLineItemsValue?.map((itemss: any) => {
         let newObj = {
@@ -1560,7 +1562,7 @@ const EditorFile = () => {
 
       {(ExistingQuoteItemss === 'true' ||
         EditSalesLineItems === 'true' ||
-        EditSalesLineItems) &&
+        EditSalesLineItems === true) &&
       updateLineItemsValue?.length > 0 ? (
         <>
           <div
@@ -1643,9 +1645,10 @@ const EditorFile = () => {
         </>
       ) : (
         <>
-          {(ExistingQuoteItemss !== 'true' ||
+          {(ExistingQuoteItemss === 'false' ||
             (salesForceinstanceUrl &&
-              (EditSalesLineItems === 'false' || !EditSalesLineItems))) && (
+              (EditSalesLineItems === 'false' ||
+                EditSalesLineItems === false))) && (
             <>
               {mergedValue && mergedValue?.length > 0 ? (
                 <>

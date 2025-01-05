@@ -2121,3 +2121,19 @@ export const formatMailString = (input: string) => {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize the first letter of each word
     .join(' '); // Join the words with spaces
 };
+export const convertToBoolean = function (value: any) {
+  if (!value) {
+    return null;
+  }
+  if (value && typeof value === 'boolean') {
+    return value; // If it's already a boolean, return as is
+  } else if (value && typeof value === 'string') {
+    // Convert string "true" (case insensitive) to boolean true
+    if (value && value.trim().toLowerCase() === 'true') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  return false; // Default case if it's neither boolean nor string
+};
