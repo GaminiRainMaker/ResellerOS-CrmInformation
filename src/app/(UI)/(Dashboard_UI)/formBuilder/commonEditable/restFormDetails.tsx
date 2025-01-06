@@ -129,7 +129,10 @@ const EditCommonRestFields: React.FC<EditableFiledsCommonInterface> = ({
                 name="no_of_columns"
               >
                 <CommonSelect
-                  disabled={NameofTheCurrentFiled === 'Time'}
+                  disabled={
+                    NameofTheCurrentFiled === 'Time' ||
+                    NameofTheCurrentFiled === 'Textarea'
+                  }
                   onChange={(e: any) => {
                     changeFieldValues(e, 'type');
                   }}

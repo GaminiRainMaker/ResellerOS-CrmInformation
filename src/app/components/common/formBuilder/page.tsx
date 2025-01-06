@@ -35,7 +35,7 @@ import FormUploadCard from '@/app/components/common/os-upload/FormUploadCard';
 import {formatStatus} from '@/app/utils/CONSTANTS';
 import {formbuildernewObject, handleDate} from '@/app/utils/base';
 import {TrashIcon} from '@heroicons/react/24/outline';
-import {Checkbox, Radio, Switch, TimePicker, notification} from 'antd';
+import {Checkbox, Input, Radio, Switch, TimePicker, notification} from 'antd';
 import moment from 'moment';
 import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
@@ -72,6 +72,7 @@ const FormBuilderMain: React.FC<any> = ({
   const pathname = usePathname();
   // dealRegDetail
   const [formLoading, setFormLoading] = useState<boolean>(false);
+  const {TextArea} = Input;
 
   let pathnameForFlow = pathname === '/dealRegDetail';
   const getPartnerProgramID = searchParams.get('id');
@@ -122,27 +123,16 @@ const FormBuilderMain: React.FC<any> = ({
     setCollapsed(false);
   };
 
-  console.log('isLoginTemplate', isLoginTemplate === 'true');
-
   useEffect(() => {
     if (!openPreviewModal && getPartnerProgramID) {
       setFormLoading(true);
       dispatch(getPartnerProgramById(Number(getPartnerProgramID)))?.then(
         (payload: any) => {
-          if (isLoginTemplate === 'true') {
-            if (payload?.payload?.login_template?.[0]?.[0]) {
-              const formData: any = JSON?.parse(
-                payload?.payload?.login_template?.[0]?.[0],
-              );
-              setCartItems(formData);
-            }
-          } else {
-            if (payload?.payload?.form_data?.[0]?.[0]) {
-              const formData: any = JSON?.parse(
-                payload?.payload?.form_data?.[0]?.[0],
-              );
-              setCartItems(formData);
-            }
+          if (payload?.payload?.form_data?.[0]?.[0]) {
+            const formData: any = JSON?.parse(
+              payload?.payload?.form_data?.[0]?.[0],
+            );
+            setCartItems(formData);
           }
         },
       );
@@ -207,18 +197,13 @@ const FormBuilderMain: React.FC<any> = ({
 
   const addFormData = async () => {
     let objNew = {};
-    if (isLoginTemplate === 'true') {
-      objNew = {
-        login_template: [JSON?.stringify(cartItems)],
-        id: Number(getPartnerProgramID),
-      };
-    } else {
-      objNew = {
-        form_data: [JSON?.stringify(cartItems)],
-        id: Number(getPartnerProgramID),
-        date: handleDate(),
-      };
-    }
+
+    objNew = {
+      form_data: [JSON?.stringify(cartItems)],
+      id: Number(getPartnerProgramID),
+      date: handleDate(),
+    };
+
     if (cartItems?.[0]?.content?.length > 0) {
       dispatch(updatePartnerProgramById(objNew));
       router.push(`/superAdminPartner`);
@@ -253,6 +238,8 @@ const FormBuilderMain: React.FC<any> = ({
     setCartItems(newTempArr);
   };
 
+  console.log('3454354354334', selectIndexFOrAllDependentField);
+
   useEffect(() => {
     if (cartItems?.[0]?.content?.length === 0) {
       setCollapsed(false);
@@ -278,14 +265,6 @@ const FormBuilderMain: React.FC<any> = ({
         }
         return sectItem;
       },
-    );
-
-    console.log(
-      '32432432423',
-      indexOfItem,
-      indexOfSection,
-      valueIndex,
-      newTempArr,
     );
 
     setSelectIndexFOrAllDependentField(newTempArr);
@@ -478,7 +457,8 @@ const FormBuilderMain: React.FC<any> = ({
                         itemCon?.name === 'Contact' ||
                         itemCon?.name === 'Time' ||
                         itemCon?.name === 'Add Section' ||
-                        itemCon?.name === 'Date'
+                        itemCon?.name === 'Date' ||
+                        itemCon?.name === 'Textarea'
                       ) {
                         const newDateeDaTa: any = moment(itemCon?.value).format(
                           'MM-DD-YYYY',
@@ -495,7 +475,9 @@ const FormBuilderMain: React.FC<any> = ({
                                 itemName={
                                   itemCon?.name === 'Text'
                                     ? 'Text Field'
-                                    : itemCon?.name
+                                    : itemCon?.name === 'Textarea'
+                                      ? 'TextArea'
+                                      : itemCon?.name
                                 }
                                 cartItems={cartItems}
                                 setCartItems={setCartItems}
@@ -620,6 +602,27 @@ const FormBuilderMain: React.FC<any> = ({
                                     }
                                   }}
                                 />
+                              ) : itemCon?.name === 'Textarea' ? (
+                                <TextArea
+                                  defaultValue={itemCon?.value}
+                                  onChange={(e: any) => {
+                                    if (pathnameForFlow) {
+                                      updateTheValues(
+                                        e?.target?.value,
+                                        Sectidx,
+                                        ItemConindex,
+                                      );
+                                    }
+                                  }}
+                                  //  onChange={(e: any) => {
+                                  //    if (pathnameForFlow) {
+                                  //      updateTheValues(
+                                  //        e?.target?.value,
+                                  //        Sectidx,
+                                  //        ItemConindex,
+                                  //      );
+                                  //    }}
+                                />
                               ) : (
                                 <OsInput
                                   type={itemCon?.type}
@@ -677,8 +680,10 @@ const FormBuilderMain: React.FC<any> = ({
                             ?.selectedIndexForDepend;
                         let dependentDataaForIndex =
                           itemCon?.dependentFiledArr?.find(
-                            (items: any) => items?.id === PropertSelected,
+                            (items: any) => items[0]?.id === PropertSelected,
                           );
+
+                        console.log('34534342342', dependentDataaForIndex);
 
                         return (
                           <>
@@ -759,82 +764,103 @@ const FormBuilderMain: React.FC<any> = ({
                                   ),
                                 })}
                               >
-                                {!previewFile && (
-                                  <ItemName
-                                    itemName={
-                                      dependentDataaForIndex?.user_fill &&
-                                      itemCon?.dependentFiled
-                                        ? 'Text Filed-Dependent-Select'
-                                        : `${itemCon?.name}-Dependent-Select`
-                                    }
-                                    cartItems={cartItems}
-                                    ItemConindex={ItemConindex}
-                                    Sectidx={Sectidx}
-                                    setCartItems={setCartItems}
-                                    isPreview={!previewFile}
-                                    setCollapsed={setCollapsed}
-                                    onClick={(e: any) => {
-                                      if (itemCon?.dependentFiled) {
-                                        return;
-                                      }
-                                      e?.preventDefault();
-                                      setCollapsed(true);
-                                      setActiveContentIndex(ItemConindex);
-                                      setActiveSectionIndex(Sectidx);
-                                      form.resetFields();
-                                    }}
-                                  />
-                                )}
-                                <Typography name="Body 4/Medium">
-                                  {dependentDataaForIndex?.requiredLabel &&
-                                    dependentDataaForIndex?.label}{' '}
-                                  {dependentDataaForIndex?.required && (
-                                    <span style={{color: 'red'}}>*</span>
-                                  )}
-                                </Typography>
-                                <SectionDivStyled1>
-                                  {dependentDataaForIndex?.user_fill &&
-                                  dependentDataaForIndex ? (
-                                    <OsInput />
-                                  ) : (
-                                    <CommonSelect
-                                      disabled={PropertSelected === null}
-                                      options={dependentDataaForIndex?.options?.map(
-                                        (items: any) => {
-                                          return {label: items, value: items};
-                                        },
-                                      )}
-                                      style={{
-                                        width: '100%',
-                                      }}
-                                      mode={dependentDataaForIndex?.type}
-                                      defaultValue={itemCon?.value}
-                                      onChange={(e: any) => {
-                                        if (pathnameForFlow) {
-                                          updateTheValues(
-                                            e,
-                                            Sectidx,
-                                            ItemConindex,
-                                          );
-                                        }
-                                      }}
-                                    />
-                                  )}
+                                {dependentDataaForIndex?.map(
+                                  (itemsChil: any, indexChild: number) => {
+                                    return (
+                                      <div>
+                                        {!previewFile && (
+                                          <ItemName
+                                            itemName={
+                                              itemsChil?.type === 'text' &&
+                                              itemCon?.dependentFiled
+                                                ? 'Text Filed-Dependent-Select'
+                                                : `${itemCon?.name}-Dependent-Select`
+                                            }
+                                            cartItems={cartItems}
+                                            ItemConindex={ItemConindex}
+                                            Sectidx={Sectidx}
+                                            setCartItems={setCartItems}
+                                            isPreview={true}
+                                            setCollapsed={setCollapsed}
+                                            onClick={(e: any) => {
+                                              if (itemCon?.dependentFiled) {
+                                                return;
+                                              }
+                                              e?.preventDefault();
+                                              setCollapsed(true);
+                                              setActiveContentIndex(
+                                                ItemConindex,
+                                              );
+                                              setActiveSectionIndex(Sectidx);
+                                              form.resetFields();
+                                            }}
+                                          />
+                                        )}
+                                        <Typography name="Body 4/Medium">
+                                          {itemsChil?.requiredLabel &&
+                                            itemsChil?.label}{' '}
+                                          {itemsChil?.required && (
+                                            <span style={{color: 'red'}}>
+                                              *
+                                            </span>
+                                          )}
+                                        </Typography>
+                                        <SectionDivStyled1>
+                                          {itemsChil?.type === 'text' &&
+                                          itemsChil ? (
+                                            <OsInput />
+                                          ) : (
+                                            <CommonSelect
+                                              disabled={
+                                                PropertSelected === null
+                                              }
+                                              options={itemsChil?.options?.map(
+                                                (items: any) => {
+                                                  return {
+                                                    label: items,
+                                                    value: items,
+                                                  };
+                                                },
+                                              )}
+                                              style={{
+                                                width: '100%',
+                                              }}
+                                              mode={itemsChil?.type}
+                                              defaultValue={itemCon?.value}
+                                              onChange={(e: any) => {
+                                                if (pathnameForFlow) {
+                                                  updateTheValues(
+                                                    e,
+                                                    Sectidx,
+                                                    ItemConindex,
+                                                  );
+                                                }
+                                              }}
+                                            />
+                                          )}
 
-                                  {item?.content?.length - 1 === ItemConindex &&
-                                    !previewFile && (
-                                      <OsButton
-                                        style={{marginLeft: '10px'}}
-                                        buttontype="PRIMARY_ICON"
-                                        icon="+"
-                                        clickHandler={() => {
-                                          updateSection(Sectidx, itemCon?.name);
-                                        }}
-                                      />
-                                    )}
-                                </SectionDivStyled1>
-                                {itemCon?.hintext && (
-                                  <div>{itemCon?.hintTextValue}</div>
+                                          {/* {item?.content?.length - 1 ===
+                                            ItemConindex &&
+                                            !previewFile && (
+                                              <OsButton
+                                                style={{marginLeft: '10px'}}
+                                                buttontype="PRIMARY_ICON"
+                                                icon="+"
+                                                clickHandler={() => {
+                                                  updateSection(
+                                                    Sectidx,
+                                                    itemCon?.name,
+                                                  );
+                                                }}
+                                              />
+                                            )} */}
+                                        </SectionDivStyled1>
+                                        {itemCon?.hintext && (
+                                          <div>{itemCon?.hintTextValue}</div>
+                                        )}
+                                      </div>
+                                    );
+                                  },
                                 )}
                               </Col>
                             )}

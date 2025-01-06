@@ -32,8 +32,6 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
       setLOcationData(locationToRedirect);
     }
   }, [locationToRedirect]);
-  console.log('Location', locationToRedirect, locationdata);
-
   return (
     <ConfigProvider theme={theme}>
       <html lang="en">

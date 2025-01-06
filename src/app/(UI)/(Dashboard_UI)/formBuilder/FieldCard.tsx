@@ -89,6 +89,11 @@ const FieldCard = () => {
           name: 'Email',
           icon: <EnvelopeIcon width={15} color={token?.colorInfo} />,
         },
+        {
+          key: 11,
+          name: 'Textarea',
+          icon: <DocumentTextIcon width={15} color={token?.colorInfo} />,
+        },
       ],
     },
     {
@@ -96,12 +101,12 @@ const FieldCard = () => {
       title: 'Sections',
       childitem: [
         {
-          key: 11,
+          key: 12,
           name: 'Table',
           icon: <TableCellsIcon width={15} color={token?.colorInfo} />,
         },
         {
-          key: 12,
+          key: 13,
           name: 'Attachment',
           icon: (
             <Image
@@ -118,24 +123,24 @@ const FieldCard = () => {
       title: 'Elements',
       childitem: [
         {
-          key: 13,
+          key: 14,
           name: 'Checkbox',
           icon: <CheckCircleIcon width={15} color={token?.colorInfo} />,
         },
         {
-          key: 14,
+          key: 15,
           name: 'Radio Button',
           icon: (
             <EllipsisHorizontalCircleIcon width={15} color={token?.colorInfo} />
           ),
         },
         {
-          key: 15,
+          key: 16,
           name: 'Toggle',
           icon: <RadioIcon width={15} color={token?.colorInfo} />,
         },
         {
-          key: 16,
+          key: 17,
           name: 'Line Break',
           icon: <MinusIcon width={15} color={token?.colorInfo} />,
         },

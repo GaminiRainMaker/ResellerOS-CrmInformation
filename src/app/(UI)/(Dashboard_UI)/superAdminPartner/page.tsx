@@ -65,6 +65,7 @@ const SuperAdminPartner: React.FC = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
   const [programScriptForm] = Form.useForm();
+  const [programLoginScriptForm] = Form.useForm();
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams()!;
   const getTabId = searchParams && searchParams.get('tab');
@@ -102,6 +103,8 @@ const SuperAdminPartner: React.FC = () => {
   const [partnerOptions, setPartnerOptions] = useState<any>();
   const [partnerProgramOptions, setPartnerProgramOptions] = useState<any>();
   const [showScriptModal, setShowScriptModal] = useState<boolean>(false);
+  const [showLoginScriptModal, setShowLoginScriptModal] =
+    useState<boolean>(false);
   const [superAdminPartnerAnalyticData, setSuperAdminPartnerAnalyticData] =
     useState<any>();
   const [selectPartnerProgramId, setSelectPartnerProgramId] = useState<any>();
@@ -664,6 +667,38 @@ const SuperAdminPartner: React.FC = () => {
         </Typography>
       ),
     },
+    // {
+    //   title: (
+    //     <Typography name="Body 4/Medium" className="dragHandler">
+    //       Login Script
+    //     </Typography>
+    //   ),
+    //   dataIndex: 'login_script',
+    //   key: 'login_script',
+    //   render: (text: string, record: any) => (
+    //     <Typography
+    //       name="Body 4/Medium"
+    //       hoverOnText
+    //       color={token?.colorLink}
+    //       onClick={() => {
+    //         if (record?.login_script && !record?.login_script?.includes(null)) {
+    //           programLoginScriptForm?.setFieldsValue({
+    //             login_script: JSON.parse(record?.login_script),
+    //           });
+    //         } else {
+    //           programLoginScriptForm?.resetFields();
+    //         }
+    //         setSelectPartnerProgramId(record?.id);
+    //         setShowLoginScriptModal(true);
+    //       }}
+    //     >
+    //       {record?.login_script?.length > 0 &&
+    //       !record?.login_script?.includes(null)
+    //         ? 'View Login Script'
+    //         : 'Create Login Script'}
+    //     </Typography>
+    //   ),
+    // },
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -1102,14 +1137,34 @@ const SuperAdminPartner: React.FC = () => {
 
   const programScript = async () => {
     const programScriptData = programScriptForm?.getFieldsValue();
-    let obj = {
-      id: selectPartnerProgramId,
-      script: [JSON?.stringify(programScriptData?.script)],
-    };
-    await dispatch(updatePartnerProgramById(obj));
+    const programLoginScriptData = programLoginScriptForm?.getFieldsValue();
+
+    // Create an object with the required ID
+    let obj: any = {id: selectPartnerProgramId};
+
+    // Add `script` to the object only if it exists
+    if (programScriptData?.script) {
+      obj.script = [JSON.stringify(programScriptData.script)];
+    }
+
+    // Add `login_script` to the object only if it exists
+    if (programLoginScriptData?.login_script) {
+      obj.login_script = [JSON.stringify(programLoginScriptData.login_script)];
+    }
+
+    // Dispatch the update only if `script` or `login_script` exists
+    if (obj.script || obj.login_script) {
+      await dispatch(updatePartnerProgramById(obj)).then((d) => {
+        getPartnerDataForSuperAdmin();
+      });
+    }
+
+    // Reset states and forms
     setSelectPartnerProgramId('');
     programScriptForm?.resetFields();
+    programLoginScriptForm?.resetFields();
     setShowScriptModal(false);
+    setShowLoginScriptModal(false);
   };
 
   return (
@@ -1458,6 +1513,25 @@ const SuperAdminPartner: React.FC = () => {
         onOk={programScriptForm?.submit}
         onCancel={() => {
           setShowScriptModal(false);
+        }}
+        primaryButtonText={'Save'}
+      />
+      <OsModal
+        loading={insertProgramLoading}
+        title="Add Login Script"
+        bodyPadding={22}
+        body={
+          <AddPartnerProgramScript
+            form={programLoginScriptForm}
+            onFinish={programScript}
+            loginScript
+          />
+        }
+        width={583}
+        open={showLoginScriptModal}
+        onOk={programLoginScriptForm?.submit}
+        onCancel={() => {
+          setShowLoginScriptModal(false);
         }}
         primaryButtonText={'Save'}
       />

@@ -2,7 +2,7 @@
 
 'use client';
 
-import {ReactNode} from 'react';
+import {ReactNode, Suspense} from 'react';
 import {Provider} from 'react-redux';
 import store from '../../redux/store';
 
@@ -11,7 +11,9 @@ interface Props {
 }
 
 const Providers = (props: Props) => (
-  <Provider store={store}>{props?.children}</Provider>
+  <Suspense fallback={<div>Loading...</div>}>
+    <Provider store={store}>{props?.children}</Provider>
+  </Suspense>
 );
 
 export default Providers;

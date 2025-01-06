@@ -9,7 +9,6 @@ const client = axios.create({
   //Developement
   // baseURL: 'https://api-dev.reselleros.com',
   baseURL: process.env.NEXT_PUBLIC_SERVER_API_URL,
-
   withCredentials: false,
 
 });

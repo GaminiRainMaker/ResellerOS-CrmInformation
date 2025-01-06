@@ -54,6 +54,7 @@ const DealRegDetail = () => {
   const [showModal, setShowModal] = useState(false);
   const [showSubmitFormModal, setShowSubmitFormModal] = useState(false);
   const [electronBotModal, showElectronBotModal] = useState(false);
+  const [isSubmitLoginForm, showIsSubmitLoginForm] = useState(false);
   const searchParams = useSearchParams()!;
   const getOpportunityId = searchParams && searchParams.get('opportunityId');
   const [formData, setFormData] = useState<any>();
@@ -175,6 +176,8 @@ const DealRegDetail = () => {
           script: JSON.stringify(scriptEncryption),
         };
         const response = await dispatch(dealRegFormScript(desktopAppData));
+        if (response) showIsSubmitLoginForm(false);
+
         if (response && !isCanvas) {
           await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
             (response: {payload: any}) => {
@@ -184,7 +187,6 @@ const DealRegDetail = () => {
             },
           );
         }
-        console.log('response data', response);
       } catch (error) {
         console.error('Error running script:', error);
       }
@@ -275,15 +277,17 @@ const DealRegDetail = () => {
           ? finalMainData?.credentials?.password
           : finalMainData.password,
         data: updatedData,
-        script: PartnerProgram?.script,
+        script: isSubmitLoginForm
+          ? PartnerProgram?.login_script
+          : PartnerProgram?.script,
         isLoginStep: PartnerProgram?.login_step,
       };
-      console.log('finalData', finalData);
       const processScriptData = processScript(finalData);
       if (processScriptData) {
         return processScriptData;
       }
     } catch (error) {
+      showIsSubmitLoginForm(false);
       console.error('Error in createScript:', error);
       throw error; // Rethrow the error for the caller to handle
     }
@@ -360,7 +364,8 @@ const DealRegDetail = () => {
         footer={false}
       />
       <OsModal
-        loading={dealRegLoading}
+        loading={isSubmitLoginForm ? false : dealRegLoading}
+        thirdLoading={dealRegLoading}
         title="Submit DealReg Forms"
         bodyPadding={22}
         body={
@@ -376,7 +381,12 @@ const DealRegDetail = () => {
           setShowSubmitFormModal(false);
           submitDealRegForm?.resetFields();
         }}
-        primaryButtonText={'Submit'}
+        thirdButtonfunction={() => {
+          showIsSubmitLoginForm(true);
+          submitDealRegForm?.submit();
+        }}
+        primaryButtonText={'Submit Form'}
+        // thirdButtonText="Submit Login Form"
       />
 
       <OsModal
