@@ -354,19 +354,19 @@ const DealRegCustomTabs = forwardRef<
         common_template: queryData,
         Partner: finalDealReg?.Partner,
         PartnerProgram: finalDealReg?.PartnerProgram,
-        partner_approval_id:
-          finalDealReg?.partner_approval_id ??
-          finalDealReg?.rosdealregai__Partner_Approval_ID__c,
-        partner_deal_id:
-          finalDealReg?.partner_deal_id ??
-          finalDealReg?.rosdealregai__Partner_Deal_ID__c,
-        expiration_date:
-          finalDealReg?.expiration_date ??
-          finalDealReg?.rosdealregai__Expiration_Date__c,
-        submitted_date:
-          finalDealReg?.submitted_date ??
-          finalDealReg?.rosdealregai__Submitted_Date__c,
-        status: finalDealReg?.status ?? finalDealReg?.rosdealregai__Status__c,
+        partner_approval_id: isCanvas
+          ? responseFieldObject?.partner_approval_id
+          : finalDealReg?.partner_approval_id,
+        partner_deal_id: isCanvas
+          ? responseFieldObject?.partner_deal_id
+          : finalDealReg?.partner_deal_id,
+        expiration_date: isCanvas
+          ? responseFieldObject?.status
+          : finalDealReg?.expiration_date,
+        submitted_date: isCanvas
+          ? responseFieldObject.submitted_date
+          : finalDealReg?.submitted_date,
+        status: isCanvas ? responseFieldObject?.status : finalDealReg?.status,
       };
       const newObj = {
         common_form_data: [JSON.stringify(finalCommonFieldObject)],
@@ -376,19 +376,19 @@ const DealRegCustomTabs = forwardRef<
         common_template: queryData,
         Partner: finalDealReg?.Partner,
         PartnerProgram: finalDealReg?.PartnerProgram,
-        partner_approval_id:
-          finalDealReg?.partner_approval_id ??
-          finalDealReg?.rosdealregai__Partner_Approval_ID__c,
-        partner_deal_id:
-          finalDealReg?.partner_deal_id ??
-          finalDealReg?.rosdealregai__Partner_Deal_ID__c,
-        expiration_date:
-          finalDealReg?.expiration_date ??
-          finalDealReg?.rosdealregai__Expiration_Date__c,
-        submitted_date:
-          finalDealReg?.submitted_date ??
-          finalDealReg?.rosdealregai__Submitted_Date__c,
-        status: finalDealReg?.status ?? finalDealReg?.rosdealregai__Status__c,
+        partner_approval_id: isCanvas
+          ? responseFieldObject?.partner_approval_id
+          : finalDealReg?.partner_approval_id,
+        partner_deal_id: isCanvas
+          ? responseFieldObject?.partner_deal_id
+          : finalDealReg?.partner_deal_id,
+        expiration_date: isCanvas
+          ? responseFieldObject?.status
+          : finalDealReg?.expiration_date,
+        submitted_date: isCanvas
+          ? responseFieldObject.submitted_date
+          : finalDealReg?.submitted_date,
+        status: isCanvas ? responseFieldObject?.status : finalDealReg?.status,
         percentage: tabPercentage,
       };
 
@@ -442,7 +442,6 @@ const DealRegCustomTabs = forwardRef<
             responseFieldObject?.partner_deal_id;
           finalObj.rosdealregai__Partner_Approval_ID__c =
             responseFieldObject?.partner_approval_id;
-          finalObj.rosdealregai__Status__c = responseFieldObject?.status;
           // Add conditional properties
           if (responseFieldObject?.expiration_date) {
             finalObj.rosdealregai__Expiration_Date__c = new Date(
