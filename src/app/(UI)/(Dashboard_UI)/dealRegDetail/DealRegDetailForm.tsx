@@ -71,7 +71,11 @@ const DealRegDetailForm: FC<any> = ({
         </Typography>
       ),
       children: (
-        <ResponseDetailForm activeKey={activeKey} formData={formData} />
+        <ResponseDetailForm
+          activeKey={activeKey}
+          form={form}
+          formData={formData}
+        />
       ),
     },
   ];

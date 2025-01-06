@@ -364,6 +364,7 @@ const AddUser = () => {
         width={696}
         open={showAddUserModal}
         onCancel={() => {
+          setUserData('');
           setShowAddUserModal((p) => !p);
           setUserData('');
         }}

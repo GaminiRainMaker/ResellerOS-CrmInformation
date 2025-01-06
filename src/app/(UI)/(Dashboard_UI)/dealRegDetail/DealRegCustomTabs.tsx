@@ -32,6 +32,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setFinalUpdatedDealRegData} from '../../../../../redux/slices/dealReg';
 import DealRegDetailForm from './DealRegDetailForm';
+import dayjs from 'dayjs';
 const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
 
 // Define the prop types for DealRegCustomTabs
@@ -271,6 +272,8 @@ const DealRegCustomTabs = forwardRef<
   const onFinish = async () => {
     const commonFieldFormData = form.getFieldsValue();
     const commonFieldObject: any = {};
+    const responseFieldObject: any = {};
+
     const uniqueFieldObject: any = {};
     let finalCommonFieldObject: any = {};
     let finalUniqueFieldObject: any = {};
@@ -282,6 +285,8 @@ const DealRegCustomTabs = forwardRef<
           commonFieldObject[key] = value;
         } else if (key?.startsWith('u_')) {
           uniqueFieldObject[key] = value;
+        } else {
+          responseFieldObject[key] = value;
         }
       }
       const selectedDealRegData =
@@ -332,7 +337,6 @@ const DealRegCustomTabs = forwardRef<
         false,
         finalDealReg?.type,
       );
-
       const obj = {
         common_form_data: [JSON.stringify(finalCommonFieldObject)],
         unique_form_data: [JSON.stringify(finalUniqueFieldObject)],
@@ -350,19 +354,35 @@ const DealRegCustomTabs = forwardRef<
         common_template: queryData,
         Partner: finalDealReg?.Partner,
         PartnerProgram: finalDealReg?.PartnerProgram,
-        partner_approval_id:
-          finalDealReg?.partner_approval_id ??
-          finalDealReg?.rosdealregai__Partner_Approval_ID__c,
-        partner_deal_id:
-          finalDealReg?.partner_deal_id ??
-          finalDealReg?.rosdealregai__Partner_Deal_ID__c,
-        expiration_date:
-          finalDealReg?.expiration_date ??
-          finalDealReg?.rosdealregai__Expiration_Date__c,
-        submitted_date:
-          finalDealReg?.submitted_date ??
-          finalDealReg?.rosdealregai__Submitted_Date__c,
-        status: finalDealReg?.status ?? finalDealReg?.rosdealregai__Status__c,
+        partner_approval_id: isCanvas
+          ? responseFieldObject?.partner_approval_id || ''
+          : finalDealReg?.partner_approval_id,
+        partner_deal_id: isCanvas
+          ? responseFieldObject?.partner_deal_id || ''
+          : finalDealReg?.partner_deal_id,
+        expiration_date: isCanvas
+          ? dayjs(responseFieldObject?.expiration_date).isValid()
+            ? dayjs(responseFieldObject?.expiration_date)
+                .hour(18)
+                .minute(30)
+                .second(0)
+                .millisecond(0)
+                .toISOString()
+            : ''
+          : finalDealReg?.expiration_date,
+        submitted_date: isCanvas
+          ? dayjs(responseFieldObject?.submitted_date).isValid()
+            ? dayjs(responseFieldObject?.submitted_date)
+                .hour(18)
+                .minute(30)
+                .second(0)
+                .millisecond(0)
+                .toISOString()
+            : ''
+          : finalDealReg?.submitted_date,
+        status: isCanvas
+          ? responseFieldObject?.status || ''
+          : finalDealReg?.status,
       };
       const newObj = {
         common_form_data: [JSON.stringify(finalCommonFieldObject)],
@@ -372,19 +392,35 @@ const DealRegCustomTabs = forwardRef<
         common_template: queryData,
         Partner: finalDealReg?.Partner,
         PartnerProgram: finalDealReg?.PartnerProgram,
-        partner_approval_id:
-          finalDealReg?.partner_approval_id ??
-          finalDealReg?.rosdealregai__Partner_Approval_ID__c,
-        partner_deal_id:
-          finalDealReg?.partner_deal_id ??
-          finalDealReg?.rosdealregai__Partner_Deal_ID__c,
-        expiration_date:
-          finalDealReg?.expiration_date ??
-          finalDealReg?.rosdealregai__Expiration_Date__c,
-        submitted_date:
-          finalDealReg?.submitted_date ??
-          finalDealReg?.rosdealregai__Submitted_Date__c,
-        status: finalDealReg?.status ?? finalDealReg?.rosdealregai__Status__c,
+        partner_approval_id: isCanvas
+          ? responseFieldObject?.partner_approval_id || ''
+          : finalDealReg?.partner_approval_id,
+        partner_deal_id: isCanvas
+          ? responseFieldObject?.partner_deal_id || ''
+          : finalDealReg?.partner_deal_id,
+        expiration_date: isCanvas
+          ? dayjs(responseFieldObject?.expiration_date).isValid()
+            ? dayjs(responseFieldObject?.expiration_date)
+                .hour(18)
+                .minute(30)
+                .second(0)
+                .millisecond(0)
+                .toISOString()
+            : ''
+          : finalDealReg?.expiration_date,
+        submitted_date: isCanvas
+          ? dayjs(responseFieldObject?.submitted_date).isValid()
+            ? dayjs(responseFieldObject?.submitted_date)
+                .hour(18)
+                .minute(30)
+                .second(0)
+                .millisecond(0)
+                .toISOString()
+            : ''
+          : finalDealReg?.submitted_date,
+        status: isCanvas
+          ? responseFieldObject?.status || ''
+          : finalDealReg?.status,
         percentage: tabPercentage,
       };
 
@@ -432,6 +468,23 @@ const DealRegCustomTabs = forwardRef<
             SECRET_KEY as string,
           ); // Encrypt
           finalObj.unique_form_data = `${iv}:${data}`; // Replace with encrypted value
+          finalObj.rosdealregai__Status__c = responseFieldObject?.status || '';
+          finalObj.rosdealregai__Partner_Deal_ID__c =
+            responseFieldObject?.partner_deal_id || '';
+          finalObj.rosdealregai__Partner_Approval_ID__c =
+            responseFieldObject?.partner_approval_id || '';
+          finalObj.rosdealregai__Expiration_Date__c =
+            responseFieldObject.expiration_date
+              ? new Date(
+                  responseFieldObject.expiration_date,
+                ).toLocaleDateString('en-CA')
+              : '';
+          finalObj.rosdealregai__Submitted_Date__c =
+            responseFieldObject.submitted_date
+              ? new Date(responseFieldObject.submitted_date).toLocaleDateString(
+                  'en-CA',
+                )
+              : '';
         }
         dispatch(updateSalesForceDealregById(finalObj));
       }
