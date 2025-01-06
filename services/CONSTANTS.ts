@@ -14,6 +14,8 @@ export const API = {
     getFields: '/auth/getSalesForceFields',
     getExcelData: '/auth/fetchAndParseExcel',
     getPDFFileData: '/auth/fetchDataWithIntellengenceForPDFFile',
+    getPDFFileDataForSales:
+      '/auth/fetchDataWithIntellengenceForPDFFileForSalesForceExport',
     fetchAndParseExcel: '/auth/fetchAndParseExcel',
   },
   QUOTE: {
@@ -349,7 +351,8 @@ export const API = {
     GetSalesForcePartnerCredentials:
       '/salesForce/getSalesForcePartnerCredentials',
     GetSalesForceActivePartners: '/salesForce/getSalesForceActivePartners',
-    UpdatePartnersandProgramIdFromFS: '/salesForce/updatePartnersandProgramIdFromFS',
+    UpdatePartnersandProgramIdFromFS:
+      '/salesForce/updatePartnersandProgramIdFromFS',
   },
   SALESFORCE_CREDENTIALS: {
     INDEX: '/salesForceCredential',

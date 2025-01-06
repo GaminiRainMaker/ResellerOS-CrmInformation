@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { API } from './CONSTANTS';
-import { post, get } from './index';
+import {API} from './CONSTANTS';
+import {post, get} from './index';
 
 export const AUTH_API = {
   // get: () => get(API.BUNDLE.INDEX) as Promise<AxiosResponse<[]>>,
   post: (data: any) => post(API.AUTH.INDEX, data),
   verify: (data: any) => post(API.AUTH.VERIFY, data),
   SendEmail: (data: any) => post(API.AUTH.SEND_EMAIL, data),
-  sendPartnerRequestEmail: (data: any) => post(API.AUTH.SendPartnerRequestEmail, data),
+  sendPartnerRequestEmail: (data: any) =>
+    post(API.AUTH.SendPartnerRequestEmail, data),
   SendForgotPasswordEmail: (data: any) =>
     post(API.AUTH.Send_Forgot_Password_Email, data),
   ContactSales: (data: any) => post(API.AUTH.Contact_Sales, data),
@@ -19,10 +20,9 @@ export const AUTH_API = {
   addForAccount: (data: any) => post(API.AUTH.addForAccount, data),
   getExcelData: (data: any) => post(API.AUTH.getExcelData, data),
   getPDFFileData: (data: any) => post(API.AUTH.getPDFFileData, data),
+  getPDFFileDataForSales: (data: any) =>
+    post(API.AUTH.getPDFFileDataForSales, data),
   fetchAndParseExcel: (data: any) => post(API.AUTH.fetchAndParseExcel, data),
-
-
-
 
   getFields: (data: any) => post(API.AUTH.getFields, data),
 };

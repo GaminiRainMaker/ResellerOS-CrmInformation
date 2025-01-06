@@ -63,6 +63,7 @@ import {
   getSalesForceFileData,
   getExcelData,
   getPDFFileData,
+  getPDFFileDataByAzureForSales,
 } from '../../../../../redux/actions/auth';
 import {
   UpdateQuoteFileById,
@@ -348,104 +349,61 @@ const EditorFile = () => {
         FileId: payload?.payload?.fileId,
       });
       setNanonetsLoading(true);
-      const binaryString = atob(payload?.payload?.body);
 
-      // Convert binary string to an array of bytes
-      const len = binaryString.length;
-      const bytes = new Uint8Array(len);
-      for (let i = 0; i < len; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
+      dispatch(
+        getPDFFileDataByAzureForSales({base64Pdf: payload?.payload?.body}),
+      )?.then((payload: any) => {
+        let newArrCheck: any = [];
 
-      // Create a Blob object from the bytes array
-      const blob = new Blob([bytes]);
-
-      // Create a File object from the Blob (optional)
-      const finalFile = new File([blob], payload?.payload?.title);
-
-      // const finalFile = new File([u8arr], payload?.payload?.title);
-
-      const response = await sendDataToNanonets(
-        'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
-        finalFile,
-      );
-
-      const newArrrrAll: any = [];
-      if (response) {
-        for (let i = 0; i < response?.data?.result?.length; i++) {
-          const itemss: any = response?.data?.result[i];
-
-          const newItemsssadsd = itemss?.prediction?.filter(
-            (item: any) => item,
-          );
-          const newAllgetOArr: any = [];
-          newItemsssadsd?.map((itemNew: any) => {
-            let formattedArray1: any = [];
-
-            const formattedData1: any = {};
-            if (itemNew?.cells) {
-              const titles = itemNew?.cells.filter(
-                (innerCell: any) => innerCell.row === 1,
-              );
-
-              itemNew?.cells.forEach((item: any) => {
-                const rowNum = item.row;
-                if (rowNum === 1) {
-                  return;
-                }
-                if (!formattedData1[rowNum]) {
-                  formattedData1[rowNum] = {};
-                }
-                formattedData1[rowNum][
-                  item.label?.toLowerCase()
-                    ? item.label?.toLowerCase()
-                    : titles.find((titleRow: any) => titleRow.col === item.col)
-                        .text
-                ] = item.label?.toLowerCase()
-                  ? item.label?.toLowerCase()?.includes('Price')
-                  : titles
-                        .find((titleRow: any) => titleRow.col === item.col)
-                        .text?.includes('Price')
-                    ? item?.text
-                    : // ?.toString()
-                      // .match(/\d+(\.\d+)?/g)
-                      // ?.map(Number)
-                      // ?.toString()
-                      // .match(/\d+(\.\d+)?/g)
-                      // ?.map(Number)
-                      // ?.toString()
-                      item.text;
-              });
-            }
-            formattedArray1 = Object.values(formattedData1);
-
-            newAllgetOArr?.push(formattedArray1);
-            newArrrrAll?.push(formattedArray1);
-
-            setNanonetsLoading(false);
+        if (lineItemSyncingData && lineItemSyncingData?.length > 0) {
+          lineItemSyncingData?.map((items: any) => {
+            let resultString = items?.pdf_header?.replace(/\s+/g, '');
+            newArrCheck?.push(resultString);
           });
         }
-      }
-      if (newArrrrAll) {
-        let newUpdatedArr: any = [];
-        newArrrrAll?.map((items: any, index: number) => {
-          const replaceKeyInObject = (obj: any, oldKey: any, newKey: any) => {
-            const {[oldKey]: oldValue, ...rest} = obj; // Extract old value and rest of the object
-            return {
-              [newKey]: oldValue, // Create a new object with new key and old value
-              ...rest, // Spread the rest of the properties
-            };
-          };
 
-          // Transform the array
-          let newArrssr = items.map((item: any) =>
-            replaceKeyInObject(item, '', `emptyHeader${index + 1}`),
-          );
-          newUpdatedArr?.push(newArrssr);
-        });
+        let mainItem = payload?.payload?.analyzeResult?.tables;
+        let globalArr: any = [];
+        // console.log('35435324234', mainItem);
 
-        setQuoteItems(newUpdatedArr);
-      }
+        let resultTantArrr: any = [];
+
+        for (let i = 0; i < mainItem?.length; i++) {
+          let innerIntems = mainItem[i];
+          if (innerIntems?.cells?.[0]?.kind === 'columnHeader') {
+            let result: any = [];
+
+            // Step 1: Extract headers from column headers
+            let headers: any = {};
+            innerIntems?.cells.forEach((item: any) => {
+              if (item.kind === 'columnHeader') {
+                headers[item.columnIndex] = item.content; // Store headers by their column index
+              }
+            });
+
+            // Step 2: Create the output based on the headers and rows
+            innerIntems?.cells.forEach((row: any) => {
+              if (row.rowIndex > 0) {
+                // Skip the header row
+                // Check if we need to push a new object
+                if (!result[row.rowIndex - 1]) {
+                  result[row.rowIndex - 1] = {}; // Initialize a new object for this row
+                }
+
+                // Assign content to the respective header using columnIndex
+                if (row.columnIndex in headers) {
+                  result[row.rowIndex - 1][headers[row.columnIndex]] =
+                    row.content; // Assign content for the matching column
+                }
+              }
+            });
+
+            globalArr?.push(result);
+          }
+        }
+        setQuoteItems(globalArr);
+        setNanonetsLoading(false);
+      });
     });
   };
 
