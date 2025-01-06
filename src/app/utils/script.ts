@@ -136,7 +136,6 @@ export let processScript = (finalObj: {
   let waitingScriptValue = '';
   for (let i = 0; i < parsedScript.length; i++) {
     const lastline = newScript[newScript.length - 1];
-
     let currentLine = parsedScript[i].trim();
     if (currentLine) {
       if (currentLine.includes('page.goto')) {
@@ -164,6 +163,8 @@ export let processScript = (finalObj: {
           }
         } else if (
           !loginDetailsFilled &&
+          finalObj.username &&
+          finalObj.password &&
           (currentLine.toLowerCase().includes('username') ||
             currentLine.toLowerCase().includes('email') ||
             currentLine.toLowerCase().includes('password'))
@@ -254,7 +255,7 @@ export let processScript = (finalObj: {
         });
       });
     },{ timeout: 900000 });
-    await page.waitForTimeout(30000);
+    await page.waitForTimeout(900000);
     `;
 
             newScript.push(data);

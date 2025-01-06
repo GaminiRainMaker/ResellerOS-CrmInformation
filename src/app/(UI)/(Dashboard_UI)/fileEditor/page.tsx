@@ -33,6 +33,7 @@ import {
   base64ToArrayBuffer1,
   checkFunctionInArray,
   concatenateAfterFirstWithSpace,
+  convertToBoolean,
   decryptFromSalesforce,
   encrypt,
   encryptForSalesforce,
@@ -62,6 +63,7 @@ import {
   getSalesForceFileData,
   getExcelData,
   getPDFFileData,
+  getPDFFileDataByAzureForSales,
 } from '../../../../../redux/actions/auth';
 import {
   UpdateQuoteFileById,
@@ -144,13 +146,12 @@ const EditorFile = () => {
     (state) => state.canvas,
   );
 
-
   // Initialize variables with default values
   let salesForceinstanceUrl: string | undefined;
   let salesForceToken: string | undefined;
   let salesForceParamsId: string | any;
   let salesFOrceAccoutId: string | undefined;
-  let salesFOrceAccoutFlow: string | undefined;
+  let salesFOrceAccoutFlow: string | undefined | any;
   let salesForceEDitDAta: string | any;
   let salesForceFiledId: string | any;
   let salesFOrceManual: boolean | any;
@@ -168,12 +169,12 @@ const EditorFile = () => {
 
     salesForceParamsId = parameters?.recordId;
     salesFOrceAccoutId = parameters?.AccountId;
-    salesFOrceAccoutFlow = parameters?.accoutFlow;
-    salesForceEDitDAta = parameters?.editLine;
+    salesFOrceAccoutFlow = convertToBoolean(parameters?.accoutFlow);
+    salesForceEDitDAta = convertToBoolean(parameters?.editLine);
     salesForceFiledId = parameters?.file_Id;
-    salesFOrceManual = parameters?.manual;
+    salesFOrceManual = convertToBoolean(parameters?.manual);
     SaleQuoteId = parameters?.quote_Id;
-    EditSalesLineItems = parameters?.editLine;
+    EditSalesLineItems = convertToBoolean(parameters?.editLine);
   }
 
   const [query, setQuery] = useState<{
@@ -223,7 +224,7 @@ const EditorFile = () => {
     }
     setNanonetsLoading(true);
 
-    if (EditSalesLineItems === 'true' || EditSalesLineItems) {
+    if (EditSalesLineItems === 'true' || EditSalesLineItems === true) {
       // Work In Case of Edit Data As It Is
       let newdata = {
         token: salesForceToken,
@@ -284,8 +285,10 @@ const EditorFile = () => {
       file_type: 'ExportFileToTable',
     };
 
-    let pathTOGo =
-      salesFOrceManual === 'true' || salesFOrceManual ? data : dataSingle;
+    let pathTOGo = data;
+    salesFOrceManual === true || salesFOrceManual === 'true'
+      ? data
+      : dataSingle;
     dispatch(getSalesForceFileData(pathTOGo))?.then(async (payload: any) => {
       if (!payload?.payload?.body) {
         if (salesFOrceManual === 'false' || !salesFOrceManual) {
@@ -346,104 +349,61 @@ const EditorFile = () => {
         FileId: payload?.payload?.fileId,
       });
       setNanonetsLoading(true);
-      const binaryString = atob(payload?.payload?.body);
 
-      // Convert binary string to an array of bytes
-      const len = binaryString.length;
-      const bytes = new Uint8Array(len);
-      for (let i = 0; i < len; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
+      dispatch(
+        getPDFFileDataByAzureForSales({base64Pdf: payload?.payload?.body}),
+      )?.then((payload: any) => {
+        let newArrCheck: any = [];
 
-      // Create a Blob object from the bytes array
-      const blob = new Blob([bytes]);
-
-      // Create a File object from the Blob (optional)
-      const finalFile = new File([blob], payload?.payload?.title);
-
-      // const finalFile = new File([u8arr], payload?.payload?.title);
-
-      const response = await sendDataToNanonets(
-        'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
-        finalFile,
-      );
-
-      const newArrrrAll: any = [];
-      if (response) {
-        for (let i = 0; i < response?.data?.result?.length; i++) {
-          const itemss: any = response?.data?.result[i];
-
-          const newItemsssadsd = itemss?.prediction?.filter(
-            (item: any) => item,
-          );
-          const newAllgetOArr: any = [];
-          newItemsssadsd?.map((itemNew: any) => {
-            let formattedArray1: any = [];
-
-            const formattedData1: any = {};
-            if (itemNew?.cells) {
-              const titles = itemNew?.cells.filter(
-                (innerCell: any) => innerCell.row === 1,
-              );
-
-              itemNew?.cells.forEach((item: any) => {
-                const rowNum = item.row;
-                if (rowNum === 1) {
-                  return;
-                }
-                if (!formattedData1[rowNum]) {
-                  formattedData1[rowNum] = {};
-                }
-                formattedData1[rowNum][
-                  item.label?.toLowerCase()
-                    ? item.label?.toLowerCase()
-                    : titles.find((titleRow: any) => titleRow.col === item.col)
-                        .text
-                ] = item.label?.toLowerCase()
-                  ? item.label?.toLowerCase()?.includes('Price')
-                  : titles
-                        .find((titleRow: any) => titleRow.col === item.col)
-                        .text?.includes('Price')
-                    ? item?.text
-                    : // ?.toString()
-                      // .match(/\d+(\.\d+)?/g)
-                      // ?.map(Number)
-                      // ?.toString()
-                      // .match(/\d+(\.\d+)?/g)
-                      // ?.map(Number)
-                      // ?.toString()
-                      item.text;
-              });
-            }
-            formattedArray1 = Object.values(formattedData1);
-
-            newAllgetOArr?.push(formattedArray1);
-            newArrrrAll?.push(formattedArray1);
-
-            setNanonetsLoading(false);
+        if (lineItemSyncingData && lineItemSyncingData?.length > 0) {
+          lineItemSyncingData?.map((items: any) => {
+            let resultString = items?.pdf_header?.replace(/\s+/g, '');
+            newArrCheck?.push(resultString);
           });
         }
-      }
-      if (newArrrrAll) {
-        let newUpdatedArr: any = [];
-        newArrrrAll?.map((items: any, index: number) => {
-          const replaceKeyInObject = (obj: any, oldKey: any, newKey: any) => {
-            const {[oldKey]: oldValue, ...rest} = obj; // Extract old value and rest of the object
-            return {
-              [newKey]: oldValue, // Create a new object with new key and old value
-              ...rest, // Spread the rest of the properties
-            };
-          };
 
-          // Transform the array
-          let newArrssr = items.map((item: any) =>
-            replaceKeyInObject(item, '', `emptyHeader${index + 1}`),
-          );
-          newUpdatedArr?.push(newArrssr);
-        });
+        let mainItem = payload?.payload?.analyzeResult?.tables;
+        let globalArr: any = [];
+        // console.log('35435324234', mainItem);
 
-        setQuoteItems(newUpdatedArr);
-      }
+        let resultTantArrr: any = [];
+
+        for (let i = 0; i < mainItem?.length; i++) {
+          let innerIntems = mainItem[i];
+          if (innerIntems?.cells?.[0]?.kind === 'columnHeader') {
+            let result: any = [];
+
+            // Step 1: Extract headers from column headers
+            let headers: any = {};
+            innerIntems?.cells.forEach((item: any) => {
+              if (item.kind === 'columnHeader') {
+                headers[item.columnIndex] = item.content; // Store headers by their column index
+              }
+            });
+
+            // Step 2: Create the output based on the headers and rows
+            innerIntems?.cells.forEach((row: any) => {
+              if (row.rowIndex > 0) {
+                // Skip the header row
+                // Check if we need to push a new object
+                if (!result[row.rowIndex - 1]) {
+                  result[row.rowIndex - 1] = {}; // Initialize a new object for this row
+                }
+
+                // Assign content to the respective header using columnIndex
+                if (row.columnIndex in headers) {
+                  result[row.rowIndex - 1][headers[row.columnIndex]] =
+                    row.content; // Assign content for the matching column
+                }
+              }
+            });
+
+            globalArr?.push(result);
+          }
+        }
+        setQuoteItems(globalArr);
+        setNanonetsLoading(false);
+      });
     });
   };
 
@@ -1045,7 +1005,7 @@ const EditorFile = () => {
     let newArrFOrUpdation: any = [];
     let newArrForAddition: any = [];
 
-    if (EditSalesLineItems === 'true' || EditSalesLineItems) {
+    if (EditSalesLineItems === 'true' || EditSalesLineItems === true) {
       let newArrWithFileId: any = [];
       updateLineItemsValue?.map((itemss: any) => {
         let newObj = {
@@ -1560,7 +1520,7 @@ const EditorFile = () => {
 
       {(ExistingQuoteItemss === 'true' ||
         EditSalesLineItems === 'true' ||
-        EditSalesLineItems) &&
+        EditSalesLineItems === true) &&
       updateLineItemsValue?.length > 0 ? (
         <>
           <div
@@ -1643,9 +1603,10 @@ const EditorFile = () => {
         </>
       ) : (
         <>
-          {(ExistingQuoteItemss !== 'true' ||
+          {(ExistingQuoteItemss === 'false' ||
             (salesForceinstanceUrl &&
-              (EditSalesLineItems === 'false' || !EditSalesLineItems))) && (
+              (EditSalesLineItems === 'false' ||
+                EditSalesLineItems === false))) && (
             <>
               {mergedValue && mergedValue?.length > 0 ? (
                 <>

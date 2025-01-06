@@ -8,6 +8,7 @@ import {
   fetchAndParseExcel,
   getExcelData,
   getPDFFileData,
+  getPDFFileDataByAzureForSales,
   getSalesForceDataaForEditAsItIs,
   getSalesForceFields,
   getSalesForceFileData,
@@ -280,6 +281,24 @@ const authSlice = createSlice({
       )
       .addCase(
         fetchAndParseExcel.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getPDFFileDataByAzureForSales.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getPDFFileDataByAzureForSales.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          // state.data = action.payload;
+        },
+      )
+      .addCase(
+        getPDFFileDataByAzureForSales.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
