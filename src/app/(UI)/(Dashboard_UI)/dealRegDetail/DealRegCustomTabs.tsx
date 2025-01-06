@@ -436,30 +436,25 @@ const DealRegCustomTabs = forwardRef<
             SECRET_KEY as string,
           ); // Encrypt
           finalObj.unique_form_data = `${iv}:${data}`; // Replace with encrypted value
-        }
 
-        const salesForceObj = {
-          id: activeKey,
-          rosdealregai__Status__c: responseFieldObject?.status,
-          ...(responseFieldObject?.expiration_date && {
-            rosdealregai__Expiration_Date__c: new Date(
+          finalObj.rosdealregai__Status__c = responseFieldObject?.status;
+          finalObj.rosdealregai__Partner_Deal_ID__c =
+            responseFieldObject?.partner_deal_id;
+          finalObj.rosdealregai__Partner_Approval_ID__c =
+            responseFieldObject?.partner_approval_id;
+          finalObj.rosdealregai__Status__c = responseFieldObject?.status;
+          // Add conditional properties
+          if (responseFieldObject?.expiration_date) {
+            finalObj.rosdealregai__Expiration_Date__c = new Date(
               responseFieldObject.expiration_date,
-            ).toLocaleDateString('en-CA'),
-          }),
-          ...(responseFieldObject?.submitted_date && {
-            rosdealregai__Submitted_Date__c: new Date(
+            ).toLocaleDateString('en-CA');
+          }
+
+          if (responseFieldObject?.submitted_date) {
+            finalObj.rosdealregai__Submitted_Date__c = new Date(
               responseFieldObject.submitted_date,
-            ).toLocaleDateString('en-CA'),
-          }),
-          rosdealregai__Partner_Deal_ID__c:
-            responseFieldObject?.partner_deal_id,
-          rosdealregai__Partner_Approval_ID__c:
-            responseFieldObject?.partner_approval_id,
-          baseURL: salesForceinstanceUrl,
-          token: salesForceToken,
-        };
-        if (salesForceObj) {
-          dispatch(updateSalesForceDealregById(salesForceObj));
+            ).toLocaleDateString('en-CA');
+          }
         }
         dispatch(updateSalesForceDealregById(finalObj));
       }
