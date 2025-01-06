@@ -13,9 +13,8 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 const ResponseDetailForm: FC<any> = ({
   activeKey,
-  formData,
-  responseForm,
   form,
+  formData,
 }) => {
   const dispatch = useAppDispatch();
   const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
@@ -45,30 +44,10 @@ const ResponseDetailForm: FC<any> = ({
   }, [formData, form]);
 
   const onFinish = async (values: any) => {
-    const data = form.getFieldsValue();
-    responseForm(data);
     const newObj = {
       ...values,
       id: activeKey,
     };
-    // const salesForceObj = {
-    //   id: activeKey,
-    //   rosdealregai__Status__c: values?.status,
-    //   ...(values?.expiration_date && {
-    //     rosdealregai__Expiration_Date__c: new Date(
-    //       values.expiration_date,
-    //     ).toLocaleDateString('en-CA'),
-    //   }),
-    //   ...(values?.submitted_date && {
-    //     rosdealregai__Submitted_Date__c: new Date(
-    //       values.submitted_date,
-    //     ).toLocaleDateString('en-CA'),
-    //   }),
-    //   rosdealregai__Partner_Deal_ID__c: values?.partner_deal_id,
-    //   rosdealregai__Partner_Approval_ID__c: values?.partner_approval_id,
-    //   baseURL: salesForceinstanceUrl,
-    //   token: salesForceToken,
-    // };
     if (!isCanvas) {
       await dispatch(updateDealRegById(newObj));
     }
