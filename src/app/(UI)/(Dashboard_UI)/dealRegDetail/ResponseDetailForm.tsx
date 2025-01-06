@@ -11,11 +11,7 @@ import {FC, useEffect} from 'react';
 import {updateDealRegById} from '../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
-const ResponseDetailForm: FC<any> = ({
-  activeKey,
-  form,
-  formData,
-}) => {
+const ResponseDetailForm: FC<any> = ({activeKey, form, formData}) => {
   const dispatch = useAppDispatch();
   const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
 
@@ -33,7 +29,7 @@ const ResponseDetailForm: FC<any> = ({
     form.setFieldsValue({
       partner_approval_id: formData?.partner_approval_id,
       partner_deal_id: formData?.partner_deal_id,
-      expiration_date: formData?.expiration_date
+      expiration_date:  formData?.expiration_date
         ? moment(formData?.expiration_date)
         : null,
       submitted_date: formData?.submitted_date
@@ -42,7 +38,6 @@ const ResponseDetailForm: FC<any> = ({
       status: formData?.status,
     });
   }, [formData, form]);
-
   const onFinish = async (values: any) => {
     const newObj = {
       ...values,

@@ -32,6 +32,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setFinalUpdatedDealRegData} from '../../../../../redux/slices/dealReg';
 import DealRegDetailForm from './DealRegDetailForm';
+import dayjs from 'dayjs';
 const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
 
 // Define the prop types for DealRegCustomTabs
@@ -336,7 +337,6 @@ const DealRegCustomTabs = forwardRef<
         false,
         finalDealReg?.type,
       );
-
       const obj = {
         common_form_data: [JSON.stringify(finalCommonFieldObject)],
         unique_form_data: [JSON.stringify(finalUniqueFieldObject)],
@@ -355,18 +355,34 @@ const DealRegCustomTabs = forwardRef<
         Partner: finalDealReg?.Partner,
         PartnerProgram: finalDealReg?.PartnerProgram,
         partner_approval_id: isCanvas
-          ? responseFieldObject?.partner_approval_id
+          ? responseFieldObject?.partner_approval_id || ''
           : finalDealReg?.partner_approval_id,
         partner_deal_id: isCanvas
-          ? responseFieldObject?.partner_deal_id
+          ? responseFieldObject?.partner_deal_id || ''
           : finalDealReg?.partner_deal_id,
         expiration_date: isCanvas
-          ? responseFieldObject?.status
+          ? dayjs(responseFieldObject?.expiration_date).isValid()
+            ? dayjs(responseFieldObject?.expiration_date)
+                .hour(18)
+                .minute(30)
+                .second(0)
+                .millisecond(0)
+                .toISOString()
+            : ''
           : finalDealReg?.expiration_date,
         submitted_date: isCanvas
-          ? responseFieldObject.submitted_date
+          ? dayjs(responseFieldObject?.submitted_date).isValid()
+            ? dayjs(responseFieldObject?.submitted_date)
+                .hour(18)
+                .minute(30)
+                .second(0)
+                .millisecond(0)
+                .toISOString()
+            : ''
           : finalDealReg?.submitted_date,
-        status: isCanvas ? responseFieldObject?.status : finalDealReg?.status,
+        status: isCanvas
+          ? responseFieldObject?.status || ''
+          : finalDealReg?.status,
       };
       const newObj = {
         common_form_data: [JSON.stringify(finalCommonFieldObject)],
@@ -377,18 +393,34 @@ const DealRegCustomTabs = forwardRef<
         Partner: finalDealReg?.Partner,
         PartnerProgram: finalDealReg?.PartnerProgram,
         partner_approval_id: isCanvas
-          ? responseFieldObject?.partner_approval_id
+          ? responseFieldObject?.partner_approval_id || ''
           : finalDealReg?.partner_approval_id,
         partner_deal_id: isCanvas
-          ? responseFieldObject?.partner_deal_id
+          ? responseFieldObject?.partner_deal_id || ''
           : finalDealReg?.partner_deal_id,
         expiration_date: isCanvas
-          ? responseFieldObject?.status
+          ? dayjs(responseFieldObject?.expiration_date).isValid()
+            ? dayjs(responseFieldObject?.expiration_date)
+                .hour(18)
+                .minute(30)
+                .second(0)
+                .millisecond(0)
+                .toISOString()
+            : ''
           : finalDealReg?.expiration_date,
         submitted_date: isCanvas
-          ? responseFieldObject.submitted_date
+          ? dayjs(responseFieldObject?.submitted_date).isValid()
+            ? dayjs(responseFieldObject?.submitted_date)
+                .hour(18)
+                .minute(30)
+                .second(0)
+                .millisecond(0)
+                .toISOString()
+            : ''
           : finalDealReg?.submitted_date,
-        status: isCanvas ? responseFieldObject?.status : finalDealReg?.status,
+        status: isCanvas
+          ? responseFieldObject?.status || ''
+          : finalDealReg?.status,
         percentage: tabPercentage,
       };
 
@@ -436,24 +468,23 @@ const DealRegCustomTabs = forwardRef<
             SECRET_KEY as string,
           ); // Encrypt
           finalObj.unique_form_data = `${iv}:${data}`; // Replace with encrypted value
-
-          finalObj.rosdealregai__Status__c = responseFieldObject?.status;
+          finalObj.rosdealregai__Status__c = responseFieldObject?.status || '';
           finalObj.rosdealregai__Partner_Deal_ID__c =
-            responseFieldObject?.partner_deal_id;
+            responseFieldObject?.partner_deal_id || '';
           finalObj.rosdealregai__Partner_Approval_ID__c =
-            responseFieldObject?.partner_approval_id;
-          // Add conditional properties
-          if (responseFieldObject?.expiration_date) {
-            finalObj.rosdealregai__Expiration_Date__c = new Date(
-              responseFieldObject.expiration_date,
-            ).toLocaleDateString('en-CA');
-          }
-
-          if (responseFieldObject?.submitted_date) {
-            finalObj.rosdealregai__Submitted_Date__c = new Date(
-              responseFieldObject.submitted_date,
-            ).toLocaleDateString('en-CA');
-          }
+            responseFieldObject?.partner_approval_id || '';
+          finalObj.rosdealregai__Expiration_Date__c =
+            responseFieldObject.expiration_date
+              ? new Date(
+                  responseFieldObject.expiration_date,
+                ).toLocaleDateString('en-CA')
+              : '';
+          finalObj.rosdealregai__Submitted_Date__c =
+            responseFieldObject.submitted_date
+              ? new Date(responseFieldObject.submitted_date).toLocaleDateString(
+                  'en-CA',
+                )
+              : '';
         }
         dispatch(updateSalesForceDealregById(finalObj));
       }
