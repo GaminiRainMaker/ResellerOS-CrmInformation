@@ -478,13 +478,13 @@ const DealRegCustomTabs = forwardRef<
               ? new Date(
                   responseFieldObject.expiration_date,
                 ).toLocaleDateString('en-CA')
-              : '';
+              : new Date().toLocaleDateString('en-CA');
           finalObj.rosdealregai__Submitted_Date__c =
             responseFieldObject.submitted_date
               ? new Date(responseFieldObject.submitted_date).toLocaleDateString(
                   'en-CA',
                 )
-              : '';
+              : new Date().toLocaleDateString('en-CA');
         }
         dispatch(updateSalesForceDealregById(finalObj));
       }
