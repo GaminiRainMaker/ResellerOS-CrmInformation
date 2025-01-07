@@ -37,6 +37,19 @@ export const updateLineItemSyncing = createAsyncThunk(
   },
 );
 
+export const updateLineItemSyncingByIdForAsssert = createAsyncThunk(
+  'lineItemSyncing/updateLineItemSyncingByIdForAsssert',
+  async (data: any, thunkApi) => {
+    try {
+      const res =
+        await LINEITEM_SYNCING_API.updateLineItemSyncingByIdForAsssert(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+
 export const getLineItemSyncingBYId = createAsyncThunk(
   'lineItemSyncing/getAllLineItemSyncingById',
   async (id: any, thunkApi) => {
@@ -77,7 +90,6 @@ export const queryLineItemSyncing = createAsyncThunk(
   },
 );
 
-
 export const addLineItemSyncingManualy = createAsyncThunk(
   'lineItemSyncing/addLineItemSyncingManualy',
   async (data: any, thunkApi) => {
@@ -93,7 +105,6 @@ export const addLineItemSyncingManualy = createAsyncThunk(
     }
   },
 );
-
 
 export const queryLineItemSyncingForSalesForce = createAsyncThunk(
   'lineItemSyncing/queryLineItemSyncinForSalesFOrce',

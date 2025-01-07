@@ -8,6 +8,7 @@ import {
   queryLineItemSyncing,
   queryLineItemSyncingForSalesForce,
   updateLineItemSyncing,
+  updateLineItemSyncingByIdForAsssert,
 } from '../actions/LineItemSyncing';
 
 type LineItemSyncing = {
@@ -173,6 +174,24 @@ const LineItemSyncingSlice = createSlice({
       )
       .addCase(
         addLineItemSyncingManualy.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(updateLineItemSyncingByIdForAsssert.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateLineItemSyncingByIdForAsssert.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.lineItemSyncing = action.payload;
+        },
+      )
+      .addCase(
+        updateLineItemSyncingByIdForAsssert.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

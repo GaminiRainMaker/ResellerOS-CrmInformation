@@ -331,6 +331,8 @@ export const API = {
     SalesForceAdd: '/lineItemSyncing/insertLineItemSyncingForSalesForce',
     SalesForceGet: '/lineItemSyncing/queryLineItemSyncinForSalesFOrce',
     postManual: '/lineItemSyncing/addLineItemSyncingManualy',
+    updateLineItemSyncingByIdForAsssert:
+      '/lineItemSyncing/updateLineItemSyncingByIdForAsssert',
   },
   MAPPED_OPTIONS: {
     INDEX: '/MappedOptions',
