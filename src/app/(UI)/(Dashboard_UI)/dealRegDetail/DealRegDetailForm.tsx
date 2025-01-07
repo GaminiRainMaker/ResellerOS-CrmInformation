@@ -22,6 +22,7 @@ const DealRegDetailForm: FC<any> = ({
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const {openDealRegDrawer} = useAppSelector((state) => state.dealReg);
+  const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
 
   const CommonFieldsItems = [
     {
@@ -71,7 +72,11 @@ const DealRegDetailForm: FC<any> = ({
         </Typography>
       ),
       children: (
-        <ResponseDetailForm activeKey={activeKey} formData={formData} />
+        <ResponseDetailForm
+          activeKey={activeKey}
+          form={form}
+          formData={formData}
+        />
       ),
     },
   ];
@@ -92,7 +97,9 @@ const DealRegDetailForm: FC<any> = ({
       </Space>
       <>
         {data?.PartnerProgram?.form_data &&
-          data?.type !== 'self_registered' && (
+          (isCanvas
+            ? data?.rosdealregai__Registration_Type__c !== 'self_registered'
+            : data?.type !== 'self_registered') && (
             <Space
               size={24}
               direction="vertical"
