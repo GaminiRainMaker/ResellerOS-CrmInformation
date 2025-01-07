@@ -633,6 +633,9 @@ const NewRegistrationForm: FC<any> = ({
             rosdealregai__Partner_Program__r: {
               rosdealregai__External_Id__c: sourceData?.partner_program_id,
             },
+            rosdealregai__Registration_Type__c: item?.type
+              ? item?.type?.toLowerCase()?.replace(/\s+/g, '_')
+              : '',
           };
         });
 
