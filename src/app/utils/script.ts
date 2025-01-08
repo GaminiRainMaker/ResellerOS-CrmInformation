@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export let processFormData = (template: any, finalUniqueData: any) => {
   // Extract labels with user_fill set to true from the template
   let labelsWithUserFillTrue = template
@@ -38,8 +40,8 @@ export let processFormData = (template: any, finalUniqueData: any) => {
                 return dependentItem?.label
                   ? dependentItem?.label === newKey
                   : dependentItem.length > 0
-                  ? dependentItem.find((item: any) => item.label === newKey)
-                  : '';
+                    ? dependentItem.find((item: any) => item.label === newKey)
+                    : '';
               },
             );
 
@@ -65,6 +67,9 @@ export let processFormData = (template: any, finalUniqueData: any) => {
       let locater = matchingTemplateItem
         ? matchingTemplateItem.locater || ''
         : '';
+      let dateformat = matchingTemplateItem
+        ? matchingTemplateItem.dateformat || ''
+        : '';
 
       if (finalUniqueData[key] && (type || name)) {
         transformedData.push({
@@ -73,6 +78,7 @@ export let processFormData = (template: any, finalUniqueData: any) => {
           type: type, // Adding the "type" field
           name: name,
           locater: locater, // Adding the "locater" field as text
+          dateformat,
         });
       }
     }
@@ -93,6 +99,9 @@ export let processFormData = (template: any, finalUniqueData: any) => {
       let locater = matchingTemplateItem
         ? matchingTemplateItem.locater || ''
         : '';
+      let dateformat = matchingTemplateItem
+        ? matchingTemplateItem.dateformat || ''
+        : '';
 
       transformedData.push({
         [transformedKey]: '',
@@ -100,6 +109,7 @@ export let processFormData = (template: any, finalUniqueData: any) => {
         type: type, // Adding the "type" field
         name: name,
         locater: locater, // Adding the "locater" field as text
+        dateformat,
       });
     }
   });
@@ -341,6 +351,7 @@ export let processScript = (finalObj: {
                     value &&
                     label !== 'name' &&
                     label !== 'type' &&
+                    label !== 'dateformat' &&
                     !formValues.includes(label)
                   ) {
                     if (!dataObj.userFill) {
@@ -380,7 +391,6 @@ export let processScript = (finalObj: {
                           `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 50000 });`,
                         );
                       }
-
                       let data = `
     
                         ${
@@ -388,9 +398,9 @@ export let processScript = (finalObj: {
                           dataObj.type.toLowerCase().includes('email') ||
                           dataObj.type.toLowerCase().includes('date')
                             ? dataObj.name
-                              ? `await page.locator('${dataObj.type.toLowerCase() === 'textarea' ? 'textarea' : 'input'}[name="${dataObj.name}"]').fill('${value}');
+                              ? `await page.locator('${dataObj.type.toLowerCase() === 'textarea' ? 'textarea' : 'input'}[name="${dataObj.name}"]').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');
 `
-                              : `await page.getByLabel('${label}').fill('${value}');`
+                              : `await page.getByLabel('${label}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');`
                             : dataObj.type.toLowerCase().includes('select') ||
                                 dataObj.type.toLowerCase().includes('drop')
                               ? dataObj.name
