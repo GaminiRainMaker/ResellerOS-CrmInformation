@@ -57,17 +57,17 @@ const SideBar = () => {
   const {cacheAvailableSeats} = useAppSelector((state) => state.cacheFLow);
   const {isCanvas} = useAppSelector((state) => state.canvas);
   const searchParams = useSearchParams()!;
-  const [canvasState, setCanvasState] = useState<boolean>(true);
+  // const [canvasState, setCanvasState] = useState<boolean>(true);
   const salesForceUrl = searchParams.get('instance_url');
 
   type MenuItem = Required<MenuProps>['items'][number];
 
-  useEffect(() => {
-    setCanvasState(isCanvas);
-  }, [isCanvas]);
+  // useEffect(() => {
+  //   setCanvasState(isCanvas);
+  // }, [isCanvas]);
 
   useEffect(() => {
-    if (!!userInformation && !canvasState && !salesForceUrl) {
+    if (!!userInformation && !isCanvas && !salesForceUrl) {
       dispatch(getUserByTokenAccess('')).then((payload: any) => {
         const relevantData = {
           QuoteAI: payload?.payload?.is_quote,
@@ -277,7 +277,7 @@ const SideBar = () => {
 
   const items: MenuItem[] = [
     Role !== 'superAdmin' &&
-      !canvasState &&
+      !isCanvas &&
       !salesForceUrl &&
       getItem(
         <Typography
