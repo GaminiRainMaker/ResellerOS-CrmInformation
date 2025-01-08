@@ -28,11 +28,8 @@ const CanvasRedirectWrapper = ({children}: Props) => {
 
     if (window.location !== window.parent.location) {
       isCanvas = true;
-      // dispatch(setIsCanvas(true));
-    } 
-    // else {
-    //   // dispatch(setIsCanvas(false));
-    // }
+    }
+    
     if (isCanvas) {
       globalThis.Sfdc.canvas.client.refreshSignedRequest((data) => {
         if (data?.payload?.auxiliary?.appApprovalType === 'ADMIN_APPROVED') {
