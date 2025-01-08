@@ -526,18 +526,20 @@ const DealRegCustomTabs = forwardRef<
                 gutter={[0, 10]}
                 style={{width: 'fit-content', margin: '24px 0px'}}
               >
-                <Badge.Ribbon
+                {/* <Badge.Ribbon
                   text="Self Registered"
                   color={ribbonColor}
                   style={{
                     marginRight: '24px',
                     display:
-                      element?.rosdealregai__Registration_Type__c ===
-                        'self_registered' || element?.type === 'self_registered'
+                      (isCanvas &&
+                        element?.rosdealregai__Registration_Type__c ===
+                          'self_registered') ||
+                      (!isCanvas && element?.type === 'self_registered')
                         ? ''
                         : 'none',
                   }}
-                >
+                > */}
                   <DealRegCustomTabHeaderStyle
                     token={token}
                     style={headerStyle}
@@ -560,7 +562,7 @@ const DealRegCustomTabs = forwardRef<
                       </Typography>
                     </Space>
                   </DealRegCustomTabHeaderStyle>
-                </Badge.Ribbon>
+                {/* </Badge.Ribbon> */}
               </Row>
             ),
             children: (
