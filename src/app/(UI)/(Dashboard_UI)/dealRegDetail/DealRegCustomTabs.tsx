@@ -526,7 +526,7 @@ const DealRegCustomTabs = forwardRef<
                 gutter={[0, 10]}
                 style={{width: 'fit-content', margin: '24px 0px'}}
               >
-                {/* <Badge.Ribbon
+                <Badge.Ribbon
                   text="Self Registered"
                   color={ribbonColor}
                   style={{
@@ -539,7 +539,7 @@ const DealRegCustomTabs = forwardRef<
                         ? ''
                         : 'none',
                   }}
-                > */}
+                >
                   <DealRegCustomTabHeaderStyle
                     token={token}
                     style={headerStyle}
@@ -562,7 +562,7 @@ const DealRegCustomTabs = forwardRef<
                       </Typography>
                     </Space>
                   </DealRegCustomTabHeaderStyle>
-                {/* </Badge.Ribbon> */}
+                </Badge.Ribbon>
               </Row>
             ),
             children: (
