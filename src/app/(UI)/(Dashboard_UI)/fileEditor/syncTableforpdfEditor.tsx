@@ -161,6 +161,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   // const salesForceFiledId = searchParams.get('file_Id');
   // const SaleQuoteId = searchParams.get('quote_Id');
   // const salesFOrceManual === true = searchParams.get('manual');
+
+  console.log('43532423423', salesFOrceManual, salesFOrceAccoutFlow);
+
   const fullStackManul = searchParams.get('manualFlow');
 
   const ApprovedQuoteMappingData: any =
@@ -596,7 +599,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         });
 
         setNanonetsLoading(false);
-        if (salesFOrceManual === 'true' || salesFOrceManual) {
+        if (salesFOrceManual === 'true' || salesFOrceManual === true) {
           setTimeout(() => {
             checkForNewFileForSalesForce();
           }, 2000);
