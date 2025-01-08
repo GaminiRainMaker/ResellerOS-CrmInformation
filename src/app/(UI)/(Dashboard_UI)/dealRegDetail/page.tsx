@@ -136,10 +136,9 @@ const DealRegDetail = () => {
       ...FinalSubmitDealRegForm,
       status: 'Submitted',
     };
-    let salesforceData: any = {};
     if (SubmitDealRegFormData) {
       try {
-        let finalAppData: any = {
+        const finalAppData: any = {
           dealRegId: SubmitDealRegFormData?.id,
           token: salesForceToken,
           baseURL: salesForceinstanceUrl,
@@ -148,50 +147,84 @@ const DealRegDetail = () => {
           partnerProgramId: SubmitDealRegFormData?.partner_program_id,
         };
 
+        let salesforceData: any = {};
         if (isCanvas) {
-          const dealregData: any = await dispatch(
-            getSalesForceDealregById(finalAppData),
-          );
-          const res: any = await dispatch(
-            getSalesForcePartnerCredentials(finalAppData),
-          );
-          if (dealregData?.payload && res?.payload) {
-            salesforceData.data = dealregData?.payload?.[0];
-            salesforceData.credentials = res?.payload?.data;
-            salesforceData.PartnerProgram =
-              SubmitDealRegFormData?.PartnerProgram;
+          try {
+            // Fetch Salesforce deal registration and credentials
+            const dealregData: any = await dispatch(
+              getSalesForceDealregById(finalAppData),
+            );
+            const res: any = await dispatch(
+              getSalesForcePartnerCredentials(finalAppData),
+            );
+
+            if (dealregData?.payload && res?.payload) {
+              salesforceData.data = dealregData?.payload?.[0];
+              salesforceData.credentials = res?.payload?.data;
+              salesforceData.PartnerProgram =
+                SubmitDealRegFormData?.PartnerProgram;
+            }
+          } catch (error) {
+            console.error('Error fetching Salesforce data:', error);
           }
         }
         const createScriptData = await createScript(
           isCanvas ? salesforceData : SubmitDealRegFormData,
           isCanvas,
         );
-        const scriptEncryption = await encrypt(
-          createScriptData as string,
-          SECRET_KEY as string,
-        );
-        const desktopAppData = {
-          isCanvas: isCanvas,
-          userId: userInformation?.id ?? userId,
-          script: JSON.stringify(scriptEncryption),
-        };
-        const response = await dispatch(dealRegFormScript(desktopAppData));
-        if (response) showIsSubmitLoginForm(false);
-
-        if (response && !isCanvas) {
-          await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
-            (response: {payload: any}) => {
-              if (response?.payload) {
-                dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-              }
-            },
+        if (
+          createScriptData &&
+          (SubmitDealRegFormData?.type === 'registered' ||
+            salesforceData?.data?.rosdealregai__Registration_Type__c ===
+              'registered')
+        ) {
+          const scriptEncryption = await encrypt(
+            createScriptData as string,
+            SECRET_KEY as string,
           );
+
+          const desktopAppData = {
+            isCanvas: isCanvas,
+            userId: userInformation?.id ?? userId,
+            script: JSON.stringify(scriptEncryption),
+          };
+          const response = await dispatch(dealRegFormScript(desktopAppData));
+          if (response) {
+            showIsSubmitLoginForm(false);
+          }
+        } else if (
+          SubmitDealRegFormData?.type === 'self_registered' ||
+          salesforceData?.data?.rosdealregai__Registration_Type__c ===
+            'self_registered'
+        ) {
+          console.error('Failed to create script data.');
+          notification?.open({
+            message:
+              "Form submitted successfully, but it won't launch as it's a Self Registered form.",
+            type: 'info',
+          });
+          showIsSubmitLoginForm(false);
+        }
+        if (!isCanvas) {
+          try {
+            await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
+              (response: {payload: any}) => {
+                if (response?.payload) {
+                  dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+                  showIsSubmitLoginForm(false);
+                }
+              },
+            );
+          } catch (error) {
+            console.error('Error updating deal registration status:', error);
+          }
         }
       } catch (error) {
         console.error('Error running script:', error);
+      } finally {
+        setShowSubmitFormModal(false);
+        submitDealRegForm.resetFields();
       }
-      setShowSubmitFormModal(false);
-      submitDealRegForm.resetFields();
     }
   };
 
@@ -210,7 +243,9 @@ const DealRegDetail = () => {
 
   const createScript = async (dealData: any, isSalesForce: any) => {
     try {
-      let finalMainData = {...dealData}; // Initialize with a shallow copy of dealData
+      // Initialize finalMainData with a shallow copy of dealData
+      let finalMainData = {...dealData};
+
       if (isSalesForce) {
         // Process and decrypt unique form data
         const uniqueDataRaw = dealData?.data?.unique_form_data?.replace(
@@ -233,15 +268,30 @@ const DealRegDetail = () => {
           console.error('unique_form_data is missing or invalid');
         }
       }
+
       const {PartnerProgram, unique_form_data} = finalMainData;
-      let finalUniqueData;
-      finalUniqueData = unique_form_data && JSON.parse(unique_form_data);
-      if (isSalesForce) {
-        finalUniqueData = finalUniqueData && JSON.parse(finalUniqueData);
+
+      if (!PartnerProgram) {
+        console.error('PartnerProgram is missing in dealData');
+        return null; // Exit early if PartnerProgram is missing
       }
-      const template =
-        PartnerProgram?.form_data &&
-        JSON.parse(PartnerProgram?.form_data)?.[0]?.content;
+
+      let finalUniqueData;
+      if (unique_form_data) {
+        try {
+          finalUniqueData = JSON.parse(unique_form_data);
+          if (isSalesForce && typeof finalUniqueData === 'string') {
+            finalUniqueData = JSON.parse(finalUniqueData); // Parse again if needed
+          }
+        } catch (error) {
+          console.error('Error parsing unique_form_data:', error);
+          finalUniqueData = null; // Fallback to null on parsing error
+        }
+      }
+
+      const template = PartnerProgram?.form_data
+        ? JSON.parse(PartnerProgram.form_data)?.[0]?.content
+        : null;
 
       if (PartnerProgram?.PartnerPassword?.password && !isSalesForce) {
         const [iv, encryptedData] =
@@ -264,11 +314,13 @@ const DealRegDetail = () => {
         }
       }
 
-      const newFormData = processFormData(template, finalUniqueData);
-      let updatedData;
-      if (newFormData) {
-        updatedData = dependentFieldProcess(template, newFormData);
-      }
+      const newFormData = template
+        ? processFormData(template, finalUniqueData)
+        : null;
+      let updatedData = newFormData
+        ? dependentFieldProcess(template, newFormData)
+        : null;
+
       const finalData = {
         username: isSalesForce
           ? finalMainData?.credentials?.username
@@ -282,10 +334,29 @@ const DealRegDetail = () => {
           : PartnerProgram?.script,
         isLoginStep: PartnerProgram?.login_step,
       };
+
+      // Validation function to check if finalData is complete
+      const isFinalDataValid = (data: any) => {
+        // List of required fields
+        const requiredFields = ['script'];
+        // const requiredFields = ['username', 'password', 'data', 'script'];
+
+        // Ensure each required field is present and has a truthy value
+        return requiredFields.every((field) => data[field]);
+      };
+
+      // Check if finalData is complete before calling processScript
+      if (!isFinalDataValid(finalData)) {
+        console.log('Final data is incomplete. Skipping processScript.');
+        return; // Exit the function if finalData is incomplete
+      }
+
       const processScriptData = processScript(finalData);
       if (processScriptData) {
         return processScriptData;
       }
+
+      return null; // Return null if processScriptData is not generated
     } catch (error) {
       showIsSubmitLoginForm(false);
       console.error('Error in createScript:', error);

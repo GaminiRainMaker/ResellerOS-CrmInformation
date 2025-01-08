@@ -13,7 +13,7 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
   const [tabItems, setTabItems] = useState([]);
   const {finalUpdatedDealRegData} = useAppSelector((state) => state.dealReg);
   const {queryData} = useAppSelector((state) => state.attributeField);
-
+  const {isCanvas} = useAppSelector((state) => state.canvas);
   useEffect(() => {
     if (!finalUpdatedDealRegData) {
       setTabItems([]);
@@ -25,6 +25,16 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
       finalUpdatedDealRegData
         ?.map((element: any) => {
           const {Partner, PartnerProgram} = element;
+
+          // Conditional checks based on Iscanvas
+          // if (
+          //   (isCanvas &&
+          //     element?.rosdealregai__Registration_Type__c !== 'registered') ||
+          //   (!isCanvas && element?.type !== 'registered')
+          // ) {
+          //   return null;
+          // }
+
           const tabPercentage = calculateTabBarPercentage(
             element?.PartnerProgram?.form_data,
             queryData,
@@ -93,6 +103,11 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
               ensure all required fields are filled out to see your form in this
               list.
             </li>
+            {/* <br />
+            <li>
+              <b>Self Registered </b>
+              partner registrations will not be displayed in the list.
+            </li> */}
           </ul>
         </Typography>
       </div>
