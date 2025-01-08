@@ -25,6 +25,14 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
       finalUpdatedDealRegData
         ?.map((element: any) => {
           const {Partner, PartnerProgram} = element;
+          // Filter to include only elements where type is 'registered'
+          if (
+            element?.type !== 'registered' ||
+            element?.rosdealregai__Registration_Type__c !== 'registered'
+          ) {
+            return null;
+          }
+
           const tabPercentage = calculateTabBarPercentage(
             element?.PartnerProgram?.form_data,
             queryData,
@@ -92,6 +100,11 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
               Only forms that are 100% complete are displayed here. Please
               ensure all required fields are filled out to see your form in this
               list.
+            </li>
+            <br />
+            <li>
+              <b>Self Registered </b>
+              partner registrations will not be displayed in the list.
             </li>
           </ul>
         </Typography>

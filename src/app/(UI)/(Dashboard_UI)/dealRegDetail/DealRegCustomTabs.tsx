@@ -33,6 +33,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setFinalUpdatedDealRegData} from '../../../../../redux/slices/dealReg';
 import DealRegDetailForm from './DealRegDetailForm';
 import dayjs from 'dayjs';
+import {Badge} from 'antd';
 const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
 
 // Define the prop types for DealRegCustomTabs
@@ -516,6 +517,7 @@ const DealRegCustomTabs = forwardRef<
           const textColor = isActive
             ? token.colorBgContainer
             : token?.colorTextDisabled;
+          const ribbonColor = isActive ? token.colorPrimary : token?.colorInfo;
           return {
             key: id,
             label: (
@@ -524,28 +526,41 @@ const DealRegCustomTabs = forwardRef<
                 gutter={[0, 10]}
                 style={{width: 'fit-content', margin: '24px 0px'}}
               >
-                <DealRegCustomTabHeaderStyle
-                  token={token}
-                  style={headerStyle}
-                  onClick={() => {
-                    setActiveKey(id);
+                <Badge.Ribbon
+                  text="Self Registered"
+                  color={ribbonColor}
+                  style={{
+                    marginRight: '24px',
+                    display:
+                      element?.rosdealregai__Registration_Type__c ===
+                        'self_registered' || element?.type === 'self_registered'
+                        ? ''
+                        : 'none',
                   }}
                 >
-                  <Space>
-                    <CustomProgress
-                      isActive={isActive}
-                      token={token}
-                      percent={tabPercentage || element?.percentage}
-                    />
-                    <Typography
-                      style={{color: textColor}}
-                      cursor="pointer"
-                      name="Button 1"
-                    >
-                      {`${formatStatus(Partner?.partner)} - ${formatStatus(PartnerProgram?.partner_program)}`}
-                    </Typography>
-                  </Space>
-                </DealRegCustomTabHeaderStyle>
+                  <DealRegCustomTabHeaderStyle
+                    token={token}
+                    style={headerStyle}
+                    onClick={() => {
+                      setActiveKey(id);
+                    }}
+                  >
+                    <Space>
+                      <CustomProgress
+                        isActive={isActive}
+                        token={token}
+                        percent={tabPercentage || element?.percentage}
+                      />
+                      <Typography
+                        style={{color: textColor}}
+                        cursor="pointer"
+                        name="Button 1"
+                      >
+                        {`${formatStatus(Partner?.partner)} - ${formatStatus(PartnerProgram?.partner_program)}`}
+                      </Typography>
+                    </Space>
+                  </DealRegCustomTabHeaderStyle>
+                </Badge.Ribbon>
               </Row>
             ),
             children: (
