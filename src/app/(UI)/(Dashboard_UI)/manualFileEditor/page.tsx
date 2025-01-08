@@ -84,10 +84,7 @@ const EditorFile = () => {
   const [existingColumnOptions, setExistingColumnName] = useState<any>();
   const [formulaOptions, setFormulaOptions] = useState<any>();
 
-  const {isCanvas, isDecryptedRecord} = useAppSelector(
-    (state) => state.canvas,
-  );
-
+  const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
 
   // Initialize variables with default values
   let salesForceinstanceUrl: string | undefined;
@@ -460,10 +457,13 @@ const EditorFile = () => {
 
   return (
     <div
-      style={{
-        overflow: salesForceinstanceUrl ? 'auto' : '',
-        maxHeight: salesForceinstanceUrl ? '105vh' : '',
-      }}
+      style={
+        {
+          // background: 'red',
+          // overflow: salesForceinstanceUrl ? 'auto' : '',
+          // maxHeight: salesForceinstanceUrl ? '105vh' : '',
+        }
+      }
     >
       {' '}
       <GlobalLoader loading={nanonetsLoading}>
@@ -580,11 +580,13 @@ const EditorFile = () => {
           </Col>
         </Row>
         <div
-          style={{
-            position: 'relative',
-            maxHeight: '75vh',
-            overflow: 'auto',
-          }}
+          style={
+            {
+              // position: 'relative',
+              // maxHeight: '75vh',
+              // overflow: 'auto',
+            }
+          }
         >
           <HotTable
             data={arrayOflineItem}
