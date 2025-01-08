@@ -400,6 +400,7 @@ const EditorFile = () => {
           setNanonetsLoading(false);
           setMergeedColumnHeader('');
           setArrayOflineItem([]);
+          addNewLine();
           getDataForSalesforce();
 
           // router.replace(
