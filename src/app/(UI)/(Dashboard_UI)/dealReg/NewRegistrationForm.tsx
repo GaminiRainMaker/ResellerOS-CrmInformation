@@ -447,11 +447,11 @@ const NewRegistrationForm: FC<any> = ({
       combinedData = [
         ...(regesteriedPartner ?? [])?.map((obj: any) => ({
           ...obj,
-          type: 'Registered',
+          type: 'registered',
         })),
         ...(selfRegesteriedPartner ?? [])?.map((obj: any) => ({
           ...obj,
-          type: 'Self Registered',
+          type: 'self_registered',
         })),
       ];
     }

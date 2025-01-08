@@ -27,13 +27,13 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
           const {Partner, PartnerProgram} = element;
 
           // Conditional checks based on Iscanvas
-          // if (
-          //   (isCanvas &&
-          //     element?.rosdealregai__Registration_Type__c !== 'registered') ||
-          //   (!isCanvas && element?.type !== 'registered')
-          // ) {
-          //   return null;
-          // }
+          if (
+            (isCanvas &&
+              element?.rosdealregai__Registration_Type__c !== 'registered') ||
+            (!isCanvas && element?.type !== 'registered')
+          ) {
+            return null;
+          }
 
           const tabPercentage = calculateTabBarPercentage(
             element?.PartnerProgram?.form_data,
@@ -103,11 +103,11 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
               ensure all required fields are filled out to see your form in this
               list.
             </li>
-            {/* <br />
+            <br />
             <li>
               <b>Self Registered </b>
               partner registrations will not be displayed in the list.
-            </li> */}
+            </li>
           </ul>
         </Typography>
       </div>

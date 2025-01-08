@@ -3,6 +3,7 @@ export let processFormData = (template: any, finalUniqueData: any) => {
   let labelsWithUserFillTrue = template
     .filter((item: any) => item.user_fill === true)
     .map((item: any) => item.label);
+
   // Transform data keys
   let transformedData = [];
   for (let key in finalUniqueData) {
@@ -16,7 +17,7 @@ export let processFormData = (template: any, finalUniqueData: any) => {
 
       let userFill = labelsWithUserFillTrue.includes(newKey);
 
-      //This Process For Type
+      // This Process For Type
       let matchingTemplateItem = template.find((item: any) => {
         return item.label === newKey;
       });
@@ -29,8 +30,6 @@ export let processFormData = (template: any, finalUniqueData: any) => {
             // Check each dependentFiledArr item for a match
             const dependentMatch = item.dependentFiledArr.find(
               (dependentItem: any) => {
-                // Normalize dependentItem.label if it exists
-
                 finalItem =
                   dependentItem?.label === newKey
                     ? dependentItem
@@ -39,8 +38,8 @@ export let processFormData = (template: any, finalUniqueData: any) => {
                 return dependentItem?.label
                   ? dependentItem?.label === newKey
                   : dependentItem.length > 0
-                    ? dependentItem.find((item: any) => item.label === newKey)
-                    : '';
+                  ? dependentItem.find((item: any) => item.label === newKey)
+                  : '';
               },
             );
 
@@ -53,7 +52,8 @@ export let processFormData = (template: any, finalUniqueData: any) => {
           return false;
         });
       }
-      // Retrieve the name if a match was found; otherwise, default to an empty string
+
+      // Retrieve the type, name, and locater text if a match was found; otherwise, default to an empty string
       let type = matchingTemplateItem
         ? matchingTemplateItem === finalItem
           ? matchingTemplateItem.type
@@ -62,12 +62,17 @@ export let processFormData = (template: any, finalUniqueData: any) => {
       let name = matchingTemplateItem
         ? matchingTemplateItem.customFieldName
         : '';
+      let locater = matchingTemplateItem
+        ? matchingTemplateItem.locater || ''
+        : '';
+
       if (finalUniqueData[key] && (type || name)) {
         transformedData.push({
           [newKey]: finalUniqueData[key],
           userFill: userFill,
-          type: type, // Adding the "name" field from the template
+          type: type, // Adding the "type" field
           name: name,
+          locater: locater, // Adding the "locater" field as text
         });
       }
     }
@@ -77,7 +82,7 @@ export let processFormData = (template: any, finalUniqueData: any) => {
   labelsWithUserFillTrue.forEach((item: any) => {
     let transformedKey = item;
     if (!transformedData.some((d) => Object.keys(d)[0] === transformedKey)) {
-      // Find the corresponding template item to extract Type (name)
+      // Find the corresponding template item to extract Type (name) and locater text
       let matchingTemplateItem = template.find(
         (templateItem: any) => templateItem.label === transformedKey,
       );
@@ -85,12 +90,16 @@ export let processFormData = (template: any, finalUniqueData: any) => {
       let name = matchingTemplateItem
         ? matchingTemplateItem.customFieldName
         : '';
+      let locater = matchingTemplateItem
+        ? matchingTemplateItem.locater || ''
+        : '';
 
       transformedData.push({
         [transformedKey]: '',
         userFill: true,
-        type: type, // Adding the "name" field from the template
+        type: type, // Adding the "type" field
         name: name,
+        locater: locater, // Adding the "locater" field as text
       });
     }
   });
