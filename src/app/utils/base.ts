@@ -140,6 +140,7 @@ export const formbuildernewObject = (newItem: string) => {
     newObjAddedon = {
       name: newItem,
       customFieldName: '',
+      locater: '',
       label: 'Label',
       required: false,
       user_fill: false,
@@ -167,6 +168,7 @@ export const formbuildernewObject = (newItem: string) => {
     newObjAddedon = {
       name: newItem,
       customFieldName: '',
+      locater: '',
 
       label: 'Label',
       type: 'tag',
@@ -183,11 +185,13 @@ export const formbuildernewObject = (newItem: string) => {
     newObjAddedon = {
       name: newItem,
       customFieldName: '',
+      locater: '',
     };
   } else if (newItem === 'Time') {
     newObjAddedon = {
       name: newItem,
       customFieldName: '',
+      locater: '',
 
       label: 'Label',
       user_fill: false,
@@ -203,6 +207,7 @@ export const formbuildernewObject = (newItem: string) => {
     newObjAddedon = {
       name: newItem,
       customFieldName: '',
+      locater: '',
 
       label: 'Label',
       user_fill: false,
@@ -220,6 +225,7 @@ export const formbuildernewObject = (newItem: string) => {
     newObjAddedon = {
       name: newItem,
       customFieldName: '',
+      locater: '',
 
       label: 'Label',
       type: 'number',
@@ -234,6 +240,7 @@ export const formbuildernewObject = (newItem: string) => {
     newObjAddedon = {
       name: newItem,
       customFieldName: '',
+      locater: '',
 
       label: 'Label',
       user_fill: false,
@@ -249,6 +256,7 @@ export const formbuildernewObject = (newItem: string) => {
     newObjAddedon = {
       name: newItem,
       customFieldName: '',
+      locater: '',
 
       label: 'Label',
       type: 'multiple',
@@ -265,6 +273,7 @@ export const formbuildernewObject = (newItem: string) => {
     newObjAddedon = {
       name: newItem,
       customFieldName: '',
+      locater: '',
 
       sectionTitle: 'Section Title',
       Alignemnt: 'left',
@@ -274,6 +283,7 @@ export const formbuildernewObject = (newItem: string) => {
     newObjAddedon = {
       name: newItem,
       customFieldName: '',
+      locater: '',
 
       placeholdertext: 'placeholder text',
       labelOptions: [],
@@ -295,6 +305,7 @@ export const formbuildernewObject = (newItem: string) => {
     newObjAddedon = {
       name: newItem,
       customFieldName: '',
+      locater: '',
 
       label: 'Label',
       type: 'text',
@@ -314,6 +325,7 @@ export const formbuildernewObject = (newItem: string) => {
       type: 'Attachment',
       name: newItem,
       customFieldName: '',
+      locater: '',
     };
   }
   return newObjAddedon;
