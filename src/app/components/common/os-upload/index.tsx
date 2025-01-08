@@ -84,7 +84,8 @@ const OsUpload: React.FC<any> = ({
   useEffect(() => {
     setLoading(true);
     dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
-      setAdvancedSetting(payload?.payload?.advanced_excel);
+      // setAdvancedSetting(payload?.payload?.advanced_excel);
+      setAdvancedSetting(true);
     });
     setLoading(false);
   }, []);
@@ -386,7 +387,7 @@ const OsUpload: React.FC<any> = ({
     return str.toLowerCase().replace(/[^a-z0-9]/g, '');
   }
 
-  const beforeUploadDataForPdf = async (file: File) => {
+  const beforeUploadDataForPdf = async (file: File, modelToProcess: any) => {
     const obj: any = {...file};
     let resultantValues: any;
     let uploadedUrl: any;
@@ -400,188 +401,186 @@ const OsUpload: React.FC<any> = ({
             const doc_url = payload?.payload?.data;
             uploadedUrl = payload?.payload?.data;
             if (doc_url) {
-              await dispatch(getPDFFileData({pdfUrl: doc_url}))?.then(
-                (payload: any) => {
-                  let newArrCheck: any = [];
+              await dispatch(
+                getPDFFileData({pdfUrl: doc_url, processBy: modelToProcess}),
+              )?.then((payload: any) => {
+                let newArrCheck: any = [];
 
-                  if (lineItemSyncingData && lineItemSyncingData?.length > 0) {
-                    lineItemSyncingData?.map((items: any) => {
-                      let resultString = items?.pdf_header?.replace(/\s+/g, '');
-                      newArrCheck?.push(resultString);
-                    });
-                  }
+                if (lineItemSyncingData && lineItemSyncingData?.length > 0) {
+                  lineItemSyncingData?.map((items: any) => {
+                    let resultString = items?.pdf_header?.replace(/\s+/g, '');
+                    newArrCheck?.push(resultString);
+                  });
+                }
 
-                  let mainItem = payload?.payload?.analyzeResult?.tables;
-                  let globalArr: any = [];
-                  let resultTantArrr: any = [];
+                let mainItem = payload?.payload?.analyzeResult?.tables;
+                let globalArr: any = [];
+                let resultTantArrr: any = [];
 
-                  for (let i = 0; i < mainItem?.length; i++) {
-                    let innerIntems = mainItem[i];
-                    if (innerIntems?.cells?.[0]?.kind === 'columnHeader') {
-                      let result: any = [];
+                for (let i = 0; i < mainItem?.length; i++) {
+                  let innerIntems = mainItem[i];
+                  if (innerIntems?.cells?.[0]?.kind === 'columnHeader') {
+                    let result: any = [];
 
-                      // Step 1: Extract headers from column headers
-                      let headers: any = {};
-                      innerIntems?.cells.forEach((item: any) => {
-                        if (item.kind === 'columnHeader') {
-                          headers[item.columnIndex] = item.content?.trim(); // Store headers by their column index
-                        }
-                      });
-
-                      // Step 2: Create the output based on the headers and rows
-                      innerIntems?.cells.forEach((row: any) => {
-                        if (row.rowIndex > 0) {
-                          // Skip the header row
-                          // Check if we need to push a new object
-                          if (!result[row.rowIndex - 1]) {
-                            result[row.rowIndex - 1] = {}; // Initialize a new object for this row
-                          }
-
-                          // Assign content to the respective header using columnIndex
-                          if (row.columnIndex in headers) {
-                            result[row.rowIndex - 1][headers[row.columnIndex]] =
-                              row.content; // Assign content for the matching column
-                          }
-                        }
-                      });
-                      globalArr?.push(result);
-                    }
-                  }
-
-                  if (globalArr && globalArr?.length > 1) {
-                    const flattenedArray = globalArr?.flat();
-
-                    const uniqueKeys = Array.from(
-                      new Set(
-                        flattenedArray.flatMap((obj: any) => Object.keys(obj)),
-                      ),
-                    );
-                    const resultArray = flattenedArray.map((obj: any) => {
-                      const newObj: any = {};
-                      uniqueKeys.forEach((key: any) => {
-                        newObj[key] = obj[key] !== undefined ? obj[key] : '';
-                      });
-
-                      return newObj;
-                    });
-                    const transformObjects = (arr: any) => {
-                      const transformedArray = arr.map(
-                        (obj: any, index: number) => {
-                          if (obj[''] !== undefined) {
-                            obj[`emptyHeader ${index}`] = obj[''];
-                            delete obj[''];
-                          }
-                          return obj;
-                        },
-                      );
-                      return transformedArray;
-                    };
-
-                    // Apply transformation
-                    let result = transformObjects(resultArray);
-                    const cleanKeys = (obj: any) => {
-                      const cleanedObj: any = {};
-                      // Iterate over each key-value pair in the object
-                      for (const [key, value] of Object.entries(obj)) {
-                        // Remove special characters (e.g., periods, spaces) from the key
-                        const cleanedKey: any = key.replace(/[^\w]/g, '');
-                        cleanedObj[cleanedKey] = value;
+                    // Step 1: Extract headers from column headers
+                    let headers: any = {};
+                    innerIntems?.cells.forEach((item: any) => {
+                      if (item.kind === 'columnHeader') {
+                        headers[item.columnIndex] = item.content?.trim(); // Store headers by their column index
                       }
-                      return cleanedObj;
-                    };
+                    });
 
-                    const cleanArray = (arr: any) => {
-                      // Apply the cleanKeys function to each object in the array
-                      return arr.map(cleanKeys);
-                    };
+                    // Step 2: Create the output based on the headers and rows
+                    innerIntems?.cells.forEach((row: any) => {
+                      if (row.rowIndex > 0) {
+                        // Skip the header row
+                        // Check if we need to push a new object
+                        if (!result[row.rowIndex - 1]) {
+                          result[row.rowIndex - 1] = {}; // Initialize a new object for this row
+                        }
 
-                    // Clean the array
-                    let cleanedArr = cleanArray(result);
-
-                    // setMergedVaalues(cleanedArr);
-                    // setFinalArrayForMerged(cleanedArr);
-                    // setUploadedFileData(cleanedArr);
-                    resultTantArrr = [...cleanedArr];
-                  } else {
-                    resultTantArrr = [...globalArr?.[0]];
-                  }
-                  const removeSpecialCharactersFromArrayOfObjects = (
-                    arr: any,
-                  ) => {
-                    return arr.map((obj: any) => {
-                      const cleanedObj: any = {};
-
-                      // Iterate over the keys of each object
-                      for (const key in obj) {
-                        if (obj.hasOwnProperty(key)) {
-                          // Clean the key by removing special characters
-                          const cleanedKey = key.replace(/[^a-zA-Z0-9_]/g, ''); // Only allow alphanumeric characters and underscores
-
-                          // Add the cleaned key and its value to the new object
-                          cleanedObj[cleanedKey] = obj[key];
+                        // Assign content to the respective header using columnIndex
+                        if (row.columnIndex in headers) {
+                          result[row.rowIndex - 1][headers[row.columnIndex]] =
+                            row.content; // Assign content for the matching column
                         }
                       }
-
-                      return cleanedObj;
                     });
-                  };
-                  const cleanedArr =
-                    removeSpecialCharactersFromArrayOfObjects(resultTantArrr);
+                    globalArr?.push(result);
+                  }
+                }
 
-                  let transformedArrForLOwerCase = cleanedArr.map(
-                    (item: any) => {
-                      let newItem: any = {};
-                      for (let key in item) {
-                        // Remove spaces, periods, hashes, and other non-alphanumeric characters, and convert to lowercase
-                        let newKey = key
-                          .replace(/[^\w\s]/g, '')
-                          .replace(/\s+/g, '')
-                          .toLowerCase()
-                          ?.trim();
+                if (globalArr && globalArr?.length > 1) {
+                  const flattenedArray = globalArr?.flat();
 
-                        // Assign the value to the new key
-                        newItem[newKey?.trim()] = item[key].trim();
-                      }
-                      return newItem;
-                    },
+                  const uniqueKeys = Array.from(
+                    new Set(
+                      flattenedArray.flatMap((obj: any) => Object.keys(obj)),
+                    ),
                   );
+                  const resultArray = flattenedArray.map((obj: any) => {
+                    const newObj: any = {};
+                    uniqueKeys.forEach((key: any) => {
+                      newObj[key] = obj[key] !== undefined ? obj[key] : '';
+                    });
 
-                  resultantValues = transformedArrForLOwerCase?.map(
-                    (obj: any) => {
-                      const newObj: any = {};
-                      lineItemSyncingData?.forEach((mapping: any) => {
+                    return newObj;
+                  });
+                  const transformObjects = (arr: any) => {
+                    const transformedArray = arr.map(
+                      (obj: any, index: number) => {
+                        if (obj[''] !== undefined) {
+                          obj[`emptyHeader ${index}`] = obj[''];
+                          delete obj[''];
+                        }
+                        return obj;
+                      },
+                    );
+                    return transformedArray;
+                  };
+
+                  // Apply transformation
+                  let result = transformObjects(resultArray);
+                  const cleanKeys = (obj: any) => {
+                    const cleanedObj: any = {};
+                    // Iterate over each key-value pair in the object
+                    for (const [key, value] of Object.entries(obj)) {
+                      // Remove special characters (e.g., periods, spaces) from the key
+                      const cleanedKey: any = key.replace(/[^\w]/g, '');
+                      cleanedObj[cleanedKey] = value;
+                    }
+                    return cleanedObj;
+                  };
+
+                  const cleanArray = (arr: any) => {
+                    // Apply the cleanKeys function to each object in the array
+                    return arr.map(cleanKeys);
+                  };
+
+                  // Clean the array
+                  let cleanedArr = cleanArray(result);
+
+                  // setMergedVaalues(cleanedArr);
+                  // setFinalArrayForMerged(cleanedArr);
+                  // setUploadedFileData(cleanedArr);
+                  resultTantArrr = [...cleanedArr];
+                } else {
+                  resultTantArrr = [...globalArr?.[0]];
+                }
+                const removeSpecialCharactersFromArrayOfObjects = (
+                  arr: any,
+                ) => {
+                  return arr.map((obj: any) => {
+                    const cleanedObj: any = {};
+
+                    // Iterate over the keys of each object
+                    for (const key in obj) {
+                      if (obj.hasOwnProperty(key)) {
+                        // Clean the key by removing special characters
+                        const cleanedKey = key.replace(/[^a-zA-Z0-9_]/g, ''); // Only allow alphanumeric characters and underscores
+
+                        // Add the cleaned key and its value to the new object
+                        cleanedObj[cleanedKey] = obj[key];
+                      }
+                    }
+
+                    return cleanedObj;
+                  });
+                };
+                const cleanedArr =
+                  removeSpecialCharactersFromArrayOfObjects(resultTantArrr);
+
+                let transformedArrForLOwerCase = cleanedArr.map((item: any) => {
+                  let newItem: any = {};
+                  for (let key in item) {
+                    // Remove spaces, periods, hashes, and other non-alphanumeric characters, and convert to lowercase
+                    let newKey = key
+                      .replace(/[^\w\s]/g, '')
+                      .replace(/\s+/g, '')
+                      .toLowerCase()
+                      ?.trim();
+
+                    // Assign the value to the new key
+                    newItem[newKey?.trim()] = item[key].trim();
+                  }
+                  return newItem;
+                });
+
+                resultantValues = transformedArrForLOwerCase?.map(
+                  (obj: any) => {
+                    const newObj: any = {};
+                    lineItemSyncingData?.forEach((mapping: any) => {
+                      // console.log(
+                      //   '43543543432',
+                      //   mapping?.pdf_header,
+                      //   transformString(mapping?.pdf_header),
+                      // );
+
+                      if (transformString(mapping?.pdf_header) in obj) {
                         // console.log(
                         //   '43543543432',
+                        //   mapping?.quote_header,
                         //   mapping?.pdf_header,
-                        //   transformString(mapping?.pdf_header),
                         // );
+                        newObj[mapping?.quote_header] =
+                          obj[transformString(mapping?.pdf_header)];
+                      }
+                    });
 
-                        if (transformString(mapping?.pdf_header) in obj) {
-                          // console.log(
-                          //   '43543543432',
-                          //   mapping?.quote_header,
-                          //   mapping?.pdf_header,
-                          // );
-                          newObj[mapping?.quote_header] =
-                            obj[transformString(mapping?.pdf_header)];
-                        }
-                      });
-
-                      Object.entries(obj).forEach(([key, value]) => {
-                        if (
-                          !lineItemSyncingData?.some(
-                            (mapping: any) =>
-                              transformString(mapping?.pdf_header) === key,
-                          )
-                        ) {
-                          newObj[key] = value;
-                        }
-                      });
-                      return newObj;
-                    },
-                  );
-                },
-              );
+                    Object.entries(obj).forEach(([key, value]) => {
+                      if (
+                        !lineItemSyncingData?.some(
+                          (mapping: any) =>
+                            transformString(mapping?.pdf_header) === key,
+                        )
+                      ) {
+                        newObj[key] = value;
+                      }
+                    });
+                    return newObj;
+                  },
+                );
+              });
             }
           },
         );
@@ -640,7 +639,6 @@ const OsUpload: React.FC<any> = ({
         }
       }
 
-      console.log('werwwwwe', obj);
       if (
         !obj.error &&
         obj?.model_id &&
@@ -742,7 +740,7 @@ const OsUpload: React.FC<any> = ({
 
           obj = {...obj, ...dataa};
         } else {
-          const dataa = await beforeUploadDataForPdf(obj?.file);
+          const dataa = await beforeUploadDataForPdf(obj?.file, obj?.model_id);
 
           obj = {...obj, ...dataa};
         }

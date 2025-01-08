@@ -457,12 +457,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       let newObj = {
         ...items,
       };
-      if (
-        salesFOrceAccoutFlow === 'true' ||
-        salesFOrceAccoutFlow ||
-        salesFOrceManual ||
-        salesFOrceManual === 'true'
-      ) {
+      if (salesFOrceAccoutFlow === 'true' || salesFOrceAccoutFlow) {
         newObj.AccountId = salesFOrceAccoutId;
       } else {
         (newObj.rosquoteai__File_Name__c = currentFileData?.file_name),
@@ -518,6 +513,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         setNanonetsLoading(false);
         return;
       }
+      setNanonetsLoading(false);
+
       if (
         (!findProduct || findProduct === undefined) &&
         (salesFOrceManual === 'true' || salesFOrceManual)
@@ -607,6 +604,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         return;
       }
     }
+
     const newrrLineItems: any = [];
     const rebateDataArray: any = [];
     const contractProductArray: any = [];

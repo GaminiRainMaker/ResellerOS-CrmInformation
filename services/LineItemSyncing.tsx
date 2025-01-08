@@ -25,4 +25,6 @@ export const LINEITEM_SYNCING_API = {
     >,
   postManual: (data: any) =>
     post(API.LINEITEM_SYNCING.postManual, data) as Promise<AxiosResponse<any>>,
+  updateLineItemSyncingByIdForAsssert: (data: any) =>
+    post(API.LINEITEM_SYNCING.updateLineItemSyncingByIdForAsssert, data) as Promise<AxiosResponse<any>>,
 };
