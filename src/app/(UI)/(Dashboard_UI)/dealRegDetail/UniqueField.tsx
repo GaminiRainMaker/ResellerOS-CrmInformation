@@ -146,8 +146,16 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
               ) : itemCon?.name === 'Date' ? (
                 <>
                   <CommonDatePicker
-                    format="MMM D, YYYY"
+                    format={
+                      itemCon?.dateformat ? itemCon?.dateformat : 'MMM D, YYYY'
+                    }
+                    value={
+                      form.getFieldValue(dateName)
+                        ? dayjs(form.getFieldValue(dateName))
+                        : null
+                    } // Load date correctly
                     placeholder={itemCon?.dateformat}
+                    showTime={false}
                     onChange={(date, dateString) => {
                       // Check if date is valid using Day.js
                       const parsedDate = date ? dayjs(date) : null;

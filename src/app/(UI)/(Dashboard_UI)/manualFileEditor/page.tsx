@@ -546,6 +546,7 @@ const EditorFile = () => {
             {currentFileData?.file_name}
           </Typography>
         )}
+
         <Row
           gutter={[32, 16]}
           style={{marginTop: '10px', marginBottom: '40px'}}
@@ -650,13 +651,11 @@ const EditorFile = () => {
           </Col>
         </Row>
         <div
-          style={
-            {
-              // position: 'relative',
-              // maxHeight: '75vh',
-              // overflow: 'auto',
-            }
-          }
+          style={{
+            position: 'relative',
+            maxHeight: salesForceinstanceUrl ? '60vh' : '75vh',
+            overflow: 'auto',
+          }}
         >
           <HotTable
             data={arrayOflineItem}
