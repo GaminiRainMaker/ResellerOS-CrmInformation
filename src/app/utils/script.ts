@@ -5,7 +5,6 @@ export let processFormData = (template: any, finalUniqueData: any) => {
   let labelsWithUserFillTrue = template
     .filter((item: any) => item.user_fill === true)
     .map((item: any) => item.label);
-
   // Transform data keys
   let transformedData = [];
   for (let key in finalUniqueData) {
@@ -21,7 +20,7 @@ export let processFormData = (template: any, finalUniqueData: any) => {
 
       // This Process For Type
       let matchingTemplateItem = template.find((item: any) => {
-        return item.label === newKey;
+        return item?.label?.trim() === newKey;
       });
       let finalItem: any;
 
@@ -337,7 +336,7 @@ export let processScript = (finalObj: {
                       objItem?.name
                         .replace(/[^a-zA-Z0-9]/g, '')
                         .includes(lineName)) ||
-                    (!excludedKeys.includes(key.toLowerCase()) &&
+                    (lineName &&
                       objItem?.locater &&
                       objItem?.locater
                         .replace(/[^a-zA-Z0-9]/g, '')
