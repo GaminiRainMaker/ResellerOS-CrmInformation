@@ -358,7 +358,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     updatedData?.map((items: any) => {
       let findThevalue = lineItemSyncingData?.find(
         (itemInn: any) =>
-          itemInn?.pdf_header === items?.pdf_header?.toString()?.toLowerCase(),
+          itemInn?.pdf_header ===
+            items?.pdf_header?.toString()?.toLowerCase() &&
+          itemInn?.status !== 'Rejected',
         //  &&
         // itemInn?.quote_header === items?.quote_header &&
         // (itemInn?.status === 'Pending' || itemInn?.status === 'Approved'),
@@ -402,13 +404,15 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             itemInn?.pdf_header ===
               items?.pdf_header?.toString()?.toLowerCase() &&
             itemInn?.is_salesforce &&
-            itemInn?.life_boat_salesforce,
+            itemInn?.life_boat_salesforce &&
+            itemInn?.status !== 'Rejected',
         );
         if (!findThevalue) {
           updatedArrForAddingLineItemSyncFOrSales?.push({
             ...items,
             pdf_header: items?.pdf_header?.toLowerCase(),
             life_boat_salesforce: true,
+
             assert_mapping:
               salesFOrceAccoutFlow === 'true' ||
               salesFOrceAccoutFlow ||
