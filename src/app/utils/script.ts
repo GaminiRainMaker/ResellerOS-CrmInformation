@@ -274,7 +274,7 @@ export let processScript = (finalObj: {
         });
       });
     },{ timeout: 900000 });
-    await page.waitForTimeout(900000);
+    await page.waitForTimeout(90000);
     `;
 
             newScript.push(data);
