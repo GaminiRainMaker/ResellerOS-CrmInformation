@@ -5,7 +5,6 @@ export let processFormData = (template: any, finalUniqueData: any) => {
   let labelsWithUserFillTrue = template
     .filter((item: any) => item.user_fill === true)
     .map((item: any) => item.label);
-
   // Transform data keys
   let transformedData = [];
   for (let key in finalUniqueData) {
@@ -21,7 +20,7 @@ export let processFormData = (template: any, finalUniqueData: any) => {
 
       // This Process For Type
       let matchingTemplateItem = template.find((item: any) => {
-        return item.label === newKey;
+        return item?.label?.trim() === newKey;
       });
       let finalItem: any;
 
@@ -300,11 +299,21 @@ export let processScript = (finalObj: {
 
                 lineLabel = nameMatch[1].replace(/\s+/g, '').trim();
               }
-              const labelMatch = currentLine.match(
-                /getByLabel\('(\*?\s*)(.*?)'\)/,
-              );
-              if (labelMatch) {
-                lineLabel = labelMatch[2].replace(/\s+/g, '').trim();
+              if (
+                currentLine.includes('getByLabel') &&
+                currentLine.includes('exact')
+              ) {
+                const labelMatch = currentLine.match(/getByLabel\('([^']+)'/);
+                if (labelMatch) {
+                  lineLabel = labelMatch[1].replace(/\s+/g, '').trim();
+                }
+              } else {
+                const labelMatch = currentLine.match(
+                  /getByLabel\('(\*?\s*)(.*?)'\)/,
+                );
+                if (labelMatch) {
+                  lineLabel = labelMatch[2].replace(/\s+/g, '').trim();
+                }
               }
 
               const locatorRegex = /page\.locator\((['"`])([^'"`]+)\1\)/;
@@ -325,6 +334,11 @@ export let processScript = (finalObj: {
                     (lineName &&
                       objItem?.name &&
                       objItem?.name
+                        .replace(/[^a-zA-Z0-9]/g, '')
+                        .includes(lineName)) ||
+                    (lineName &&
+                      objItem?.locater &&
+                      objItem?.locater
                         .replace(/[^a-zA-Z0-9]/g, '')
                         .includes(lineName)),
                 ),
@@ -349,6 +363,7 @@ export let processScript = (finalObj: {
                   if (
                     label !== 'userFill' &&
                     value &&
+                    label !== 'locater' &&
                     label !== 'name' &&
                     label !== 'type' &&
                     label !== 'dateformat' &&
@@ -385,11 +400,21 @@ export let processScript = (finalObj: {
                       } else if (
                         !label.includes('State') &&
                         !label.includes('Country') &&
-                        !dataObj.name
+                        !dataObj.name &&
+                        !dataObj.locater
                       ) {
-                        newScript.push(
-                          `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 50000 });`,
-                        );
+                        if (
+                          currentLine.includes('getByLabel') &&
+                          currentLine.includes('exact')
+                        ) {
+                          newScript.push(
+                            `await page.getByLabel('${dataObj.locater ? dataObj.locater : label}',{ exact: true }).waitFor({ state: 'visible', timeout: 50000 });`,
+                          );
+                        } else {
+                          newScript.push(
+                            `await page.getByLabel('${dataObj.locater ? dataObj.locater : label}').waitFor({ state: 'visible', timeout: 50000 });`,
+                          );
+                        }
                       }
                       let data = `
     
@@ -397,17 +422,23 @@ export let processScript = (finalObj: {
                           dataObj.type.toLowerCase().includes('text') ||
                           dataObj.type.toLowerCase().includes('email') ||
                           dataObj.type.toLowerCase().includes('date')
-                            ? dataObj.name
-                              ? `await page.locator('${dataObj.type.toLowerCase() === 'textarea' ? 'textarea' : 'input'}[name="${dataObj.name}"]').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');
+                            ? dataObj.locater
+                              ? `await page.locator('${dataObj.locater}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');
 `
-                              : `await page.getByLabel('${label}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');`
+                              : dataObj.name
+                                ? `await page.locator('${dataObj.type.toLowerCase() === 'textarea' ? 'textarea' : 'input'}[name="${dataObj.name}"]').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');
+`
+                                : currentLine.includes('getByLabel') &&
+                                    currentLine.includes('exact')
+                                  ? `await page.getByLabel('${dataObj.locater ? dataObj.locater : label}',{ exact: true }).fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');`
+                                  : `await page.getByLabel('${dataObj.locater ? dataObj.locater : label}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');`
                             : dataObj.type.toLowerCase().includes('select') ||
                                 dataObj.type.toLowerCase().includes('drop')
                               ? dataObj.name
                                 ? `await page.locator('select[name="${dataObj.name}"]').selectOption('${value}');`
                                 : currentLine.includes('selectOption')
                                   ? `${currentLine.split('.selectOption')[0]}
-                                      .selectOption('${value}')`
+                                      .selectOption('${value}');`
                                   : `await page.getByLabel('${label}').selectOption('${value}');`
                               : `await page.getByText('${value}').click();`
                         }
