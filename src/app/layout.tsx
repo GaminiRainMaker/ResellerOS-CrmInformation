@@ -20,7 +20,7 @@ const jakartaSans = Plus_Jakarta_Sans({
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
   // Using useSearchParams inside the component
-  const [locationdata, setLOcationData] = useState<any>();
+  const [locationdata, setLOcationData] = useState<any>('lifeboat');
   const searchParams = useSearchParams();
   const locationToRedirect = searchParams.get('location');
   useEffect(() => {

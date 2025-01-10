@@ -161,6 +161,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   // const salesForceFiledId = searchParams.get('file_Id');
   // const SaleQuoteId = searchParams.get('quote_Id');
   // const salesFOrceManual === true = searchParams.get('manual');
+
+  console.log('43532423423', salesFOrceManual, salesFOrceAccoutFlow);
+
   const fullStackManul = searchParams.get('manualFlow');
 
   const ApprovedQuoteMappingData: any =
@@ -343,14 +346,10 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
               salesFOrceManual
                 ? true
                 : false,
-            assert_mapping:
-              salesFOrceAccoutFlow === 'true' ||
-              salesFOrceAccoutFlow ||
-              salesFOrceManual
-                ? true
-                : false,
+            assert_mapping: salesFOrceAccoutId ? true : false,
           }),
         );
+
     let updatedArrForAddingLineItemSync: any = [];
     updatedData?.map((items: any) => {
       let findThevalue = lineItemSyncingData?.find(
@@ -385,12 +384,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
               status: 'Pending',
               is_salesforce: SaleQuoteId ? true : false,
               life_boat_salesforce: true,
-              assert_mapping:
-                salesFOrceAccoutFlow === 'true' ||
-                salesFOrceAccoutFlow ||
-                salesFOrceManual
-                  ? true
-                  : false,
+              assert_mapping: salesFOrceAccoutId ? true : false,
             }),
           );
 
@@ -398,23 +392,39 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       NewupdatedData?.map((items: any) => {
         let findThevalue = lineItemSyncingData?.find(
           (itemInn: any) =>
-            itemInn?.pdf_header ===
-              items?.pdf_header?.toString()?.toLowerCase() &&
+            // console.log(
+            //   '343243243232',
+            //   itemInn?.pdf_header?.toLowerCase().replace(/\s+/g, '') ===
+            //     items?.pdf_header?.toLowerCase().replace(/\s+/g, ''),
+            //   //  &&
+            //   // itemInn?.is_salesforce &&
+            //   // itemInn?.life_boat_salesforce &&
+            //   // itemInn?.status !== 'Rejected' &&
+            //   // itemInn?.assert_mapping == salesFOrceAccoutId
+            //   // ? true
+            //   // : false,
+            //   itemInn?.pdf_header?.toLowerCase().replace(/\s+/g, ''),
+            //   items?.pdf_header?.toLowerCase().replace(/\s+/g, ''),
+            //   itemInn?.pdf_header?.toLowerCase().replace(/\s+/g, '') ===
+            //     items?.pdf_header?.toLowerCase().replace(/\s+/g, ''),
+            //   itemInn?.is_salesforce,
+            //   itemInn?.life_boat_salesforce,
+            //   itemInn?.status !== 'Rejected',
+            // ),
+            itemInn?.pdf_header?.toLowerCase().replace(/\s+/g, '') ===
+              items?.pdf_header?.toLowerCase().replace(/\s+/g, '') &&
             itemInn?.is_salesforce &&
             itemInn?.life_boat_salesforce &&
             itemInn?.status !== 'Rejected',
         );
+
         if (!findThevalue) {
           updatedArrForAddingLineItemSyncFOrSales?.push({
             ...items,
             pdf_header: items?.pdf_header?.toLowerCase(),
             life_boat_salesforce: true,
-            assert_mapping:
-              salesFOrceAccoutFlow === 'true' ||
-              salesFOrceAccoutFlow ||
-              salesFOrceManual
-                ? true
-                : false,
+
+            assert_mapping: salesFOrceAccoutId ? true : false,
           });
         }
       });
@@ -425,7 +435,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         ),
       );
     }
-
+    setNanonetsLoading(false);
     mergedValue?.map((obj: any) => {
       const newObj: any = {};
       syncedNewValue?.forEach((mapping: any) => {
@@ -599,7 +609,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         });
 
         setNanonetsLoading(false);
-        if (salesFOrceManual === 'true' || salesFOrceManual) {
+        if (salesFOrceManual === 'true' || salesFOrceManual === true) {
           setTimeout(() => {
             checkForNewFileForSalesForce();
           }, 2000);

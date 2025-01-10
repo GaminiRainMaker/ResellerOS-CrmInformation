@@ -18,7 +18,7 @@ import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {formatStatus} from '@/app/utils/CONSTANTS';
-import {formatDate, handleDate} from '@/app/utils/base';
+import {formatDate, formatMailString, handleDate} from '@/app/utils/base';
 import {MinusIcon, PlusIcon} from '@heroicons/react/24/outline';
 import {Checkbox, Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
@@ -35,6 +35,7 @@ import {getUnassignedProgram} from '../../../../../redux/actions/partnerProgram'
 import {getUserByTokenAccess} from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import PartnerAnalytics from './partnerAnalytics';
+import {sendPartnerRequestEmail} from '../../../../../redux/actions/auth';
 
 const Partners: React.FC = () => {
   const [token] = useThemeToken();
@@ -589,6 +590,7 @@ const Partners: React.FC = () => {
   const handleAddNewAssignedPartnerProgramRequest = async (
     id: number,
     userData: any,
+    programName: any,
   ) => {
     // setLoadingForRequest(true);
     let newrr = disableRequest?.length > 0 ? [...disableRequest] : [];
@@ -607,6 +609,12 @@ const Partners: React.FC = () => {
     };
 
     await dispatch(insertAssignPartnerProgram(partnerObj));
+    await dispatch(
+      sendPartnerRequestEmail({
+        organizationName: userData?.organization,
+        programName: formatMailString(programName),
+      }),
+    );
     getPartnerData();
 
     setLoadingForRequest(false);
@@ -644,6 +652,7 @@ const Partners: React.FC = () => {
                   handleAddNewAssignedPartnerProgramRequest(
                     record?.id,
                     userData,
+                    record?.partner_program,
                   );
                 }}
               />
@@ -671,6 +680,7 @@ const Partners: React.FC = () => {
                         handleAddNewAssignedPartnerProgramRequest(
                           record?.id,
                           userData,
+                          record?.partner_program,
                         );
                       }}
                     />

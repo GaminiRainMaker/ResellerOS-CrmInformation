@@ -57,9 +57,14 @@ const SideBar = () => {
   const {cacheAvailableSeats} = useAppSelector((state) => state.cacheFLow);
   const {isCanvas} = useAppSelector((state) => state.canvas);
   const searchParams = useSearchParams()!;
+  // const [canvasState, setCanvasState] = useState<boolean>(true);
   const salesForceUrl = searchParams.get('instance_url');
 
   type MenuItem = Required<MenuProps>['items'][number];
+
+  // useEffect(() => {
+  //   setCanvasState(isCanvas);
+  // }, [isCanvas]);
 
   useEffect(() => {
     if (!!userInformation && !isCanvas && !salesForceUrl) {
@@ -251,13 +256,13 @@ const SideBar = () => {
   //   }
   // };
   // useEffect(() => {
-  //   if (!isCanvas && !salesForceUrl) {
+  //   if (!canvasState && !salesForceUrl) {
   //     getAllCustomerByCache();
   //   }
   // }, [userInformation]);
 
   // useEffect(() => {
-  //   if (!isCanvas && !salesForceUrl) {
+  //   if (!canvasState && !salesForceUrl) {
   //     dispatch(getOranizationSeats(''))?.then((payload: any) => {
   //       dispatch(
   //         setCacheAvailableSeats({

@@ -25,10 +25,11 @@ const CanvasRedirectWrapper = ({children}: Props) => {
 
   useEffect(() => {
     let isCanvas: boolean = false;
+
     if (window.location !== window.parent.location) {
       isCanvas = true;
     }
-
+    
     if (isCanvas) {
       globalThis.Sfdc.canvas.client.refreshSignedRequest((data) => {
         if (data?.payload?.auxiliary?.appApprovalType === 'ADMIN_APPROVED') {
