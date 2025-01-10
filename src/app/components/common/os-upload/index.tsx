@@ -411,101 +411,126 @@ const OsUpload: React.FC<any> = ({
                     newArrCheck?.push(resultString);
                   });
                 }
+                let resultTantArrr: any;
+                let extractedTableKey = Object.keys(
+                  payload?.payload.analyzeResult.documents[0].fields,
+                ).find((key) => key.startsWith('ExtractedTable_'));
+                if (extractedTableKey) {
+                  let extractedModel =
+                    payload?.payload.analyzeResult.documents[0].fields?.[
+                      extractedTableKey
+                    ].valueArray;
+                  resultTantArrr = extractedModel.flat().map((item: any) => {
+                    let valueObject = item.valueObject;
+                    let output: any = {};
 
-                let mainItem = payload?.payload?.analyzeResult?.tables;
-                let globalArr: any = [];
-                let resultTantArrr: any = [];
-
-                for (let i = 0; i < mainItem?.length; i++) {
-                  let innerIntems = mainItem[i];
-                  if (innerIntems?.cells?.[0]?.kind === 'columnHeader') {
-                    let result: any = [];
-
-                    // Step 1: Extract headers from column headers
-                    let headers: any = {};
-                    innerIntems?.cells.forEach((item: any) => {
-                      if (item.kind === 'columnHeader') {
-                        headers[item.columnIndex] = item.content?.trim(); // Store headers by their column index
+                    // Dynamically iterate through the keys of valueObject and extract the valueString
+                    for (let key in valueObject) {
+                      let field = valueObject[key];
+                      if (field && field.valueString !== undefined) {
+                        output[key] = field.valueString;
                       }
+                    }
+
+                    return output;
+                  });
+                } else {
+                  let mainItem = payload?.payload?.analyzeResult?.tables;
+                  let globalArr: any = [];
+                  let resultTantArrr: any = [];
+
+                  for (let i = 0; i < mainItem?.length; i++) {
+                    let innerIntems = mainItem[i];
+                    if (innerIntems?.cells?.[0]?.kind === 'columnHeader') {
+                      let result: any = [];
+
+                      // Step 1: Extract headers from column headers
+                      let headers: any = {};
+                      innerIntems?.cells.forEach((item: any) => {
+                        if (item.kind === 'columnHeader') {
+                          headers[item.columnIndex] = item.content?.trim(); // Store headers by their column index
+                        }
+                      });
+
+                      // Step 2: Create the output based on the headers and rows
+                      innerIntems?.cells.forEach((row: any) => {
+                        if (row.rowIndex > 0) {
+                          // Skip the header row
+                          // Check if we need to push a new object
+                          if (!result[row.rowIndex - 1]) {
+                            result[row.rowIndex - 1] = {}; // Initialize a new object for this row
+                          }
+
+                          // Assign content to the respective header using columnIndex
+                          if (row.columnIndex in headers) {
+                            result[row.rowIndex - 1][headers[row.columnIndex]] =
+                              row.content; // Assign content for the matching column
+                          }
+                        }
+                      });
+                      globalArr?.push(result);
+                    }
+                  }
+
+                  if (globalArr && globalArr?.length > 1) {
+                    const flattenedArray = globalArr?.flat();
+
+                    const uniqueKeys = Array.from(
+                      new Set(
+                        flattenedArray.flatMap((obj: any) => Object.keys(obj)),
+                      ),
+                    );
+                    const resultArray = flattenedArray.map((obj: any) => {
+                      const newObj: any = {};
+                      uniqueKeys.forEach((key: any) => {
+                        newObj[key] = obj[key] !== undefined ? obj[key] : '';
+                      });
+
+                      return newObj;
                     });
+                    const transformObjects = (arr: any) => {
+                      const transformedArray = arr.map(
+                        (obj: any, index: number) => {
+                          if (obj[''] !== undefined) {
+                            obj[`emptyHeader ${index}`] = obj[''];
+                            delete obj[''];
+                          }
+                          return obj;
+                        },
+                      );
+                      return transformedArray;
+                    };
 
-                    // Step 2: Create the output based on the headers and rows
-                    innerIntems?.cells.forEach((row: any) => {
-                      if (row.rowIndex > 0) {
-                        // Skip the header row
-                        // Check if we need to push a new object
-                        if (!result[row.rowIndex - 1]) {
-                          result[row.rowIndex - 1] = {}; // Initialize a new object for this row
-                        }
-
-                        // Assign content to the respective header using columnIndex
-                        if (row.columnIndex in headers) {
-                          result[row.rowIndex - 1][headers[row.columnIndex]] =
-                            row.content; // Assign content for the matching column
-                        }
+                    // Apply transformation
+                    let result = transformObjects(resultArray);
+                    const cleanKeys = (obj: any) => {
+                      const cleanedObj: any = {};
+                      // Iterate over each key-value pair in the object
+                      for (const [key, value] of Object.entries(obj)) {
+                        // Remove special characters (e.g., periods, spaces) from the key
+                        const cleanedKey: any = key.replace(/[^\w]/g, '');
+                        cleanedObj[cleanedKey] = value;
                       }
-                    });
-                    globalArr?.push(result);
+                      return cleanedObj;
+                    };
+
+                    const cleanArray = (arr: any) => {
+                      // Apply the cleanKeys function to each object in the array
+                      return arr.map(cleanKeys);
+                    };
+
+                    // Clean the array
+                    let cleanedArr = cleanArray(result);
+
+                    // setMergedVaalues(cleanedArr);
+                    // setFinalArrayForMerged(cleanedArr);
+                    // setUploadedFileData(cleanedArr);
+                    resultTantArrr = [...cleanedArr];
+                  } else {
+                    resultTantArrr = [...globalArr?.[0]];
                   }
                 }
 
-                if (globalArr && globalArr?.length > 1) {
-                  const flattenedArray = globalArr?.flat();
-
-                  const uniqueKeys = Array.from(
-                    new Set(
-                      flattenedArray.flatMap((obj: any) => Object.keys(obj)),
-                    ),
-                  );
-                  const resultArray = flattenedArray.map((obj: any) => {
-                    const newObj: any = {};
-                    uniqueKeys.forEach((key: any) => {
-                      newObj[key] = obj[key] !== undefined ? obj[key] : '';
-                    });
-
-                    return newObj;
-                  });
-                  const transformObjects = (arr: any) => {
-                    const transformedArray = arr.map(
-                      (obj: any, index: number) => {
-                        if (obj[''] !== undefined) {
-                          obj[`emptyHeader ${index}`] = obj[''];
-                          delete obj[''];
-                        }
-                        return obj;
-                      },
-                    );
-                    return transformedArray;
-                  };
-
-                  // Apply transformation
-                  let result = transformObjects(resultArray);
-                  const cleanKeys = (obj: any) => {
-                    const cleanedObj: any = {};
-                    // Iterate over each key-value pair in the object
-                    for (const [key, value] of Object.entries(obj)) {
-                      // Remove special characters (e.g., periods, spaces) from the key
-                      const cleanedKey: any = key.replace(/[^\w]/g, '');
-                      cleanedObj[cleanedKey] = value;
-                    }
-                    return cleanedObj;
-                  };
-
-                  const cleanArray = (arr: any) => {
-                    // Apply the cleanKeys function to each object in the array
-                    return arr.map(cleanKeys);
-                  };
-
-                  // Clean the array
-                  let cleanedArr = cleanArray(result);
-
-                  // setMergedVaalues(cleanedArr);
-                  // setFinalArrayForMerged(cleanedArr);
-                  // setUploadedFileData(cleanedArr);
-                  resultTantArrr = [...cleanedArr];
-                } else {
-                  resultTantArrr = [...globalArr?.[0]];
-                }
                 const removeSpecialCharactersFromArrayOfObjects = (
                   arr: any,
                 ) => {
