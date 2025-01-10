@@ -18,7 +18,7 @@ import {ArrowDownTrayIcon} from '@heroicons/react/24/outline';
 import {Badge, Form, MenuProps, notification} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {act, useEffect, useState} from 'react';
 import {getAllBundle} from '../../../../../redux/actions/bundle';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
 import {
@@ -81,7 +81,7 @@ const GenerateQuote: React.FC = () => {
   const [api, contextHolder] = notification.useNotification();
   const getQuoteID = searchParams.get('id');
   const isView = searchParams.get('isView');
-  const [activeTab, setActiveTab] = useState<any>('1');
+  const [activeTab, setActiveTab] = useState<any>('0');
 
   const [validationTab, setValidationTab] = useState<boolean>(false);
   const {loading} = useAppSelector((state) => state.quoteLineItem);
@@ -119,7 +119,6 @@ const GenerateQuote: React.FC = () => {
     useState<boolean>(false);
 
   useEffect(() => {
-    console.log('432432432', getQuoteFileDataCount);
     if (getQuoteFileDataCount !== undefined && getQuoteFileDataCount !== null) {
       setFilesCount(Number(getQuoteFileDataCount));
     }
@@ -142,9 +141,11 @@ const GenerateQuote: React.FC = () => {
 
   useEffect(() => {
     if (getQuoteFileDataCount === 0) {
-      setActiveTab('2');
+      setActiveTab('1');
     }
   }, [getQuoteFileDataCount]);
+
+  console.log('324324324234', activeTab);
 
   const getQuoteDetailById = async () => {
     dispatch(getQuoteByIdForFormStack(Number(getQuoteID)))?.then(
