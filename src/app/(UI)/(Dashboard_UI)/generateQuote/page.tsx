@@ -679,7 +679,7 @@ const GenerateQuote: React.FC = () => {
                     ) : (
                       <CommonSelect
                         key={2}
-                        disabled={activeTab === '1'}
+                        disabled={activeTab === '0'}
                         style={{width: '319px'}}
                         placeholder="Select Grouping here"
                         options={selectData}
