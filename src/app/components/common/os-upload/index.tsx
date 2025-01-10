@@ -84,7 +84,7 @@ const OsUpload: React.FC<any> = ({
   useEffect(() => {
     setLoading(true);
     dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
-      setAdvancedSetting(payload?.payload?.advanced_excel);
+      setAdvancedSetting(true);
     });
     setLoading(false);
   }, []);
