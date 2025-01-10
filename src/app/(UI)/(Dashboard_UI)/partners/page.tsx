@@ -613,7 +613,6 @@ const Partners: React.FC = () => {
       sendPartnerRequestEmail({
         organizationName: userData?.organization,
         programName: formatMailString(programName),
-        isNew: false,
       }),
     );
     getPartnerData();
