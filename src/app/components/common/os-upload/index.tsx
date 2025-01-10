@@ -415,7 +415,7 @@ const OsUpload: React.FC<any> = ({
                 let extractedTableKey = Object.keys(
                   payload?.payload.analyzeResult.documents[0].fields,
                 ).find((key) => key.startsWith('ExtractedTable_'));
-                if (extractedTableKey) {
+                if (extractedTableKey && extractedTableKey !== undefined) {
                   let extractedModel =
                     payload?.payload.analyzeResult.documents[0].fields?.[
                       extractedTableKey
@@ -437,7 +437,6 @@ const OsUpload: React.FC<any> = ({
                 } else {
                   let mainItem = payload?.payload?.analyzeResult?.tables;
                   let globalArr: any = [];
-                  let resultTantArrr: any = [];
 
                   for (let i = 0; i < mainItem?.length; i++) {
                     let innerIntems = mainItem[i];
