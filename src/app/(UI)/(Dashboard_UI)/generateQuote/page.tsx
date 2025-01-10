@@ -354,7 +354,7 @@ const GenerateQuote: React.FC = () => {
 
   const TabPaneData = [
     {
-      key: 1,
+      key: '1',
       name: (
         <Badge count={!isNaN(filesCount) ? filesCount : 0}>
           <Typography
@@ -380,7 +380,7 @@ const GenerateQuote: React.FC = () => {
       ),
     },
     {
-      key: 2,
+      key: '2',
       name: (
         <Typography
           name="Body 4/Regular"
@@ -418,7 +418,7 @@ const GenerateQuote: React.FC = () => {
     },
     contractSettingData?.show_validation_tab
       ? {
-          key: 4,
+          key: '4',
           name: (
             <Typography
               name="Body 4/Regular"
@@ -458,7 +458,7 @@ const GenerateQuote: React.FC = () => {
         }
       : null, // Explicitly returning `null` if the condition fails
     {
-      key: 5,
+      key: '5',
       name: (
         <Typography
           name="Body 4/Regular"
@@ -475,7 +475,7 @@ const GenerateQuote: React.FC = () => {
       children: <Metrics selectedFilter={selectedFilter} />,
     },
     {
-      key: 6,
+      key: '6',
       name: (
         <Typography
           name="Body 4/Regular"
@@ -710,7 +710,7 @@ const GenerateQuote: React.FC = () => {
                 console.log('Rendering TabPane:', item);
                 return (
                   <TabPane
-                    key={index}
+                    key={item.key}
                     tab={
                       <Typography name="Body 4/Regular">{item.name}</Typography>
                     }
