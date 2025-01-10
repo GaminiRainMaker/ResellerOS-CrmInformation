@@ -81,7 +81,7 @@ const GenerateQuote: React.FC = () => {
   const [api, contextHolder] = notification.useNotification();
   const getQuoteID = searchParams.get('id');
   const isView = searchParams.get('isView');
-  const [activeTab, setActiveTab] = useState<any>('0');
+  const [activeTab, setActiveTab] = useState<any>('1');
 
   const [validationTab, setValidationTab] = useState<boolean>(false);
   const {loading} = useAppSelector((state) => state.quoteLineItem);
@@ -141,7 +141,7 @@ const GenerateQuote: React.FC = () => {
 
   useEffect(() => {
     if (getQuoteFileDataCount === 0) {
-      setActiveTab('1');
+      setActiveTab('2');
     }
   }, [getQuoteFileDataCount]);
 
@@ -679,7 +679,7 @@ const GenerateQuote: React.FC = () => {
                     ) : (
                       <CommonSelect
                         key={2}
-                        disabled={activeTab === '0'}
+                        disabled={activeTab === '1'}
                         style={{width: '319px'}}
                         placeholder="Select Grouping here"
                         options={selectData}
