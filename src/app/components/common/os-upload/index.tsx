@@ -172,8 +172,6 @@ const OsUpload: React.FC<any> = ({
                   let bestTabsRawData = payload?.payload[bestTab];
                   let indexFrom = -1;
 
-                  console.log('2343242432', bestTabsRawData, bestTab);
-
                   // Find the index of the first row that is null or empty
                   for (let i = 0; i < bestTabsRawData?.length; i++) {
                     if (
@@ -415,7 +413,8 @@ const OsUpload: React.FC<any> = ({
                 let extractedTableKey = Object.keys(
                   payload?.payload.analyzeResult.documents[0].fields,
                 ).find((key) => key.startsWith('ExtractedTable_'));
-                if (extractedTableKey) {
+
+                if (extractedTableKey && extractedTableKey !== undefined) {
                   let extractedModel =
                     payload?.payload.analyzeResult.documents[0].fields?.[
                       extractedTableKey
@@ -437,7 +436,6 @@ const OsUpload: React.FC<any> = ({
                 } else {
                   let mainItem = payload?.payload?.analyzeResult?.tables;
                   let globalArr: any = [];
-                  let resultTantArrr: any = [];
 
                   for (let i = 0; i < mainItem?.length; i++) {
                     let innerIntems = mainItem[i];
