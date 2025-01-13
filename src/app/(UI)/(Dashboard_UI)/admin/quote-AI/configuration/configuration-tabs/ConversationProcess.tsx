@@ -50,7 +50,6 @@ const ConverSationProcess = () => {
   useEffect(() => {
     dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
       setAdvancedSetting(payload?.payload?.advanced_excel);
-      // setAdvancedSetting(true);
     });
   }, []);
   const updateAdvancedSettingdd = async (value: boolean) => {
