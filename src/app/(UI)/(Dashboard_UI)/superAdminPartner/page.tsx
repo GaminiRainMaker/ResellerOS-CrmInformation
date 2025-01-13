@@ -93,6 +93,8 @@ const SuperAdminPartner: React.FC = () => {
   } = useAppSelector((state) => state.partner);
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
   const [formData, setformData] = useState<any>();
+  const [loginTemplateFormData, setLoginTemplateFormData] = useState<any>();
+  const [showLoginTemplateModal, setShowLoginTemplateModal] = useState<any>();
   const [partnerProgramColumns, setPartnerProgramColumns] = useState<any>();
   const [queryDataa, setQueryData] = useState<any>();
   const [updateTheObject, setUpdateTheObject] = useState<any>();
@@ -332,9 +334,13 @@ const SuperAdminPartner: React.FC = () => {
       id: id,
       type: type,
     };
-    dispatch(deletePartnerProgramTemplateData(obj));
-    setOpenPreviewModal(false);
-    dispatch(getAllPartnerandProgramFilterDataForAdmin({}));
+    dispatch(deletePartnerProgramTemplateData(obj)).then((d) => {
+      if (d?.payload) {
+        setOpenPreviewModal(false);
+        setShowLoginTemplateModal(false);
+        getPartnerDataForSuperAdmin();
+      }
+    });
   };
 
   const locale = {
@@ -666,6 +672,44 @@ const SuperAdminPartner: React.FC = () => {
             : 'Create Template'}
         </Typography>
       ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Login Template
+        </Typography>
+      ),
+      dataIndex: 'login_template',
+      key: 'login_template',
+      render: (text: string, record: any) => (
+        <Typography
+          name="Body 4/Medium"
+          hoverOnText
+          color={token?.colorLink}
+          onClick={() => {
+            if (
+              record?.login_template &&
+              record?.login_template?.length > 0 &&
+              !record?.login_template?.includes(null)
+            ) {
+              setShowLoginTemplateModal(true);
+              setLoginTemplateFormData({
+                formObject: JSON?.parse(record?.login_template),
+                Id: record?.id,
+              });
+            } else {
+              console.log('record', record);
+              router?.push(`/formBuilder?id=${record?.id}&loginTemplate=true`);
+            }
+          }}
+        >
+          {record?.login_template?.length > 0 &&
+          !record?.login_template?.includes(null)
+            ? 'View Login Template'
+            : 'Create Login Template'}
+        </Typography>
+      ),
+      width: 200,
     },
     {
       title: (
@@ -1494,6 +1538,52 @@ const SuperAdminPartner: React.FC = () => {
         open={openPreviewModal}
         onCancel={() => {
           setOpenPreviewModal(false);
+          programScriptForm?.resetFields();
+        }}
+      />
+      <OsModal
+        bodyPadding={22}
+        loading={loading}
+        body={
+          <>
+            {' '}
+            <FormBuilderMain
+              cartItems={loginTemplateFormData?.formObject}
+              form={form}
+              // eslint-disable-next-line react/jsx-boolean-value
+              previewFile
+            />
+            <Space
+              align="end"
+              size={8}
+              style={{display: 'flex', justifyContent: 'end'}}
+            >
+              <OsButton
+                buttontype="PRIMARY"
+                text="Delete"
+                clickHandler={() => {
+                  deletePartnerProgramTemplate(
+                    loginTemplateFormData?.Id,
+                    'login_template',
+                  );
+                }}
+              />
+              <OsButton
+                buttontype="SECONDARY"
+                text="EDIT"
+                clickHandler={() => {
+                  router?.push(
+                    `/formBuilder?id=${loginTemplateFormData?.Id}&loginTemplate=true`,
+                  );
+                }}
+              />{' '}
+            </Space>
+          </>
+        }
+        width={900}
+        open={showLoginTemplateModal}
+        onCancel={() => {
+          setShowLoginTemplateModal(false);
           programScriptForm?.resetFields();
         }}
       />
