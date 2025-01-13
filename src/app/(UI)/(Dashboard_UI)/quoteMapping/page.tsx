@@ -266,6 +266,8 @@ const QuoteMappings = () => {
         pdf_header: recordData?.pdf_header,
         id: selectedId,
         status: status,
+        fromSales: recordData?.is_salesforce,
+
         status_date: handleDate(),
         ...(rejectedReason?.type && {
           reason:
