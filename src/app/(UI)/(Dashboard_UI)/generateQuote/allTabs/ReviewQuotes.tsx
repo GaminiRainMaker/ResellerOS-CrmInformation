@@ -16,6 +16,7 @@ import {
   convertToNumber,
   updateTables,
   useRemoveDollarAndCommahook,
+  useRemoveDollarAndCommahookDataa,
 } from '@/app/utils/base';
 import {CheckIcon, XMarkIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
@@ -44,6 +45,7 @@ const ReviewQuotes: FC<any> = ({
   tableColumnDataShow,
   selectedFilter,
   getQuoteDetailById,
+  setActiveTab,
 }) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
@@ -113,24 +115,25 @@ const ReviewQuotes: FC<any> = ({
 
         item?.QuoteLineItems.forEach((quoteLineItem: any) => {
           groupedData[name].QuoteLineItem.push(quoteLineItem);
+          console.log(
+            '24332423432',
+            useRemoveDollarAndCommahookDataa(quoteLineItem?.adjusted_price),
+          );
           groupedData[name].totalAdjustedPrice += Number(
-            useRemoveDollarAndCommahook(
-              quoteLineItem?.adjusted_price &&
-                typeof quoteLineItem?.adjusted_price === 'number'
-                ? quoteLineItem?.adjusted_price
-                : 0,
+            Number(
+              useRemoveDollarAndCommahookDataa(quoteLineItem?.adjusted_price),
             ) *
-              useRemoveDollarAndCommahook(
-                quoteLineItem?.quantity &&
-                  typeof quoteLineItem?.quantity === 'number'
-                  ? quoteLineItem?.quantity
-                  : 0,
-              ),
+              Number(useRemoveDollarAndCommahookDataa(quoteLineItem?.quantity)),
+            // useRemoveDollarAndCommahook(
+            //   quoteLineItem?.quantity &&
+            //     typeof quoteLineItem?.quantity === 'number'
+            //     ? quoteLineItem?.quantity
+            //     : 0,
+            // ),
           );
         });
       }
     });
-    console.log('45643534', groupedData);
 
     setReviewQuotesData(Object.values(groupedData));
     let newArrForPaggination: any = [];
@@ -344,6 +347,7 @@ const ReviewQuotes: FC<any> = ({
         userInformation,
         dispatch,
       );
+      setActiveTab('2');
       getQuoteDetailById();
     } catch (error) {
       console.error('Error updating tables:', error);

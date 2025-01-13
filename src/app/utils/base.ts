@@ -113,6 +113,13 @@ export const useRemoveDollarAndCommahook = (value: any) => {
   return numberD;
 };
 
+export const useRemoveDollarAndCommahookDataa = (value: any) => {
+  const match = value?.toString().match(/(\d+(\.\d+)?)/);
+  if (match) {
+    return match[0];
+  }
+};
+
 export const rebateAmount = (
   cost: number,
   quantity: number,
