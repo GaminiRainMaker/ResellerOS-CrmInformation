@@ -172,8 +172,6 @@ const OsUpload: React.FC<any> = ({
                   let bestTabsRawData = payload?.payload[bestTab];
                   let indexFrom = -1;
 
-                  console.log('2343242432', bestTabsRawData, bestTab);
-
                   // Find the index of the first row that is null or empty
                   for (let i = 0; i < bestTabsRawData?.length; i++) {
                     if (
@@ -386,7 +384,7 @@ const OsUpload: React.FC<any> = ({
     return str.toLowerCase().replace(/[^a-z0-9]/g, '');
   }
 
-  const beforeUploadDataForPdf = async (file: File) => {
+  const beforeUploadDataForPdf = async (file: File, modelToProcess: any) => {
     const obj: any = {...file};
     let resultantValues: any;
     let uploadedUrl: any;
@@ -400,20 +398,44 @@ const OsUpload: React.FC<any> = ({
             const doc_url = payload?.payload?.data;
             uploadedUrl = payload?.payload?.data;
             if (doc_url) {
-              await dispatch(getPDFFileData({pdfUrl: doc_url}))?.then(
-                (payload: any) => {
-                  let newArrCheck: any = [];
+              await dispatch(
+                getPDFFileData({pdfUrl: doc_url, processBy: modelToProcess}),
+              )?.then((payload: any) => {
+                let newArrCheck: any = [];
 
-                  if (lineItemSyncingData && lineItemSyncingData?.length > 0) {
-                    lineItemSyncingData?.map((items: any) => {
-                      let resultString = items?.pdf_header?.replace(/\s+/g, '');
-                      newArrCheck?.push(resultString);
-                    });
-                  }
+                if (lineItemSyncingData && lineItemSyncingData?.length > 0) {
+                  lineItemSyncingData?.map((items: any) => {
+                    let resultString = items?.pdf_header?.replace(/\s+/g, '');
+                    newArrCheck?.push(resultString);
+                  });
+                }
+                let resultTantArrr: any;
+                let extractedTableKey = Object.keys(
+                  payload?.payload.analyzeResult.documents[0].fields,
+                ).find((key) => key.startsWith('ExtractedTable_'));
 
+                if (extractedTableKey && extractedTableKey !== undefined) {
+                  let extractedModel =
+                    payload?.payload.analyzeResult.documents[0].fields?.[
+                      extractedTableKey
+                    ].valueArray;
+                  resultTantArrr = extractedModel.flat().map((item: any) => {
+                    let valueObject = item.valueObject;
+                    let output: any = {};
+
+                    // Dynamically iterate through the keys of valueObject and extract the valueString
+                    for (let key in valueObject) {
+                      let field = valueObject[key];
+                      if (field && field.valueString !== undefined) {
+                        output[key] = field.valueString;
+                      }
+                    }
+
+                    return output;
+                  });
+                } else {
                   let mainItem = payload?.payload?.analyzeResult?.tables;
                   let globalArr: any = [];
-                  let resultTantArrr: any = [];
 
                   for (let i = 0; i < mainItem?.length; i++) {
                     let innerIntems = mainItem[i];
@@ -505,83 +527,82 @@ const OsUpload: React.FC<any> = ({
                   } else {
                     resultTantArrr = [...globalArr?.[0]];
                   }
-                  const removeSpecialCharactersFromArrayOfObjects = (
-                    arr: any,
-                  ) => {
-                    return arr.map((obj: any) => {
-                      const cleanedObj: any = {};
+                }
 
-                      // Iterate over the keys of each object
-                      for (const key in obj) {
-                        if (obj.hasOwnProperty(key)) {
-                          // Clean the key by removing special characters
-                          const cleanedKey = key.replace(/[^a-zA-Z0-9_]/g, ''); // Only allow alphanumeric characters and underscores
+                const removeSpecialCharactersFromArrayOfObjects = (
+                  arr: any,
+                ) => {
+                  return arr.map((obj: any) => {
+                    const cleanedObj: any = {};
 
-                          // Add the cleaned key and its value to the new object
-                          cleanedObj[cleanedKey] = obj[key];
-                        }
+                    // Iterate over the keys of each object
+                    for (const key in obj) {
+                      if (obj.hasOwnProperty(key)) {
+                        // Clean the key by removing special characters
+                        const cleanedKey = key.replace(/[^a-zA-Z0-9_]/g, ''); // Only allow alphanumeric characters and underscores
+
+                        // Add the cleaned key and its value to the new object
+                        cleanedObj[cleanedKey] = obj[key];
                       }
+                    }
 
-                      return cleanedObj;
-                    });
-                  };
-                  const cleanedArr =
-                    removeSpecialCharactersFromArrayOfObjects(resultTantArrr);
+                    return cleanedObj;
+                  });
+                };
+                const cleanedArr =
+                  removeSpecialCharactersFromArrayOfObjects(resultTantArrr);
 
-                  let transformedArrForLOwerCase = cleanedArr.map(
-                    (item: any) => {
-                      let newItem: any = {};
-                      for (let key in item) {
-                        // Remove spaces, periods, hashes, and other non-alphanumeric characters, and convert to lowercase
-                        let newKey = key
-                          .replace(/[^\w\s]/g, '')
-                          .replace(/\s+/g, '')
-                          .toLowerCase()
-                          ?.trim();
+                let transformedArrForLOwerCase = cleanedArr.map((item: any) => {
+                  let newItem: any = {};
+                  for (let key in item) {
+                    // Remove spaces, periods, hashes, and other non-alphanumeric characters, and convert to lowercase
+                    let newKey = key
+                      .replace(/[^\w\s]/g, '')
+                      .replace(/\s+/g, '')
+                      .toLowerCase()
+                      ?.trim();
 
-                        // Assign the value to the new key
-                        newItem[newKey?.trim()] = item[key].trim();
-                      }
-                      return newItem;
-                    },
-                  );
+                    // Assign the value to the new key
+                    newItem[newKey?.trim()] = item[key].trim();
+                  }
+                  return newItem;
+                });
 
-                  resultantValues = transformedArrForLOwerCase?.map(
-                    (obj: any) => {
-                      const newObj: any = {};
-                      lineItemSyncingData?.forEach((mapping: any) => {
+                resultantValues = transformedArrForLOwerCase?.map(
+                  (obj: any) => {
+                    const newObj: any = {};
+                    lineItemSyncingData?.forEach((mapping: any) => {
+                      // console.log(
+                      //   '43543543432',
+                      //   mapping?.pdf_header,
+                      //   transformString(mapping?.pdf_header),
+                      // );
+
+                      if (transformString(mapping?.pdf_header) in obj) {
                         // console.log(
                         //   '43543543432',
+                        //   mapping?.quote_header,
                         //   mapping?.pdf_header,
-                        //   transformString(mapping?.pdf_header),
                         // );
+                        newObj[mapping?.quote_header] =
+                          obj[transformString(mapping?.pdf_header)];
+                      }
+                    });
 
-                        if (transformString(mapping?.pdf_header) in obj) {
-                          // console.log(
-                          //   '43543543432',
-                          //   mapping?.quote_header,
-                          //   mapping?.pdf_header,
-                          // );
-                          newObj[mapping?.quote_header] =
-                            obj[transformString(mapping?.pdf_header)];
-                        }
-                      });
-
-                      Object.entries(obj).forEach(([key, value]) => {
-                        if (
-                          !lineItemSyncingData?.some(
-                            (mapping: any) =>
-                              transformString(mapping?.pdf_header) === key,
-                          )
-                        ) {
-                          newObj[key] = value;
-                        }
-                      });
-                      return newObj;
-                    },
-                  );
-                },
-              );
+                    Object.entries(obj).forEach(([key, value]) => {
+                      if (
+                        !lineItemSyncingData?.some(
+                          (mapping: any) =>
+                            transformString(mapping?.pdf_header) === key,
+                        )
+                      ) {
+                        newObj[key] = value;
+                      }
+                    });
+                    return newObj;
+                  },
+                );
+              });
             }
           },
         );
@@ -640,7 +661,6 @@ const OsUpload: React.FC<any> = ({
         }
       }
 
-      console.log('werwwwwe', obj);
       if (
         !obj.error &&
         obj?.model_id &&
@@ -742,7 +762,7 @@ const OsUpload: React.FC<any> = ({
 
           obj = {...obj, ...dataa};
         } else {
-          const dataa = await beforeUploadDataForPdf(obj?.file);
+          const dataa = await beforeUploadDataForPdf(obj?.file, obj?.model_id);
 
           obj = {...obj, ...dataa};
         }

@@ -18,7 +18,7 @@ import {ArrowDownTrayIcon} from '@heroicons/react/24/outline';
 import {Badge, Form, MenuProps, notification} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {act, useEffect, useState} from 'react';
 import {getAllBundle} from '../../../../../redux/actions/bundle';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
 import {
@@ -119,7 +119,6 @@ const GenerateQuote: React.FC = () => {
     useState<boolean>(false);
 
   useEffect(() => {
-    console.log('432432432', getQuoteFileDataCount);
     if (getQuoteFileDataCount !== undefined && getQuoteFileDataCount !== null) {
       setFilesCount(Number(getQuoteFileDataCount));
     }
@@ -145,6 +144,8 @@ const GenerateQuote: React.FC = () => {
       setActiveTab('2');
     }
   }, [getQuoteFileDataCount]);
+
+  console.log('324324324234', activeTab);
 
   const getQuoteDetailById = async () => {
     dispatch(getQuoteByIdForFormStack(Number(getQuoteID)))?.then(
@@ -353,7 +354,7 @@ const GenerateQuote: React.FC = () => {
 
   const TabPaneData = [
     {
-      key: 1,
+      key: '1',
       name: (
         <Badge count={!isNaN(filesCount) ? filesCount : 0}>
           <Typography
@@ -379,7 +380,7 @@ const GenerateQuote: React.FC = () => {
       ),
     },
     {
-      key: 2,
+      key: '2',
       name: (
         <Typography
           name="Body 4/Regular"
@@ -417,7 +418,7 @@ const GenerateQuote: React.FC = () => {
     },
     contractSettingData?.show_validation_tab
       ? {
-          key: 4,
+          key: '4',
           name: (
             <Typography
               name="Body 4/Regular"
@@ -457,7 +458,7 @@ const GenerateQuote: React.FC = () => {
         }
       : null, // Explicitly returning `null` if the condition fails
     {
-      key: 5,
+      key: '5',
       name: (
         <Typography
           name="Body 4/Regular"
@@ -474,7 +475,7 @@ const GenerateQuote: React.FC = () => {
       children: <Metrics selectedFilter={selectedFilter} />,
     },
     {
-      key: 6,
+      key: '6',
       name: (
         <Typography
           name="Body 4/Regular"
@@ -709,7 +710,7 @@ const GenerateQuote: React.FC = () => {
                 console.log('Rendering TabPane:', item);
                 return (
                   <TabPane
-                    key={index}
+                    key={item.key}
                     tab={
                       <Typography name="Body 4/Regular">{item.name}</Typography>
                     }

@@ -483,6 +483,16 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
             onChange={(e: any) => {
               changeFieldValues(e?.target?.value, 'customFieldName');
             }}
+          />{' '}
+          <Typography name="Body 4/Medium">Locater</Typography>
+          <OsInput
+            style={{width: '100%', marginBottom: '20px'}}
+            placeholder="locater value"
+            defaultValue={CommonIndexOfUse?.locater}
+            value={CommonIndexOfUse?.locater}
+            onChange={(e: any) => {
+              changeFieldValues(e?.target?.value, 'locater');
+            }}
           />
           {NameofTheCurrentFiled === 'Radio Button' ? (
             <></>

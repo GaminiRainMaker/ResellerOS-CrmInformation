@@ -84,10 +84,7 @@ const EditorFile = () => {
   const [existingColumnOptions, setExistingColumnName] = useState<any>();
   const [formulaOptions, setFormulaOptions] = useState<any>();
 
-  const {isCanvas, isDecryptedRecord} = useAppSelector(
-    (state) => state.canvas,
-  );
-
+  const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
 
   // Initialize variables with default values
   let salesForceinstanceUrl: string | undefined;
@@ -131,6 +128,99 @@ const EditorFile = () => {
     lifeboatsalesforce: salesForceinstanceUrl ? true : false,
   });
 
+  const getDataForSalesforce = () => {
+    if (!salesFOrceAccoutId) {
+      if (SaleQuoteId) {
+        let data = {
+          token: salesForceToken,
+          FileId: salesForceFiledId,
+          urls: salesForceinstanceUrl,
+          quoteId: null,
+          file_type: null,
+        };
+
+        let newObj = {
+          file_type: 'Manual',
+          token: salesForceToken,
+          FileId: null,
+          urls: salesForceinstanceUrl,
+          quoteId: SaleQuoteId,
+        };
+
+        let pathTOGo =
+          salesFOrceManual === 'true' || salesFOrceManual === true
+            ? newObj
+            : data;
+        dispatch(getSalesForceFileData(pathTOGo))?.then((payload: any) => {
+          if (!payload?.payload) {
+            if (salesFOrceManual === 'false' || salesFOrceManual === false) {
+              return;
+            }
+            let data = {
+              token: salesForceToken,
+              FileId: null,
+              urls: salesForceinstanceUrl,
+              quoteId: SaleQuoteId,
+              file_type: 'ExportFileToTable',
+            };
+
+            dispatch(getSalesForceFileData(data))?.then((payload: any) => {
+              if (!payload?.payload?.body) {
+                notification?.open({
+                  message: 'Please close the modal!. All the files are updated',
+                  type: 'info',
+                });
+              }
+              if (payload?.payload?.body) {
+                router.replace(
+                  `/fileEditor?quote_Id=${SaleQuoteId}&key=${salesForceToken}&instance_url=${salesForceinstanceUrl}&file_Id=${null}&editLine=false&manual=true`,
+                );
+              }
+              return;
+            });
+
+            return;
+          } else if (payload?.payload?.qliFields) {
+            let newObjFromSalesFOrce = JSON?.parse(payload?.payload?.qliFields);
+            let keysss = Object.keys(newObjFromSalesFOrce);
+            let arrOfOptions: any = [];
+
+            if (keysss) {
+              keysss?.map((items: any) => {
+                arrOfOptions?.push({
+                  label: newObjFromSalesFOrce[items],
+                  value: items,
+                });
+              });
+            }
+
+            setAccoutSyncOptions(arrOfOptions);
+          }
+          let newObj = {
+            file_name: payload?.payload?.title,
+            FileId: payload?.payload?.fileId,
+          };
+          setCurrentFileData(newObj);
+        });
+      } else {
+        if (fullStackManul === 'true') {
+          let data = {
+            id: getQuoteID,
+            type_of_file: 'manual',
+          };
+          dispatch(getfileByQuoteIdWithManual(data))?.then((payload: any) => {
+            setCurrentFileData(payload?.payload);
+          });
+        } else {
+          dispatch(getQuoteFileById(Number(getQuoteFileId)))?.then(
+            (payload: any) => {
+              setCurrentFileData(payload?.payload);
+            },
+          );
+        }
+      }
+    }
+  };
   const addNewLine = () => {
     let newArr = [
       {
@@ -257,69 +347,10 @@ const EditorFile = () => {
 
     setArrayOflineItem(newArrr);
   };
+
   useEffect(() => {
     // SaleQuoteId
-    if (!salesFOrceAccoutId) {
-      if (SaleQuoteId) {
-        let data = {
-          token: salesForceToken,
-          FileId: salesForceFiledId,
-          urls: salesForceinstanceUrl,
-          quoteId: null,
-          file_type: null,
-        };
-
-        let newObj = {
-          file_type: 'Manual',
-          token: salesForceToken,
-          FileId: null,
-          urls: salesForceinstanceUrl,
-          quoteId: SaleQuoteId,
-        };
-
-        let pathTOGo =
-          salesFOrceManual === 'true' || salesFOrceManual ? newObj : data;
-        dispatch(getSalesForceFileData(pathTOGo))?.then((payload: any) => {
-          if (payload?.payload) {
-            let newObjFromSalesFOrce = JSON?.parse(payload?.payload?.qliFields);
-            let keysss = Object.keys(newObjFromSalesFOrce);
-            let arrOfOptions: any = [];
-
-            if (keysss) {
-              keysss?.map((items: any) => {
-                arrOfOptions?.push({
-                  label: newObjFromSalesFOrce[items],
-                  value: items,
-                });
-              });
-            }
-
-            setAccoutSyncOptions(arrOfOptions);
-          }
-          let newObj = {
-            file_name: payload?.payload?.title,
-            FileId: payload?.payload?.fileId,
-          };
-          setCurrentFileData(newObj);
-        });
-      } else {
-        if (fullStackManul === 'true') {
-          let data = {
-            id: getQuoteID,
-            type_of_file: 'manual',
-          };
-          dispatch(getfileByQuoteIdWithManual(data))?.then((payload: any) => {
-            setCurrentFileData(payload?.payload);
-          });
-        } else {
-          dispatch(getQuoteFileById(Number(getQuoteFileId)))?.then(
-            (payload: any) => {
-              setCurrentFileData(payload?.payload);
-            },
-          );
-        }
-      }
-    }
+    getDataForSalesforce();
   }, []);
 
   const updateRowsValue = (
@@ -352,7 +383,7 @@ const EditorFile = () => {
   };
 
   const checkForNewFileForSalesForce = async () => {
-    if (salesFOrceManual === 'true' || salesFOrceManual) {
+    if (salesFOrceManual === 'true' || salesFOrceManual === true) {
       let newObj = {
         file_type: 'Manual',
         token: salesForceToken,
@@ -362,11 +393,47 @@ const EditorFile = () => {
       };
       dispatch(getSalesForceFileData(newObj))?.then((payload: any) => {
         if (payload?.payload?.body) {
-          location?.reload();
+          setShowAddColumnModal(false);
+          setShowConfirmHeader(false);
+          setSaveNewHeader(false);
+          setShowModal(false);
+          setNanonetsLoading(false);
+          setMergeedColumnHeader('');
+          setArrayOflineItem([]);
+          addNewLine();
+          getDataForSalesforce();
+
+          // router.replace(
+          //   `/manualFileEditor?quote_Id=${SaleQuoteId}&key=${salesForceToken}&instance_url=${salesForceinstanceUrl}&file_Id=${null}&editLine=false&manual=true`,
+          // );
         } else {
-          notification?.open({
-            message: 'The Line Items are created! Please close the modal!',
+          let data = {
+            token: salesForceToken,
+            FileId: null,
+            urls: salesForceinstanceUrl,
+            quoteId: SaleQuoteId,
+            file_type: 'ExportFileToTable',
+          };
+
+          dispatch(getSalesForceFileData(data))?.then((payload: any) => {
+            if (!payload?.payload?.body) {
+              notification?.open({
+                message: 'Please close the modal!. All the files are updated',
+                type: 'info',
+              });
+            }
+            if (payload?.payload?.body) {
+              router.replace(
+                `/fileEditor?quote_Id=${SaleQuoteId}&key=${salesForceToken}&instance_url=${salesForceinstanceUrl}&file_Id=${null}&editLine=false&manual=true`,
+              );
+              // location?.reload();
+            }
+            return;
           });
+
+          // notification?.open({
+          //   message: 'The Line Items are created! Please close the modal!',
+          // });
         }
       });
     } else {
@@ -460,10 +527,13 @@ const EditorFile = () => {
 
   return (
     <div
-      style={{
-        overflow: salesForceinstanceUrl ? 'auto' : '',
-        maxHeight: salesForceinstanceUrl ? '105vh' : '',
-      }}
+      style={
+        {
+          // background: 'red',
+          // overflow: salesForceinstanceUrl ? 'auto' : '',
+          // maxHeight: salesForceinstanceUrl ? '105vh' : '',
+        }
+      }
     >
       {' '}
       <GlobalLoader loading={nanonetsLoading}>
@@ -476,6 +546,7 @@ const EditorFile = () => {
             {currentFileData?.file_name}
           </Typography>
         )}
+
         <Row
           gutter={[32, 16]}
           style={{marginTop: '10px', marginBottom: '40px'}}
@@ -582,7 +653,7 @@ const EditorFile = () => {
         <div
           style={{
             position: 'relative',
-            maxHeight: '75vh',
+            maxHeight: salesForceinstanceUrl ? '60vh' : '75vh',
             overflow: 'auto',
           }}
         >

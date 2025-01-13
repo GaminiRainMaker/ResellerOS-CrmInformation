@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export let processFormData = (template: any, finalUniqueData: any) => {
   // Extract labels with user_fill set to true from the template
   let labelsWithUserFillTrue = template
@@ -16,9 +18,9 @@ export let processFormData = (template: any, finalUniqueData: any) => {
 
       let userFill = labelsWithUserFillTrue.includes(newKey);
 
-      //This Process For Type
+      // This Process For Type
       let matchingTemplateItem = template.find((item: any) => {
-        return item.label === newKey;
+        return item?.label?.trim() === newKey;
       });
       let finalItem: any;
 
@@ -29,8 +31,6 @@ export let processFormData = (template: any, finalUniqueData: any) => {
             // Check each dependentFiledArr item for a match
             const dependentMatch = item.dependentFiledArr.find(
               (dependentItem: any) => {
-                // Normalize dependentItem.label if it exists
-
                 finalItem =
                   dependentItem?.label === newKey
                     ? dependentItem
@@ -53,7 +53,8 @@ export let processFormData = (template: any, finalUniqueData: any) => {
           return false;
         });
       }
-      // Retrieve the name if a match was found; otherwise, default to an empty string
+
+      // Retrieve the type, name, and locater text if a match was found; otherwise, default to an empty string
       let type = matchingTemplateItem
         ? matchingTemplateItem === finalItem
           ? matchingTemplateItem.type
@@ -62,12 +63,21 @@ export let processFormData = (template: any, finalUniqueData: any) => {
       let name = matchingTemplateItem
         ? matchingTemplateItem.customFieldName
         : '';
+      let locater = matchingTemplateItem
+        ? matchingTemplateItem.locater || ''
+        : '';
+      let dateformat = matchingTemplateItem
+        ? matchingTemplateItem.dateformat || ''
+        : '';
+
       if (finalUniqueData[key] && (type || name)) {
         transformedData.push({
           [newKey]: finalUniqueData[key],
           userFill: userFill,
-          type: type, // Adding the "name" field from the template
+          type: type, // Adding the "type" field
           name: name,
+          locater: locater, // Adding the "locater" field as text
+          dateformat,
         });
       }
     }
@@ -77,7 +87,7 @@ export let processFormData = (template: any, finalUniqueData: any) => {
   labelsWithUserFillTrue.forEach((item: any) => {
     let transformedKey = item;
     if (!transformedData.some((d) => Object.keys(d)[0] === transformedKey)) {
-      // Find the corresponding template item to extract Type (name)
+      // Find the corresponding template item to extract Type (name) and locater text
       let matchingTemplateItem = template.find(
         (templateItem: any) => templateItem.label === transformedKey,
       );
@@ -85,12 +95,20 @@ export let processFormData = (template: any, finalUniqueData: any) => {
       let name = matchingTemplateItem
         ? matchingTemplateItem.customFieldName
         : '';
+      let locater = matchingTemplateItem
+        ? matchingTemplateItem.locater || ''
+        : '';
+      let dateformat = matchingTemplateItem
+        ? matchingTemplateItem.dateformat || ''
+        : '';
 
       transformedData.push({
         [transformedKey]: '',
         userFill: true,
-        type: type, // Adding the "name" field from the template
+        type: type, // Adding the "type" field
         name: name,
+        locater: locater, // Adding the "locater" field as text
+        dateformat,
       });
     }
   });
@@ -255,7 +273,7 @@ export let processScript = (finalObj: {
         });
       });
     },{ timeout: 900000 });
-    await page.waitForTimeout(900000);
+    await page.waitForTimeout(90000);
     `;
 
             newScript.push(data);
@@ -281,11 +299,21 @@ export let processScript = (finalObj: {
 
                 lineLabel = nameMatch[1].replace(/\s+/g, '').trim();
               }
-              const labelMatch = currentLine.match(
-                /getByLabel\('(\*?\s*)(.*?)'\)/,
-              );
-              if (labelMatch) {
-                lineLabel = labelMatch[2].replace(/\s+/g, '').trim();
+              if (
+                currentLine.includes('getByLabel') &&
+                currentLine.includes('exact')
+              ) {
+                const labelMatch = currentLine.match(/getByLabel\('([^']+)'/);
+                if (labelMatch) {
+                  lineLabel = labelMatch[1].replace(/\s+/g, '').trim();
+                }
+              } else {
+                const labelMatch = currentLine.match(
+                  /getByLabel\('(\*?\s*)(.*?)'\)/,
+                );
+                if (labelMatch) {
+                  lineLabel = labelMatch[2].replace(/\s+/g, '').trim();
+                }
               }
 
               const locatorRegex = /page\.locator\((['"`])([^'"`]+)\1\)/;
@@ -306,6 +334,11 @@ export let processScript = (finalObj: {
                     (lineName &&
                       objItem?.name &&
                       objItem?.name
+                        .replace(/[^a-zA-Z0-9]/g, '')
+                        .includes(lineName)) ||
+                    (lineName &&
+                      objItem?.locater &&
+                      objItem?.locater
                         .replace(/[^a-zA-Z0-9]/g, '')
                         .includes(lineName)),
                 ),
@@ -330,8 +363,10 @@ export let processScript = (finalObj: {
                   if (
                     label !== 'userFill' &&
                     value &&
+                    label !== 'locater' &&
                     label !== 'name' &&
                     label !== 'type' &&
+                    label !== 'dateformat' &&
                     !formValues.includes(label)
                   ) {
                     if (!dataObj.userFill) {
@@ -365,30 +400,45 @@ export let processScript = (finalObj: {
                       } else if (
                         !label.includes('State') &&
                         !label.includes('Country') &&
-                        !dataObj.name
+                        !dataObj.name &&
+                        !dataObj.locater
                       ) {
-                        newScript.push(
-                          `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 50000 });`,
-                        );
+                        if (
+                          currentLine.includes('getByLabel') &&
+                          currentLine.includes('exact')
+                        ) {
+                          newScript.push(
+                            `await page.getByLabel('${dataObj.locater ? dataObj.locater : label}',{ exact: true }).waitFor({ state: 'visible', timeout: 50000 });`,
+                          );
+                        } else {
+                          newScript.push(
+                            `await page.getByLabel('${dataObj.locater ? dataObj.locater : label}').waitFor({ state: 'visible', timeout: 50000 });`,
+                          );
+                        }
                       }
-
                       let data = `
     
                         ${
                           dataObj.type.toLowerCase().includes('text') ||
                           dataObj.type.toLowerCase().includes('email') ||
                           dataObj.type.toLowerCase().includes('date')
-                            ? dataObj.name
-                              ? `await page.locator('${dataObj.type.toLowerCase() === 'textarea' ? 'textarea' : 'input'}[name="${dataObj.name}"]').fill('${value}');
+                            ? dataObj.locater
+                              ? `await page.locator('${dataObj.locater}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');
 `
-                              : `await page.getByLabel('${label}').fill('${value}');`
+                              : dataObj.name
+                                ? `await page.locator('${dataObj.type.toLowerCase() === 'textarea' ? 'textarea' : 'input'}[name="${dataObj.name}"]').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');
+`
+                                : currentLine.includes('getByLabel') &&
+                                    currentLine.includes('exact')
+                                  ? `await page.getByLabel('${dataObj.locater ? dataObj.locater : label}',{ exact: true }).fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');`
+                                  : `await page.getByLabel('${dataObj.locater ? dataObj.locater : label}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');`
                             : dataObj.type.toLowerCase().includes('select') ||
                                 dataObj.type.toLowerCase().includes('drop')
                               ? dataObj.name
                                 ? `await page.locator('select[name="${dataObj.name}"]').selectOption('${value}');`
                                 : currentLine.includes('selectOption')
                                   ? `${currentLine.split('.selectOption')[0]}
-                                      .selectOption('${value}')`
+                                      .selectOption('${value}');`
                                   : `await page.getByLabel('${label}').selectOption('${value}');`
                               : `await page.getByText('${value}').click();`
                         }

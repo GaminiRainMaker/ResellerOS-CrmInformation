@@ -416,18 +416,31 @@ const EditTableFields: React.FC<EditableFiledsCommonInterface> = ({
                 </Form.Item>
               </Col>
               <Col sm={24}>
-              {' '}
-              <Typography name="Body 4/Medium">Change Name</Typography>
-              <OsInput
-                style={{width: '100%', marginBottom: '20px'}}
-                placeholder="name"
-                defaultValue={CommonIndexOfUse?.customFieldName}
-                value={CommonIndexOfUse?.customFieldName}
-                onChange={(e: any) => {
-                  changeFieldValues(e?.target?.value, 'customFieldName');
-                }}
-              />
-            </Col>
+                {' '}
+                <Typography name="Body 4/Medium">Change Name</Typography>
+                <OsInput
+                  style={{width: '100%', marginBottom: '20px'}}
+                  placeholder="name"
+                  defaultValue={CommonIndexOfUse?.customFieldName}
+                  value={CommonIndexOfUse?.customFieldName}
+                  onChange={(e: any) => {
+                    changeFieldValues(e?.target?.value, 'customFieldName');
+                  }}
+                />
+              </Col>
+              <Col sm={24}>
+                {' '}
+                <Typography name="Body 4/Medium">Locater</Typography>
+                <OsInput
+                  style={{width: '100%', marginBottom: '20px'}}
+                  placeholder="locater value"
+                  defaultValue={CommonIndexOfUse?.locater}
+                  value={CommonIndexOfUse?.locater}
+                  onChange={(e: any) => {
+                    changeFieldValues(e?.target?.value, 'locater');
+                  }}
+                />
+              </Col>{' '}
               <Col sm={12}>
                 <Form.Item
                   label={

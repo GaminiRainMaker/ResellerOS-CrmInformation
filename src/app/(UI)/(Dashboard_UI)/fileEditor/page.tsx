@@ -129,6 +129,7 @@ const EditorFile = () => {
   const [formulaOptions, setFormulaOptions] = useState<any>();
   const [formulaSelected, setFormulaSelected] = useState<any>();
   const [showApplyFormula, setShowApplyFormula] = useState<boolean>(false);
+
   const [runSriptToGetValues, setRunScriptTOGetValues] =
     useState<boolean>(false);
   const [accoutSyncOptions, setAccoutSyncOptions] = useState<any>();
@@ -1194,7 +1195,7 @@ const EditorFile = () => {
     //   message: 'The Line Items are created! Please close the modal!',
     // });
 
-    if (salesFOrceManual === 'false' || !salesFOrceManual) {
+    if (salesFOrceManual === 'false' || salesFOrceManual === false) {
       notification?.open({
         message: 'Please close the modal!. All the files are updated',
         type: 'info',
@@ -1228,19 +1229,35 @@ const EditorFile = () => {
               });
             }
             if (payload?.payload?.body) {
-              window.history.replaceState(
-                null,
-                '',
+              router.replace(
                 `/manualFileEditor?quote_Id=${SaleQuoteId}&key=${salesForceToken}&instance_url=${salesForceinstanceUrl}&file_Id=${null}&editLine=false&manual=true`,
               );
-              location?.reload();
+              // window.history.replaceState(
+              //   null,
+              //   '',
+              //   `/manualFileEditor?quote_Id=${SaleQuoteId}&key=${salesForceToken}&instance_url=${salesForceinstanceUrl}&file_Id=${null}&editLine=false&manual=true`,
+              // );
+              // location?.reload();
             }
           });
 
           return;
         } else {
           if (payload?.payload?.body) {
-            location?.reload();
+            setShowApplyFormula(false);
+            setShowAddColumnModal(false);
+            setShowModal(false);
+            setShowUpdateColumnModal(false);
+            setOpenAddNewFormulaModal(false);
+            setAccoutSyncOptions(false);
+            setMergedVaalues('');
+            setMergeedColumn([]);
+            setQuoteItems([]);
+
+            fetchSaleForceDataa();
+            // router.replace(
+            //   `/fileEditor?quote_Id=${SaleQuoteId}&key=${salesForceToken}&instance_url=${salesForceinstanceUrl}&file_Id=${null}&editLine=false&manual=true`,
+            // );
           }
         }
       });
@@ -1524,11 +1541,13 @@ const EditorFile = () => {
       updateLineItemsValue?.length > 0 ? (
         <>
           <div
-            style={{
-              position: 'relative',
-              maxHeight: '75vh',
-              overflow: 'auto',
-            }}
+            style={
+              {
+                // position: 'relative',
+                // maxHeight: '75vh',
+                // overflow: 'auto',
+              }
+            }
           >
             <HotTable
               data={updateLineItemsValue}
@@ -1740,11 +1759,13 @@ const EditorFile = () => {
               ) : (
                 <div style={{position: 'absolute', width: '100%'}}>
                   <div
-                    style={{
-                      position: 'relative',
-                      maxHeight: '75vh',
-                      overflow: 'auto',
-                    }}
+                    style={
+                      {
+                        // position: 'relative',
+                        // maxHeight: '75vh',
+                        // overflow: 'auto',
+                      }
+                    }
                   >
                     {quoteItems &&
                       quoteItems?.map((itemss: any, indexOFTable: number) => {
@@ -1780,7 +1801,7 @@ const EditorFile = () => {
                               />
                             </Space>
 
-                            <div style={{overflow: 'auto'}}>
+                            <div>
                               <HotTable
                                 data={itemss}
                                 colWidths={[

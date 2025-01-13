@@ -19,6 +19,7 @@ import {useEffect, useState} from 'react';
 import {
   queryLineItemSyncing,
   updateLineItemSyncing,
+  updateLineItemSyncingByIdForAsssert,
 } from '../../../../../redux/actions/LineItemSyncing';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {
@@ -183,9 +184,15 @@ const QuoteMappings = () => {
         status_date: handleDate(),
         ...(reason && {reason: reason}),
       };
-      dispatch(updateLineItemSyncing(obj)).then((d) => {
+      dispatch(updateLineItemSyncingByIdForAsssert(obj)).then((d) => {
         if (d?.payload) {
+          notification?.open({message: 'Added Successfully', type: 'success'});
           dispatch(queryLineItemSyncing(searchQuery));
+        } else {
+          notification?.open({
+            message: 'Assert Header already approved for other Item',
+            type: 'error',
+          });
         }
       });
     }

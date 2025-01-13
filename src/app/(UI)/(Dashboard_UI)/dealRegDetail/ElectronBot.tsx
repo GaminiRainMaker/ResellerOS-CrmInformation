@@ -50,9 +50,9 @@ const ElectronBot = () => {
   const getElectronAppLink = () => {
     switch (os) {
       case 'windows':
-        return 'https://rosdevdi.blob.core.usgovcloudapi.net/reselleros/DealRegAI%20Setup%200.1.0.exe?sp=r&st=2025-01-05T13:40:23Z&se=2050-01-05T21:40:23Z&spr=https&sv=2022-11-02&sr=b&sig=aMaqy2sImD24gwc3nTiEMXa5aIPamAVoYWoB4L8hyDc%3D';
+        return process.env.NEXT_PUBLIC_WINDOWS_APP;
       case 'mac':
-        return 'https://rosdevdi.blob.core.usgovcloudapi.net/reselleros/DealRegAI-0.1.0.dmg?sp=r&st=2025-01-05T13:06:40Z&se=2050-01-05T21:06:40Z&spr=https&sv=2022-11-02&sr=b&sig=eoaLwWPY9LkaGZgKlQpPfaQ1%2ByB4R%2B%2FrnT%2Bi84B7E7U%3D';
+        return process.env.NEXT_PUBLIC_MAC_APP;
       case 'linux':
         return 'https://reselller-os.s3.amazonaws.com/MyApp-linux-x64.zip';
       default:
