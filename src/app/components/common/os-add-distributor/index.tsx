@@ -29,7 +29,9 @@ const AddDistributor: React.FC<AddDistributorInterface> = ({
   const onFinish = () => {
     const distributorValue = form?.getFieldValue('distributor');
     if (distributorValue) {
-      dispatch(insertDistributor({distributor: distributorValue})).then((d) => {
+      dispatch(
+        insertDistributor({distributor: distributorValue?.toLowerCase()}),
+      ).then((d) => {
         if (d?.payload) {
           dispatch(queryDistributor({}));
         }
