@@ -166,7 +166,9 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
         formattedData[item.preVal] = item.newVal;
       }
     });
-    let sortedLineItems = lineItemsArray?.sort((a: any, b: any) => {
+
+    console.log('342342432', lineItemsArray);
+    let sortedLineItems = lineItemsArray?.lineItemss?.sort((a: any, b: any) => {
       return a.Id - b.Id;
     });
 
@@ -268,6 +270,8 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
       console.error('Error downloading file:', error);
     }
   };
+
+  console.log('34543534534', formStackOptions, objectForSyncingValues);
 
   return (
     <>

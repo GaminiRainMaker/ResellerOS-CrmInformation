@@ -108,6 +108,7 @@ const GenerateQuote: React.FC = () => {
   const {quoteFileUnverifiedById, getQuoteFileDataCount} = useAppSelector(
     (state) => state.quoteFile,
   );
+  const [reviewFileCount, setReviewCountFile] = useState<any>();
   const [filesCount, setFilesCount] = useState<any>(0);
   const [showUpdateLineItemModal, setShowUpdateLineItemModal] =
     useState<boolean>(false);
@@ -125,7 +126,9 @@ const GenerateQuote: React.FC = () => {
   }, [getQuoteFileDataCount]);
   useEffect(() => {
     if (getQuoteID) {
-      dispatch(getQuoteFileCount(Number(getQuoteID)));
+      dispatch(getQuoteFileCount(Number(getQuoteID)))?.then((payload: any) => {
+        setReviewCountFile(payload?.payload);
+      });
       dispatch(getQuoteById(Number(getQuoteID)));
       dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
       dispatch(getAllBundle(getQuoteID));
@@ -140,12 +143,10 @@ const GenerateQuote: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (getQuoteFileDataCount === 0) {
+    if (reviewFileCount == 0) {
       setActiveTab('2');
     }
-  }, [getQuoteFileDataCount]);
-
-  console.log('324324324234', activeTab);
+  }, [reviewFileCount]);
 
   const getQuoteDetailById = async () => {
     dispatch(getQuoteByIdForFormStack(Number(getQuoteID)))?.then(
@@ -376,6 +377,7 @@ const GenerateQuote: React.FC = () => {
           tableColumnDataShow={tableColumnDataShow}
           selectedFilter={selectedFilter}
           getQuoteDetailById={getQuoteDetailById}
+          setActiveTab={setActiveTab}
         />
       ),
     },
@@ -413,6 +415,7 @@ const GenerateQuote: React.FC = () => {
           showRemoveBundleLineItemModal={showRemoveBundleLineItemModal}
           setShowRemoveBundleLineItemModal={setShowRemoveBundleLineItemModal}
           validationTab={validationTab}
+          activeTab={activeTab}
         />
       ),
     },

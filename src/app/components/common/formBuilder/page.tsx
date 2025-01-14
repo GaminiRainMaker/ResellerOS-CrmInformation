@@ -73,7 +73,6 @@ const FormBuilderMain: React.FC<any> = ({
   // dealRegDetail
   const [formLoading, setFormLoading] = useState<boolean>(false);
   const {TextArea} = Input;
-
   let pathnameForFlow = pathname === '/dealRegDetail';
   const getPartnerProgramID = searchParams.get('id');
   const isLoginTemplate = searchParams.get('loginTemplate');
@@ -112,10 +111,6 @@ const FormBuilderMain: React.FC<any> = ({
     setSelectIndexFOrAllDependentField(allTHeIndexAndSection);
   }, [cartItems]);
 
-  console.log(
-    'selectIndexFOrAllDependentFieldselectIndexFOrAllDependentField',
-    selectIndexFOrAllDependentField,
-  );
   const deleteSelectedIntem = (sectionInde: number) => {
     const temp: any = [...cartItems];
     temp?.splice(sectionInde, 1);
@@ -128,11 +123,20 @@ const FormBuilderMain: React.FC<any> = ({
       setFormLoading(true);
       dispatch(getPartnerProgramById(Number(getPartnerProgramID)))?.then(
         (payload: any) => {
-          if (payload?.payload?.form_data?.[0]?.[0]) {
-            const formData: any = JSON?.parse(
-              payload?.payload?.form_data?.[0]?.[0],
-            );
-            setCartItems(formData);
+          if (isLoginTemplate === 'true') {
+            if (payload?.payload?.login_template?.[0]?.[0]) {
+              const formData: any = JSON?.parse(
+                payload?.payload?.login_template?.[0]?.[0],
+              );
+              setCartItems(formData);
+            }
+          } else {
+            if (payload?.payload?.form_data?.[0]?.[0]) {
+              const formData: any = JSON?.parse(
+                payload?.payload?.form_data?.[0]?.[0],
+              );
+              setCartItems(formData);
+            }
           }
         },
       );
@@ -148,8 +152,6 @@ const FormBuilderMain: React.FC<any> = ({
     temp?.[sectionInd]?.content?.push(addnewField);
     setCartItems(temp);
   };
-
-  console.log('ktufhj', cartItems);
 
   // save reference for dragItem and dragOverItem
   const dragItem = React.useRef<any>(null);
@@ -197,13 +199,19 @@ const FormBuilderMain: React.FC<any> = ({
 
   const addFormData = async () => {
     let objNew = {};
-
-    objNew = {
-      form_data: [JSON?.stringify(cartItems)],
-      id: Number(getPartnerProgramID),
-      date: handleDate(),
-    };
-
+    if (isLoginTemplate === 'true') {
+      objNew = {
+        login_template: [JSON?.stringify(cartItems)],
+        id: Number(getPartnerProgramID),
+        date: handleDate(),
+      };
+    } else {
+      objNew = {
+        form_data: [JSON?.stringify(cartItems)],
+        id: Number(getPartnerProgramID),
+        date: handleDate(),
+      };
+    }
     if (cartItems?.[0]?.content?.length > 0) {
       dispatch(updatePartnerProgramById(objNew));
       router.push(`/superAdminPartner`);
@@ -238,14 +246,11 @@ const FormBuilderMain: React.FC<any> = ({
     setCartItems(newTempArr);
   };
 
-  console.log('3454354354334', selectIndexFOrAllDependentField);
-
   useEffect(() => {
     if (cartItems?.[0]?.content?.length === 0) {
       setCollapsed(false);
     }
   }, [cartItems]);
-  console.log('cartItemscartItems', cartItems);
 
   const changeOptionsSelected = (
     indexOfItem: number,

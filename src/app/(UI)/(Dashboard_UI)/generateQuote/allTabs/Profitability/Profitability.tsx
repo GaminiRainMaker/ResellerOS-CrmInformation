@@ -70,6 +70,7 @@ const Profitablity: FC<any> = ({
   collapseActiveKeys,
   setCollapseActiveKeys,
   validationTab,
+  activeTab,
 }) => {
   const dispatch = useAppDispatch();
   const [BundleForm] = Form.useForm();
@@ -290,19 +291,23 @@ const Profitablity: FC<any> = ({
   };
 
   useEffect(() => {
-    dispatch(getAllContract());
-    dispatch(getContractConfiguartion({}));
-  }, []);
+    if (activeTab == '2') {
+      dispatch(getAllContract());
+      dispatch(getContractConfiguartion({}));
+    }
+  }, [activeTab]);
 
   useEffect(() => {
-    dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then(
-      (payload: any) => {
-        if (payload?.payload) {
-          setProfitibilityDataa(payload?.payload);
-        }
-      },
-    );
-  }, [getQuoteID]);
+    if (activeTab == '2') {
+      dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then(
+        (payload: any) => {
+          if (payload?.payload) {
+            setProfitibilityDataa(payload?.payload);
+          }
+        },
+      );
+    }
+  }, [getQuoteID, activeTab]);
 
   useEffect(() => {
     if (profitibilityDataa && profitibilityDataa.length > 0) {
