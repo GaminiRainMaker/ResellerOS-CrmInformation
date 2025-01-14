@@ -452,10 +452,10 @@ const DealRegDetail = () => {
           setShowSubmitFormModal(false);
           submitDealRegForm?.resetFields();
         }}
-        thirdButtonfunction={() => {
-          showIsSubmitLoginForm(true);
-          submitDealRegForm?.submit();
-        }}
+        // thirdButtonfunction={() => {
+        //   showIsSubmitLoginForm(true);
+        //   submitDealRegForm?.submit();
+        // }}
         primaryButtonText={'Submit Form'}
         // thirdButtonText="Submit Login Form"
       />
