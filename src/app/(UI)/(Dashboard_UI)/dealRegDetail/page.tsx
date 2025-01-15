@@ -245,7 +245,6 @@ const DealRegDetail = () => {
     try {
       // Initialize finalMainData with a shallow copy of dealData
       let finalMainData = {...dealData};
-
       if (isSalesForce) {
         // Process and decrypt unique form data
         const uniqueDataRaw = dealData?.data?.unique_form_data?.replace(
@@ -260,7 +259,7 @@ const DealRegDetail = () => {
               SECRET_KEY as string,
               uniqueIv,
             );
-            finalMainData.unique_form_data = uniqueDecryptedString;
+            finalMainData.unique_form_data = JSON.parse(uniqueDecryptedString);
           } else {
             console.error('Invalid unique_form_data format:', uniqueDataRaw);
           }
@@ -280,9 +279,6 @@ const DealRegDetail = () => {
       if (unique_form_data) {
         try {
           finalUniqueData = JSON.parse(unique_form_data);
-          if (isSalesForce && typeof finalUniqueData === 'string') {
-            finalUniqueData = JSON.parse(finalUniqueData); // Parse again if needed
-          }
         } catch (error) {
           console.error('Error parsing unique_form_data:', error);
           finalUniqueData = null; // Fallback to null on parsing error
@@ -350,7 +346,6 @@ const DealRegDetail = () => {
         console.log('Final data is incomplete. Skipping processScript.');
         return; // Exit the function if finalData is incomplete
       }
-
       const processScriptData = processScript(finalData);
       if (processScriptData) {
         return processScriptData;
