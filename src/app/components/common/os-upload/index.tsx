@@ -276,6 +276,15 @@ const OsUpload: React.FC<any> = ({
                   );
                   // .filter(Boolean); // Remove any undefined values
 
+                  let maxLength = Math.max(
+                    ...requiredOutput.map((row: any) => row.length),
+                  );
+
+                  // Filter the array, keeping only rows with the maximum number of elements
+                  requiredOutput = requiredOutput.filter(
+                    (row: any) => row.length + 3 >= maxLength,
+                  );
+
                   resultantValues = requiredOutput.map((row: any) => {
                     let obj: any = {};
                     syncedHeaderValue.forEach((header: any, index: any) => {
