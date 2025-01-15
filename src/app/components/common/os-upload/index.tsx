@@ -47,7 +47,6 @@ const OsUpload: React.FC<any> = ({
   setTypeOfAddQuote,
   opportunityDetailId,
   customerDetailId,
-
   setAdvancedUpload,
   advancedUpload,
   lineItemSyncingData,
@@ -86,7 +85,6 @@ const OsUpload: React.FC<any> = ({
     dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
       // setAdvancedSetting(payload?.payload?.advanced_excel);
       setAdvancedSetting(true);
-
     });
     setLoading(false);
   }, []);
@@ -276,6 +274,15 @@ const OsUpload: React.FC<any> = ({
                       // }
                     },
                   );
+
+                  let maxLength = Math.max(
+                    ...requiredOutput.map((row: any) => row.length),
+                  );
+
+                  // Filter the array, keeping only rows with the maximum number of elements
+                  requiredOutput = requiredOutput.filter(
+                    (row: any) => row.length + 3 >= maxLength,
+                  );
                   // .filter(Boolean); // Remove any undefined values
 
                   resultantValues = requiredOutput.map((row: any) => {
@@ -300,12 +307,6 @@ const OsUpload: React.FC<any> = ({
         // message.error('Error converting file to base64', error);
       });
 
-    function containsLetterAndNumber(str: string): boolean {
-      // const hasLetter = /[a-zA-Z]/.test(str);
-      // const hasDigit = /\d/.test(str);
-      const hasHyphen = /-/.test(str);
-      return hasHyphen;
-    }
     let requiredResult = resultantValues?.filter(
       (items: any) =>
         (items?.product_code &&
