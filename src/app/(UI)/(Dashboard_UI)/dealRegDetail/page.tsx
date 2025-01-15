@@ -320,7 +320,7 @@ const DealRegDetail = () => {
       let updatedData = newFormData
         ? dependentFieldProcess(template, newFormData)
         : null;
-
+      console.log(isSubmitLoginForm, 'isSubmitLoginFormisSubmitLoginForm');
       const finalData = {
         username: isSalesForce
           ? finalMainData?.credentials?.username
@@ -457,7 +457,7 @@ const DealRegDetail = () => {
         //   submitDealRegForm?.submit();
         // }}
         primaryButtonText={'Submit Form'}
-        thirdButtonText="Submit Login Form"
+        // thirdButtonText="Submit Login Form"
       />
 
       <OsModal

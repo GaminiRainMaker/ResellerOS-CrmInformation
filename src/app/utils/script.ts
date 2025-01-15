@@ -140,6 +140,7 @@ export let processScript = (finalObj: {
   username: string;
   password: string;
 }) => {
+  console.log(finalObj, 'finalObjfinalObj');
   // Join the script array into a single string
   let processedScript = finalObj.script.join('\n');
   let parsedScript = JSON.parse(processedScript).split('\n');
@@ -591,6 +592,7 @@ export let processScript = (finalObj: {
     }
   }
   let finalArr = newScript;
+  console.log(finalArr, 'finalArrfinalArrfinalArr');
 
   let updatedScript = finalArr.join('\n');
 
