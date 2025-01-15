@@ -259,7 +259,7 @@ const DealRegDetail = () => {
               SECRET_KEY as string,
               uniqueIv,
             );
-            finalMainData.unique_form_data = JSON.parse(uniqueDecryptedString);    ;
+            finalMainData.unique_form_data = JSON.parse(uniqueDecryptedString);
           } else {
             console.error('Invalid unique_form_data format:', uniqueDataRaw);
           }
