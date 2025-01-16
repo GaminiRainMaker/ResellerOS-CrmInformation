@@ -1,114 +1,231 @@
 import dayjs from 'dayjs';
 
-export let processFormData = (template: any, finalUniqueData: any) => {
+// commented for debugging in future issue comes in new processFormData logic
+// export let processFormData = (template: any, finalUniqueData: any) => {
+//   // debugger
+//   // Extract labels with user_fill set to true from the template
+//   let labelsWithUserFillTrue = template
+//     .filter((item: any) => item.user_fill === true)
+//     .map((item: any) => item.label);
+//   // Transform data keys
+//   let transformedData = [];
+//   for (let key in finalUniqueData) {
+//     if (finalUniqueData.hasOwnProperty(key)) {
+//       // Step 1: Remove 'u_'
+//       let newKey = key.replace(/^u_/, '');
+//       newKey = newKey.replace('_required', '');
+//       newKey = newKey.replace('_userfill', '');
+//       newKey = newKey.replace(/_[a-zA-Z0-9]+$/, '');
+//       newKey = newKey.replace(/_/g, ' ');
+
+//       let userFill = labelsWithUserFillTrue.includes(newKey);
+
+//       // This Process For Type
+//       let matchingTemplateItem = template.find((item: any) => {
+//         return item?.label?.trim() === newKey;
+//       });
+//       let finalItem: any;
+
+//       // If no exact match is found, check for items with dependentFiled === true
+//       if (!matchingTemplateItem) {
+//         template.some((item: any) => {
+//           if (item.dependentFiled) {
+//             // Check each dependentFiledArr item for a match
+//             const dependentMatch = item.dependentFiledArr.find(
+//               (dependentItem: any) => {
+//                 finalItem =
+//                   dependentItem?.label === newKey
+//                     ? dependentItem
+//                     : dependentItem.find((item: any) => item.label === newKey);
+
+//                 return dependentItem?.label
+//                   ? dependentItem?.label === newKey
+//                   : dependentItem.length > 0
+//                     ? dependentItem.find((item: any) => item.label === newKey)
+//                     : '';
+//               },
+//             );
+
+//             // If a dependent match is found, set matchingTemplateItem to the dependent item
+//             if (finalItem) {
+//               matchingTemplateItem = finalItem;
+//               return true; // Break out of the some loop if a match is found
+//             }
+//           }
+//           return false;
+//         });
+//       }
+
+//       // Retrieve the type, name, and locater text if a match was found; otherwise, default to an empty string
+//       let type = matchingTemplateItem
+//         ? matchingTemplateItem === finalItem
+//           ? matchingTemplateItem.type
+//           : matchingTemplateItem.name
+//         : '';
+//       let name = matchingTemplateItem
+//         ? matchingTemplateItem.customFieldName
+//         : '';
+//       let locater = matchingTemplateItem
+//         ? matchingTemplateItem.locater || ''
+//         : '';
+//       let dateformat = matchingTemplateItem
+//         ? matchingTemplateItem.dateformat || ''
+//         : '';
+
+//       if (finalUniqueData[key] && (type || name)) {
+//         transformedData.push({
+//           [newKey]: finalUniqueData[key],
+//           userFill: userFill,
+//           type: type, // Adding the "type" field
+//           name: name,
+//           locater: locater, // Adding the "locater" field as text
+//           dateformat,
+//         });
+//       }
+//     }
+//   }
+
+//   // Include keys from labelsWithUserFillTrue that are not in finalUniqueData
+//   labelsWithUserFillTrue.forEach((item: any) => {
+//     let transformedKey = item;
+//     if (!transformedData.some((d) => Object.keys(d)[0] === transformedKey)) {
+//       // Find the corresponding template item to extract Type (name) and locater text
+//       let matchingTemplateItem = template.find(
+//         (templateItem: any) => templateItem.label === transformedKey,
+//       );
+//       let type = matchingTemplateItem ? matchingTemplateItem.name : '';
+//       let name = matchingTemplateItem
+//         ? matchingTemplateItem.customFieldName
+//         : '';
+//       let locater = matchingTemplateItem
+//         ? matchingTemplateItem.locater || ''
+//         : '';
+//       let dateformat = matchingTemplateItem
+//         ? matchingTemplateItem.dateformat || ''
+//         : '';
+
+//       transformedData.push({
+//         [transformedKey]: '',
+//         userFill: true,
+//         type: type, // Adding the "type" field
+//         name: name,
+//         locater: locater, // Adding the "locater" field as text
+//         dateformat,
+//       });
+//     }
+//   });
+
+//   return transformedData;
+// };
+
+type TemplateItem = {
+  name: string;
+  label: string;
+  type: string;
+  user_fill: boolean;
+  required?: boolean;
+  customFieldName?: string;
+  locater?: string;
+  dateformat?: string;
+  dependentFiled?: boolean;
+  dependentFiledArr?: any[];
+  options?: string[];
+};
+
+type FinalDataItem = Record<string, any>;
+
+export let processFormData = (
+  template: TemplateItem[],
+  finalUniqueData: FinalDataItem,
+) => {
   // Extract labels with user_fill set to true from the template
-  let labelsWithUserFillTrue = template
-    .filter((item: any) => item.user_fill === true)
-    .map((item: any) => item.label);
+  const labelsWithUserFillTrue = template
+    .filter((item) => item.user_fill === true)
+    .map((item) => item.label);
+
   // Transform data keys
-  let transformedData = [];
-  for (let key in finalUniqueData) {
-    if (finalUniqueData.hasOwnProperty(key)) {
-      // Step 1: Remove 'u_'
-      let newKey = key.replace(/^u_/, '');
-      newKey = newKey.replace('_required', '');
-      newKey = newKey.replace('_userfill', '');
-      newKey = newKey.replace(/_[a-zA-Z0-9]+$/, '');
-      newKey = newKey.replace(/_/g, ' ');
+  const transformedData: any[] = [];
+  for (const key in finalUniqueData) {
+    if (Object.prototype.hasOwnProperty.call(finalUniqueData, key)) {
+      // Remove prefixes and suffixes from keys
+      let newKey = key
+        .replace(/^u_/, '')
+        .replace(/_required|_userfill|_[a-zA-Z0-9]+$/g, '')
+        .replace(/_/g, ' ');
 
-      let userFill = labelsWithUserFillTrue.includes(newKey);
+      const userFill = labelsWithUserFillTrue.includes(newKey);
 
-      // This Process For Type
-      let matchingTemplateItem = template.find((item: any) => {
-        return item?.label?.trim() === newKey;
-      });
+      // Find matching template item
+      let matchingTemplateItem = template.find(
+        (item) => item.label?.trim() === newKey,
+      );
+
       let finalItem: any;
 
-      // If no exact match is found, check for items with dependentFiled === true
       if (!matchingTemplateItem) {
-        template.some((item: any) => {
+        // Handle dependent fields
+        template.some((item) => {
           if (item.dependentFiled) {
-            // Check each dependentFiledArr item for a match
-            const dependentMatch = item.dependentFiledArr.find(
+            const dependentMatch = item.dependentFiledArr?.find(
               (dependentItem: any) => {
                 finalItem =
-                  dependentItem?.label === newKey
+                  dependentItem.label === newKey
                     ? dependentItem
-                    : dependentItem.find((item: any) => item.label === newKey);
-
-                return dependentItem?.label
-                  ? dependentItem?.label === newKey
-                  : dependentItem.length > 0
-                    ? dependentItem.find((item: any) => item.label === newKey)
-                    : '';
+                    : dependentItem.find(
+                        (subItem: any) => subItem.label === newKey,
+                      );
+                return finalItem;
               },
             );
-
-            // If a dependent match is found, set matchingTemplateItem to the dependent item
-            if (finalItem) {
+            if (dependentMatch) {
               matchingTemplateItem = finalItem;
-              return true; // Break out of the some loop if a match is found
+              return true; // Break loop
             }
           }
           return false;
         });
       }
 
-      // Retrieve the type, name, and locater text if a match was found; otherwise, default to an empty string
-      let type = matchingTemplateItem
+      const type = matchingTemplateItem
         ? matchingTemplateItem === finalItem
           ? matchingTemplateItem.type
           : matchingTemplateItem.name
         : '';
-      let name = matchingTemplateItem
-        ? matchingTemplateItem.customFieldName
-        : '';
-      let locater = matchingTemplateItem
-        ? matchingTemplateItem.locater || ''
-        : '';
-      let dateformat = matchingTemplateItem
-        ? matchingTemplateItem.dateformat || ''
-        : '';
+      const name = matchingTemplateItem?.customFieldName || '';
+      const locater = matchingTemplateItem?.locater || '';
+      const dateformat = matchingTemplateItem?.dateformat || '';
 
       if (finalUniqueData[key] && (type || name)) {
         transformedData.push({
           [newKey]: finalUniqueData[key],
           userFill: userFill,
-          type: type, // Adding the "type" field
+          type: type,
           name: name,
-          locater: locater, // Adding the "locater" field as text
-          dateformat,
+          locater: locater,
+          dateformat: dateformat,
         });
       }
     }
   }
 
-  // Include keys from labelsWithUserFillTrue that are not in finalUniqueData
-  labelsWithUserFillTrue.forEach((item: any) => {
-    let transformedKey = item;
-    if (!transformedData.some((d) => Object.keys(d)[0] === transformedKey)) {
-      // Find the corresponding template item to extract Type (name) and locater text
-      let matchingTemplateItem = template.find(
-        (templateItem: any) => templateItem.label === transformedKey,
+  // Add missing fields with user_fill === true
+  labelsWithUserFillTrue.forEach((label) => {
+    if (!transformedData.some((data) => Object.keys(data)[0] === label)) {
+      const matchingTemplateItem = template.find(
+        (item) => item.label === label,
       );
-      let type = matchingTemplateItem ? matchingTemplateItem.name : '';
-      let name = matchingTemplateItem
-        ? matchingTemplateItem.customFieldName
-        : '';
-      let locater = matchingTemplateItem
-        ? matchingTemplateItem.locater || ''
-        : '';
-      let dateformat = matchingTemplateItem
-        ? matchingTemplateItem.dateformat || ''
-        : '';
+      const type = matchingTemplateItem?.type || '';
+      const name = matchingTemplateItem?.customFieldName || '';
+      const locater = matchingTemplateItem?.locater || '';
+      const dateformat = matchingTemplateItem?.dateformat || '';
 
       transformedData.push({
-        [transformedKey]: '',
+        [label]: '',
         userFill: true,
-        type: type, // Adding the "type" field
+        type: type,
         name: name,
-        locater: locater, // Adding the "locater" field as text
-        dateformat,
+        locater: locater,
+        dateformat: dateformat,
       });
     }
   });
