@@ -162,8 +162,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   // const SaleQuoteId = searchParams.get('quote_Id');
   // const salesFOrceManual === true = searchParams.get('manual');
 
-  console.log('43532423423', salesFOrceManual, salesFOrceAccoutFlow);
-
   const fullStackManul = searchParams.get('manualFlow');
 
   const ApprovedQuoteMappingData: any =
@@ -895,7 +893,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     handleChange();
   }, [syncedNewValue]);
 
-  console.log('23532432432', mergedValue);
   return (
     <>
       <GlobalLoader loading={nanonetsLoading}>
