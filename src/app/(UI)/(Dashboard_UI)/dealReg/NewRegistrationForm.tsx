@@ -637,6 +637,15 @@ const NewRegistrationForm: FC<any> = ({
               ? item?.type?.toLowerCase()?.replace(/\s+/g, '_')
               : '',
           };
+          // return [
+          //   {
+          //     rosdealregai__Partner__c: sourceData?.partner_id,
+          //     rosdealregai__Partner_Program__c: sourceData?.partner_program_id,
+          //     rosdealregai__Registration_Type__c: item?.type
+          //       ? item?.type?.toLowerCase()?.replace(/\s+/g, '_')
+          //       : '',
+          //   },
+          // ];
         });
 
         try {
@@ -647,6 +656,7 @@ const NewRegistrationForm: FC<any> = ({
                   baseURL: isDecryptedRecord?.client?.instanceUrl,
                   token: isDecryptedRecord?.client?.oauthToken,
                   data: dealreg,
+                  // opportunity_id: salesForceOpportunityId,
                 }),
               );
               return response;
