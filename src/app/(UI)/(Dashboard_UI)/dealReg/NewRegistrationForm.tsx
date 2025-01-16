@@ -498,7 +498,7 @@ const NewRegistrationForm: FC<any> = ({
       }
       if (isCanvas) {
         const createPartnerAndProgramOnFS = newData
-          ?.filter((item: any) => item?.type === 'Self Registered')
+          ?.filter((item: any) => item?.type === 'self_registered')
           .map((item: any) => ({
             Partner: {
               partner: item?.partner_name,
