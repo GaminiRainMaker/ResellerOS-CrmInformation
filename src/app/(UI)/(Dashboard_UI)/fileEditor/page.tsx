@@ -806,7 +806,11 @@ const EditorFile = () => {
         // Remove special characters (e.g., periods, spaces) from the key
         // Issue with inconsistent row with data value solution
         const cleanedKey: any = key.replace(/[^\w]/g, '');
-        cleanedObj[key.replace(/\.$/, '')] = value;
+        cleanedObj[
+          EditSalesLineItems
+            ? key.replace(/\.$/, '')
+            : cleanedKey.replace(/\.$/, '')
+        ] = value;
       }
       return cleanedObj;
     }
