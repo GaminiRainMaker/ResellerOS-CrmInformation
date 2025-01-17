@@ -13,7 +13,7 @@ import OsModal from '@/app/components/common/os-modal';
 import OsOpportunitySelect from '@/app/components/common/os-opportunity-select';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {handleDate} from '@/app/utils/base';
+import {formatMailString, handleDate} from '@/app/utils/base';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {usePathname, useRouter, useSearchParams} from 'next/navigation';
@@ -513,7 +513,7 @@ const NewRegistrationForm: FC<any> = ({
             },
           }));
 
-        if (createPartnerAndProgramOnFS?.length) {
+        if (createPartnerAndProgramOnFS?.length > 0) {
           for (const partner of createPartnerAndProgramOnFS) {
             try {
               const res = await dispatch(insertPartner(partner?.Partner));
@@ -613,66 +613,88 @@ const NewRegistrationForm: FC<any> = ({
             },
           );
 
-          // Use data from matchedFSData if found, otherwise fallback to item
+          // Extract source data, defaulting to item if no match is found
           const sourceData = matchedFSData
             ? {
                 partner_id: Number(
-                  matchedFSData?.Partner?.rosdealregai__External_Id__c,
+                  matchedFSData?.Partner?.rosdealregai__External_Id__c ?? 0,
                 ),
                 partner_program_id: Number(
-                  matchedFSData?.Partner_Program?.rosdealregai__External_Id__c,
+                  matchedFSData?.Partner_Program
+                    ?.rosdealregai__External_Id__c ?? 0,
                 ),
+                partner_name: matchedFSData?.Partner?.partner ?? '',
+                partner_program_name:
+                  matchedFSData?.Partner_Program?.partner_program ?? '',
               }
-            : item;
+            : {
+                partner_id: Number(item?.partner_id ?? 0),
+                partner_program_id: Number(item?.partner_program_id ?? 0),
+                partner_name: item?.partner_name ?? '',
+                partner_program_name: item?.partner_program_name ?? '',
+              };
 
+          // Return the transformed object
           return {
-            rosdealregai__Opportunity__c: salesForceOpportunityId,
-            rosdealregai__Partner__r: {
-              rosdealregai__External_Id__c: sourceData?.partner_id,
-            },
-            rosdealregai__Partner_Program__r: {
-              rosdealregai__External_Id__c: sourceData?.partner_program_id,
-            },
+            rosdealregai__Partner__c: sourceData.partner_id,
+            rosdealregai__Partner_Program__c: sourceData.partner_program_id,
             rosdealregai__Registration_Type__c: item?.type
-              ? item?.type?.toLowerCase()?.replace(/\s+/g, '_')
+              ? item.type.toLowerCase().replace(/\s+/g, '_')
               : '',
+            Name: `${formatMailString(sourceData.partner_name)} - ${formatMailString(
+              sourceData.partner_program_name,
+            )}`,
           };
         });
 
         try {
-          const dealRegResponses = await Promise.all(
-            dealRegArray?.map(async (dealreg: any) => {
-              const response = await dispatch(
-                createSalesforceDealreg({
-                  baseURL: isDecryptedRecord?.client?.instanceUrl,
-                  token: isDecryptedRecord?.client?.oauthToken,
-                  data: dealreg,
-                }),
-              );
-              return response;
+          // Call the API with the entire array instead of individual objects
+          const response: any = await dispatch(
+            createSalesforceDealreg({
+              baseURL: isDecryptedRecord?.client?.instanceUrl,
+              token: isDecryptedRecord?.client?.oauthToken,
+              data: dealRegArray,
+              opportunity_id: salesForceOpportunityId,
             }),
           );
-
-          // Check if any deal registration creation failed
-          for (const response of dealRegResponses) {
-            if (response.status === 400 && response.success === false) {
-              notification.error({
-                message: 'Error',
-                description: `Error creating deal registration: ${response.errors.join(', ') || 'Unknown error'}`,
-              });
-              return; // Stop further execution
-            }
+          // Check if the API failed
+          if (response?.payload?.error) {
+            notification.error({
+              message: 'Error',
+              description: `Error creating entries: ${response?.payload?.error}`,
+            });
+            return;
           }
-          // If all APIs succeed, show success notification and navigate
-          notification.success({
-            message: 'Success',
-            description: 'Dealreg form created successfully.',
-          });
-          router.replace('/dealRegDetail');
-        } catch (error: any) {
+
+          // Handle unique registrations
+          if (response?.payload?.UniqueRegistrations?.length) {
+            notification.success({
+              message: 'Success',
+              description: `Dealreg form created successfully for: ${response?.payload?.UniqueRegistrations.join(', ')}`,
+            });
+          }
+
+          // Handle duplicate registrations
+          if (response?.payload?.DuplicatePartnerRegistrations?.length) {
+            notification.info({
+              message: 'Form is already created',
+              description: `These forms already exist: ${response?.payload?.DuplicatePartnerRegistrations.join(
+                ', ',
+              )}`,
+            });
+          }
+
+          // Navigate after showing notifications
+          if (response?.payload?.UniqueRegistrations?.length) {
+            router.replace('/dealRegDetail');
+          }
+        } catch (error: unknown) {
+          // Handle any unexpected errors
+          const errorMessage =
+            error instanceof Error ? error.message : 'Unknown error';
           notification.error({
             message: 'Error',
-            description: `Error creating entries: ${error.message}`,
+            description: `Error creating entries: ${errorMessage}`,
           });
           console.error('Error creating entries:', error);
         }

@@ -273,6 +273,12 @@ export let processScript = (finalObj: {
   for (let i = 0; i < parsedScript.length; i++) {
     const lastline = newScript[newScript.length - 1];
     let currentLine = parsedScript[i].trim();
+    let currentPage = 1;
+
+    let pageIndex = newScript.findIndex((script) => script.includes('page1'));
+    if (pageIndex > -1) {
+      currentPage = 2;
+    }
     if (currentLine) {
       if (currentLine.includes('page.goto')) {
         let index = newScript.findIndex((script) =>
@@ -305,7 +311,17 @@ export let processScript = (finalObj: {
             currentLine.toLowerCase().includes('email') ||
             currentLine.toLowerCase().includes('password'))
         ) {
-          if (currentLine.includes('fill')) {
+          let index = newScript.findIndex((item) => item.includes('cribl'));
+
+          if (currentLine.toLowerCase().includes('email') && index > -1) {
+            if (currentLine.includes('click')) {
+              newScript.push(`await page.locator('input[name="log"]').click()`);
+            } else {
+              newScript.push(
+                `await page.locator('input[name="log"]').fill('${finalObj?.username}')`,
+              );
+            }
+          } else if (currentLine.includes('fill')) {
             let currentlabel = currentLine.includes('getByLabel(')
               ? currentLine.split('getByLabel(')[1]
               : currentLine.includes('getByPlaceholder(')
@@ -349,12 +365,14 @@ export let processScript = (finalObj: {
               currentLine.includes('Code'))
           ) {
             if (iswaitingScript) {
-              newScript.push(`await page.waitForTimeout(15000);`);
+              newScript.push(
+                `await ${currentPage == 1 ? 'page' : 'page1'}.waitForTimeout(15000);`,
+              );
             }
 
             let data = `
             
-      await page.evaluate(() => {
+      await ${currentPage == 1 ? 'page' : 'page1'}.evaluate(() => {
         const messageDiv = document.createElement('div');
         messageDiv.id = 'verificationMessage';
         messageDiv.style.position = 'fixed';
@@ -377,21 +395,8 @@ export let processScript = (finalObj: {
           messageDiv.style.display = 'none';
         });
       });
-    
-            
-           
-            await page.waitForFunction(() => {
-      return new Promise((resolve) => {
-        const buttons = document.querySelectorAll('input[type="submit"]');
-        console.log(buttons,"buttons") 
-        buttons.forEach(button => {
-          button.addEventListener('click', () => {
-            resolve(true); 
-          });
-        });
-      });
-    },{ timeout: 900000 });
-    await page.waitForTimeout(90000);
+ 
+    await ${currentPage == 1 ? 'page' : 'page1'}.waitForTimeout(90000);
     `;
 
             newScript.push(data);
@@ -401,6 +406,7 @@ export let processScript = (finalObj: {
               (currentLine.includes('fill') ||
                 currentLine.includes('combobox') ||
                 currentLine.includes('selectOption') ||
+                currentLine.includes('getByPlaceholder') ||
                 (currentLine.includes('getByLabel') &&
                   currentLine.includes('button'))) &&
               !currentLine.includes('pause()') &&
@@ -417,6 +423,15 @@ export let processScript = (finalObj: {
 
                 lineLabel = nameMatch[1].replace(/\s+/g, '').trim();
               }
+              if (currentLine.includes('getByPlaceholder')) {
+                const labelMatch = currentLine.match(
+                  /getByPlaceholder\('(\*?\s*)(.*?)'\)/,
+                );
+                if (labelMatch) {
+                  lineLabel = labelMatch[2].replace(/\s+/g, '').trim();
+                }
+              }
+
               if (
                 currentLine.includes('getByLabel') &&
                 currentLine.includes('exact')
@@ -461,7 +476,7 @@ export let processScript = (finalObj: {
                         .includes(lineName)),
                 ),
               );
-              const dataObj =
+              let dataObj =
                 dataObjAll && dataObjAll.length > 1
                   ? dataObjAll.find((objItem: any) =>
                       Object.keys(objItem).find(
@@ -470,12 +485,16 @@ export let processScript = (finalObj: {
                           key
                             .replace(/[^a-zA-Z0-9]/g, '')
                             .replace(/\s+/g, '')
-                            .trim() === lineLabel,
+                            .trim() === lineLabel.replace(/[^a-zA-Z0-9]/g, ''),
                       ),
                     )
                   : dataObjAll.length == 1
                     ? dataObjAll[0]
                     : null;
+              if (dataObj && dataObj.length) {
+                dataObj = dataObj[0];
+              }
+
               if (dataObj) {
                 for (let [label, value] of Object.entries(dataObj)) {
                   if (
@@ -494,7 +513,7 @@ export let processScript = (finalObj: {
                       ) {
                         if (value && value.length > 0) {
                           for (let i = 0; i < value?.length; i++) {
-                            newScript.push(`await page
+                            newScript.push(`await ${currentPage == 1 ? 'page' : 'page1'}
                               .getByRole('option', {
                                 name: '${value[i]}',exact: true 
                               })
@@ -510,7 +529,7 @@ export let processScript = (finalObj: {
                       if (currentLine.includes('combobox')) {
                         newScript.push(currentLine);
                         newScript.push(
-                          `await page.getByRole('option', { name: '${value}' , exact: true}).locator('span').nth(1).click();`,
+                          `await ${currentPage == 1 ? 'page' : 'page1'}.getByRole('option', { name: '${value}' , exact: true}).locator('span').nth(1).click();`,
                         );
                         formValues.push(label);
 
@@ -526,11 +545,11 @@ export let processScript = (finalObj: {
                           currentLine.includes('exact')
                         ) {
                           newScript.push(
-                            `await page.getByLabel('${dataObj.locater ? dataObj.locater : label}',{ exact: true }).waitFor({ state: 'visible', timeout: 50000 });`,
+                            `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}',{ exact: true }).waitFor({ state: 'visible', timeout: 50000 });`,
                           );
                         } else {
                           newScript.push(
-                            `await page.getByLabel('${dataObj.locater ? dataObj.locater : label}').waitFor({ state: 'visible', timeout: 50000 });`,
+                            `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}').waitFor({ state: 'visible', timeout: 50000 });`,
                           );
                         }
                       }
@@ -541,24 +560,24 @@ export let processScript = (finalObj: {
                           dataObj.type.toLowerCase().includes('email') ||
                           dataObj.type.toLowerCase().includes('date')
                             ? dataObj.locater
-                              ? `await page.locator('${dataObj.locater}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');
+                              ? `await ${currentPage == 1 ? 'page' : 'page1'}.locator('${dataObj.locater}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');
 `
                               : dataObj.name
-                                ? `await page.locator('${dataObj.type.toLowerCase() === 'textarea' ? 'textarea' : 'input'}[name="${dataObj.name}"]').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');
+                                ? `await ${currentPage == 1 ? 'page' : 'page1'}.locator('${dataObj.type.toLowerCase() === 'textarea' ? 'textarea' : 'input'}[name="${dataObj.name}"]').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');
 `
                                 : currentLine.includes('getByLabel') &&
                                     currentLine.includes('exact')
-                                  ? `await page.getByLabel('${dataObj.locater ? dataObj.locater : label}',{ exact: true }).fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');`
-                                  : `await page.getByLabel('${dataObj.locater ? dataObj.locater : label}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');`
+                                  ? `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}',{ exact: true }).fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');`
+                                  : `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');`
                             : dataObj.type.toLowerCase().includes('select') ||
                                 dataObj.type.toLowerCase().includes('drop')
                               ? dataObj.name
-                                ? `await page.locator('select[name="${dataObj.name}"]').selectOption('${value}');`
+                                ? `await ${currentPage == 1 ? 'page' : 'page1'}.locator('select[name="${dataObj.name}"]').selectOption('${value}');`
                                 : currentLine.includes('selectOption')
                                   ? `${currentLine.split('.selectOption')[0]}
                                       .selectOption('${value}');`
-                                  : `await page.getByLabel('${label}').selectOption('${value}');`
-                              : `await page.getByText('${value}').click();`
+                                  : `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${label}').selectOption('${value}');`
+                              : `await ${currentPage == 1 ? 'page' : 'page1'}.getByText('${value}').click();`
                         }
                         labelFilled.push('${label}');
                         `;
@@ -579,7 +598,7 @@ export let processScript = (finalObj: {
                       } else {
                         if (label.includes('Country')) {
                           newScript.push(
-                            `await page.getByLabel('${label}').waitFor({ state: 'visible', timeout: 50000 });`,
+                            `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${label}').waitFor({ state: 'visible', timeout: 50000 });`,
                           );
                         }
                         if (!currentLine.includes('combobox')) {
@@ -598,7 +617,7 @@ export let processScript = (finalObj: {
                         let data = `
                             if(!labelFilled.includes('${newLabel}')){
 
-                            await page.evaluate(() => {
+                            await ${currentPage == 1 ? 'page' : 'page1'}.evaluate(() => {
             const messageDiv = document.createElement('div');
             messageDiv.id = 'customMessage-${newLabel}';
             messageDiv.style.position = 'fixed';
@@ -629,7 +648,7 @@ export let processScript = (finalObj: {
       }
 
 
-      await page.waitForFunction(() => {
+      await ${currentPage == 1 ? 'page' : 'page1'}.waitForFunction(() => {
         const popup = document.getElementById('customMessage-${newLabel}');
         return popup && popup.getAttribute('data-closed') === 'true';
       }, { timeout: 900000 });
@@ -637,7 +656,7 @@ export let processScript = (finalObj: {
       console.log('${newLabel} input acknowledged by user.');
     
                           
-                           await page.waitForFunction(async() => {
+                           await ${currentPage == 1 ? 'page' : 'page1'}.waitForFunction(async() => {
           const label = Array.from(document.querySelectorAll('label')).find(label => label.innerText.includes('${newLabel}'));
               const button = document.querySelector('button[role="combobox"][aria-label="${newLabel}"]');
       
@@ -662,7 +681,85 @@ export let processScript = (finalObj: {
                     }
 
                     formValues.push(label);
+                  } else {
+                    const newLabel = Object.keys(dataObj).find(
+                      (key) => !excludedKeys.includes(key.toLowerCase()),
+                    );
+                    if (dataObj.userFill) {
+                      if (dataObj.userFill && newLabel) {
+                        let data = `
+                            if(!labelFilled.includes('${newLabel}')){
+
+                            await ${currentPage == 1 ? 'page' : 'page1'}.evaluate(() => {
+            const messageDiv = document.createElement('div');
+            messageDiv.id = 'customMessage-${newLabel}';
+            messageDiv.style.position = 'fixed';
+            messageDiv.style.top = '20px';
+            messageDiv.style.left = '20px';
+            messageDiv.style.padding = '10px';
+            messageDiv.style.backgroundColor = 'white';
+            messageDiv.style.width = '250px';
+            messageDiv.style.height = '120px';
+            messageDiv.style.border = '1px solid #000';
+            messageDiv.style.borderRadius = '12px';
+            messageDiv.style.zIndex = '1000';
+            messageDiv.innerHTML =  \`
+            <h3>${newLabel}</h3>
+            <p>Please Enter ${newLabel}.</p>
+            <button id="close-popup-${newLabel}">Close</button>
+          \`;
+            document.body.appendChild(messageDiv);
+            document.getElementById("close-popup-${newLabel}").addEventListener('click', () => {
+             const existingPopup = document.getElementById('customMessage-${newLabel}');
+      if (existingPopup) {
+        existingPopup.style.display = 'none';
+        existingPopup.setAttribute('data-closed', 'true');
+
+      }
+            });
+          });
+      }
+
+
+      await ${currentPage == 1 ? 'page' : 'page1'}.waitForFunction(() => {
+        const popup = document.getElementById('customMessage-${newLabel}');
+        return popup && popup.getAttribute('data-closed') === 'true';
+      }, { timeout: 900000 });
+
+      console.log('${newLabel} input acknowledged by user.');
+    
+                          
+                           await ${currentPage == 1 ? 'page' : 'page1'}.waitForFunction(async() => {
+          const label = Array.from(document.querySelectorAll('label')).find(label => label.innerText.includes('${newLabel}'));
+              const button = document.querySelector('button[role="combobox"][aria-label="${newLabel}"]');
+      
+      
+      
+          if (label) {
+            const control = label.control || label.querySelector('input, select'); 
+            
+            if (control) {
+              return control.value && control.value.trim() !== '';  
+            }
+          }
+            if(button){
+      
+      return button.getAttribute('data-value') || null;
+            }
+          return false;
+        }, { timeout: 900000 }); 
+                            `;
+                        newScript.push(data);
+                      }
+                    }
                   }
+                }
+              } else {
+                if (
+                  currentLine.includes('getByLabel') &&
+                  currentLine.includes('button')
+                ) {
+                  newScript.push(currentLine);
                 }
               }
             } else {
@@ -693,7 +790,7 @@ export let processScript = (finalObj: {
                     break;
                   } catch (error) {
                     console.warn('Attempt failed');
-                    await page.waitForTimeout(500);
+                    await ${currentPage == 1 ? 'page' : 'page1'}.waitForTimeout(500);
                   }
                 }
                 `,
