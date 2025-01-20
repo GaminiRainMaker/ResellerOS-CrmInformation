@@ -316,7 +316,7 @@ const DealRegDetail = () => {
       let updatedData = newFormData
         ? dependentFieldProcess(template, newFormData)
         : null;
-
+      console.log(isSubmitLoginForm, 'isSubmitLoginFormisSubmitLoginForm');
       const finalData = {
         username: isSalesForce
           ? finalMainData?.credentials?.username

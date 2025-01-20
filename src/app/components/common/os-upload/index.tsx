@@ -47,7 +47,6 @@ const OsUpload: React.FC<any> = ({
   setTypeOfAddQuote,
   opportunityDetailId,
   customerDetailId,
-
   setAdvancedUpload,
   advancedUpload,
   lineItemSyncingData,
@@ -84,7 +83,8 @@ const OsUpload: React.FC<any> = ({
   useEffect(() => {
     setLoading(true);
     dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
-      setAdvancedSetting(payload?.payload?.advanced_excel);
+      // setAdvancedSetting(payload?.payload?.advanced_excel);
+      setAdvancedSetting(true);
     });
     setLoading(false);
   }, []);
@@ -274,6 +274,7 @@ const OsUpload: React.FC<any> = ({
                       // }
                     },
                   );
+
                   // .filter(Boolean); // Remove any undefined values
 
                   let maxLength = Math.max(
@@ -307,12 +308,6 @@ const OsUpload: React.FC<any> = ({
         // message.error('Error converting file to base64', error);
       });
 
-    function containsLetterAndNumber(str: string): boolean {
-      // const hasLetter = /[a-zA-Z]/.test(str);
-      // const hasDigit = /\d/.test(str);
-      const hasHyphen = /-/.test(str);
-      return hasHyphen;
-    }
     let requiredResult = resultantValues?.filter(
       (items: any) =>
         (items?.product_code &&

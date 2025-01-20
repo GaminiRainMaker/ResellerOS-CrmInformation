@@ -74,7 +74,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
   useEffect(() => {
     setLoading(true);
     dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
-      setAdvancedSetting(payload?.payload?.advanced_excel);
+      setAdvancedSetting(true);
     });
     setLoading(false);
   }, []);
@@ -713,12 +713,10 @@ const AddQuote: FC<AddQuoteInterface> = ({
 
           const insertedQuoteFile = await dispatch(insertQuoteFile(quoteFile));
           // ===============To get LineItems WIth non- repeative objects
-          console.log('23432234322', quoteFile, insertedQuoteFile);
 
           let newArrValues = getLineItemsWithNonRepitive(
             quotesArr[i].quoteFileObj[k]?.lineItems,
           );
-          console.log('23432234322', newArrValues);
 
           const lineItem = quotesArr[i].quoteFileObj[k]?.lineItems;
 
