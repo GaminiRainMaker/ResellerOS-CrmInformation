@@ -270,7 +270,7 @@ export let addLocatorAndNameForDependentFields = (
 
   // If no dependent field is found, return null
   if (!dependentFormData) {
-    return null;
+    return formData;
   }
 
   // Extract the dependentLabel from the found object
@@ -450,7 +450,7 @@ export let processScript = (finalObj: {
         });
       });
  
-    await ${currentPage == 1 ? 'page' : 'page1'}.waitForTimeout(90000);
+    await ${currentPage == 1 ? 'page' : 'page1'}.waitForTimeout(9000);
     `;
 
             newScript.push(data);
