@@ -403,18 +403,26 @@ export let processScript = (finalObj: {
             loginStepImplemented = true;
           } else {
             if (
+              !currentLine.includes('pause()') &&
+              !currentLine.includes('option') &&
+              formValues.length <= formPages &&
+              !currentLine.includes('Verification') &&
               (currentLine.includes('fill') ||
                 currentLine.includes('combobox') ||
                 currentLine.includes('selectOption') ||
                 currentLine.includes('getByPlaceholder') ||
                 (currentLine.includes('getByLabel') &&
-                  currentLine.includes('button'))) &&
-              !currentLine.includes('pause()') &&
-              !currentLine.includes('option') &&
-              formValues.length <= formPages &&
-              !currentLine.includes('Verification')
+                  currentLine.includes('button')) ||
+                (currentLine.includes('locator') &&
+                  currentLine.includes('click')))
             ) {
-              const excludedKeys = ['name', 'userfill', 'type'];
+              const excludedKeys = [
+                'name',
+                'userfill',
+                'type',
+                'locater',
+                'dateformat',
+              ];
               let lineLabel = '';
               let lineName = '';
 
@@ -449,7 +457,10 @@ export let processScript = (finalObj: {
                 }
               }
 
-              const locatorRegex = /page\.locator\((['"`])([^'"`]+)\1\)/;
+              const locatorRegex =
+                currentPage === 1
+                  ? /page\.locator\((['"`])([^'"`]+)\1\)/
+                  : /page1\.locator\((['"`])([^'"`]+)\1\)/;
               const match = currentLine.match(locatorRegex);
 
               if (match) {
@@ -494,19 +505,15 @@ export let processScript = (finalObj: {
               if (dataObj && dataObj.length) {
                 dataObj = dataObj[0];
               }
-
               if (dataObj) {
                 for (let [label, value] of Object.entries(dataObj)) {
                   if (
-                    label !== 'userFill' &&
-                    value &&
-                    label !== 'locater' &&
-                    label !== 'name' &&
-                    label !== 'type' &&
-                    label !== 'dateformat' &&
-                    !formValues.includes(label)
+                    !formValues.includes(label) &&
+                    excludedKeys.findIndex(
+                      (item) => item === label.toLowerCase(),
+                    ) == -1
                   ) {
-                    if (!dataObj.userFill) {
+                    if (value && !dataObj.userFill) {
                       if (
                         currentLine.includes('getByLabel') &&
                         currentLine.includes('button')
@@ -514,10 +521,10 @@ export let processScript = (finalObj: {
                         if (value && value.length > 0) {
                           for (let i = 0; i < value?.length; i++) {
                             newScript.push(`await ${currentPage == 1 ? 'page' : 'page1'}
-                              .getByRole('option', {
-                                name: '${value[i]}',exact: true 
-                              })
-                              .click();`);
+                                .getByRole('option', {
+                                  name: '${value[i]}',exact: true 
+                                })
+                                .click();`);
 
                             newScript.push(currentLine);
                           }
@@ -531,6 +538,33 @@ export let processScript = (finalObj: {
                         newScript.push(
                           `await ${currentPage == 1 ? 'page' : 'page1'}.getByRole('option', { name: '${value}' , exact: true}).locator('span').nth(1).click();`,
                         );
+                        formValues.push(label);
+
+                        break;
+                      } else if (
+                        currentLine.includes('locator') &&
+                        currentLine.includes('click') &&
+                        (dataObj.type.toLowerCase().includes('select') ||
+                          dataObj.type.toLowerCase().includes('drop'))
+                      ) {
+                        debugger;
+                        newScript.push(currentLine);
+                        if (
+                          value &&
+                          value.length > 0 &&
+                          typeof value !== 'string'
+                        ) {
+                          for (let i = 0; i < value?.length; i++) {
+                            newScript.push(
+                              `await ${currentPage == 1 ? 'page' : 'page1'}.getByText('${value[i]}').first().click();`,
+                            );
+                          }
+                        } else {
+                          newScript.push(
+                            `await ${currentPage == 1 ? 'page' : 'page1'}.getByRole('option', { name: '${value}' , exact: true}).locator('span').first().click();;`,
+                          );
+                        }
+
                         formValues.push(label);
 
                         break;
@@ -554,33 +588,33 @@ export let processScript = (finalObj: {
                         }
                       }
                       let data = `
-    
-                        ${
-                          dataObj.type.toLowerCase().includes('text') ||
-                          dataObj.type.toLowerCase().includes('email') ||
-                          dataObj.type.toLowerCase().includes('date')
-                            ? dataObj.locater
-                              ? `await ${currentPage == 1 ? 'page' : 'page1'}.locator('${dataObj.locater}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');
-`
-                              : dataObj.name
-                                ? `await ${currentPage == 1 ? 'page' : 'page1'}.locator('${dataObj.type.toLowerCase() === 'textarea' ? 'textarea' : 'input'}[name="${dataObj.name}"]').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');
-`
-                                : currentLine.includes('getByLabel') &&
-                                    currentLine.includes('exact')
-                                  ? `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}',{ exact: true }).fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');`
-                                  : `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');`
-                            : dataObj.type.toLowerCase().includes('select') ||
-                                dataObj.type.toLowerCase().includes('drop')
-                              ? dataObj.name
-                                ? `await ${currentPage == 1 ? 'page' : 'page1'}.locator('select[name="${dataObj.name}"]').selectOption('${value}');`
-                                : currentLine.includes('selectOption')
-                                  ? `${currentLine.split('.selectOption')[0]}
-                                      .selectOption('${value}');`
-                                  : `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${label}').selectOption('${value}');`
-                              : `await ${currentPage == 1 ? 'page' : 'page1'}.getByText('${value}').click();`
-                        }
-                        labelFilled.push('${label}');
-                        `;
+      
+                          ${
+                            dataObj.type.toLowerCase().includes('text') ||
+                            dataObj.type.toLowerCase().includes('email') ||
+                            dataObj.type.toLowerCase().includes('date')
+                              ? dataObj.locater
+                                ? `await ${currentPage == 1 ? 'page' : 'page1'}.locator('${dataObj.locater}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');
+  `
+                                : dataObj.name
+                                  ? `await ${currentPage == 1 ? 'page' : 'page1'}.locator('${dataObj.type.toLowerCase() === 'textarea' ? 'textarea' : 'input'}[name="${dataObj.name}"]').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');
+  `
+                                  : currentLine.includes('getByLabel') &&
+                                      currentLine.includes('exact')
+                                    ? `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}',{ exact: true }).fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');`
+                                    : `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');`
+                              : dataObj.type.toLowerCase().includes('select') ||
+                                  dataObj.type.toLowerCase().includes('drop')
+                                ? dataObj.name
+                                  ? `await ${currentPage == 1 ? 'page' : 'page1'}.locator('select[name="${dataObj.name}"]').selectOption('${value}');`
+                                  : currentLine.includes('selectOption')
+                                    ? `${currentLine.split('.selectOption')[0]}
+                                        .selectOption('${value}');`
+                                    : `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${label}').selectOption('${value}');`
+                                : `await ${currentPage == 1 ? 'page' : 'page1'}.getByText('${value}').click();`
+                          }
+                          labelFilled.push('${label}');
+                          `;
                       const stateIndex = newScript.findIndex(
                         (item) =>
                           item.includes('State') && !item.includes('States'),
@@ -609,147 +643,77 @@ export let processScript = (finalObj: {
                           newScript.push(waitingScriptValue);
                         }
                       }
+
+                      formValues.push(label);
                     } else {
                       const newLabel = Object.keys(dataObj).find(
                         (key) => !excludedKeys.includes(key.toLowerCase()),
                       );
                       if (dataObj.userFill && newLabel) {
                         let data = `
-                            if(!labelFilled.includes('${newLabel}')){
-
-                            await ${currentPage == 1 ? 'page' : 'page1'}.evaluate(() => {
-            const messageDiv = document.createElement('div');
-            messageDiv.id = 'customMessage-${newLabel}';
-            messageDiv.style.position = 'fixed';
-            messageDiv.style.top = '20px';
-            messageDiv.style.left = '20px';
-            messageDiv.style.padding = '10px';
-            messageDiv.style.backgroundColor = 'white';
-            messageDiv.style.width = '250px';
-            messageDiv.style.height = '120px';
-            messageDiv.style.border = '1px solid #000';
-            messageDiv.style.borderRadius = '12px';
-            messageDiv.style.zIndex = '1000';
-            messageDiv.innerHTML =  \`
-            <h3>${newLabel}</h3>
-            <p>Please Enter ${newLabel}.</p>
-            <button id="close-popup-${newLabel}">Close</button>
-          \`;
-            document.body.appendChild(messageDiv);
-            document.getElementById("close-popup-${newLabel}").addEventListener('click', () => {
-             const existingPopup = document.getElementById('customMessage-${newLabel}');
-      if (existingPopup) {
-        existingPopup.style.display = 'none';
-        existingPopup.setAttribute('data-closed', 'true');
-
-      }
+                              if(!labelFilled.includes('${newLabel}')){
+  
+                              await ${currentPage == 1 ? 'page' : 'page1'}.evaluate(() => {
+              const messageDiv = document.createElement('div');
+              messageDiv.id = 'customMessage-${newLabel}';
+              messageDiv.style.position = 'fixed';
+              messageDiv.style.top = '20px';
+              messageDiv.style.left = '20px';
+              messageDiv.style.padding = '10px';
+              messageDiv.style.backgroundColor = 'white';
+              messageDiv.style.width = '250px';
+              messageDiv.style.height = '120px';
+              messageDiv.style.border = '1px solid #000';
+              messageDiv.style.borderRadius = '12px';
+              messageDiv.style.zIndex = '1000';
+              messageDiv.innerHTML =  \`
+              <h3>${newLabel}</h3>
+              <p>Please Enter ${newLabel}.</p>
+              <button id="close-popup-${newLabel}">Close</button>
+            \`;
+              document.body.appendChild(messageDiv);
+              document.getElementById("close-popup-${newLabel}").addEventListener('click', () => {
+               const existingPopup = document.getElementById('customMessage-${newLabel}');
+        if (existingPopup) {
+          existingPopup.style.display = 'none';
+          existingPopup.setAttribute('data-closed', 'true');
+  
+        }
+              });
             });
-          });
-      }
-
-
-      await ${currentPage == 1 ? 'page' : 'page1'}.waitForFunction(() => {
-        const popup = document.getElementById('customMessage-${newLabel}');
-        return popup && popup.getAttribute('data-closed') === 'true';
-      }, { timeout: 900000 });
-
-      console.log('${newLabel} input acknowledged by user.');
-    
-                          
-                           await ${currentPage == 1 ? 'page' : 'page1'}.waitForFunction(async() => {
-          const label = Array.from(document.querySelectorAll('label')).find(label => label.innerText.includes('${newLabel}'));
-              const button = document.querySelector('button[role="combobox"][aria-label="${newLabel}"]');
+        }
+  
+  
+        await ${currentPage == 1 ? 'page' : 'page1'}.waitForFunction(() => {
+          const popup = document.getElementById('customMessage-${newLabel}');
+          return popup && popup.getAttribute('data-closed') === 'true';
+        }, { timeout: 900000 });
+  
+        console.log('${newLabel} input acknowledged by user.');
       
-      
-      
-          if (label) {
-            const control = label.control || label.querySelector('input, select'); 
-            
-            if (control) {
-              return control.value && control.value.trim() !== '';  
+                            
+                             await ${currentPage == 1 ? 'page' : 'page1'}.waitForFunction(async() => {
+            const label = Array.from(document.querySelectorAll('label')).find(label => label.innerText.includes('${newLabel}'));
+                const button = document.querySelector('button[role="combobox"][aria-label="${newLabel}"]');
+        
+        
+        
+            if (label) {
+              const control = label.control || label.querySelector('input, select'); 
+              
+              if (control) {
+                return control.value && control.value.trim() !== '';  
+              }
             }
-          }
-            if(button){
-      
-      return button.getAttribute('data-value') || null;
-            }
-          return false;
-        }, { timeout: 900000 }); 
-                            `;
+              if(button){
+        
+        return button.getAttribute('data-value') || null;
+              }
+            return false;
+          }, { timeout: 900000 }); 
+                              `;
                         newScript.push(data);
-                      }
-                    }
-
-                    formValues.push(label);
-                  } else {
-                    const newLabel = Object.keys(dataObj).find(
-                      (key) => !excludedKeys.includes(key.toLowerCase()),
-                    );
-                    if (dataObj.userFill) {
-                      if (dataObj.userFill && newLabel) {
-                        let data = `
-                            if(!labelFilled.includes('${newLabel}')){
-
-                            await ${currentPage == 1 ? 'page' : 'page1'}.evaluate(() => {
-            const messageDiv = document.createElement('div');
-            messageDiv.id = 'customMessage-${newLabel}';
-            messageDiv.style.position = 'fixed';
-            messageDiv.style.top = '20px';
-            messageDiv.style.left = '20px';
-            messageDiv.style.padding = '10px';
-            messageDiv.style.backgroundColor = 'white';
-            messageDiv.style.width = '250px';
-            messageDiv.style.height = '120px';
-            messageDiv.style.border = '1px solid #000';
-            messageDiv.style.borderRadius = '12px';
-            messageDiv.style.zIndex = '1000';
-            messageDiv.innerHTML =  \`
-            <h3>${newLabel}</h3>
-            <p>Please Enter ${newLabel}.</p>
-            <button id="close-popup-${newLabel}">Close</button>
-          \`;
-            document.body.appendChild(messageDiv);
-            document.getElementById("close-popup-${newLabel}").addEventListener('click', () => {
-             const existingPopup = document.getElementById('customMessage-${newLabel}');
-      if (existingPopup) {
-        existingPopup.style.display = 'none';
-        existingPopup.setAttribute('data-closed', 'true');
-
-      }
-            });
-          });
-      }
-
-
-      await ${currentPage == 1 ? 'page' : 'page1'}.waitForFunction(() => {
-        const popup = document.getElementById('customMessage-${newLabel}');
-        return popup && popup.getAttribute('data-closed') === 'true';
-      }, { timeout: 900000 });
-
-      console.log('${newLabel} input acknowledged by user.');
-    
-                          
-                           await ${currentPage == 1 ? 'page' : 'page1'}.waitForFunction(async() => {
-          const label = Array.from(document.querySelectorAll('label')).find(label => label.innerText.includes('${newLabel}'));
-              const button = document.querySelector('button[role="combobox"][aria-label="${newLabel}"]');
-      
-      
-      
-          if (label) {
-            const control = label.control || label.querySelector('input, select'); 
-            
-            if (control) {
-              return control.value && control.value.trim() !== '';  
-            }
-          }
-            if(button){
-      
-      return button.getAttribute('data-value') || null;
-            }
-          return false;
-        }, { timeout: 900000 }); 
-                            `;
-                        newScript.push(data);
+                        formValues.push(label);
                       }
                     }
                   }
@@ -758,6 +722,11 @@ export let processScript = (finalObj: {
                 if (
                   currentLine.includes('getByLabel') &&
                   currentLine.includes('button')
+                ) {
+                  newScript.push(currentLine);
+                } else if (
+                  currentLine.includes('locator') &&
+                  currentLine.includes('click')
                 ) {
                   newScript.push(currentLine);
                 }

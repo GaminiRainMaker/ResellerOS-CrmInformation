@@ -414,11 +414,36 @@ const SuperAdminPartner: React.FC = () => {
       ),
       dataIndex: 'organization',
       key: 'organization',
-      render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">
-          {text ?? record?.Partner?.organization ?? '--'}
+      render: (text: string, record: any) => {
+        return (
+          <Typography name="Body 4/Regular">
+            {record?.AssignPartnerProgram?.organization ??
+              record?.Partner?.organization ??
+              '--'}
+          </Typography>
+        );
+      },
+      width: 200,
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Requested User
         </Typography>
       ),
+      dataIndex: 'requested_by',
+      key: 'requested_by',
+      render: (text: string, record: any) => {
+        return (
+          <Typography name="Body 4/Regular">
+            {record?.AssignPartnerProgram?.User?.email ??
+              record?.AssignPartnerProgram?.organization ??
+              record?.Partner?.salesforce_username ??
+              `${record?.Partner?.organization} Organization` ??
+              '--'}
+          </Typography>
+        );
+      },
       width: 200,
     },
     // {
@@ -463,23 +488,7 @@ const SuperAdminPartner: React.FC = () => {
       ),
       width: 200,
     },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Requested User
-        </Typography>
-      ),
-      dataIndex: 'description',
-      key: 'description',
-      render: (text: any, record: any) => (
-        <Typography name="Body 4/Regular">
-          {record?.AssignPartnerProgram?.organization ??
-            record?.Partner?.salesforce_username ??
-            record?.organization}
-        </Typography>
-      ),
-      width: 200,
-    },
+
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">

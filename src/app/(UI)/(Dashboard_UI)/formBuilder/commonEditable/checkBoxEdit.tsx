@@ -730,6 +730,8 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
             hintext: false,
             hintTextValue: '',
             options: [],
+            customFieldName: '',
+            locater: '',
           };
           newObj.id = items;
           newArrayForAdding?.push([newObj]);
@@ -768,7 +770,6 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
     }
   };
 
-  console.log('43543543532', cartItems);
   return (
     <>
       <Row>
@@ -973,8 +974,9 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
                                 <OsInput
                                   style={{width: '70%'}}
                                   disabled={
+                                    activeIndexForDependent === index &&
                                     activeIndexForDependentInnerChild ===
-                                    indexInn
+                                      indexInn
                                       ? false
                                       : true
                                   }
@@ -1020,8 +1022,9 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
                                   Required{' '}
                                   <Switch
                                     disabled={
+                                      activeIndexForDependent === index &&
                                       activeIndexForDependentInnerChild ===
-                                      indexInn
+                                        indexInn
                                         ? false
                                         : true
                                     }
@@ -1038,8 +1041,9 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
                                   User Fill{' '}
                                   <Switch
                                     disabled={
+                                      activeIndexForDependent === index &&
                                       activeIndexForDependentInnerChild ===
-                                      indexInn
+                                        indexInn
                                         ? false
                                         : true
                                     }
@@ -1053,6 +1057,64 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
                                   />
                                 </Typography>
                               </div>
+                              <Row>
+                                <Col sm={24}>
+                                  {' '}
+                                  <Typography name="Body 4/Medium">
+                                    Change Name
+                                  </Typography>
+                                  <OsInput
+                                    disabled={
+                                      activeIndexForDependent === index &&
+                                      activeIndexForDependentInnerChild ===
+                                        indexInn
+                                        ? false
+                                        : true
+                                    }
+                                    style={{
+                                      width: '100%',
+                                      marginBottom: '20px',
+                                    }}
+                                    placeholder="name"
+                                    defaultValue={itemInner?.customFieldName}
+                                    value={itemInner?.customFieldName}
+                                    onChange={(e: any) => {
+                                      changeFieldValuesForDependent(
+                                        e?.target?.value,
+                                        'customFieldName',
+                                      );
+                                    }}
+                                  />
+                                </Col>{' '}
+                                <Col sm={24}>
+                                  {' '}
+                                  <Typography name="Body 4/Medium">
+                                    Locater
+                                  </Typography>
+                                  <OsInput
+                                    style={{
+                                      width: '100%',
+                                      marginBottom: '20px',
+                                    }}
+                                    disabled={
+                                      activeIndexForDependent === index &&
+                                      activeIndexForDependentInnerChild ===
+                                        indexInn
+                                        ? false
+                                        : true
+                                    }
+                                    placeholder="locater value"
+                                    defaultValue={itemInner?.locater}
+                                    value={itemInner?.locater}
+                                    onChange={(e: any) => {
+                                      changeFieldValuesForDependent(
+                                        e?.target?.value,
+                                        'locater',
+                                      );
+                                    }}
+                                  />
+                                </Col>{' '}
+                              </Row>
                               <div
                                 style={{
                                   marginTop: '10px',
@@ -1064,8 +1126,9 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
                                 </Typography>
                                 <CommonSelect
                                   disabled={
+                                    activeIndexForDependent === index &&
                                     activeIndexForDependentInnerChild ===
-                                    indexInn
+                                      indexInn
                                       ? false
                                       : true
                                   }
