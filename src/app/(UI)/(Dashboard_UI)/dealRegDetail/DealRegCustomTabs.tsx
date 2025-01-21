@@ -276,8 +276,6 @@ const DealRegCustomTabs = forwardRef<
     const responseFieldObject: any = {};
 
     const uniqueFieldObject: any = {};
-    let finalCommonFieldObject: any = {};
-    let finalUniqueFieldObject: any = {};
     let finalDealReg: any = {};
 
     if (commonFieldFormData) {
@@ -321,31 +319,42 @@ const DealRegCustomTabs = forwardRef<
         const parsedUniqueFormData = uniqueFormData?.[0]
           ? JSON.parse(uniqueFormData[0])
           : {};
-        finalCommonFieldObject = {
-          ...parsedCommonFormData,
-          ...commonFieldObject,
-        };
-        finalUniqueFieldObject = {
-          ...parsedUniqueFormData,
-          ...uniqueFieldObject,
-        };
+
+        // Iterate over all keys in parsedUniqueFormData
+        Object.keys(parsedCommonFormData).forEach((key) => {
+          // Extract the ID from parsedUniqueFormData key
+          const arr = Object.keys(commonFieldObject);
+          if (!arr.includes(key)) {
+            commonFieldObject[key] = parsedCommonFormData[key];
+          }
+        });
+
+        // Iterate over all keys in parsedUniqueFormData
+        Object.keys(parsedUniqueFormData).forEach((key) => {
+          // Extract the ID from parsedUniqueFormData key
+          const arr = Object.keys(uniqueFieldObject);
+          if (!arr.includes(key)) {
+            uniqueFieldObject[key] = parsedUniqueFormData[key];
+          }
+        });
       }
       const tabPercentage = calculateTabBarPercentage(
         finalDealReg?.PartnerProgram?.form_data,
         queryData,
-        finalUniqueFieldObject,
-        finalCommonFieldObject,
+        uniqueFieldObject,
+        commonFieldObject,
         false,
         finalDealReg?.type,
       );
+
       const obj = {
-        common_form_data: [JSON.stringify(finalCommonFieldObject)],
-        unique_form_data: [JSON.stringify(finalUniqueFieldObject)],
+        common_form_data: [JSON.stringify(commonFieldObject)],
+        unique_form_data: [JSON.stringify(uniqueFieldObject)],
         id: activeKey,
       };
       const formObj = {
-        common_form_data: finalCommonFieldObject,
-        unique_form_data: finalUniqueFieldObject,
+        common_form_data: commonFieldObject,
+        unique_form_data: uniqueFieldObject,
         id: activeKey,
         unique_template:
           finalDealReg?.PartnerProgram?.form_data &&
@@ -386,8 +395,8 @@ const DealRegCustomTabs = forwardRef<
           : finalDealReg?.status,
       };
       const newObj = {
-        common_form_data: [JSON.stringify(finalCommonFieldObject)],
-        unique_form_data: [JSON.stringify(finalUniqueFieldObject)],
+        common_form_data: [JSON.stringify(commonFieldObject)],
+        unique_form_data: [JSON.stringify(uniqueFieldObject)],
         id: activeKey,
         unique_template: finalDealReg?.PartnerProgram?.form_data,
         common_template: queryData,
@@ -425,6 +434,8 @@ const DealRegCustomTabs = forwardRef<
         percentage: tabPercentage,
       };
 
+      // return;
+
       setFormData(formObj);
       updateDealRegFinalData(activeKey, newObj);
 
@@ -439,8 +450,8 @@ const DealRegCustomTabs = forwardRef<
         }
       } else if (newObj && isCanvas) {
         const finalObj: any = {
-          common_form_data: [JSON.stringify(finalCommonFieldObject)],
-          unique_form_data: [JSON.stringify(finalUniqueFieldObject)],
+          common_form_data: [JSON.stringify(commonFieldObject)],
+          unique_form_data: [JSON.stringify(uniqueFieldObject)],
           id: activeKey,
           baseURL: salesForceinstanceUrl,
           token: salesForceToken,

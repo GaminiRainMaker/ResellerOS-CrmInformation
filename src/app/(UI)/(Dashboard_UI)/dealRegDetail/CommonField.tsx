@@ -84,19 +84,13 @@ const CommonFields: FC<CommonFieldsProps> = ({
 
   useEffect(() => {
     template?.forEach((section: any) => {
-      section?.children?.forEach((child: any, Childndex: any) => {
-        const required = child?.is_required;
+      section?.children?.forEach((child: any) => {
         if (child?.map_from && child?.map_to) {
           const relevantData = DealRegData?.find(
             (item: any) => item?.id === activeKey,
           );
           if (relevantData && relevantData[child?.map_from]) {
-            let name =
-              'c_' +
-              convertToSnakeCase(child?.label) +
-              Childndex +
-              activeKey +
-              (required ? '_required' : '');
+            let name = 'c_' + convertToSnakeCase(child?.label) + activeKey;
             form.setFieldsValue({
               [name]: relevantData[child?.map_from][child?.map_to],
             });
@@ -197,8 +191,7 @@ const CommonFields: FC<CommonFieldsProps> = ({
             key={index}
           >
             <Row gutter={[0, 16]}>
-              {section?.children?.map((child, Childndex) => {
-                const required = child?.is_required;
+              {section?.children?.map((child) => {
                 return (
                   <Col span={24} key={child.id}>
                     <SelectFormItem
@@ -206,9 +199,7 @@ const CommonFields: FC<CommonFieldsProps> = ({
                         'c_' +
                         convertToSnakeCase(child?.label) +
                         '_' +
-                        Childndex +
-                        activeKey +
-                        (required ? '_required' : '')
+                        activeKey
                       }
                       label={
                         <Typography name="Body 4/Medium">
