@@ -46,13 +46,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
             formData?.unique_form_data?.[items?.label?.toString()], // Check both selections
         );
         let convertedToCheckValue =
-          'u_' +
-          convertToSnakeCase(items.label) +
-          '_' +
-          index +
-          activeKey +
-          (items?.required ? '_required' : '') +
-          (items?.userfill ? '_userfill' : '');
+          'u_' + convertToSnakeCase(items.label) + '_' + index + activeKey;
 
         if (items?.dependentFiled) {
           let newObj = {
@@ -80,7 +74,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
 
   const getInputComponent = (
     itemCon: any,
-    itemIndex: any,
     activeKey: any,
     required: any,
     userfill: any,
@@ -100,19 +93,11 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
       };
     }
 
-    const dateName =
-      'u_' +
-      convertToSnakeCase(itemCon.label) +
-      '_' +
-      itemIndex +
-      activeKey +
-      (required ? '_required' : '') +
-      (userfill ? '_userfill' : '');
+    const dateName = 'u_' + convertToSnakeCase(itemCon.label) + '_' + activeKey;
 
     if (itemCon.dependentFiled) {
       return renderDependentField(
         itemCon,
-        itemIndex,
         activeKey,
         required,
         userfill,
@@ -233,12 +218,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                   [itemCon.label]: checkedValues,
                 }));
                 form.setFieldValue(
-                  'u_' +
-                    convertToSnakeCase(itemCon.label) +
-                    '_' +
-                    activeKey +
-                    (itemCon.required ? '_required' : '') +
-                    (itemCon.user_fill ? '_userfill' : ''),
+                  'u_' + convertToSnakeCase(itemCon.label) + '_' + activeKey,
                   checkedValues,
                 );
               }}
@@ -275,12 +255,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                     [itemCon.label]: value,
                   }));
                   form.setFieldValue(
-                    'u_' +
-                      convertToSnakeCase(itemCon.label) +
-                      '_' +
-                      activeKey +
-                      (itemCon.required ? '_required' : '') +
-                      (itemCon.user_fill ? '_userfill' : ''),
+                    'u_' + convertToSnakeCase(itemCon.label) + '_' + activeKey,
                     value,
                   );
                 }}
@@ -327,24 +302,16 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
         type: string;
       }[];
     },
-    itemIndex: number,
     activeKey: any,
     required: boolean,
     userfill: any,
     commonProps: any,
   ) => {
     let convertedToCheckValue =
-      'u_' +
-      convertToSnakeCase(itemCon.label) +
-      '_' +
-      itemIndex +
-      activeKey +
-      (required ? '_required' : '') +
-      (userfill ? '_userfill' : '');
+      'u_' + convertToSnakeCase(itemCon.label) + '_' + activeKey;
 
     let newObjTORerender: any = {
       itemCon: {...itemCon},
-      itemIndex: itemIndex,
       activeKey: activeKey,
       required: required,
       userfill: userfill,
@@ -369,13 +336,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
       (depField: any) => depField.id === finTheFiledActive?.valueOut, // Check both selections
     );
     let convertedToCheckDependentValue =
-      'u_' +
-      convertToSnakeCase(dependentField?.label) +
-      '_' +
-      itemIndex +
-      activeKey +
-      (required ? '_required' : '') +
-      (userfill ? '_userfill' : '');
+      'u_' + convertToSnakeCase(dependentField?.label) + '_' + activeKey;
     let originalDependentValueSaved =
       formData?.unique_form_data?.[convertedToCheckDependentValue?.toString()];
     let findTheShowDependentForMulti = itemCon?.options?.findIndex(
@@ -445,17 +406,15 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
         ) : (
           <></>
         )}
+
         {dependentArrValOrMulti?.map((itemsDeCh: any, indexDepCh: number) => {
+          const dateName =
+            'u_' + convertToSnakeCase(itemCon.label) + '_' + activeKey;
+
           return (
             <SelectFormItem
               name={
-                'u_' +
-                convertToSnakeCase(itemsDeCh?.label) +
-                '_' +
-                itemIndex +
-                activeKey +
-                (required ? '_required' : '') +
-                (userfill ? '_userfill' : '')
+                'u_' + convertToSnakeCase(itemsDeCh?.label) + '_' + activeKey
               }
               label={
                 <Typography name="Body 4/Medium">{itemsDeCh?.label}</Typography>
@@ -491,6 +450,36 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                     {...commonProps}
                   />
                 </>
+              ) : itemsDeCh?.type === 'date' ? (
+                <CommonDatePicker
+                  format={
+                    itemsDeCh?.dateformat
+                      ? itemsDeCh?.dateformat
+                      : 'MMM D, YYYY'
+                  }
+                  value={
+                    form.getFieldValue(dateName)
+                      ? dayjs(form.getFieldValue(dateName))
+                      : null
+                  } // Load date correctly
+                  placeholder={itemsDeCh?.dateformat}
+                  showTime={false}
+                  onChange={(date, dateString) => {
+                    // Check if date is valid using Day.js
+                    const parsedDate = date ? dayjs(date) : null;
+                    if (parsedDate && parsedDate.isValid()) {
+                      form.setFieldValue(dateName, parsedDate); // Store parsed date in the field
+                    } else {
+                      form.setFieldValue(dateName, null); // Clear the field if date is invalid
+                    }
+                    if (
+                      'onBlur' in commonProps &&
+                      typeof commonProps.onBlur === 'function'
+                    ) {
+                      commonProps.onBlur();
+                    }
+                  }}
+                />
               ) : (
                 <CommonSelect
                   style={{width: '100%'}}
@@ -516,13 +505,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           return (
             <SelectFormItem
               name={
-                'u_' +
-                convertToSnakeCase(itemsDeCh?.label) +
-                '_' +
-                itemIndex +
-                activeKey +
-                (required ? '_required' : '') +
-                (userfill ? '_userfill' : '')
+                'u_' + convertToSnakeCase(itemsDeCh?.label) + '_' + activeKey
               }
               label={
                 <Typography name="Body 4/Medium">{itemsDeCh?.label}</Typography>
@@ -586,10 +569,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
               'u_' +
               convertToSnakeCase(dependentField?.label) +
               '_' +
-              itemIndex +
-              activeKey +
-              (required ? '_required' : '') +
-              (userfill ? '_userfill' : '')
+              activeKey 
             }
             label={
               <Typography name="Body 4/Medium">
@@ -678,17 +658,12 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     let newFinalArr: any = [];
     let count = 0;
     if (allContent && allContent?.length > 0) {
-      allContent?.map((allContentItem: any, itemIndex: number) => {
+      allContent?.map((allContentItem: any) => {
         const required = allContentItem?.required;
         let newObj;
 
         let labelVal =
-          'u_' +
-          convertToSnakeCase(allContentItem.label) +
-          '_' +
-          itemIndex +
-          activeKey +
-          (required ? '_required' : '');
+          'u_' + convertToSnakeCase(allContentItem.label) + '_' + activeKey;
         if (allContentItem?.name === 'Text Content') {
           count = count + 1;
           newObj = {
@@ -749,10 +724,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                   'u_' +
                   convertToSnakeCase(allContentItem.label) +
                   '_' +
-                  itemIndex +
-                  activeKey +
-                  (required ? '_required' : '') +
-                  (userfill ? '_userfill' : '')
+                  activeKey
                 }
                 label={
                   <Typography name="Body 4/Medium">
@@ -784,7 +756,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
               >
                 {getInputComponent(
                   allContentItem,
-                  itemIndex,
                   activeKey,
                   required,
                   userfill,

@@ -34,6 +34,7 @@ import {
 } from '../../../../../redux/actions/salesForce';
 import {decrypt, encrypt} from '@/app/utils/base';
 import {
+  addLocatorAndNameForDependentFields,
   dependentFieldProcess,
   processFormData,
   processScript,
@@ -309,14 +310,18 @@ const DealRegDetail = () => {
           );
         }
       }
-
       const newFormData = template
         ? processFormData(template, finalUniqueData)
         : null;
       let updatedData = newFormData
         ? dependentFieldProcess(template, newFormData)
         : null;
-      console.log(isSubmitLoginForm, 'isSubmitLoginFormisSubmitLoginForm');
+      if (updatedData) {
+        updatedData = addLocatorAndNameForDependentFields(
+          template,
+          updatedData,
+        );
+      }
       const finalData = {
         username: isSalesForce
           ? finalMainData?.credentials?.username

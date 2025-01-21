@@ -1817,11 +1817,14 @@ export const convertToSnakeCase = (input: string): string => {
   const cleanInput = input?.replace(punctuation, '');
 
   // Convert to snake case
-  const result = cleanInput
-    ?.replace(/([a-z0-9])([A-Z])/g, '$1_$2') // Handle camelCase and PascalCase
+  let result = cleanInput
+    ?.replace(/([a-z])([A-Z0-9])/g, '$1_$2') // Add underscores between lowercase letters and uppercase/numbers
+    ?.replace(/([A-Z])([A-Z][a-z])/g, '$1_$2') // Handle transitions within abbreviations like "P2P"
     ?.replace(/\s+/g, '_') // Replace spaces with underscores
     ?.replace(/_+/g, '_') // Remove multiple consecutive underscores
     ?.replace(/^_+|_+$/g, ''); // Remove leading and trailing underscores
+
+  result = result?.replace(/NGF_Ws/g, 'NGFWs'); // Ensure a direct replacement for "NGF_Ws"
 
   // Add punctuation back, with a space if necessary
   return endingPunctuation

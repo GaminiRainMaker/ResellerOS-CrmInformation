@@ -74,7 +74,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
   useEffect(() => {
     setLoading(true);
     dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
-      setAdvancedSetting(true);
+      setAdvancedSetting(payload?.payload?.advanced_excel);
     });
     setLoading(false);
   }, []);

@@ -83,8 +83,7 @@ const OsUpload: React.FC<any> = ({
   useEffect(() => {
     setLoading(true);
     dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
-      // setAdvancedSetting(payload?.payload?.advanced_excel);
-      setAdvancedSetting(true);
+      setAdvancedSetting(payload?.payload?.advanced_excel);
     });
     setLoading(false);
   }, []);
@@ -136,6 +135,7 @@ const OsUpload: React.FC<any> = ({
                       for (let item of currentRow) {
                         let normalizedItem = normalize(item);
                         // Check if normalizedItem matches any normalized check item
+
                         if (
                           normalizedCheckArr.some(
                             (checkItem: any) =>
@@ -164,6 +164,7 @@ const OsUpload: React.FC<any> = ({
                         bestRowIndex = i;
                       }
                     }
+
                     if (lastCount < maxMatches) {
                       lastCount = maxMatches;
                       allTimeBestRow = bestRowIndex;
@@ -179,6 +180,7 @@ const OsUpload: React.FC<any> = ({
                     );
                   };
                   let bestTabsRawData = payload?.payload[bestTab];
+
                   let indexFrom = -1;
 
                   // Find the index of the first row that is null or empty

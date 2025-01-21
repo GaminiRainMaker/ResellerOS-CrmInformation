@@ -38,9 +38,7 @@ const DealReg: React.FC = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [showModal, setShowModal] = useState<boolean>(false);
-  const {data: DealRegData} = useAppSelector(
-    (state) => state.dealReg,
-  );
+  const {data: DealRegData} = useAppSelector((state) => state.dealReg);
   const {isCanvas} = useAppSelector((state) => state.canvas);
   const {userInformation} = useAppSelector((state) => state.user);
   const [finalDealRegData, setFinalDealRegData] = useState<any>();
@@ -51,8 +49,6 @@ const DealReg: React.FC = () => {
   });
   const searchQuery = useDebounceHook(query, 500);
   const [statusValue, setStatusValue] = useState<string>('All');
-  
-
 
   const dealRegFormColumns = [
     {
