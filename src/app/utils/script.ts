@@ -476,6 +476,8 @@ export let processScript = (finalObj: {
                 'type',
                 'locater',
                 'dateformat',
+                'dependentFill',
+                'dependentLabel',
               ];
               let lineLabel = '';
               let lineName = '';
@@ -648,15 +650,15 @@ export let processScript = (finalObj: {
                             dataObj.type.toLowerCase().includes('email') ||
                             dataObj.type.toLowerCase().includes('date')
                               ? dataObj.locater
-                                ? `await ${currentPage == 1 ? 'page' : 'page1'}.locator('${dataObj.locater}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');
+                                ? `await ${currentPage == 1 ? 'page' : 'page1'}.locator('${dataObj.locater}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');
   `
                                 : dataObj.name
-                                  ? `await ${currentPage == 1 ? 'page' : 'page1'}.locator('${dataObj.type.toLowerCase() === 'textarea' ? 'textarea' : 'input'}[name="${dataObj.name}"]').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');
+                                  ? `await ${currentPage == 1 ? 'page' : 'page1'}.locator('${dataObj.type.toLowerCase() === 'textarea' ? 'textarea' : 'input'}[name="${dataObj.name}"]').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');
   `
                                   : currentLine.includes('getByLabel') &&
                                       currentLine.includes('exact')
-                                    ? `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}',{ exact: true }).fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');`
-                                    : `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');`
+                                    ? `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}',{ exact: true }).fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');`
+                                    : `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');`
                               : dataObj.type.toLowerCase().includes('select') ||
                                   dataObj.type.toLowerCase().includes('drop')
                                 ? dataObj.name
