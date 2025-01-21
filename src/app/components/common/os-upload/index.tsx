@@ -139,11 +139,20 @@ const OsUpload: React.FC<any> = ({
                         if (
                           normalizedCheckArr.some(
                             (checkItem: any) =>
-                              normalizedItem
-                                ?.toString()
-                                .replace(/\s+/g, '')
-                                .replace('.', '')
-                                .toLowerCase() === normalize(checkItem),
+                              normalize(
+                                normalizedItem
+                                  ?.toString()
+                                  .replace(/\s+/g, '')
+                                  .replace('.', '')
+                                  .toLowerCase(),
+                              ) ==
+                              normalize(
+                                checkItem
+                                  ?.toString()
+                                  .replace(/\s+/g, '')
+                                  .replace('.', '')
+                                  .toLowerCase(),
+                              ),
                           )
                         ) {
                           matchCount++;
