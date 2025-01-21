@@ -600,7 +600,8 @@ export let processScript = (finalObj: {
                         currentLine.includes('locator') &&
                         currentLine.includes('click') &&
                         (dataObj.type.toLowerCase().includes('select') ||
-                          dataObj.type.toLowerCase().includes('drop'))
+                          dataObj.type.toLowerCase().includes('drop') ||
+                          dataObj.type.toLowerCase().includes('date'))
                       ) {
                         newScript.push(currentLine);
                         if (
