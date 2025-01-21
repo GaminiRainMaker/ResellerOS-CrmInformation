@@ -148,10 +148,11 @@ export let processFormData = (
   for (const key in finalUniqueData) {
     if (Object.prototype.hasOwnProperty.call(finalUniqueData, key)) {
       // Remove prefixes and suffixes from keys
-      let newKey = key
-        .replace(/^u_/, '')
-        .replace(/_required|_userfill|_[a-zA-Z0-9]+$/g, '')
-        .replace(/_/g, ' ');
+      let newKey = key.replace(/^u_/, '');
+      newKey = newKey.replace('_required', '');
+      newKey = newKey.replace('_userfill', '');
+      newKey = newKey.replace(/_[a-zA-Z0-9]+$/, '');
+      newKey = newKey.replace(/_/g, ' ');
 
       const userFill = labelsWithUserFillTrue.includes(newKey);
 
@@ -234,19 +235,72 @@ export let processFormData = (
 };
 
 export let dependentFieldProcess = (templateData: any, formData: any) => {
-  templateData?.forEach((templateItem: any) => {
-    if (templateItem?.dependentFiled) {
-      templateItem?.dependentFiledArr?.forEach((dependentItem: any) => {
-        const formDataItem = formData?.find(
-          (fItem: any) => fItem[dependentItem?.label] !== undefined,
-        );
+  templateData.forEach((templateItem: any) => {
+    if (
+      templateItem?.dependentFiled &&
+      Array.isArray(templateItem.dependentFiledArr)
+    ) {
+      templateItem.dependentFiledArr.forEach((dependentItem: any) => {
+        const dependentKey = dependentItem[0]?.label; // Extract the dependent key
+        if (!dependentKey) return; // Skip if the key is not valid
+
+        const formDataItem = formData.find((fItem: any) => {
+          const fieldValue = fItem[dependentKey]; // Access value using the key
+          return fieldValue !== undefined; // Return item if value exists
+        });
+
         if (formDataItem) {
-          formDataItem.dependentFill = true;
-          formDataItem.dependentLabel = templateItem.label;
+          formDataItem.dependentFill = true; // Mark as dependent
+          formDataItem.dependentLabel = templateItem.label; // Assign label
         }
       });
     }
   });
+  return formData;
+};
+
+export let addLocatorAndNameForDependentFields = (
+  template: TemplateItem[],
+  formData: any,
+) => {
+  // Find the object in formData with dependentFill: true
+  const dependentFormData = formData.find(
+    (item: any) => item.dependentFill === true,
+  );
+
+  // If no dependent field is found, return null
+  if (!dependentFormData) {
+    return formData;
+  }
+
+  // Extract the dependentLabel from the found object
+  const dependentLabel = dependentFormData.dependentLabel;
+
+  // Find the corresponding object in the template by matching the label
+  const matchingTemplateObject = template.find(
+    (item) => item.label === dependentLabel,
+  );
+
+  // If no matching template object is found, return null
+  if (!matchingTemplateObject || !matchingTemplateObject.dependentFiledArr) {
+    return null;
+  }
+
+  // Iterate through the dependentFiledArr to find a match for the dependentFormData key
+  const dependentFormDataKey = dependentFormData.name;
+  const matchingDependentField = matchingTemplateObject.dependentFiledArr
+    .flat()
+    .find(
+      (dependentFieldItem) => dependentFieldItem.label === dependentFormDataKey,
+    );
+
+  // If a matching dependent field is found, update the dependentFormData object
+  if (matchingDependentField) {
+    dependentFormData.customFieldName = matchingDependentField.customFieldName;
+    dependentFormData.locater = matchingDependentField.locater;
+  }
+
+  // Return the updated formData
   return formData;
 };
 
@@ -396,7 +450,7 @@ export let processScript = (finalObj: {
         });
       });
  
-    await ${currentPage == 1 ? 'page' : 'page1'}.waitForTimeout(90000);
+    await ${currentPage == 1 ? 'page' : 'page1'}.waitForTimeout(9000);
     `;
 
             newScript.push(data);
@@ -422,6 +476,8 @@ export let processScript = (finalObj: {
                 'type',
                 'locater',
                 'dateformat',
+                'dependentfill',
+                'dependentlabel',
               ];
               let lineLabel = '';
               let lineName = '';
@@ -502,9 +558,7 @@ export let processScript = (finalObj: {
                   : dataObjAll.length == 1
                     ? dataObjAll[0]
                     : null;
-              if (dataObj && dataObj.length) {
-                dataObj = dataObj[0];
-              }
+
               if (dataObj) {
                 for (let [label, value] of Object.entries(dataObj)) {
                   if (
@@ -547,7 +601,6 @@ export let processScript = (finalObj: {
                         (dataObj.type.toLowerCase().includes('select') ||
                           dataObj.type.toLowerCase().includes('drop'))
                       ) {
-                        debugger;
                         newScript.push(currentLine);
                         if (
                           value &&
@@ -594,15 +647,15 @@ export let processScript = (finalObj: {
                             dataObj.type.toLowerCase().includes('email') ||
                             dataObj.type.toLowerCase().includes('date')
                               ? dataObj.locater
-                                ? `await ${currentPage == 1 ? 'page' : 'page1'}.locator('${dataObj.locater}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');
+                                ? `await ${currentPage == 1 ? 'page' : 'page1'}.locator('${dataObj.locater}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');
   `
                                 : dataObj.name
-                                  ? `await ${currentPage == 1 ? 'page' : 'page1'}.locator('${dataObj.type.toLowerCase() === 'textarea' ? 'textarea' : 'input'}[name="${dataObj.name}"]').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');
+                                  ? `await ${currentPage == 1 ? 'page' : 'page1'}.locator('${dataObj.type.toLowerCase() === 'textarea' ? 'textarea' : 'input'}[name="${dataObj.name}"]').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');
   `
                                   : currentLine.includes('getByLabel') &&
                                       currentLine.includes('exact')
-                                    ? `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}',{ exact: true }).fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');`
-                                    : `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value}');`
+                                    ? `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}',{ exact: true }).fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');`
+                                    : `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');`
                               : dataObj.type.toLowerCase().includes('select') ||
                                   dataObj.type.toLowerCase().includes('drop')
                                 ? dataObj.name
@@ -751,10 +804,11 @@ export let processScript = (finalObj: {
 
                 await loginLink.waitFor({ state: 'visible', timeout: 5000 });
                 await loginLink.scrollIntoViewIfNeeded();
+                await page.waitForLoadState('networkidle');
 
                 for (let i = 0; i < 3; i++) {
                   try {
-                    await loginLink.click();
+                    await loginLink.click({ force: true });
                     console.log('Login link clicked successfully.');
                     break;
                   } catch (error) {
