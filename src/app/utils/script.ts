@@ -805,10 +805,11 @@ export let processScript = (finalObj: {
 
                 await loginLink.waitFor({ state: 'visible', timeout: 5000 });
                 await loginLink.scrollIntoViewIfNeeded();
+                await page.waitForLoadState('networkidle');
 
                 for (let i = 0; i < 3; i++) {
                   try {
-                    await loginLink.click();
+                    await loginLink.click({ force: true });
                     console.log('Login link clicked successfully.');
                     break;
                   } catch (error) {
