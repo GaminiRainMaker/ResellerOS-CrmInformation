@@ -406,7 +406,11 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
         ) : (
           <></>
         )}
+
         {dependentArrValOrMulti?.map((itemsDeCh: any, indexDepCh: number) => {
+          const dateName =
+            'u_' + convertToSnakeCase(itemCon.label) + '_' + activeKey;
+
           return (
             <SelectFormItem
               name={
@@ -446,6 +450,36 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                     {...commonProps}
                   />
                 </>
+              ) : itemsDeCh?.type === 'date' ? (
+                <CommonDatePicker
+                  format={
+                    itemsDeCh?.dateformat
+                      ? itemsDeCh?.dateformat
+                      : 'MMM D, YYYY'
+                  }
+                  value={
+                    form.getFieldValue(dateName)
+                      ? dayjs(form.getFieldValue(dateName))
+                      : null
+                  } // Load date correctly
+                  placeholder={itemsDeCh?.dateformat}
+                  showTime={false}
+                  onChange={(date, dateString) => {
+                    // Check if date is valid using Day.js
+                    const parsedDate = date ? dayjs(date) : null;
+                    if (parsedDate && parsedDate.isValid()) {
+                      form.setFieldValue(dateName, parsedDate); // Store parsed date in the field
+                    } else {
+                      form.setFieldValue(dateName, null); // Clear the field if date is invalid
+                    }
+                    if (
+                      'onBlur' in commonProps &&
+                      typeof commonProps.onBlur === 'function'
+                    ) {
+                      commonProps.onBlur();
+                    }
+                  }}
+                />
               ) : (
                 <CommonSelect
                   style={{width: '100%'}}

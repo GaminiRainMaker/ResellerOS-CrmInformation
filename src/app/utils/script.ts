@@ -298,6 +298,7 @@ export let addLocatorAndNameForDependentFields = (
   if (matchingDependentField) {
     dependentFormData.customFieldName = matchingDependentField.customFieldName;
     dependentFormData.locater = matchingDependentField.locater;
+    dependentFormData.dateformat = matchingDependentField.dateformat;
   }
 
   // Return the updated formData

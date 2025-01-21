@@ -1209,9 +1209,35 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
                                     {label: 'Mutiple', value: 'multiple'},
                                     {label: 'Single', value: 'tag'},
                                     {label: 'Input', value: 'text'},
+                                    {label: 'Date', value: 'date'},
                                   ]}
                                 />
                               </div>
+                              {itemInner?.type === 'date' && (
+                                <CommonSelect
+                                  onChange={(e: any) => {
+                                    // changeFieldValues(e, 'dateformat');
+                                    changeFieldValuesForDependent(
+                                      e,
+                                      'dateformat',
+                                    );
+                                  }}
+                                  defaultValue={itemInner?.dateformat}
+                                  style={{width: '100%', marginBottom: '20px'}}
+                                  options={[
+                                    {label: 'YYYY-MM-DD', value: 'YYYY-MM-DD'},
+                                    {label: 'MM/DD/YYYY', value: 'MM/DD/YYYY'},
+                                    {
+                                      label: 'MMM D, YYYY',
+                                      value: 'MMM D, YYYY',
+                                    },
+                                    {
+                                      label: 'Day, month, year',
+                                      value: 'Day, month, year',
+                                    },
+                                  ]}
+                                />
+                              )}
                               {itemInner?.type !== 'text' && (
                                 <Row
                                   style={{
