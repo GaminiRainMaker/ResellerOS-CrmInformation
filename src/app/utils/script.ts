@@ -476,8 +476,8 @@ export let processScript = (finalObj: {
                 'type',
                 'locater',
                 'dateformat',
-                'dependentFill',
-                'dependentLabel',
+                'dependentfill',
+                'dependentlabel',
               ];
               let lineLabel = '';
               let lineName = '';
@@ -558,9 +558,7 @@ export let processScript = (finalObj: {
                   : dataObjAll.length == 1
                     ? dataObjAll[0]
                     : null;
-              if (dataObj && dataObj.length) {
-                dataObj = dataObj[0];
-              }
+
               if (dataObj) {
                 for (let [label, value] of Object.entries(dataObj)) {
                   if (
@@ -603,7 +601,6 @@ export let processScript = (finalObj: {
                         (dataObj.type.toLowerCase().includes('select') ||
                           dataObj.type.toLowerCase().includes('drop'))
                       ) {
-                        debugger;
                         newScript.push(currentLine);
                         if (
                           value &&
