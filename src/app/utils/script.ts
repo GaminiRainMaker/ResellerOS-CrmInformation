@@ -312,7 +312,6 @@ export let processScript = (finalObj: {
   username: string;
   password: string;
 }) => {
-  console.log(finalObj, 'finalObjfinalObj');
   // Join the script array into a single string
   let processedScript = finalObj.script.join('\n');
   let parsedScript = JSON.parse(processedScript).split('\n');
@@ -559,7 +558,6 @@ export let processScript = (finalObj: {
                   : dataObjAll.length == 1
                     ? dataObjAll[0]
                     : null;
-
               if (dataObj) {
                 for (let [label, value] of Object.entries(dataObj)) {
                   if (
@@ -601,20 +599,34 @@ export let processScript = (finalObj: {
                         currentLine.includes('click') &&
                         (dataObj.type.toLowerCase().includes('select') ||
                           dataObj.type.toLowerCase().includes('drop') ||
-                          dataObj.type.toLowerCase().includes('date'))
+                          dataObj.type.toLowerCase().includes('date') ||
+                          dataObj.type.toLowerCase().includes('tag') ||
+                          dataObj.type.toLowerCase().includes('text'))
                       ) {
-                        newScript.push(currentLine);
-                        if (
+                        if (dataObj.type.toLowerCase().includes('text')) {
+                          newScript.push(
+                            `await  ${currentPage == 1 ? 'page' : 'page1'}.locator('${dataObj.locater}').scrollIntoViewIfNeeded();`,
+                          );
+                          newScript.push(currentLine);
+
+                          newScript.push(
+                            `await ${currentPage == 1 ? 'page' : 'page1'}.locator('${dataObj.locater}').fill('${value}');`,
+                          );
+                        } else if (
                           value &&
                           value.length > 0 &&
                           typeof value !== 'string'
                         ) {
+                          newScript.push(currentLine);
+
                           for (let i = 0; i < value?.length; i++) {
                             newScript.push(
                               `await ${currentPage == 1 ? 'page' : 'page1'}.getByText('${value[i]}').first().click();`,
                             );
                           }
                         } else {
+                          newScript.push(currentLine);
+
                           newScript.push(
                             `await ${currentPage == 1 ? 'page' : 'page1'}.getByRole('option', { name: '${value}' , exact: true}).locator('span').first().click();;`,
                           );
