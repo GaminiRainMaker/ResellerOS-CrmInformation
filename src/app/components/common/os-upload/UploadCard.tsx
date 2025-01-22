@@ -1,25 +1,25 @@
 /* eslint-disable array-callback-return */
-import { InformationCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { Avatar, Form, Popover, Switch } from 'antd';
+import {InformationCircleIcon, TrashIcon} from '@heroicons/react/24/outline';
+import {Avatar, Form, Popover, Switch} from 'antd';
 import Image from 'next/image';
-import { FC } from 'react';
+import {FC} from 'react';
 import PdfImg from '../../../../../public/assets/static/pdf.svg';
 import XlsImg from '../../../../../public/assets/static/xls.svg';
-import { useAppSelector } from '../../../../../redux/hook';
-import { Divider } from '../antd/Divider';
-import { Col, Row } from '../antd/Grid';
-import { Space } from '../antd/Space';
+import {useAppSelector} from '../../../../../redux/hook';
+import {Divider} from '../antd/Divider';
+import {Col, Row} from '../antd/Grid';
+import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import OsDistributorSelect from '../os-distributor-select';
 import OsOemSelect from '../os-oem-select';
 import Typography from '../typography';
-import { Tag } from '../antd/Tag';
+import {Tag} from '../antd/Tag';
 import OsInput from '../os-input';
-import { formatStatus } from '@/app/utils/CONSTANTS';
+import {formatStatus} from '@/app/utils/CONSTANTS';
 
-const UploadCard: FC<any> = ({ uploadFileData, setUploadFileData, form }) => {
+const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
   const [token] = useThemeToken();
-  const { data: quoteConfigData } = useAppSelector((state) => state.quoteConfig);
+  const {data: quoteConfigData} = useAppSelector((state) => state.quoteConfig);
   const removeFile = (uid: number | undefined | string) => {
     setUploadFileData((prev: any) =>
       prev.filter((prevIndex: any) => prevIndex?.uid !== uid),
@@ -33,7 +33,7 @@ const UploadCard: FC<any> = ({ uploadFileData, setUploadFileData, form }) => {
     manual: boolean,
   ) => {
     const arr = [...uploadFileData];
-    const obj = { ...arr[index] };
+    const obj = {...arr[index]};
     if (type === 'distributor') {
       obj.distributor_id = value;
     } else if (type === 'manualquote') {
@@ -97,7 +97,7 @@ const UploadCard: FC<any> = ({ uploadFileData, setUploadFileData, form }) => {
       {uploadFileData?.map((item: any, index: number) => (
         <Form key={item?.uid} layout="vertical">
           <Row key={item?.uid} justify="space-between" gutter={[0, 8]}>
-            <Col span={6} >
+            <Col span={6}>
               <Space size={12}>
                 {item?.file?.type.split('/')[1] === 'pdf' ? (
                   <Image src={PdfImg} alt="PdfImg" />
@@ -106,7 +106,16 @@ const UploadCard: FC<any> = ({ uploadFileData, setUploadFileData, form }) => {
                 )}
 
                 {/* <Typography name="Body 4/Medium">{item?.file?.name}</Typography> */}
-                <div style={{ textWrap: "wrap", width: "150px", fontWeight: "500px", fontSize: "14px" }}>{formatStatus(item?.file?.name)}</div>
+                <div
+                  style={{
+                    textWrap: 'wrap',
+                    width: '150px',
+                    fontWeight: '500px',
+                    fontSize: '14px',
+                  }}
+                >
+                  {formatStatus(item?.file?.name)}
+                </div>
               </Space>
             </Col>
             <Col span={item?.manualquote ? 3 : 4}>
@@ -171,7 +180,7 @@ const UploadCard: FC<any> = ({ uploadFileData, setUploadFileData, form }) => {
                 <Col span={5}>
                   {' '}
                   <OsInput
-                    style={{ height: '35px' }}
+                    style={{height: '35px'}}
                     onChange={(e: any) => {
                       handleChangeDistributorOem(
                         'distributor_name',
@@ -185,7 +194,7 @@ const UploadCard: FC<any> = ({ uploadFileData, setUploadFileData, form }) => {
                 </Col>
                 <Col span={5}>
                   <OsInput
-                    style={{ height: '35px' }}
+                    style={{height: '35px'}}
                     onChange={(e: any) => {
                       handleChangeDistributorOem(
                         'oem_name',
@@ -203,6 +212,7 @@ const UploadCard: FC<any> = ({ uploadFileData, setUploadFileData, form }) => {
                 <Col span={5}>
                   <OsDistributorSelect
                     name="distributor"
+                    disabled={item?.oem_id ? true : false}
                     onChange={(e: number) => {
                       handleChangeDistributorOem(
                         'distributor',
@@ -218,6 +228,7 @@ const UploadCard: FC<any> = ({ uploadFileData, setUploadFileData, form }) => {
                 </Col>
                 <Col span={5}>
                   <OsOemSelect
+                    disabled={item?.distributor_id ? true : false}
                     name="oem"
                     onChange={(e: number) => {
                       handleChangeDistributorOem('oem', index, e, false);
@@ -238,7 +249,7 @@ const UploadCard: FC<any> = ({ uploadFileData, setUploadFileData, form }) => {
                 onClick={() => {
                   removeFile(item?.uid);
                 }}
-                style={{ marginTop: '8px' }}
+                style={{marginTop: '8px'}}
               />
             </Col>
           </Row>
@@ -246,7 +257,7 @@ const UploadCard: FC<any> = ({ uploadFileData, setUploadFileData, form }) => {
             <Tag
               color="error"
               bordered={false}
-              style={{ borderRadius: '18px', padding: '8px' }}
+              style={{borderRadius: '18px', padding: '8px'}}
             >
               <Typography name="Body 4/Regular" color={token?.colorError}>
                 {item?.manualquote

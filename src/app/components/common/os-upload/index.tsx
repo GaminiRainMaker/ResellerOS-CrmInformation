@@ -662,6 +662,8 @@ const OsUpload: React.FC<any> = ({
     for (let i = 0; i < uploadFileData.length; i++) {
       let obj: any = {...uploadFileData[i]};
 
+      console.log('32432432433', obj);
+
       if (obj?.manualquote) {
         if (!obj?.distributor_name && !obj?.oem_name) {
           obj.error = true;
@@ -675,7 +677,11 @@ const OsUpload: React.FC<any> = ({
           obj.error = false;
         }
       }
-
+      obj.model_id = obj?.model_id
+        ? obj?.model_id
+        : obj?.distributor_id
+          ? obj?.distributor_id
+          : obj?.oem_id;
       if (
         !obj.error &&
         obj?.model_id &&

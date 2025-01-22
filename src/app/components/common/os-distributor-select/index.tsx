@@ -33,6 +33,7 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
   name = 'distributor_id',
   quoteCreation = false,
   oemValue,
+  disabled = false,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -66,7 +67,7 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
 
   useEffect(() => {
     if (quoteCreation && oemValue) {
-      dispatch(getDistributorByOemId(Number(oemValue)));
+      // dispatch(getDistributorByOemId(Number(oemValue)));
     }
   }, [oemValue]);
 
@@ -87,26 +88,30 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
           ? item?.Distributor?.id === optionItem?.value
           : item?.id === optionItem?.value,
       );
-      if (index === -1) {
+      if (index === -1 && (quoteCreation ? item?.distributor_id : true)) {
         const obj = {
           label: (
             <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
               {capitalizeFirstLetter(
-                quoteCreation
-                  ? item?.Distributor?.distributor
-                  : item?.distributor,
+                quoteCreation ? item?.Partner?.partner : item?.distributor,
               )}
             </Typography>
           ),
-          key: quoteCreation ? item?.Distributor?.id : item?.id,
+          key: quoteCreation ? item?.model_id : item?.id,
           // model_id: quoteCreation && item.Distributor?.model_id,
-          value: quoteCreation ? item?.Distributor?.id : item?.id,
+          value: quoteCreation ? item?.model_id : item?.id,
         };
         distributorFinalOptions.push(obj);
       }
     }
 
-    setDistributorFilterOption(distributorFinalOptions);
+    setDistributorFilterOption([
+      ...distributorFinalOptions,
+      quoteCreation && {
+        label: 'Other',
+        value: 'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
+      },
+    ]);
   }, [
     DistributorData,
     distributorDataByOemId,
@@ -125,6 +130,7 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
       >
         <CommonSelect
           placeholder="Select"
+          disabled={disabled}
           allowClear
           style={{width: '100%', height: '38px'}}
           options={distributorFilterOption}

@@ -223,6 +223,8 @@ export const API = {
     GetAllPartnerById: 'partner/getAllPartnerById',
     GetAllPartnerandProgramApprovedDataSalesForce:
       'partner/getAllPartnerandProgramApprovedDataSalesForce',
+    getAllApprovedPartnerForQuoteConfiq:
+      'partner/getAllApprovedPartnerForQuoteConfiq',
   },
   PARTNER_PROGRAM: {
     INDEX: '/partnerProgram',
