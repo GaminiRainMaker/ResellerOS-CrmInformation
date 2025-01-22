@@ -603,12 +603,8 @@ export let processScript = (finalObj: {
                           dataObj.type.toLowerCase().includes('tag') ||
                           dataObj.type.toLowerCase().includes('text'))
                       ) {
+                        newScript.push(currentLine);
                         if (dataObj.type.toLowerCase().includes('text')) {
-                          newScript.push(
-                            `await  ${currentPage == 1 ? 'page' : 'page1'}.locator('${dataObj.locater}').scrollIntoViewIfNeeded();`,
-                          );
-                          newScript.push(currentLine);
-
                           newScript.push(
                             `await ${currentPage == 1 ? 'page' : 'page1'}.locator('${dataObj.locater}').fill('${value}');`,
                           );
@@ -617,16 +613,12 @@ export let processScript = (finalObj: {
                           value.length > 0 &&
                           typeof value !== 'string'
                         ) {
-                          newScript.push(currentLine);
-
                           for (let i = 0; i < value?.length; i++) {
                             newScript.push(
                               `await ${currentPage == 1 ? 'page' : 'page1'}.getByText('${value[i]}').first().click();`,
                             );
                           }
                         } else {
-                          newScript.push(currentLine);
-
                           newScript.push(
                             `await ${currentPage == 1 ? 'page' : 'page1'}.getByRole('option', { name: '${value}' , exact: true}).locator('span').first().click();;`,
                           );
