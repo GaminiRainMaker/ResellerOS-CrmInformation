@@ -39,6 +39,7 @@ import {
   processFormData,
   processScript,
 } from '@/app/utils/script';
+import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 
 const DealRegDetail = () => {
   const [getFormData] = Form.useForm();
@@ -62,6 +63,8 @@ const DealRegDetail = () => {
   const {userInformation} = useAppSelector((state) => state.user);
   const [salesForceDealregData, setSalesForceDealregData] = useState<any>();
   const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
+  const [dealregAppTimer, setDealregAppTimer] = useState<string>('');
+
   // Initialize variables with default values
   let userId: string | undefined;
   let salesForceinstanceUrl: string | undefined;
@@ -79,6 +82,11 @@ const DealRegDetail = () => {
     if (getOpportunityId && !isCanvas) {
       dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
     }
+    dispatch(getAllGeneralSetting('')).then((d: any) => {
+      if (d?.payload) {
+        setDealregAppTimer(d?.payload?.script_timer);
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -188,6 +196,7 @@ const DealRegDetail = () => {
             isCanvas: isCanvas,
             userId: userInformation?.id ?? userId,
             script: JSON.stringify(scriptEncryption),
+            scriptTimer: dealregAppTimer,
           };
           const response = await dispatch(dealRegFormScript(desktopAppData));
           if (response) {
