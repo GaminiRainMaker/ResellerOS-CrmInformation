@@ -9,6 +9,13 @@ import OsDropdown from '@/app/components/common/os-dropdown';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
 import Typography from '@/app/components/common/typography';
+import {decrypt, encrypt} from '@/app/utils/base';
+import {
+  addLocatorAndNameForDependentFields,
+  dependentFieldProcess,
+  processFormData,
+  processScript,
+} from '@/app/utils/script';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {MenuProps, notification} from 'antd';
 import Form from 'antd/es/form';
@@ -19,6 +26,11 @@ import {
   getDealRegByOpportunityId,
   updateDealRegStatus,
 } from '../../../../../redux/actions/dealReg';
+import {getScriptTimer} from '../../../../../redux/actions/generalSetting';
+import {
+  getSalesForceDealregById,
+  getSalesForcePartnerCredentials,
+} from '../../../../../redux/actions/salesForce';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {
   setDealReg,
@@ -28,21 +40,6 @@ import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import DealRegCustomTabs, {DealRegCustomTabsHandle} from './DealRegCustomTabs';
 import ElectronBot from './ElectronBot';
 import SubmitDealRegForms from './SubmitDealRegForms';
-import {
-  getSalesForceDealregById,
-  getSalesForcePartnerCredentials,
-} from '../../../../../redux/actions/salesForce';
-import {decrypt, encrypt} from '@/app/utils/base';
-import {
-  addLocatorAndNameForDependentFields,
-  dependentFieldProcess,
-  processFormData,
-  processScript,
-} from '@/app/utils/script';
-import {
-  getAllGeneralSetting,
-  getScriptTimer,
-} from '../../../../../redux/actions/generalSetting';
 
 const DealRegDetail = () => {
   const [getFormData] = Form.useForm();
