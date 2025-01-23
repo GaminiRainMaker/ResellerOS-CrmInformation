@@ -58,8 +58,8 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
     const data = quoteConfigData?.find(
       (quoteData: any) =>
         (obj?.distributor_id
-          ? quoteData.distributor_id === obj.distributor_id
-          : true) && (obj?.oem_id ? quoteData.oem_id === obj.oem_id : true),
+          ? quoteData.model_id === obj.distributor_id
+          : true) && (obj?.oem_id ? quoteData.model_id === obj.oem_id : true),
     );
     if (!obj.manualquote) {
       obj.model_id = data?.model_id;
@@ -222,8 +222,10 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
                       );
                     }}
                     quoteCreation
-                    distributorValue={item?.distributor_id}
-                    oemValue={item?.oem_id}
+                    distributorValue={
+                      item?.distributor_id ?? item?.distributor_id
+                    }
+                    oemValue={item?.oem_id ?? item?.oem_id}
                   />
                 </Col>
                 <Col span={5}>
@@ -233,8 +235,10 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
                     onChange={(e: number) => {
                       handleChangeDistributorOem('oem', index, e, false);
                     }}
-                    oemValue={item?.oem_id}
-                    distributorValue={item?.distributor_id}
+                    oemValue={item?.oem_id ?? item?.oem_id}
+                    distributorValue={
+                      item?.distributor_id ?? item?.distributor_id
+                    }
                     quoteCreation
                   />
                 </Col>

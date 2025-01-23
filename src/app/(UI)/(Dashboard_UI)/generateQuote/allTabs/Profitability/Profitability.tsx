@@ -136,15 +136,20 @@ const Profitablity: FC<any> = ({
               name = item?.pricing_method || 'Unassigned';
             } else if (filterValue === 'File Name') {
               name = item?.QuoteLineItem?.QuoteFile?.file_name;
-            } else if (filterValue === 'Vendor/Disti') {
+            } else if (
+              filterValue === 'Vendor/Disti' &&
+              item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.distributor_id
+            ) {
               name =
-                item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Distributor
-                  ?.distribu ??
-                item?.QuoteLineItem?.QuoteFile?.distributor_name;
-            } else if (filterValue === 'OEM') {
+                item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Partner
+                  ?.partner ?? item?.QuoteLineItem?.QuoteFile?.distributor_name;
+            } else if (
+              filterValue === 'OEM' &&
+              item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.oem_id
+            ) {
               name =
-                item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Oem?.oem ??
-                item?.QuoteLineItem?.QuoteFile?.oem_name;
+                item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Partner
+                  ?.partner ?? item?.QuoteLineItem?.QuoteFile?.oem_name;
             }
             type = 'groups';
           }
