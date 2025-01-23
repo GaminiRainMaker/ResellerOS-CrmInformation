@@ -25,3 +25,15 @@ export const getAllGeneralSetting = createAsyncThunk(
     }
   },
 );
+
+export const addAndUpdateScriptTimer = createAsyncThunk(
+  'GeneralSetting/addAndUpdateScriptTimer',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await GENERALSETTING_API.addAndUpdateScriptTimer(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);

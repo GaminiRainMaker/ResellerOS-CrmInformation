@@ -175,6 +175,7 @@ export const API = {
   },
   GENERALSETTING: {
     INDEX: '/GeneralSetting',
+    AddAndUpdateScriptTimer: '/GeneralSetting/addAndUpdateScriptTimer',
   },
   CONTRACTSETTING_API: {
     INDEX: '/ContractSetting',

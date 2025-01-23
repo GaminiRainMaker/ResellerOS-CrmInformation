@@ -901,7 +901,7 @@ const SideBar = () => {
           ),
         ],
       ),
-    isDealReg &&
+    isAdmin &&
       Role === 'superAdmin' &&
       getItem(
         <Typography
@@ -944,6 +944,88 @@ const SideBar = () => {
           </Space>
         </Typography>,
         '9',
+        '',
+        [
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setSelectedKey(9);
+                router?.push('/superAdminDealReg');
+              }}
+            >
+              <OsAvatar
+                icon={
+                  selectedKey === 9 ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
+              />
+              <Typography
+                name="Button 1"
+                cursor="pointer"
+                color={
+                  selectedKey?.toString()?.includes('9')
+                    ? token.colorPrimaryBorder
+                    : token?.colorTextSecondary
+                }
+              >
+                Common Template
+              </Typography>
+            </Space>,
+            '9',
+          ),
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setSelectedKey(89);
+                router?.push('/dealregSettings');
+              }}
+              color={token?.colorTextSecondary}
+            >
+              <OsAvatar
+                icon={
+                  selectedKey === 89 ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
+              />
+              <Typography
+                cursor="pointer"
+                name="Button 1"
+                color={
+                  selectedKey === 89
+                    ? token.colorPrimaryBorder
+                    : token?.colorTextSecondary
+                }
+              >
+                DealReg Settings
+              </Typography>
+            </Space>,
+            '89',
+          ),
+        ],
       ),
     // isOrderAI &&
     //   getItem(
