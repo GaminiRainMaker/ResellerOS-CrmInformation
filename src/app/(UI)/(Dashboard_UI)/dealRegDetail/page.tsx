@@ -194,8 +194,6 @@ const DealRegDetail = () => {
             createScriptData as string,
             SECRET_KEY as string,
           );
-          console.log('dealregAppTimer', dealregAppTimer);
-          debugger;
           const desktopAppData = {
             isCanvas: isCanvas,
             userId: userInformation?.id ?? userId,
