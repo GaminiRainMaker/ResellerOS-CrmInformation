@@ -140,13 +140,18 @@ const AddQuote: FC<AddQuoteInterface> = ({
 
     if (updatedArr && updatedArr?.length > 0) {
       updatedArr?.map((items: any) => {
+        let model = items?.distributor_id
+          ? items?.distributor_id
+          : items?.oem_id
+            ? items?.oem_id
+            : items?.model_id;
         if (
           items?.manualquote ||
-          (items?.model_id === 'a02fffb7-5221-44a2-8eb1-85781a0ecd67' &&
+          (model === 'a02fffb7-5221-44a2-8eb1-85781a0ecd67' &&
             !items?.file?.type.includes('spreadsheetml'))
         ) {
           if (
-            items?.model_id === 'a02fffb7-5221-44a2-8eb1-85781a0ecd67' &&
+            model === 'a02fffb7-5221-44a2-8eb1-85781a0ecd67' &&
             !items?.file?.type.includes('spreadsheetml')
           ) {
             countOfExportFiles = countOfExportFiles + 1;
@@ -567,13 +572,18 @@ const AddQuote: FC<AddQuoteInterface> = ({
 
     if (updatedArr && updatedArr?.length > 0) {
       updatedArr?.map((items: any) => {
+        let model = items?.distributor_id
+          ? items?.distributor_id
+          : items?.oem_id
+            ? items?.oem_id
+            : items?.model_id;
         if (
           items?.manualquote ||
-          (items?.model_id === 'a02fffb7-5221-44a2-8eb1-85781a0ecd67' &&
+          (model === 'a02fffb7-5221-44a2-8eb1-85781a0ecd67' &&
             !items?.file?.type.includes('spreadsheetml'))
         ) {
           if (
-            items?.model_id === 'a02fffb7-5221-44a2-8eb1-85781a0ecd67' &&
+            model === 'a02fffb7-5221-44a2-8eb1-85781a0ecd67' &&
             !items?.file?.type.includes('spreadsheetml')
           ) {
             countOfExportFiles = countOfExportFiles + 1;
@@ -582,10 +592,11 @@ const AddQuote: FC<AddQuoteInterface> = ({
             ...items,
             file_name: items?.file?.name,
             type_of_file: items?.manualquote ? 'manual' : 'export',
+            model_id: model,
           };
           newArrWithManual?.push(newObj);
         } else {
-          newArrWithoutManual?.push(items);
+          newArrWithoutManual?.push({...items, model_id: model});
         }
       });
     }
