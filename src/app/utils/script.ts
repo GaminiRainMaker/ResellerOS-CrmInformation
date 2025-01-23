@@ -588,8 +588,21 @@ export let processScript = (finalObj: {
                       }
                       if (currentLine.includes('combobox')) {
                         newScript.push(currentLine);
+                        let newValue = value;
+                        let occurance = 1;
+                        if (value.includes('_')) {
+                          const valueSplitArr = value?.split('_');
+                          newValue =
+                            valueSplitArr && valueSplitArr.length > 0
+                              ? valueSplitArr[0]
+                              : value;
+                          occurance =
+                            valueSplitArr && valueSplitArr.length > 0
+                              ? valueSplitArr[1]
+                              : occurance;
+                        }
                         newScript.push(
-                          `await ${currentPage == 1 ? 'page' : 'page1'}.getByRole('option', { name: '${value}' , exact: true}).locator('span').nth(1).click();`,
+                          `await ${currentPage == 1 ? 'page' : 'page1'}.getByRole('option', { name: '${newValue}' , exact: true}).locator('span').nth(${occurance}).click();`,
                         );
                         formValues.push(label);
 
