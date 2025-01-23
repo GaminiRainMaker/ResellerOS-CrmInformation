@@ -16,6 +16,7 @@ import Typography from '../typography';
 import {SelectFormItem} from './oem-select-styled';
 import {OsOemSelectInterface} from './os-oem.interface';
 import {getOemByDistributorId} from '../../../../../redux/actions/quoteConfiguration';
+import {formatStatus} from '@/app/utils/CONSTANTS';
 
 const OsOemSelect: FC<OsOemSelectInterface> = ({
   isRequired = false,
@@ -79,7 +80,9 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
           label: (
             <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
               {capitalizeFirstLetter(
-                quoteCreation ? item?.Partner?.partner : item?.oem,
+                quoteCreation
+                  ? formatStatus(item?.Partner?.partner)
+                  : item?.oem,
               )}
             </Typography>
           ),
@@ -93,7 +96,11 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
     setFinalOemOptions([
       ...oemFinalOptions,
       quoteCreation && {
-        label: 'Other',
+        label: (
+          <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+            Other
+          </Typography>
+        ),
         value: 'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
       },
     ]);
