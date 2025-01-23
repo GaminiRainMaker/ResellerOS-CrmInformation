@@ -57,7 +57,7 @@ jobs:
           NEXT_PUBLIC_APP_SALESFORCE_CONSUMER_KEY: '3MVG9HB6vm3GZZR.h84pmASRrblHW95mS8Bpu6bzoqEXHsrYavKNJRMg0px3dl8.aHED6Y9i9ZE5D_EQx20Jk'
           NEXT_PUBLIC_APP_SALESFORCE_SECRET: '6FDFC13294E7AD73CA45012B5C9AADB950CBFEF26609249DFA8972D72C3CA425'
           CRYPTO_SECERT_KEY: 'CghhpgRahZKN0P8SaquPX/k30H+v2QWcKpcH42H9q0w='
-          NEXT_PUBLIC_WINDOWS_APP: https://rosdevdi.blob.core.windows.net/reselleros/DealRegAI%20Setup%200.1.0.exe?sp=r&st=2025-01-03T15:21:01Z&se=2050-01-03T23:21:01Z&spr=https&sv=2022-11-02&sr=b&sig=GlRdLmCZR3KEsHAWpv%2F1L7BLssK3ThlXrzOKMQT0TRw%3D
+          NEXT_PUBLIC_WINDOWS_APP: https://rosdevdi.blob.core.windows.net/reselleros/DealRegAI%20Setup%200.1.0.exe?sp=r&st=2025-01-23T10:48:37Z&se=2050-01-23T18:48:37Z&spr=https&sv=2022-11-02&sr=b&sig=FYDuf4Mx7RSn50wnhBa7kPzvot8%2BQysnoWZ5DqUCv9E%3D
           NEXT_PUBLIC_MAC_APP: https://rosdevdi.blob.core.windows.net/reselleros/DealRegAI-0.1.0.dmg?sp=r&st=2025-01-03T16:31:24Z&se=2050-01-04T00:31:24Z&spr=https&sv=2022-11-02&sr=b&sig=OANEAf941M%2BO3ewV8bOznzxCi9aabjH1OkkBdjasssE%3D
 
 
