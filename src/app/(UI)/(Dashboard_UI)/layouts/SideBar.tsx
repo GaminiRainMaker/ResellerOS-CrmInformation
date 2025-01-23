@@ -11,7 +11,6 @@ import Typography from '@/app/components/common/typography';
 import {ChevronRightIcon} from '@heroicons/react/20/solid';
 import {
   AdjustmentsHorizontalIcon,
-  BoltIcon,
   CurrencyDollarIcon,
   ReceiptPercentIcon,
   ShoppingBagIcon,
@@ -25,10 +24,7 @@ import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
 import ActiveCrmIcon from '../../../../../public/assets/static/activeCrmIcon.svg';
 import InActiveCrmIcon from '../../../../../public/assets/static/inActiveCrmIcon.svg';
-import {
-  getOranizationSeats,
-  getUserByTokenAccess,
-} from '../../../../../redux/actions/user';
+import {getUserByTokenAccess} from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setUserInformation} from '../../../../../redux/slices/user';
 import {LayoutMenuStyle} from './styled-components';
@@ -37,12 +33,6 @@ import {LayoutMenuStyle} from './styled-components';
 //   getProposalForSubscription,
 //   getSubsvriptionForCustomer,
 // } from '../../../../../redux/actions/cacheFlow';
-import {
-  setCacheAvailableSeats,
-  setIsSubscribed,
-  setCacheTotalQuoteSeats,
-  setCacheTotalDealRegSeats,
-} from '../../../../../redux/slices/cacheFLow';
 
 const {Sider} = Layout;
 
@@ -138,7 +128,7 @@ const SideBar = () => {
     ) {
       setSelectedKey(6);
     } else if (pathname?.includes('superAdminDealReg')) {
-      setSelectedKey(7);
+      setSelectedKey(81);
     } else if (pathname?.includes('dealReg')) {
       setSelectedKey(7);
     } else if (pathname?.includes('assertMapping')) {
@@ -164,6 +154,8 @@ const SideBar = () => {
       setSelectedKey(17);
     } else if (pathname?.includes('superAdminPermissions')) {
       setSelectedKey(18);
+    } else if (pathname?.includes('dealregSettings')) {
+      setSelectedKey(89);
     } else if (
       ![
         'dashboard',
@@ -901,13 +893,13 @@ const SideBar = () => {
           ),
         ],
       ),
-    isDealReg &&
+    isAdmin &&
       Role === 'superAdmin' &&
       getItem(
         <Typography
           cursor="pointer"
           onClick={() => {
-            setSelectedKey(9);
+            setSelectedKey(81);
             setCrmChildKey(0);
             router?.push('/superAdminDealReg');
           }}
@@ -919,7 +911,7 @@ const SideBar = () => {
               icon={
                 <ReceiptPercentIcon
                   color={
-                    selectedKey === 9
+                    selectedKey === 81 || selectedKey === 89
                       ? token?.colorLink
                       : token?.colorTextSecondary
                   }
@@ -935,7 +927,9 @@ const SideBar = () => {
                 marginTop: '1px',
               }}
               color={
-                selectedKey === 9 ? token?.colorLink : token?.colorTextSecondary
+                selectedKey === 81 || selectedKey === 89
+                  ? token?.colorLink
+                  : token?.colorTextSecondary
               }
             >
               {' '}
@@ -943,7 +937,89 @@ const SideBar = () => {
             </Typography>
           </Space>
         </Typography>,
-        '9',
+        '81',
+        '',
+        [
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setSelectedKey(81);
+                router?.push('/superAdminDealReg');
+              }}
+            >
+              <OsAvatar
+                icon={
+                  selectedKey === 81 ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
+              />
+              <Typography
+                name="Button 1"
+                cursor="pointer"
+                color={
+                  selectedKey === 81
+                    ? token.colorPrimaryBorder
+                    : token?.colorTextSecondary
+                }
+              >
+                Common Template
+              </Typography>
+            </Space>,
+            '81',
+          ),
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setSelectedKey(89);
+                router?.push('/dealregSettings');
+              }}
+              color={token?.colorTextSecondary}
+            >
+              <OsAvatar
+                icon={
+                  selectedKey === 89 ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
+              />
+              <Typography
+                cursor="pointer"
+                name="Button 1"
+                color={
+                  selectedKey === 89
+                    ? token.colorPrimaryBorder
+                    : token?.colorTextSecondary
+                }
+              >
+                DealReg Settings
+              </Typography>
+            </Space>,
+            '89',
+          ),
+        ],
       ),
     // isOrderAI &&
     //   getItem(
@@ -1480,12 +1556,13 @@ const SideBar = () => {
             style={{
               width: '24px',
               color:
-                selectedKey?.toString()?.includes('7') ||
-                selectedKey?.toString()?.includes('8') ||
-                selectedKey?.toString()?.includes('0') ||
-                selectedKey?.toString()?.includes('9')
-                  ? token?.colorLink
-                  : token?.colorTextSecondary,
+                //   selectedKey === 81
+                //     ? // ||
+                //       // selectedKey?.toString()?.includes('8') ||
+                //       // selectedKey?.toString()?.includes('0') ||
+                //       // selectedKey?.toString()?.includes('9')
+                //       token?.colorLink
+                token?.colorTextSecondary,
             }}
           />
         }
