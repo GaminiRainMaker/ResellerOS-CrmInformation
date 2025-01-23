@@ -17,6 +17,7 @@ import {
   getDistributorByOemId,
   queryQuoteConfiguration,
 } from '../../../../../redux/actions/quoteConfiguration';
+import {formatStatus} from '@/app/utils/CONSTANTS';
 
 const queryParams: any = {
   distributor: null,
@@ -93,7 +94,9 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
           label: (
             <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
               {capitalizeFirstLetter(
-                quoteCreation ? item?.Partner?.partner : item?.distributor,
+                quoteCreation
+                  ? formatStatus(item?.Partner?.partner)
+                  : item?.distributor,
               )}
             </Typography>
           ),
@@ -108,7 +111,11 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
     setDistributorFilterOption([
       ...distributorFinalOptions,
       quoteCreation && {
-        label: 'Other',
+        label: (
+          <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+            Other
+          </Typography>
+        ),
         value: 'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
       },
     ]);
