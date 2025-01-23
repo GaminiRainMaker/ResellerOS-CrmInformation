@@ -600,10 +600,15 @@ export let processScript = (finalObj: {
                             valueSplitArr && valueSplitArr.length > 0
                               ? valueSplitArr[1]
                               : occurance;
+                          newScript.push(
+                            `await ${currentPage == 1 ? 'page' : 'page1'}.locator('span').filter({ hasText: /^${newValue}$/ }).nth(${occurance}).click();`,
+                          );
+                        } else {
+                          newScript.push(
+                            `await ${currentPage == 1 ? 'page' : 'page1'}.getByRole('option', { name: '${newValue}' , exact: true}).locator('span').nth(${occurance}).click();`,
+                          );
                         }
-                        newScript.push(
-                          `await ${currentPage == 1 ? 'page' : 'page1'}.getByRole('option', { name: '${newValue}' , exact: true}).locator('span').nth(${occurance}).click();`,
-                        );
+
                         formValues.push(label);
 
                         break;
