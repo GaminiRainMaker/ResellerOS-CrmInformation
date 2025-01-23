@@ -86,8 +86,8 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
               )}
             </Typography>
           ),
-          key: quoteCreation ? item.partner_id : item?.id,
-          value: quoteCreation ? item.partner_id : item?.id,
+          key: quoteCreation ? item.model_id : item?.id,
+          value: quoteCreation ? item.model_id : item?.id,
         };
         oemFinalOptions.push(obj);
       }
@@ -112,46 +112,48 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
   ]);
   return (
     <>
-      <SelectFormItem
+      {/* <SelectFormItem
         label=""
         name={name}
         rules={[{required: isRequired, message: 'Please Select OEM!'}]}
-      >
-        <CommonSelect
-          placeholder="Select"
-          disabled={disabled}
-          allowClear
-          style={{width: '100%', height: '38px'}}
-          options={finalOemOptions}
-          defaultValue={oemValue}
-          onChange={onChange}
-          dropdownRender={(menu) => (
-            <>
-              {isAddNewOem && (
-                <Space
-                  style={{cursor: 'pointer'}}
-                  size={8}
-                  onClick={() => setShowOemModal(true)}
+      > */}
+      <CommonSelect
+        placeholder="Select"
+        disabled={disabled}
+        allowClear
+        style={{width: '100%', height: '38px'}}
+        options={finalOemOptions}
+        value={oemValue}
+        onChange={onChange}
+        dropdownRender={(menu) => (
+          <>
+            {isAddNewOem && (
+              <Space
+                style={{cursor: 'pointer'}}
+                size={8}
+                onClick={() => setShowOemModal(true)}
+              >
+                <PlusIcon
+                  width={24}
+                  color={token?.colorInfoBorder}
+                  style={{marginTop: '5px'}}
+                />
+                <Typography
+                  color={token?.colorPrimaryText}
+                  name="Body 3/Regular"
+                  hoverOnText
                 >
-                  <PlusIcon
-                    width={24}
-                    color={token?.colorInfoBorder}
-                    style={{marginTop: '5px'}}
-                  />
-                  <Typography
-                    color={token?.colorPrimaryText}
-                    name="Body 3/Regular"
-                    hoverOnText
-                  >
-                    Add OEM
-                  </Typography>
-                </Space>
-              )}
-              {menu}
-            </>
-          )}
-        />
-      </SelectFormItem>
+                  Add OEM
+                </Typography>
+              </Space>
+            )}
+            {menu}
+          </>
+        )}
+      />
+      {isRequired && <div style={{color: 'red'}}>Please Select OEM!</div>}
+
+      {/* </SelectFormItem> */}
 
       <OsModal
         loading={OemLoading}

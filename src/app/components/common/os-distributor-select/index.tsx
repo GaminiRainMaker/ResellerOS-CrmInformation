@@ -130,46 +130,54 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
 
   return (
     <>
-      <SelectFormItem
+      {/* <SelectFormItem
         label={label ? 'Distributor' : ''}
         name={name}
         rules={[{required: isRequired, message: 'Please Select Distributor!'}]}
-      >
-        <CommonSelect
-          placeholder="Select"
-          disabled={disabled}
-          allowClear
-          style={{width: '100%', height: '38px'}}
-          options={distributorFilterOption}
-          defaultValue={distributorValue}
-          onChange={onChange}
-          dropdownRender={(menu) => (
-            <>
-              {isAddNewDistributor && (
-                <Space
-                  style={{cursor: 'pointer'}}
-                  size={8}
-                  onClick={() => setShowDistributorModal(true)}
+      > */}
+      <CommonSelect
+        placeholder="Select"
+        disabled={disabled}
+        allowClear
+        style={{width: '100%', height: '38px'}}
+        options={distributorFilterOption}
+        value={
+          distributorValue && distributorValue?.length > 0
+            ? distributorValue
+            : undefined
+        }
+        onChange={onChange}
+        dropdownRender={(menu) => (
+          <>
+            {isAddNewDistributor && (
+              <Space
+                style={{cursor: 'pointer'}}
+                size={8}
+                onClick={() => setShowDistributorModal(true)}
+              >
+                <PlusIcon
+                  width={24}
+                  color={token?.colorInfoBorder}
+                  style={{marginTop: '5px'}}
+                />
+                <Typography
+                  color={token?.colorPrimaryText}
+                  name="Body 3/Regular"
+                  hoverOnText
                 >
-                  <PlusIcon
-                    width={24}
-                    color={token?.colorInfoBorder}
-                    style={{marginTop: '5px'}}
-                  />
-                  <Typography
-                    color={token?.colorPrimaryText}
-                    name="Body 3/Regular"
-                    hoverOnText
-                  >
-                    Add Distributor
-                  </Typography>
-                </Space>
-              )}
-              {menu}
-            </>
-          )}
-        />
-      </SelectFormItem>
+                  Add Distributor
+                </Typography>
+              </Space>
+            )}
+            {menu}
+          </>
+        )}
+      />
+      {isRequired && (
+        <div style={{color: 'red'}}>Please Select Distributor!</div>
+      )}
+
+      {/* </SelectFormItem> */}
 
       <OsModal
         loading={loading}
