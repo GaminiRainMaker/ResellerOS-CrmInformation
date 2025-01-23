@@ -56,10 +56,10 @@ const DealregSetting = () => {
       <Row>
         <Space direction="vertical">
           <Typography name="Body 3/Regular">
-            Dealreg App Timer (inmilliseconds)
+            Dealreg App Timer (In Milliseconds)
           </Typography>
           <OsInput
-            placeholder="Enter time in milliseconds"
+            placeholder="Enter time in Milliseconds"
             type="number"
             onChange={(e) => {
               setDealregAppTimer(e.target.value);
