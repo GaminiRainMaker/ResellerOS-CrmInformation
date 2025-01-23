@@ -4,6 +4,7 @@ import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
   addAndUpdateScriptTimer,
   getAllGeneralSetting,
+  getScriptTimer,
   insertUpdateGeneralSetting,
 } from '../actions/generalSetting';
 
@@ -68,6 +69,21 @@ const genralSettingSlice = createSlice({
           state.error = action.payload;
         },
       )
+      .addCase(getScriptTimer.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getScriptTimer.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          // state.insertSetting = action.payload;
+        },
+      )
+      .addCase(getScriptTimer.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
       .addCase(getAllGeneralSetting.pending, (state) => {
         state.loading = true;
         state.error = null;

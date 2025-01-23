@@ -39,7 +39,10 @@ import {
   processFormData,
   processScript,
 } from '@/app/utils/script';
-import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
+import {
+  getAllGeneralSetting,
+  getScriptTimer,
+} from '../../../../../redux/actions/generalSetting';
 
 const DealRegDetail = () => {
   const [getFormData] = Form.useForm();
@@ -82,9 +85,9 @@ const DealRegDetail = () => {
     if (getOpportunityId && !isCanvas) {
       dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
     }
-    dispatch(getAllGeneralSetting('')).then((d: any) => {
+    dispatch(getScriptTimer('')).then((d: any) => {
       if (d?.payload) {
-        setDealregAppTimer(d?.payload?.script_timer);
+        setDealregAppTimer(d?.payload?.data);
       }
     });
   }, []);
@@ -191,7 +194,8 @@ const DealRegDetail = () => {
             createScriptData as string,
             SECRET_KEY as string,
           );
-
+          console.log('dealregAppTimer', dealregAppTimer);
+          debugger;
           const desktopAppData = {
             isCanvas: isCanvas,
             userId: userInformation?.id ?? userId,

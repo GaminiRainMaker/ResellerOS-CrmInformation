@@ -9,7 +9,7 @@ import Typography from '@/app/components/common/typography';
 import {useEffect, useState} from 'react';
 import {
   addAndUpdateScriptTimer,
-  getAllGeneralSetting,
+  getScriptTimer,
 } from '../../../../../redux/actions/generalSetting';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
@@ -20,9 +20,9 @@ const DealregSetting = () => {
   const [dealregAppTimer, setDealregAppTimer] = useState<string>('');
 
   useEffect(() => {
-    dispatch(getAllGeneralSetting('')).then((d) => {
+    dispatch(getScriptTimer('')).then((d) => {
       if (d?.payload) {
-        setDealregAppTimer(d?.payload?.script_timer);
+        setDealregAppTimer(d?.payload?.data);
       }
     });
   }, []);
