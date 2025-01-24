@@ -2,7 +2,6 @@ import dayjs from 'dayjs';
 
 // commented for debugging in future issue comes in new processFormData logic
 // export let processFormData = (template: any, finalUniqueData: any) => {
-//   // debugger
 //   // Extract labels with user_fill set to true from the template
 //   let labelsWithUserFillTrue = template
 //     .filter((item: any) => item.user_fill === true)
@@ -324,12 +323,24 @@ export let processScript = (finalObj: {
   let formValues: string[] = [];
   let iswaitingScript = false;
   let waitingScriptValue = '';
+  const excludedKeys = [
+    'name',
+    'userfill',
+    'type',
+    'locater',
+    'dateformat',
+    'dependentfill',
+    'dependentlabel',
+  ];
   for (let i = 0; i < parsedScript.length; i++) {
-    const lastline = newScript[newScript.length - 1];
+    const lastline = i > 0 ? parsedScript[i - 1].trim() : '';
+    const nextLine =
+      i < parsedScript.length - 1 ? parsedScript[i + 1].trim() : '';
     let currentLine = parsedScript[i].trim();
     let currentPage = 1;
-
     let pageIndex = newScript.findIndex((script) => script.includes('page1'));
+    let dataObj;
+
     if (pageIndex > -1) {
       currentPage = 2;
     }
@@ -347,6 +358,8 @@ export let processScript = (finalObj: {
       } else {
         if (
           currentLine.includes('button') &&
+          !currentLine.toLowerCase().includes('move') &&
+          !currentLine.toLowerCase().includes('search') &&
           !currentLine.includes('getByLabel') &&
           !(lastline.includes('Code') && currentLine.includes('Verify'))
         ) {
@@ -457,8 +470,8 @@ export let processScript = (finalObj: {
             loginStepImplemented = true;
           } else {
             if (
+              !currentLine.toLowerCase().includes('move') &&
               !currentLine.includes('pause()') &&
-              !currentLine.includes('option') &&
               formValues.length <= formPages &&
               !currentLine.includes('Verification') &&
               (currentLine.includes('fill') ||
@@ -467,18 +480,15 @@ export let processScript = (finalObj: {
                 currentLine.includes('getByPlaceholder') ||
                 (currentLine.includes('getByLabel') &&
                   currentLine.includes('button')) ||
+                (currentLine.toLowerCase().includes('search') &&
+                  currentLine.includes('button') &&
+                  lastline.includes('getByText')) ||
+                (currentLine.toLowerCase().includes('option') &&
+                  lastline.includes('getByText') &&
+                  nextLine.toLowerCase().includes('move')) ||
                 (currentLine.includes('locator') &&
                   currentLine.includes('click')))
             ) {
-              const excludedKeys = [
-                'name',
-                'userfill',
-                'type',
-                'locater',
-                'dateformat',
-                'dependentfill',
-                'dependentlabel',
-              ];
               let lineLabel = '';
               let lineName = '';
 
@@ -543,7 +553,7 @@ export let processScript = (finalObj: {
                         .includes(lineName)),
                 ),
               );
-              let dataObj =
+              dataObj =
                 dataObjAll && dataObjAll.length > 1
                   ? dataObjAll.find((objItem: any) =>
                       Object.keys(objItem).find(
@@ -558,6 +568,48 @@ export let processScript = (finalObj: {
                   : dataObjAll.length == 1
                     ? dataObjAll[0]
                     : null;
+
+              if (
+                (currentLine.toLowerCase().includes('search') ||
+                  currentLine.includes('option')) &&
+                lastline.includes('getByText') &&
+                !dataObj
+              ) {
+                if (lastline.includes('getByText')) {
+                  const labelMatch = lastline.match(
+                    /getByText\('(\*?\s*)(.*?)'\)/,
+                  );
+                  if (labelMatch) {
+                    lineLabel = labelMatch[2].replace(/\s+/g, '').trim();
+                  }
+
+                  const dataObjAll = finalObj.data.filter((objItem: any) =>
+                    Object.keys(objItem).find(
+                      (key) =>
+                        !excludedKeys.includes(key.toLowerCase()) &&
+                        lineLabel &&
+                        key.replace(/\s+/g, '').trim().includes(lineLabel),
+                    ),
+                  );
+                  dataObj =
+                    dataObjAll && dataObjAll.length > 1
+                      ? dataObjAll.find((objItem: any) =>
+                          Object.keys(objItem).find(
+                            (key) =>
+                              !excludedKeys.includes(key.toLowerCase()) &&
+                              key
+                                .replace(/[^a-zA-Z0-9]/g, '')
+                                .replace(/\s+/g, '')
+                                .trim() ===
+                                lineLabel.replace(/[^a-zA-Z0-9]/g, ''),
+                          ),
+                        )
+                      : dataObjAll.length == 1
+                        ? dataObjAll[0]
+                        : null;
+                }
+              }
+
               if (dataObj) {
                 for (let [label, value] of Object.entries(dataObj)) {
                   if (
@@ -585,8 +637,24 @@ export let processScript = (finalObj: {
 
                         formValues.push(label);
                         break;
-                      }
-                      if (currentLine.includes('combobox')) {
+                      } else if (
+                        currentLine.includes('option') &&
+                        lastline.includes('getByText') &&
+                        nextLine.toLowerCase().includes('move')
+                      ) {
+                        if (value && value.length > 0) {
+                          for (let j = 0; j < value?.length; j++) {
+                            newScript.push(`await ${currentPage == 1 ? 'page' : 'page1'}
+                          .getByRole('option', {
+                            name: '${value[j]}',exact: true 
+                          })
+                          .click();`);
+                            newScript.push(nextLine);
+                          }
+                        }
+                        formValues.push(label);
+                        break;
+                      } else if (currentLine.includes('combobox')) {
                         newScript.push(currentLine);
                         let newValue = value;
                         let occurance = 1;
@@ -803,19 +871,22 @@ export let processScript = (finalObj: {
                   newScript.push(currentLine);
                 } else if (
                   currentLine.includes('locator') &&
-                  currentLine.includes('click')
+                  currentLine.includes('click') &&
+                  !currentLine.includes('option')
                 ) {
                   newScript.push(currentLine);
                 }
               }
             } else {
               if (
+                !currentLine.toLowerCase().includes('move') &&
                 !currentLine.includes('getByLabel') &&
                 !currentLine.includes('combobox') &&
                 !currentLine.includes('option') &&
                 !currentLine.includes('pause()') &&
                 !currentLine.includes('fill') &&
                 !currentLine.includes('selectOption') &&
+                !currentLine.toLowerCase().includes('search') &&
                 !currentLine.includes('press') &&
                 !(lastline.includes('Code') && currentLine.includes('Verify'))
               ) {
@@ -843,7 +914,12 @@ export let processScript = (finalObj: {
                 `,
                   );
                 } else {
-                  newScript.push(currentLine);
+                  if (
+                    !nextLine.includes('option') &&
+                    !nextLine.toLowerCase().includes('search')
+                  ) {
+                    newScript.push(currentLine);
+                  }
                 }
               }
             }
@@ -853,7 +929,6 @@ export let processScript = (finalObj: {
     }
   }
   let finalArr = newScript;
-  console.log(finalArr, 'finalArrfinalArrfinalArr');
 
   let updatedScript = finalArr.join('\n');
 
