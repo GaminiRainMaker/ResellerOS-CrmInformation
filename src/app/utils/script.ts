@@ -340,7 +340,6 @@ export let processScript = (finalObj: {
     let currentPage = 1;
     let pageIndex = newScript.findIndex((script) => script.includes('page1'));
     let dataObj;
-
     if (pageIndex > -1) {
       currentPage = 2;
     }
@@ -470,7 +469,6 @@ export let processScript = (finalObj: {
             loginStepImplemented = true;
           } else {
             if (
-              !currentLine.toLowerCase().includes('move') &&
               !currentLine.includes('pause()') &&
               formValues.length <= formPages &&
               !currentLine.includes('Verification') &&
