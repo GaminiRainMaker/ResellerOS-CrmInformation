@@ -551,21 +551,42 @@ export let processScript = (finalObj: {
                         .includes(lineName)),
                 ),
               );
-              dataObj =
-                dataObjAll && dataObjAll.length > 1
-                  ? dataObjAll.find((objItem: any) =>
-                      Object.keys(objItem).find(
-                        (key) =>
-                          !excludedKeys.includes(key.toLowerCase()) &&
-                          key
-                            .replace(/[^a-zA-Z0-9]/g, '')
-                            .replace(/\s+/g, '')
-                            .trim() === lineLabel.replace(/[^a-zA-Z0-9]/g, ''),
-                      ),
-                    )
-                  : dataObjAll.length == 1
-                    ? dataObjAll[0]
-                    : null;
+
+              if (dataObjAll.length > 1) {
+                if (
+                  currentLine.includes('first') ||
+                  currentLine.includes('nth')
+                ) {
+                  if (currentLine.includes('nth')) {
+                    dataObj = dataObjAll.find(
+                      (item) =>
+                        item.locater.replace(/[^a-zA-Z0-9]/g, '') !== lineName,
+                    );
+                  } else {
+                    dataObj = dataObjAll.find(
+                      (item) =>
+                        item.locater.replace(/[^a-zA-Z0-9]/g, '') === lineName,
+                    );
+                  }
+                } else {
+                  dataObj = dataObjAll.find((objItem: any) =>
+                    Object.keys(objItem).find(
+                      (key) =>
+                        !excludedKeys.includes(key.toLowerCase()) &&
+                        key
+                          .replace(/[^a-zA-Z0-9]/g, '')
+                          .replace(/\s+/g, '')
+                          .trim() === lineLabel.replace(/[^a-zA-Z0-9]/g, ''),
+                    ),
+                  );
+                }
+              } else {
+                if (dataObjAll.length == 1) {
+                  dataObj = dataObjAll[0];
+                } else {
+                  dataObj = null;
+                }
+              }
 
               if (
                 (currentLine.toLowerCase().includes('search') ||
@@ -589,6 +610,7 @@ export let processScript = (finalObj: {
                         key.replace(/\s+/g, '').trim().includes(lineLabel),
                     ),
                   );
+
                   dataObj =
                     dataObjAll && dataObjAll.length > 1
                       ? dataObjAll.find((objItem: any) =>
