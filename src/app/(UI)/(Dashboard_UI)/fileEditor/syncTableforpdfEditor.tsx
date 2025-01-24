@@ -595,12 +595,19 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         };
 
         await dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {
-          let messgaeForApi = payload?.payload?.message;
+          let types: any = payload?.payload?.Errormessage ? 'error' : 'info';
+          let messgaeForApi = payload?.payload?.message
+            ? payload?.payload?.message
+            : payload?.payload?.Errormessage;
+
           notification.open({
             message: messgaeForApi,
-            type: 'info',
+            type: types,
           });
-          if (salesFOrceManual === 'false' || !salesFOrceManual) {
+          if (
+            salesFOrceManual === 'false' ||
+            (!salesFOrceManual && types !== 'error')
+          ) {
             notification.open({
               message: 'Please close the review quotes window',
               type: 'info',
@@ -895,7 +902,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     handleChange();
   }, [syncedNewValue]);
 
-  console.log('23532432432', mergedValue);
   return (
     <>
       <GlobalLoader loading={nanonetsLoading}>
