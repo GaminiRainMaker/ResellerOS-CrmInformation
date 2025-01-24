@@ -593,10 +593,14 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         };
 
         await dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {
-          let messgaeForApi = payload?.payload?.message;
+          let types: any = payload?.payload?.Errormessage ? 'error' : 'info';
+          let messgaeForApi = payload?.payload?.message
+            ? payload?.payload?.message
+            : payload?.payload?.Errormessage;
+
           notification.open({
             message: messgaeForApi,
-            type: 'info',
+            type: types,
           });
           if (salesFOrceManual === 'false' || !salesFOrceManual) {
             notification.open({
