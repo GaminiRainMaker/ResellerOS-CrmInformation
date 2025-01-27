@@ -98,6 +98,9 @@ const Profitablity: FC<any> = ({
   );
   const {userInformation} = useAppSelector((state) => state.user);
   const {data: contactData} = useAppSelector((state) => state.contract);
+
+  const [profittibilityLoading, setProfitibilityLoading] =
+    useState<boolean>(false);
   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
     Array<{
       id: number;
@@ -115,6 +118,7 @@ const Profitablity: FC<any> = ({
   ]);
 
   const filterDataByValue = (data: any, filterValue?: string) => {
+    setProfitibilityLoading(true);
     const groupedData: any = {};
     const arrayData: any[] = [];
     const bundleData: any[] = [];
@@ -251,6 +255,8 @@ const Profitablity: FC<any> = ({
       ...arrayData,
     ];
     setFinalData(finalData);
+    setProfitibilityLoading(false);
+
     let newArrForPaggination: any = [];
 
     finalData?.map((items: any) => {
@@ -304,6 +310,8 @@ const Profitablity: FC<any> = ({
 
   useEffect(() => {
     if (activeTab == '2' || activeTab == '4') {
+      setProfitibilityLoading(true);
+
       dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then(
         (payload: any) => {
           if (payload?.payload) {
@@ -416,7 +424,6 @@ const Profitablity: FC<any> = ({
       updatedRecord.contract_status = response.contract_status;
       updatedRecord.contract_vehicle = response.contract_vehicle;
     }
-
 
     setFinalFieldData(updatedRecord);
     if (type === 'select') {
@@ -1301,7 +1308,6 @@ const Profitablity: FC<any> = ({
         (item: any) => item.Product?.product_code === productCode,
       );
 
-
       // If we found a matched product, calculate the contract status
       if (matchedProduct) {
         const finalStatus = contractStatus(record, matchedProduct);
@@ -1323,7 +1329,6 @@ const Profitablity: FC<any> = ({
         };
       }
 
-
       // Return the final updateObject without making any API calls
       return updateObject;
     } catch (error) {
@@ -1340,13 +1345,11 @@ const Profitablity: FC<any> = ({
     let status = '';
     const statuses = ['green', 'yellow'];
 
-
     for (let statusCheck of statuses) {
       const matchingObjects =
         contractConfigurationData?.filter(
           (item: any) => item?.contract_status === statusCheck,
         ) || [];
-
 
       if (matchingObjects.length > 0) {
         const finalData =
@@ -1406,7 +1409,7 @@ const Profitablity: FC<any> = ({
   //   activeTab,
   // );
   return (
-    <GlobalLoader loading={profitibilityDataa?.length < 0}>
+    <GlobalLoader loading={profittibilityLoading}>
       {finalProfitTableCol && finalProfitTableCol?.length > 0 ? (
         !selectedFilter ? (
           <div key={JSON.stringify(finalData)}>{renderFinalData()}</div>
