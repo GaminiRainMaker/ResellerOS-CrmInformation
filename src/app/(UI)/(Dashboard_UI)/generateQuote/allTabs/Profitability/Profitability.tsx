@@ -301,25 +301,43 @@ const Profitablity: FC<any> = ({
     }
   };
 
-  useEffect(() => {
-    if (activeTab == '2' || activeTab == '4') {
-      dispatch(getAllContract());
-      dispatch(getContractConfiguartion({}));
-    }
-  }, [activeTab]);
+  // useEffect(() => {
+  //   if (activeTab == '2' || activeTab == '4') {
+  //     dispatch(getAllContract());
+  //     dispatch(getContractConfiguartion({}));
+  //   }
+  // }, [activeTab]);
+  const globalProfitApis = async () => {
+    setProfitibilityLoading(true);
+
+    await dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then(
+      (payload: any) => {
+        if (payload?.payload) {
+          setProfitibilityDataa(payload?.payload);
+        }
+      },
+    );
+    await dispatch(getAllContract());
+    await dispatch(getContractConfiguartion({}));
+    setProfitibilityLoading(false);
+  };
 
   useEffect(() => {
     if (activeTab == '2' || activeTab == '4') {
-      setProfitibilityLoading(true);
+      globalProfitApis();
+      // setProfitibilityLoading(true);
 
-      dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then(
-        (payload: any) => {
-          if (payload?.payload) {
-            setProfitibilityDataa(payload?.payload);
-          }
-        },
-      );
+      // dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then(
+      //   (payload: any) => {
+      //     if (payload?.payload) {
+      //       setProfitibilityDataa(payload?.payload);
+      //     }
+      //   },
+      // );
+      // dispatch(getAllContract());
+      // dispatch(getContractConfiguartion({}));
     }
+    // setProfitibilityLoading(false);
   }, [getQuoteID, activeTab]);
 
   useEffect(() => {
