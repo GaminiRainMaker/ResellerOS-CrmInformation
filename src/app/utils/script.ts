@@ -340,6 +340,7 @@ export let processScript = (finalObj: {
     'dateformat',
     'dependentfill',
     'dependentlabel',
+    'userfilltextvalue',
   ];
   for (let i = 0; i < parsedScript.length; i++) {
     const lastline = i > 0 ? parsedScript[i - 1].trim() : '';
