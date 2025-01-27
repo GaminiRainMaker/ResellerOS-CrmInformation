@@ -296,14 +296,14 @@ const Profitablity: FC<any> = ({
   };
 
   useEffect(() => {
-    if (activeTab == '2') {
+    if (activeTab == '2' || activeTab == '4') {
       dispatch(getAllContract());
       dispatch(getContractConfiguartion({}));
     }
   }, [activeTab]);
 
   useEffect(() => {
-    if (activeTab == '2') {
+    if (activeTab == '2' || activeTab == '4') {
       dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then(
         (payload: any) => {
           if (payload?.payload) {
@@ -417,7 +417,6 @@ const Profitablity: FC<any> = ({
       updatedRecord.contract_vehicle = response.contract_vehicle;
     }
 
-    console.log('updateddata12', response, updatedRecord);
 
     setFinalFieldData(updatedRecord);
     if (type === 'select') {
@@ -915,7 +914,6 @@ const Profitablity: FC<any> = ({
         UpdatedArr?.push(newObjConObj);
       }
     }
-    console.log('finalDatafinalData', UpdatedArr);
 
     const ProductFamily = profabilityUpdationState?.find(
       (field: any) => field?.field === 'product_family',
@@ -1294,7 +1292,6 @@ const Profitablity: FC<any> = ({
       const response = await dispatch(
         getContractProductByContractVehicle(value),
       );
-      console.log('response', response);
 
       // Ensure response?.payload is an array, defaulting to an empty array if not
       const contractProducts = response?.payload || [];
@@ -1304,12 +1301,10 @@ const Profitablity: FC<any> = ({
         (item: any) => item.Product?.product_code === productCode,
       );
 
-      console.log('matchedProduct', matchedProduct, contractProducts);
 
       // If we found a matched product, calculate the contract status
       if (matchedProduct) {
         const finalStatus = contractStatus(record, matchedProduct);
-        console.log('finalStatus', finalStatus);
 
         if (finalStatus) {
           // Update the object with matched product and status
@@ -1328,7 +1323,6 @@ const Profitablity: FC<any> = ({
         };
       }
 
-      console.log('Update Object:', updateObject);
 
       // Return the final updateObject without making any API calls
       return updateObject;
@@ -1346,7 +1340,6 @@ const Profitablity: FC<any> = ({
     let status = '';
     const statuses = ['green', 'yellow'];
 
-    console.log('dasdsad', record, matchedProduct);
 
     for (let statusCheck of statuses) {
       const matchingObjects =
@@ -1354,7 +1347,6 @@ const Profitablity: FC<any> = ({
           (item: any) => item?.contract_status === statusCheck,
         ) || [];
 
-      console.log('dfsdfsdf', matchingObjects, contractConfigurationData);
 
       if (matchingObjects.length > 0) {
         const finalData =
@@ -1402,10 +1394,17 @@ const Profitablity: FC<any> = ({
         }
       }
     }
-    console.log('FInalStatus', status);
     return status; // Return the final status if no match was found
   };
 
+  // console.log(
+  //   '2342343232231',
+  //   finalProfitTableCol,
+  //   profitibilityDataa,
+  //   selectedFilter,
+  //   finalData,
+  //   activeTab,
+  // );
   return (
     <GlobalLoader loading={profitibilityDataa?.length < 0}>
       {finalProfitTableCol && finalProfitTableCol?.length > 0 ? (
