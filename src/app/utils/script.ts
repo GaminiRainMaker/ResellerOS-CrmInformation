@@ -260,45 +260,48 @@ export let dependentFieldProcess = (templateData: any, formData: any) => {
 
 export let addLocatorAndNameForDependentFields = (
   template: TemplateItem[],
-  formData: any,
+  formData: any[],
 ) => {
-  // Find the object in formData with dependentFill: true
-  const dependentFormData = formData.find(
-    (item: any) => item.dependentFill === true,
+  // Find all objects in formData with dependentFill: true
+  const dependentFormDataArray = formData?.filter(
+    (item: any) => item?.dependentFill === true,
   );
 
-  // If no dependent field is found, return null
-  if (!dependentFormData) {
+  // If no dependent fields are found, return formData unchanged
+  if (dependentFormDataArray?.length === 0) {
     return formData;
   }
 
-  // Extract the dependentLabel from the found object
-  const dependentLabel = dependentFormData.dependentLabel;
-
-  // Find the corresponding object in the template by matching the label
-  const matchingTemplateObject = template.find(
-    (item) => item.label === dependentLabel,
-  );
-
-  // If no matching template object is found, return null
-  if (!matchingTemplateObject || !matchingTemplateObject.dependentFiledArr) {
-    return null;
-  }
-
-  // Iterate through the dependentFiledArr to find a match for the dependentFormData key
-  const dependentFormDataKey = dependentFormData.name;
-  const matchingDependentField = matchingTemplateObject.dependentFiledArr
-    .flat()
-    .find(
-      (dependentFieldItem) => dependentFieldItem.label === dependentFormDataKey,
+  // Iterate over each dependentFormData and update its properties
+  dependentFormDataArray?.forEach((dependentFormData) => {
+    const dependentLabel = dependentFormData?.dependentLabel;
+    // Find the corresponding object in the template by matching the label
+    const matchingTemplateObject = template?.find(
+      (item) => item.label === dependentLabel,
     );
+    // If no matching template object is found, skip to the next dependentFormData
+    if (!matchingTemplateObject || !matchingTemplateObject?.dependentFiledArr) {
+      return;
+    }
+    // Extract the key (first key in the object) for dependentFormData
+    const dependentFormDataKey = Object?.keys(dependentFormData)[0];
+    // Iterate through the dependentFiledArr to find a matching dependent field
+    const matchingDependentField = matchingTemplateObject?.dependentFiledArr
+      ?.flat()
+      ?.find(
+        (dependentFieldItem) =>
+          dependentFieldItem?.label === dependentFormDataKey,
+      );
 
-  // If a matching dependent field is found, update the dependentFormData object
-  if (matchingDependentField) {
-    dependentFormData.customFieldName = matchingDependentField.customFieldName;
-    dependentFormData.locater = matchingDependentField.locater;
-    dependentFormData.dateformat = matchingDependentField.dateformat;
-  }
+    // If a matching dependent field is found, update the dependentFormData object
+    if (matchingDependentField) {
+      dependentFormData.customFieldName =
+        matchingDependentField?.customFieldName;
+      dependentFormData.locater = matchingDependentField?.locater;
+      dependentFormData.dateformat = matchingDependentField?.dateformat;
+      dependentFormData.userFill = matchingDependentField?.user_fill;
+    }
+  });
 
   // Return the updated formData
   return formData;
