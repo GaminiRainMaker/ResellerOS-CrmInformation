@@ -17,20 +17,30 @@ const Matrix: FC<any> = ({selectedFilter}) => {
   const [finalData, setFinalData] = useState<any>();
   const filterDataByValue = (data: any, filterValue: string) => {
     const groupedData: any = {};
+
     data?.forEach((item: any) => {
       let name;
+
       if (filterValue === 'Product Family') {
         name = item?.Product?.product_family || 'Unassigned';
       } else if (filterValue === 'Pricing Method') {
         name = item?.pricing_method || 'Unassigned';
       } else if (filterValue === 'File Name') {
         name = item?.QuoteLineItem?.QuoteFile?.file_name;
-      } else if (filterValue === 'Vendor/Disti') {
+      } else if (
+        filterValue === 'Vendor/Disti' &&
+        item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.distributor_id
+      ) {
         name =
-          item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Distributor
-            ?.distribu;
-      } else if (filterValue === 'OEM') {
-        name = item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Oem?.oem;
+          item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Partner
+            ?.partner ?? item?.QuoteLineItem?.QuoteFile?.distributor_name;
+      } else if (
+        filterValue === 'OEM' &&
+        item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.oem_id
+      ) {
+        name =
+          item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Partner
+            ?.partner ?? item?.QuoteLineItem?.QuoteFile?.oem_name;
       }
       if (name) {
         const convertToTitleCase = (input: string) => {
@@ -176,7 +186,6 @@ const Matrix: FC<any> = ({selectedFilter}) => {
     background: '#f6f7f8',
     borderRadius: '12px',
   };
-
   return (
     <>
       {finalData?.length > 0 ? (

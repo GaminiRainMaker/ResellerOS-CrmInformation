@@ -162,8 +162,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   // const SaleQuoteId = searchParams.get('quote_Id');
   // const salesFOrceManual === true = searchParams.get('manual');
 
-  console.log('43532423423', salesFOrceManual, salesFOrceAccoutFlow);
-
   const fullStackManul = searchParams.get('manualFlow');
 
   const ApprovedQuoteMappingData: any =
@@ -357,9 +355,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           itemInn?.pdf_header ===
             items?.pdf_header?.toString()?.toLowerCase() &&
           itemInn?.status !== 'Rejected',
-        //  &&
-        // itemInn?.quote_header === items?.quote_header &&
-        // (itemInn?.status === 'Pending' || itemInn?.status === 'Approved'),
       );
       if (!findThevalue) {
         updatedArrForAddingLineItemSync?.push({
@@ -392,25 +387,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       NewupdatedData?.map((items: any) => {
         let findThevalue = lineItemSyncingData?.find(
           (itemInn: any) =>
-            // console.log(
-            //   '343243243232',
-            //   itemInn?.pdf_header?.toLowerCase().replace(/\s+/g, '') ===
-            //     items?.pdf_header?.toLowerCase().replace(/\s+/g, ''),
-            //   //  &&
-            //   // itemInn?.is_salesforce &&
-            //   // itemInn?.life_boat_salesforce &&
-            //   // itemInn?.status !== 'Rejected' &&
-            //   // itemInn?.assert_mapping == salesFOrceAccoutId
-            //   // ? true
-            //   // : false,
-            //   itemInn?.pdf_header?.toLowerCase().replace(/\s+/g, ''),
-            //   items?.pdf_header?.toLowerCase().replace(/\s+/g, ''),
-            //   itemInn?.pdf_header?.toLowerCase().replace(/\s+/g, '') ===
-            //     items?.pdf_header?.toLowerCase().replace(/\s+/g, ''),
-            //   itemInn?.is_salesforce,
-            //   itemInn?.life_boat_salesforce,
-            //   itemInn?.status !== 'Rejected',
-            // ),
             itemInn?.pdf_header?.toLowerCase().replace(/\s+/g, '') ===
               items?.pdf_header?.toLowerCase().replace(/\s+/g, '') &&
             itemInn?.is_salesforce &&

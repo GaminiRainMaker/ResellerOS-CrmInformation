@@ -740,7 +740,9 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
             options: [],
             customFieldName: '',
             locater: '',
+            userFillTextValue: '',
           };
+
           newObj.id = items;
           newArrayForAdding?.push([newObj]);
         });
@@ -1120,6 +1122,27 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
                                   />
                                 </Typography>
                               </div>
+                              {itemInner?.user_fill && (
+                                <>
+                                  {' '}
+                                  <Typography name="Body 4/Medium">
+                                    User Fill Text
+                                  </Typography>
+                                  <OsInput
+                                    style={{width: '100%'}}
+                                    placeholder="Label"
+                                    type="text"
+                                    defaultValue={itemInner?.userFillTextValue}
+                                    value={itemInner?.userFillTextValue}
+                                    onChange={(e: any) => {
+                                      changeFieldValuesForDependent(
+                                        e?.target?.value,
+                                        'userFillTextValue',
+                                      );
+                                    }}
+                                  />
+                                </>
+                              )}
                               <Row>
                                 <Col sm={24}>
                                   {' '}
