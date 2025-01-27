@@ -842,8 +842,7 @@ export let processScript = (finalObj: {
               messageDiv.style.borderRadius = '12px';
               messageDiv.style.zIndex = '1000';
               messageDiv.innerHTML =  \`
-              <h3>${newLabel}</h3>
-              <p>Please Enter ${newLabel}.</p>
+              <p>${dataObj?.userFillTextValue ? dataObj?.userFillTextValue : `Please Enter ${newLabel}`}.</p>
               <button id="close-popup-${newLabel}">Close</button>
             \`;
               document.body.appendChild(messageDiv);
