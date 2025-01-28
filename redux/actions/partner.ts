@@ -178,3 +178,15 @@ export const getAllPartnerandProgramApprovedDataSalesForce = createAsyncThunk(
     }
   },
 );
+
+export const getAllApprovedPartnerForQuoteConfiq = createAsyncThunk(
+  'partner/getAllApprovedPartnerForQuoteConfiq',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await PARTNER_API.getAllApprovedPartnerForQuoteConfiq(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

@@ -16,6 +16,8 @@ import {
   upadteRequestForOrgNewPartnerApproval,
   getAllPartnerandProgramApprovedForOrganizationSalesForce,
   getAllPartnerById,
+  getAllApprovedPartnerForQuoteConfiq,
+  getAllPartnerandProgramApprovedDataSalesForce,
 } from '../actions/partner';
 
 type PartnerState = {
@@ -292,6 +294,45 @@ const partnerSlice = createSlice({
       )
       .addCase(
         getAllPartnerById.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getAllApprovedPartnerForQuoteConfiq.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getAllApprovedPartnerForQuoteConfiq.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.allPartnersById = action.payload;
+        },
+      )
+      .addCase(
+        getAllApprovedPartnerForQuoteConfiq.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(
+        getAllPartnerandProgramApprovedDataSalesForce.pending,
+        (state) => {
+          state.loading = true;
+          state.error = null;
+        },
+      )
+      .addCase(
+        getAllPartnerandProgramApprovedDataSalesForce.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.allPartnersById = action.payload;
+        },
+      )
+      .addCase(
+        getAllPartnerandProgramApprovedDataSalesForce.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

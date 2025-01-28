@@ -175,6 +175,8 @@ export const API = {
   },
   GENERALSETTING: {
     INDEX: '/GeneralSetting',
+    AddAndUpdateScriptTimer: '/GeneralSetting/addAndUpdateScriptTimer',
+    GetScriptTimer: '/GeneralSetting/getScriptTimer',
   },
   CONTRACTSETTING_API: {
     INDEX: '/ContractSetting',
@@ -223,6 +225,8 @@ export const API = {
     GetAllPartnerById: 'partner/getAllPartnerById',
     GetAllPartnerandProgramApprovedDataSalesForce:
       'partner/getAllPartnerandProgramApprovedDataSalesForce',
+    getAllApprovedPartnerForQuoteConfiq:
+      'partner/getAllApprovedPartnerForQuoteConfiq',
   },
   PARTNER_PROGRAM: {
     INDEX: '/partnerProgram',

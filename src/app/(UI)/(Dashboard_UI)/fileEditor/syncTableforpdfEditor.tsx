@@ -355,9 +355,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           itemInn?.pdf_header ===
             items?.pdf_header?.toString()?.toLowerCase() &&
           itemInn?.status !== 'Rejected',
-        //  &&
-        // itemInn?.quote_header === items?.quote_header &&
-        // (itemInn?.status === 'Pending' || itemInn?.status === 'Approved'),
       );
       if (!findThevalue) {
         updatedArrForAddingLineItemSync?.push({
@@ -366,10 +363,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         });
       }
     });
-
-    if (updatedArrForAddingLineItemSync && !SaleQuoteId) {
+    if (updatedArrForAddingLineItemSync && !salesForceinstanceUrl) {
       dispatch(insertLineItemSyncing(updatedArrForAddingLineItemSync));
-    } else if (updatedArrForAddingLineItemSync && SaleQuoteId) {
+    } else if (updatedArrForAddingLineItemSync && salesForceinstanceUrl) {
       const NewupdatedData: SalesUpdatedDataItem[] =
         syncedNewValue &&
         syncedNewValue?.length > 0 &&
@@ -380,7 +376,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
               pdf_header: preVal,
               quote_header: newVal,
               status: 'Pending',
-              is_salesforce: SaleQuoteId ? true : false,
+              is_salesforce: salesForceinstanceUrl ? true : false,
               life_boat_salesforce: true,
               assert_mapping: salesFOrceAccoutId ? true : false,
             }),
@@ -390,25 +386,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       NewupdatedData?.map((items: any) => {
         let findThevalue = lineItemSyncingData?.find(
           (itemInn: any) =>
-            // console.log(
-            //   '343243243232',
-            //   itemInn?.pdf_header?.toLowerCase().replace(/\s+/g, '') ===
-            //     items?.pdf_header?.toLowerCase().replace(/\s+/g, ''),
-            //   //  &&
-            //   // itemInn?.is_salesforce &&
-            //   // itemInn?.life_boat_salesforce &&
-            //   // itemInn?.status !== 'Rejected' &&
-            //   // itemInn?.assert_mapping == salesFOrceAccoutId
-            //   // ? true
-            //   // : false,
-            //   itemInn?.pdf_header?.toLowerCase().replace(/\s+/g, ''),
-            //   items?.pdf_header?.toLowerCase().replace(/\s+/g, ''),
-            //   itemInn?.pdf_header?.toLowerCase().replace(/\s+/g, '') ===
-            //     items?.pdf_header?.toLowerCase().replace(/\s+/g, ''),
-            //   itemInn?.is_salesforce,
-            //   itemInn?.life_boat_salesforce,
-            //   itemInn?.status !== 'Rejected',
-            // ),
             itemInn?.pdf_header?.toLowerCase().replace(/\s+/g, '') ===
               items?.pdf_header?.toLowerCase().replace(/\s+/g, '') &&
             itemInn?.is_salesforce &&
@@ -434,6 +411,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       );
     }
     setNanonetsLoading(false);
+    return;
     mergedValue?.map((obj: any) => {
       const newObj: any = {};
       syncedNewValue?.forEach((mapping: any) => {
@@ -602,7 +580,10 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             message: messgaeForApi,
             type: types,
           });
-          if (salesFOrceManual === 'false' || !salesFOrceManual) {
+          if (
+            salesFOrceManual === 'false' ||
+            (!salesFOrceManual && types !== 'error')
+          ) {
             notification.open({
               message: 'Please close the review quotes window',
               type: 'info',

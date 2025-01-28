@@ -235,7 +235,7 @@ const RolesAndPermission = () => {
       })),
     );
     // }
-  }, []);
+  }, [data]);
 
   useEffect(() => {
     dispatch(getUserByOrganization(userInformation?.organization));

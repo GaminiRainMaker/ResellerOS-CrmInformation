@@ -172,7 +172,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
         case 'Multi-Select':
         case 'Drop Down':
           const optionssMulti = itemCon?.options?.map((itemoo: any) => ({
-            label: itemoo,
+            label: itemoo.replace(/_.*/, ''),
             value: itemoo,
           }));
           return (
@@ -369,7 +369,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           >
             {itemCon?.options?.map((option) => (
               <Option key={option} value={option}>
-                {option}
+                {option.replace(/_.*/, '')}
               </Option>
             ))}
           </CommonSelect>
@@ -409,7 +409,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
 
         {dependentArrValOrMulti?.map((itemsDeCh: any, indexDepCh: number) => {
           const dateName =
-            'u_' + convertToSnakeCase(itemCon.label) + '_' + activeKey;
+            'u_' + convertToSnakeCase(itemsDeCh.label) + '_' + activeKey;
 
           return (
             <SelectFormItem
@@ -486,7 +486,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                   placeholder={`Select ${itemsDeCh?.label}`}
                   allowClear
                   options={itemsDeCh?.options.map((opt: any) => ({
-                    label: opt,
+                    label: opt.replace(/_.*/, ''),
                     value: opt,
                   }))}
                   value={dependentVal || originalDependentValueSaved}
@@ -547,7 +547,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                   placeholder={`Select ${itemsDeCh?.label}`}
                   allowClear
                   options={itemsDeCh?.options.map((opt: any) => ({
-                    label: opt,
+                    label: opt.replace(/_.*/, ''),
                     value: opt,
                   }))}
                   value={dependentVal || originalDependentValueSaved}

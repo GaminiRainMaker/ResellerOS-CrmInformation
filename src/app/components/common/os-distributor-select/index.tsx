@@ -17,6 +17,7 @@ import {
   getDistributorByOemId,
   queryQuoteConfiguration,
 } from '../../../../../redux/actions/quoteConfiguration';
+import {formatStatus} from '@/app/utils/CONSTANTS';
 
 const queryParams: any = {
   distributor: null,
@@ -33,6 +34,7 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
   name = 'distributor_id',
   quoteCreation = false,
   oemValue,
+  disabled = false,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -66,7 +68,7 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
 
   useEffect(() => {
     if (quoteCreation && oemValue) {
-      dispatch(getDistributorByOemId(Number(oemValue)));
+      // dispatch(getDistributorByOemId(Number(oemValue)));
     }
   }, [oemValue]);
 
@@ -87,26 +89,36 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
           ? item?.Distributor?.id === optionItem?.value
           : item?.id === optionItem?.value,
       );
-      if (index === -1) {
+      if (index === -1 && (quoteCreation ? item?.distributor_id : true)) {
         const obj = {
           label: (
             <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
               {capitalizeFirstLetter(
                 quoteCreation
-                  ? item?.Distributor?.distributor
+                  ? formatStatus(item?.Partner?.partner)
                   : item?.distributor,
               )}
             </Typography>
           ),
-          key: quoteCreation ? item?.Distributor?.id : item?.id,
+          key: quoteCreation ? item?.model_id : item?.id,
           // model_id: quoteCreation && item.Distributor?.model_id,
-          value: quoteCreation ? item?.Distributor?.id : item?.id,
+          value: quoteCreation ? item?.model_id : item?.id,
         };
         distributorFinalOptions.push(obj);
       }
     }
 
-    setDistributorFilterOption(distributorFinalOptions);
+    setDistributorFilterOption([
+      ...distributorFinalOptions,
+      quoteCreation && {
+        label: (
+          <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+            Other
+          </Typography>
+        ),
+        value: 'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
+      },
+    ]);
   }, [
     DistributorData,
     distributorDataByOemId,
@@ -118,45 +130,54 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
 
   return (
     <>
-      <SelectFormItem
+      {/* <SelectFormItem
         label={label ? 'Distributor' : ''}
         name={name}
         rules={[{required: isRequired, message: 'Please Select Distributor!'}]}
-      >
-        <CommonSelect
-          placeholder="Select"
-          allowClear
-          style={{width: '100%', height: '38px'}}
-          options={distributorFilterOption}
-          defaultValue={distributorValue}
-          onChange={onChange}
-          dropdownRender={(menu) => (
-            <>
-              {isAddNewDistributor && (
-                <Space
-                  style={{cursor: 'pointer'}}
-                  size={8}
-                  onClick={() => setShowDistributorModal(true)}
+      > */}
+      <CommonSelect
+        placeholder="Select"
+        disabled={disabled}
+        allowClear
+        style={{width: '100%', height: '38px'}}
+        options={distributorFilterOption}
+        value={
+          distributorValue && distributorValue?.length > 0
+            ? distributorValue
+            : undefined
+        }
+        onChange={onChange}
+        dropdownRender={(menu) => (
+          <>
+            {isAddNewDistributor && (
+              <Space
+                style={{cursor: 'pointer'}}
+                size={8}
+                onClick={() => setShowDistributorModal(true)}
+              >
+                <PlusIcon
+                  width={24}
+                  color={token?.colorInfoBorder}
+                  style={{marginTop: '5px'}}
+                />
+                <Typography
+                  color={token?.colorPrimaryText}
+                  name="Body 3/Regular"
+                  hoverOnText
                 >
-                  <PlusIcon
-                    width={24}
-                    color={token?.colorInfoBorder}
-                    style={{marginTop: '5px'}}
-                  />
-                  <Typography
-                    color={token?.colorPrimaryText}
-                    name="Body 3/Regular"
-                    hoverOnText
-                  >
-                    Add Distributor
-                  </Typography>
-                </Space>
-              )}
-              {menu}
-            </>
-          )}
-        />
-      </SelectFormItem>
+                  Add Distributor
+                </Typography>
+              </Space>
+            )}
+            {menu}
+          </>
+        )}
+      />
+      {isRequired && (
+        <div style={{color: 'red'}}>Please Select Distributor!</div>
+      )}
+
+      {/* </SelectFormItem> */}
 
       <OsModal
         loading={loading}

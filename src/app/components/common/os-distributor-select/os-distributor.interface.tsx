@@ -12,4 +12,5 @@ export interface OsDistriButorSelectInterface {
   onChange?: any;
   quoteCreation?: boolean;
   oemValue?: number;
+  disabled?: boolean;
 }

@@ -98,6 +98,9 @@ const Profitablity: FC<any> = ({
   );
   const {userInformation} = useAppSelector((state) => state.user);
   const {data: contactData} = useAppSelector((state) => state.contract);
+
+  const [profittibilityLoading, setProfitibilityLoading] =
+    useState<boolean>(false);
   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
     Array<{
       id: number;
@@ -115,6 +118,7 @@ const Profitablity: FC<any> = ({
   ]);
 
   const filterDataByValue = (data: any, filterValue?: string) => {
+    setProfitibilityLoading(true);
     const groupedData: any = {};
     const arrayData: any[] = [];
     const bundleData: any[] = [];
@@ -136,15 +140,20 @@ const Profitablity: FC<any> = ({
               name = item?.pricing_method || 'Unassigned';
             } else if (filterValue === 'File Name') {
               name = item?.QuoteLineItem?.QuoteFile?.file_name;
-            } else if (filterValue === 'Vendor/Disti') {
+            } else if (
+              filterValue === 'Vendor/Disti' &&
+              item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.distributor_id
+            ) {
               name =
-                item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Distributor
-                  ?.distribu ??
-                item?.QuoteLineItem?.QuoteFile?.distributor_name;
-            } else if (filterValue === 'OEM') {
+                item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Partner
+                  ?.partner ?? item?.QuoteLineItem?.QuoteFile?.distributor_name;
+            } else if (
+              filterValue === 'OEM' &&
+              item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.oem_id
+            ) {
               name =
-                item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Oem?.oem ??
-                item?.QuoteLineItem?.QuoteFile?.oem_name;
+                item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Partner
+                  ?.partner ?? item?.QuoteLineItem?.QuoteFile?.oem_name;
             }
             type = 'groups';
           }
@@ -246,6 +255,8 @@ const Profitablity: FC<any> = ({
       ...arrayData,
     ];
     setFinalData(finalData);
+    setProfitibilityLoading(false);
+
     let newArrForPaggination: any = [];
 
     finalData?.map((items: any) => {
@@ -290,23 +301,43 @@ const Profitablity: FC<any> = ({
     }
   };
 
-  useEffect(() => {
-    if (activeTab == '2') {
-      dispatch(getAllContract());
-      dispatch(getContractConfiguartion({}));
-    }
-  }, [activeTab]);
+  // useEffect(() => {
+  //   if (activeTab == '2' || activeTab == '4') {
+  //     dispatch(getAllContract());
+  //     dispatch(getContractConfiguartion({}));
+  //   }
+  // }, [activeTab]);
+  const globalProfitApis = async () => {
+    setProfitibilityLoading(true);
+
+    await dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then(
+      (payload: any) => {
+        if (payload?.payload) {
+          setProfitibilityDataa(payload?.payload);
+        }
+      },
+    );
+    await dispatch(getAllContract());
+    await dispatch(getContractConfiguartion({}));
+    setProfitibilityLoading(false);
+  };
 
   useEffect(() => {
-    if (activeTab == '2') {
-      dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then(
-        (payload: any) => {
-          if (payload?.payload) {
-            setProfitibilityDataa(payload?.payload);
-          }
-        },
-      );
+    if (activeTab == '2' || activeTab == '4') {
+      globalProfitApis();
+      // setProfitibilityLoading(true);
+
+      // dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then(
+      //   (payload: any) => {
+      //     if (payload?.payload) {
+      //       setProfitibilityDataa(payload?.payload);
+      //     }
+      //   },
+      // );
+      // dispatch(getAllContract());
+      // dispatch(getContractConfiguartion({}));
     }
+    // setProfitibilityLoading(false);
   }, [getQuoteID, activeTab]);
 
   useEffect(() => {
@@ -411,8 +442,6 @@ const Profitablity: FC<any> = ({
       updatedRecord.contract_status = response.contract_status;
       updatedRecord.contract_vehicle = response.contract_vehicle;
     }
-
-    console.log('updateddata12', response, updatedRecord);
 
     setFinalFieldData(updatedRecord);
     if (type === 'select') {
@@ -910,7 +939,6 @@ const Profitablity: FC<any> = ({
         UpdatedArr?.push(newObjConObj);
       }
     }
-    console.log('finalDatafinalData', UpdatedArr);
 
     const ProductFamily = profabilityUpdationState?.find(
       (field: any) => field?.field === 'product_family',
@@ -1289,7 +1317,6 @@ const Profitablity: FC<any> = ({
       const response = await dispatch(
         getContractProductByContractVehicle(value),
       );
-      console.log('response', response);
 
       // Ensure response?.payload is an array, defaulting to an empty array if not
       const contractProducts = response?.payload || [];
@@ -1299,12 +1326,9 @@ const Profitablity: FC<any> = ({
         (item: any) => item.Product?.product_code === productCode,
       );
 
-      console.log('matchedProduct', matchedProduct, contractProducts);
-
       // If we found a matched product, calculate the contract status
       if (matchedProduct) {
         const finalStatus = contractStatus(record, matchedProduct);
-        console.log('finalStatus', finalStatus);
 
         if (finalStatus) {
           // Update the object with matched product and status
@@ -1323,8 +1347,6 @@ const Profitablity: FC<any> = ({
         };
       }
 
-      console.log('Update Object:', updateObject);
-
       // Return the final updateObject without making any API calls
       return updateObject;
     } catch (error) {
@@ -1341,15 +1363,11 @@ const Profitablity: FC<any> = ({
     let status = '';
     const statuses = ['green', 'yellow'];
 
-    console.log('dasdsad', record, matchedProduct);
-
     for (let statusCheck of statuses) {
       const matchingObjects =
         contractConfigurationData?.filter(
           (item: any) => item?.contract_status === statusCheck,
         ) || [];
-
-      console.log('dfsdfsdf', matchingObjects, contractConfigurationData);
 
       if (matchingObjects.length > 0) {
         const finalData =
@@ -1397,12 +1415,19 @@ const Profitablity: FC<any> = ({
         }
       }
     }
-    console.log('FInalStatus', status);
     return status; // Return the final status if no match was found
   };
 
+  // console.log(
+  //   '2342343232231',
+  //   finalProfitTableCol,
+  //   profitibilityDataa,
+  //   selectedFilter,
+  //   finalData,
+  //   activeTab,
+  // );
   return (
-    <GlobalLoader loading={profitibilityDataa?.length < 0}>
+    <GlobalLoader loading={profittibilityLoading}>
       {finalProfitTableCol && finalProfitTableCol?.length > 0 ? (
         !selectedFilter ? (
           <div key={JSON.stringify(finalData)}>{renderFinalData()}</div>

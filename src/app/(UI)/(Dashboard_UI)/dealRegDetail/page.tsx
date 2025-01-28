@@ -9,6 +9,13 @@ import OsDropdown from '@/app/components/common/os-dropdown';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
 import Typography from '@/app/components/common/typography';
+import {decrypt, encrypt} from '@/app/utils/base';
+import {
+  addLocatorAndNameForDependentFields,
+  dependentFieldProcess,
+  processFormData,
+  processScript,
+} from '@/app/utils/script';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {MenuProps, notification} from 'antd';
 import Form from 'antd/es/form';
@@ -19,6 +26,11 @@ import {
   getDealRegByOpportunityId,
   updateDealRegStatus,
 } from '../../../../../redux/actions/dealReg';
+import {getScriptTimer} from '../../../../../redux/actions/generalSetting';
+import {
+  getSalesForceDealregById,
+  getSalesForcePartnerCredentials,
+} from '../../../../../redux/actions/salesForce';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {
   setDealReg,
@@ -28,17 +40,6 @@ import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import DealRegCustomTabs, {DealRegCustomTabsHandle} from './DealRegCustomTabs';
 import ElectronBot from './ElectronBot';
 import SubmitDealRegForms from './SubmitDealRegForms';
-import {
-  getSalesForceDealregById,
-  getSalesForcePartnerCredentials,
-} from '../../../../../redux/actions/salesForce';
-import {decrypt, encrypt} from '@/app/utils/base';
-import {
-  addLocatorAndNameForDependentFields,
-  dependentFieldProcess,
-  processFormData,
-  processScript,
-} from '@/app/utils/script';
 
 const DealRegDetail = () => {
   const [getFormData] = Form.useForm();
@@ -62,6 +63,8 @@ const DealRegDetail = () => {
   const {userInformation} = useAppSelector((state) => state.user);
   const [salesForceDealregData, setSalesForceDealregData] = useState<any>();
   const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
+  const [dealregAppTimer, setDealregAppTimer] = useState<string>('');
+
   // Initialize variables with default values
   let userId: string | undefined;
   let salesForceinstanceUrl: string | undefined;
@@ -75,10 +78,17 @@ const DealRegDetail = () => {
   }
   const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
 
+  console.log('test working fine')
+
   useEffect(() => {
     if (getOpportunityId && !isCanvas) {
       dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
     }
+    dispatch(getScriptTimer('')).then((d: any) => {
+      if (d?.payload) {
+        setDealregAppTimer(d?.payload?.data);
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -183,11 +193,11 @@ const DealRegDetail = () => {
             createScriptData as string,
             SECRET_KEY as string,
           );
-
           const desktopAppData = {
             isCanvas: isCanvas,
             userId: userInformation?.id ?? userId,
             script: JSON.stringify(scriptEncryption),
+            scriptTimer: dealregAppTimer,
           };
           const response = await dispatch(dealRegFormScript(desktopAppData));
           if (response) {

@@ -10,4 +10,5 @@ export interface OsOemSelectInterface {
   onChange?: any;
   quoteCreation?: boolean;
   distributorValue?: number;
+  disabled?: boolean;
 }

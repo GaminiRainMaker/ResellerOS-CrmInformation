@@ -115,21 +115,30 @@ const ReviewQuotes: FC<any> = ({
 
         item?.QuoteLineItems.forEach((quoteLineItem: any) => {
           groupedData[name].QuoteLineItem.push(quoteLineItem);
-          console.log(
-            '24332423432',
-            useRemoveDollarAndCommahookDataa(quoteLineItem?.adjusted_price),
+
+          let Adjustted = Number(
+            useRemoveDollarAndCommahookDataa(
+              quoteLineItem?.adjusted_price &&
+                quoteLineItem?.adjusted_price !== undefined &&
+                quoteLineItem?.adjusted_price !== null
+                ? quoteLineItem?.adjusted_price
+                : 0,
+            ) ?? 0,
           );
+
+          let QuantityValue = Number(
+            useRemoveDollarAndCommahookDataa(
+              quoteLineItem?.quantity &&
+                quoteLineItem?.quantity !== undefined &&
+                quoteLineItem?.quantity !== null
+                ? quoteLineItem?.quantity
+                : 0,
+            ) ?? 0,
+          );
+
           groupedData[name].totalAdjustedPrice += Number(
-            Number(
-              useRemoveDollarAndCommahookDataa(quoteLineItem?.adjusted_price),
-            ) *
-              Number(useRemoveDollarAndCommahookDataa(quoteLineItem?.quantity)),
-            // useRemoveDollarAndCommahook(
-            //   quoteLineItem?.quantity &&
-            //     typeof quoteLineItem?.quantity === 'number'
-            //     ? quoteLineItem?.quantity
-            //     : 0,
-            // ),
+            (typeof Adjustted === 'number' ? Adjustted : 0) *
+              (typeof QuantityValue === 'number' ? QuantityValue : 0),
           );
         });
       }

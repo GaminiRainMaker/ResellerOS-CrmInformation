@@ -2,7 +2,6 @@ import dayjs from 'dayjs';
 
 // commented for debugging in future issue comes in new processFormData logic
 // export let processFormData = (template: any, finalUniqueData: any) => {
-//   // debugger
 //   // Extract labels with user_fill set to true from the template
 //   let labelsWithUserFillTrue = template
 //     .filter((item: any) => item.user_fill === true)
@@ -125,6 +124,7 @@ type TemplateItem = {
   user_fill: boolean;
   required?: boolean;
   customFieldName?: string;
+  userFillTextValue?: string;
   locater?: string;
   dateformat?: string;
   dependentFiled?: boolean;
@@ -158,11 +158,11 @@ export let processFormData = (
 
       // Find matching template item
       let matchingTemplateItem = template.find(
-        (item) => item.label?.trim() === newKey,
+        (item) =>
+          item.label?.replace(/\s+/g, '') === newKey?.replace(/\s+/g, ''),
       );
 
       let finalItem: any;
-
       if (!matchingTemplateItem) {
         // Handle dependent fields
         template.some((item) => {
@@ -195,6 +195,7 @@ export let processFormData = (
       const name = matchingTemplateItem?.customFieldName || '';
       const locater = matchingTemplateItem?.locater || '';
       const dateformat = matchingTemplateItem?.dateformat || '';
+      const userFillTextValue = matchingTemplateItem?.userFillTextValue || '';
 
       if (finalUniqueData[key] && (type || name)) {
         transformedData.push({
@@ -204,6 +205,7 @@ export let processFormData = (
           name: name,
           locater: locater,
           dateformat: dateformat,
+          userFillTextValue: userFillTextValue,
         });
       }
     }
@@ -219,6 +221,7 @@ export let processFormData = (
       const name = matchingTemplateItem?.customFieldName || '';
       const locater = matchingTemplateItem?.locater || '';
       const dateformat = matchingTemplateItem?.dateformat || '';
+      const userFillTextValue = matchingTemplateItem?.userFillTextValue || '';
 
       transformedData.push({
         [label]: '',
@@ -227,6 +230,7 @@ export let processFormData = (
         name: name,
         locater: locater,
         dateformat: dateformat,
+        userFillTextValue: userFillTextValue,
       });
     }
   });
@@ -261,45 +265,49 @@ export let dependentFieldProcess = (templateData: any, formData: any) => {
 
 export let addLocatorAndNameForDependentFields = (
   template: TemplateItem[],
-  formData: any,
+  formData: any[],
 ) => {
-  // Find the object in formData with dependentFill: true
-  const dependentFormData = formData.find(
-    (item: any) => item.dependentFill === true,
+  // Find all objects in formData with dependentFill: true
+  const dependentFormDataArray = formData?.filter(
+    (item: any) => item?.dependentFill === true,
   );
 
-  // If no dependent field is found, return null
-  if (!dependentFormData) {
+  // If no dependent fields are found, return formData unchanged
+  if (dependentFormDataArray?.length === 0) {
     return formData;
   }
 
-  // Extract the dependentLabel from the found object
-  const dependentLabel = dependentFormData.dependentLabel;
-
-  // Find the corresponding object in the template by matching the label
-  const matchingTemplateObject = template.find(
-    (item) => item.label === dependentLabel,
-  );
-
-  // If no matching template object is found, return null
-  if (!matchingTemplateObject || !matchingTemplateObject.dependentFiledArr) {
-    return null;
-  }
-
-  // Iterate through the dependentFiledArr to find a match for the dependentFormData key
-  const dependentFormDataKey = dependentFormData.name;
-  const matchingDependentField = matchingTemplateObject.dependentFiledArr
-    .flat()
-    .find(
-      (dependentFieldItem) => dependentFieldItem.label === dependentFormDataKey,
+  // Iterate over each dependentFormData and update its properties
+  dependentFormDataArray?.forEach((dependentFormData) => {
+    const dependentLabel = dependentFormData?.dependentLabel;
+    // Find the corresponding object in the template by matching the label
+    const matchingTemplateObject = template?.find(
+      (item) => item.label === dependentLabel,
     );
-
-  // If a matching dependent field is found, update the dependentFormData object
-  if (matchingDependentField) {
-    dependentFormData.customFieldName = matchingDependentField.customFieldName;
-    dependentFormData.locater = matchingDependentField.locater;
-    dependentFormData.dateformat = matchingDependentField.dateformat;
-  }
+    // If no matching template object is found, skip to the next dependentFormData
+    if (!matchingTemplateObject || !matchingTemplateObject?.dependentFiledArr) {
+      return;
+    }
+    // Extract the key (first key in the object) for dependentFormData
+    const dependentFormDataKey = Object?.keys(dependentFormData)[0];
+    // Iterate through the dependentFiledArr to find a matching dependent field
+    const matchingDependentField = matchingTemplateObject?.dependentFiledArr
+      ?.flat()
+      ?.find(
+        (dependentFieldItem) =>
+          dependentFieldItem?.label === dependentFormDataKey,
+      );
+    // If a matching dependent field is found, update the dependentFormData object
+    if (matchingDependentField) {
+      dependentFormData.customFieldName =
+        matchingDependentField?.customFieldName;
+      dependentFormData.locater = matchingDependentField?.locater;
+      dependentFormData.dateformat = matchingDependentField?.dateformat;
+      dependentFormData.userFill = matchingDependentField?.user_fill;
+      dependentFormData.userFillTextValue =
+        matchingDependentField?.userFillTextValue;
+    }
+  });
 
   // Return the updated formData
   return formData;
@@ -324,12 +332,25 @@ export let processScript = (finalObj: {
   let formValues: string[] = [];
   let iswaitingScript = false;
   let waitingScriptValue = '';
+  const excludedKeys = [
+    'name',
+    'userfill',
+    'type',
+    'locater',
+    'dateformat',
+    'dependentfill',
+    'dependentlabel',
+    'userfilltextvalue',
+    'customfieldname',
+  ];
   for (let i = 0; i < parsedScript.length; i++) {
-    const lastline = newScript[newScript.length - 1];
+    const lastline = i > 0 ? parsedScript[i - 1].trim() : '';
+    const nextLine =
+      i < parsedScript.length - 1 ? parsedScript[i + 1].trim() : '';
     let currentLine = parsedScript[i].trim();
     let currentPage = 1;
-
     let pageIndex = newScript.findIndex((script) => script.includes('page1'));
+    let dataObj;
     if (pageIndex > -1) {
       currentPage = 2;
     }
@@ -347,6 +368,8 @@ export let processScript = (finalObj: {
       } else {
         if (
           currentLine.includes('button') &&
+          !currentLine.toLowerCase().includes('move') &&
+          !currentLine.toLowerCase().includes('search') &&
           !currentLine.includes('getByLabel') &&
           !(lastline.includes('Code') && currentLine.includes('Verify'))
         ) {
@@ -458,7 +481,6 @@ export let processScript = (finalObj: {
           } else {
             if (
               !currentLine.includes('pause()') &&
-              !currentLine.includes('option') &&
               formValues.length <= formPages &&
               !currentLine.includes('Verification') &&
               (currentLine.includes('fill') ||
@@ -467,20 +489,18 @@ export let processScript = (finalObj: {
                 currentLine.includes('getByPlaceholder') ||
                 (currentLine.includes('getByLabel') &&
                   currentLine.includes('button')) ||
+                (currentLine.toLowerCase().includes('search') &&
+                  currentLine.includes('button') &&
+                  lastline.includes('getByText')) ||
+                (currentLine.toLowerCase().includes('option') &&
+                  lastline.includes('getByText') &&
+                  nextLine.toLowerCase().includes('move')) ||
                 (currentLine.includes('locator') &&
                   currentLine.includes('click')))
             ) {
-              const excludedKeys = [
-                'name',
-                'userfill',
-                'type',
-                'locater',
-                'dateformat',
-                'dependentfill',
-                'dependentlabel',
-              ];
               let lineLabel = '';
               let lineName = '';
+              let exactLineLabel = '';
 
               if (currentLine.includes('combobox')) {
                 const nameMatch = currentLine.match(/name: '(.*?)'/);
@@ -493,6 +513,17 @@ export let processScript = (finalObj: {
                 );
                 if (labelMatch) {
                   lineLabel = labelMatch[2].replace(/\s+/g, '').trim();
+                }
+              }
+              if (
+                currentLine.includes('getByRole') &&
+                currentLine.includes('textbox')
+              ) {
+                const labelMatch = currentLine.match(/name:\s*['"`](.*?)['"`]/);
+
+                if (labelMatch) {
+                  lineLabel = labelMatch[1].replace(/\s+/g, '').trim();
+                  exactLineLabel = labelMatch[1];
                 }
               }
 
@@ -543,21 +574,84 @@ export let processScript = (finalObj: {
                         .includes(lineName)),
                 ),
               );
-              let dataObj =
-                dataObjAll && dataObjAll.length > 1
-                  ? dataObjAll.find((objItem: any) =>
-                      Object.keys(objItem).find(
-                        (key) =>
-                          !excludedKeys.includes(key.toLowerCase()) &&
-                          key
-                            .replace(/[^a-zA-Z0-9]/g, '')
-                            .replace(/\s+/g, '')
-                            .trim() === lineLabel.replace(/[^a-zA-Z0-9]/g, ''),
-                      ),
-                    )
-                  : dataObjAll.length == 1
-                    ? dataObjAll[0]
-                    : null;
+
+              if (dataObjAll.length > 1) {
+                if (
+                  currentLine.includes('first') ||
+                  currentLine.includes('nth')
+                ) {
+                  if (currentLine.includes('nth')) {
+                    dataObj = dataObjAll.find(
+                      (item) =>
+                        item.locater.replace(/[^a-zA-Z0-9]/g, '') !== lineName,
+                    );
+                  } else {
+                    dataObj = dataObjAll.find(
+                      (item) =>
+                        item.locater.replace(/[^a-zA-Z0-9]/g, '') === lineName,
+                    );
+                  }
+                } else {
+                  dataObj = dataObjAll.find((objItem: any) =>
+                    Object.keys(objItem).find(
+                      (key) =>
+                        !excludedKeys.includes(key.toLowerCase()) &&
+                        key
+                          .replace(/[^a-zA-Z0-9]/g, '')
+                          .replace(/\s+/g, '')
+                          .trim() === lineLabel.replace(/[^a-zA-Z0-9]/g, ''),
+                    ),
+                  );
+                }
+              } else {
+                if (dataObjAll.length == 1) {
+                  dataObj = dataObjAll[0];
+                } else {
+                  dataObj = null;
+                }
+              }
+
+              if (
+                (currentLine.toLowerCase().includes('search') ||
+                  currentLine.includes('option')) &&
+                lastline.includes('getByText') &&
+                !dataObj
+              ) {
+                if (lastline.includes('getByText')) {
+                  const labelMatch = lastline.match(
+                    /getByText\('(\*?\s*)(.*?)'\)/,
+                  );
+                  if (labelMatch) {
+                    lineLabel = labelMatch[2].replace(/\s+/g, '').trim();
+                  }
+
+                  const dataObjAll = finalObj.data.filter((objItem: any) =>
+                    Object.keys(objItem).find(
+                      (key) =>
+                        !excludedKeys.includes(key.toLowerCase()) &&
+                        lineLabel &&
+                        key.replace(/\s+/g, '').trim().includes(lineLabel),
+                    ),
+                  );
+
+                  dataObj =
+                    dataObjAll && dataObjAll.length > 1
+                      ? dataObjAll.find((objItem: any) =>
+                          Object.keys(objItem).find(
+                            (key) =>
+                              !excludedKeys.includes(key.toLowerCase()) &&
+                              key
+                                .replace(/[^a-zA-Z0-9]/g, '')
+                                .replace(/\s+/g, '')
+                                .trim() ===
+                                lineLabel.replace(/[^a-zA-Z0-9]/g, ''),
+                          ),
+                        )
+                      : dataObjAll.length == 1
+                        ? dataObjAll[0]
+                        : null;
+                }
+              }
               if (dataObj) {
                 for (let [label, value] of Object.entries(dataObj)) {
                   if (
@@ -585,12 +679,46 @@ export let processScript = (finalObj: {
 
                         formValues.push(label);
                         break;
-                      }
-                      if (currentLine.includes('combobox')) {
+                      } else if (
+                        currentLine.includes('option') &&
+                        lastline.includes('getByText') &&
+                        nextLine.toLowerCase().includes('move')
+                      ) {
+                        if (value && value.length > 0) {
+                          for (let j = 0; j < value?.length; j++) {
+                            newScript.push(`await ${currentPage == 1 ? 'page' : 'page1'}
+                          .getByRole('option', {
+                            name: '${value[j]}',exact: true 
+                          })
+                          .click();`);
+                            newScript.push(nextLine);
+                          }
+                        }
+                        formValues.push(label);
+                        break;
+                      } else if (currentLine.includes('combobox')) {
                         newScript.push(currentLine);
-                        newScript.push(
-                          `await ${currentPage == 1 ? 'page' : 'page1'}.getByRole('option', { name: '${value}' , exact: true}).locator('span').nth(1).click();`,
-                        );
+                        let newValue = value;
+                        let occurance = 1;
+                        if (value.includes('_')) {
+                          const valueSplitArr = value?.split('_');
+                          newValue =
+                            valueSplitArr && valueSplitArr.length > 0
+                              ? valueSplitArr[0]
+                              : value;
+                          occurance =
+                            valueSplitArr && valueSplitArr.length > 0
+                              ? valueSplitArr[1]
+                              : occurance;
+                          newScript.push(
+                            `await ${currentPage == 1 ? 'page' : 'page1'}.locator('span').filter({ hasText: /^${newValue}$/ }).nth(${occurance}).click();`,
+                          );
+                        } else {
+                          newScript.push(
+                            `await ${currentPage == 1 ? 'page' : 'page1'}.getByRole('option', { name: '${newValue}' , exact: true}).locator('span').nth(${occurance}).click();`,
+                          );
+                        }
+
                         formValues.push(label);
 
                         break;
@@ -642,7 +770,7 @@ export let processScript = (finalObj: {
                           );
                         } else {
                           newScript.push(
-                            `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}').waitFor({ state: 'visible', timeout: 50000 });`,
+                            `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : exactLineLabel ? exactLineLabel : label}').waitFor({ state: 'visible', timeout: 50000 });`,
                           );
                         }
                       }
@@ -661,9 +789,10 @@ export let processScript = (finalObj: {
                                   : currentLine.includes('getByLabel') &&
                                       currentLine.includes('exact')
                                     ? `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}',{ exact: true }).fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');`
-                                    : `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');`
+                                    : `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : exactLineLabel ? exactLineLabel : label}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');`
                               : dataObj.type.toLowerCase().includes('select') ||
-                                  dataObj.type.toLowerCase().includes('drop')
+                                  dataObj.type.toLowerCase().includes('drop') ||
+                                  dataObj.type.toLowerCase().includes('tag')
                                 ? dataObj.name
                                   ? `await ${currentPage == 1 ? 'page' : 'page1'}.locator('select[name="${dataObj.name}"]').selectOption('${value}');`
                                   : currentLine.includes('selectOption')
@@ -726,8 +855,7 @@ export let processScript = (finalObj: {
               messageDiv.style.borderRadius = '12px';
               messageDiv.style.zIndex = '1000';
               messageDiv.innerHTML =  \`
-              <h3>${newLabel}</h3>
-              <p>Please Enter ${newLabel}.</p>
+              <p>${dataObj?.userFillTextValue ? dataObj?.userFillTextValue : `Please Enter ${newLabel}`}.</p>
               <button id="close-popup-${newLabel}">Close</button>
             \`;
               document.body.appendChild(messageDiv);
@@ -785,19 +913,22 @@ export let processScript = (finalObj: {
                   newScript.push(currentLine);
                 } else if (
                   currentLine.includes('locator') &&
-                  currentLine.includes('click')
+                  currentLine.includes('click') &&
+                  !currentLine.includes('option')
                 ) {
                   newScript.push(currentLine);
                 }
               }
             } else {
               if (
+                !currentLine.toLowerCase().includes('move') &&
                 !currentLine.includes('getByLabel') &&
                 !currentLine.includes('combobox') &&
                 !currentLine.includes('option') &&
                 !currentLine.includes('pause()') &&
                 !currentLine.includes('fill') &&
                 !currentLine.includes('selectOption') &&
+                !currentLine.toLowerCase().includes('search') &&
                 !currentLine.includes('press') &&
                 !(lastline.includes('Code') && currentLine.includes('Verify'))
               ) {
@@ -825,7 +956,12 @@ export let processScript = (finalObj: {
                 `,
                   );
                 } else {
-                  newScript.push(currentLine);
+                  if (
+                    !nextLine.includes('option') &&
+                    !nextLine.toLowerCase().includes('search')
+                  ) {
+                    newScript.push(currentLine);
+                  }
                 }
               }
             }
@@ -835,7 +971,6 @@ export let processScript = (finalObj: {
     }
   }
   let finalArr = newScript;
-  console.log(finalArr, 'finalArrfinalArrfinalArr');
 
   let updatedScript = finalArr.join('\n');
 
