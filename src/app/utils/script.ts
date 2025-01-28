@@ -341,6 +341,7 @@ export let processScript = (finalObj: {
     'dependentfill',
     'dependentlabel',
     'userfilltextvalue',
+    'customfieldname',
   ];
   for (let i = 0; i < parsedScript.length; i++) {
     const lastline = i > 0 ? parsedScript[i - 1].trim() : '';
@@ -649,7 +650,6 @@ export let processScript = (finalObj: {
                         : null;
                 }
               }
-
               if (dataObj) {
                 for (let [label, value] of Object.entries(dataObj)) {
                   if (
