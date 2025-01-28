@@ -789,7 +789,8 @@ export let processScript = (finalObj: {
                                     ? `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}',{ exact: true }).fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');`
                                     : `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');`
                               : dataObj.type.toLowerCase().includes('select') ||
-                                  dataObj.type.toLowerCase().includes('drop')
+                                  dataObj.type.toLowerCase().includes('drop') ||
+                                  dataObj.type.toLowerCase().includes('tag')
                                 ? dataObj.name
                                   ? `await ${currentPage == 1 ? 'page' : 'page1'}.locator('select[name="${dataObj.name}"]').selectOption('${value}');`
                                   : currentLine.includes('selectOption')
