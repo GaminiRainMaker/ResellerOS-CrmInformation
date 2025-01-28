@@ -513,6 +513,16 @@ export let processScript = (finalObj: {
                   lineLabel = labelMatch[2].replace(/\s+/g, '').trim();
                 }
               }
+              if (
+                currentLine.includes('getByRole') &&
+                currentLine.includes('textbox')
+              ) {
+                const labelMatch = currentLine.match(/name:\s*['"`](.*?)['"`]/);
+
+                if (labelMatch) {
+                  lineLabel = labelMatch[1].replace(/\s+/g, '').trim();
+                }
+              }
 
               if (
                 currentLine.includes('getByLabel') &&
