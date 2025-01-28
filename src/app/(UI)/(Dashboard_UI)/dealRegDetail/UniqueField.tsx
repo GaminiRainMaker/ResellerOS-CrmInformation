@@ -409,7 +409,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
 
         {dependentArrValOrMulti?.map((itemsDeCh: any, indexDepCh: number) => {
           const dateName =
-            'u_' + convertToSnakeCase(itemCon.label) + '_' + activeKey;
+            'u_' + convertToSnakeCase(itemsDeCh.label) + '_' + activeKey;
 
           return (
             <SelectFormItem

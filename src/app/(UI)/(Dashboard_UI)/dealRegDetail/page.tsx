@@ -78,6 +78,8 @@ const DealRegDetail = () => {
   }
   const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
 
+  console.log('test working fine')
+
   useEffect(() => {
     if (getOpportunityId && !isCanvas) {
       dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));

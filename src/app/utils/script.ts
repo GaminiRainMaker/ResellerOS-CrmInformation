@@ -158,11 +158,11 @@ export let processFormData = (
 
       // Find matching template item
       let matchingTemplateItem = template.find(
-        (item) => item.label?.trim() === newKey,
+        (item) =>
+          item.label?.replace(/\s+/g, '') === newKey?.replace(/\s+/g, ''),
       );
 
       let finalItem: any;
-
       if (!matchingTemplateItem) {
         // Handle dependent fields
         template.some((item) => {
@@ -341,6 +341,7 @@ export let processScript = (finalObj: {
     'dependentfill',
     'dependentlabel',
     'userfilltextvalue',
+    'customfieldname',
   ];
   for (let i = 0; i < parsedScript.length; i++) {
     const lastline = i > 0 ? parsedScript[i - 1].trim() : '';
@@ -499,6 +500,7 @@ export let processScript = (finalObj: {
             ) {
               let lineLabel = '';
               let lineName = '';
+              let exactLineLabel = '';
 
               if (currentLine.includes('combobox')) {
                 const nameMatch = currentLine.match(/name: '(.*?)'/);
@@ -511,6 +513,17 @@ export let processScript = (finalObj: {
                 );
                 if (labelMatch) {
                   lineLabel = labelMatch[2].replace(/\s+/g, '').trim();
+                }
+              }
+              if (
+                currentLine.includes('getByRole') &&
+                currentLine.includes('textbox')
+              ) {
+                const labelMatch = currentLine.match(/name:\s*['"`](.*?)['"`]/);
+
+                if (labelMatch) {
+                  lineLabel = labelMatch[1].replace(/\s+/g, '').trim();
+                  exactLineLabel = labelMatch[1];
                 }
               }
 
@@ -639,7 +652,6 @@ export let processScript = (finalObj: {
                         : null;
                 }
               }
-
               if (dataObj) {
                 for (let [label, value] of Object.entries(dataObj)) {
                   if (
@@ -758,7 +770,7 @@ export let processScript = (finalObj: {
                           );
                         } else {
                           newScript.push(
-                            `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}').waitFor({ state: 'visible', timeout: 50000 });`,
+                            `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : exactLineLabel ? exactLineLabel : label}').waitFor({ state: 'visible', timeout: 50000 });`,
                           );
                         }
                       }
@@ -777,9 +789,10 @@ export let processScript = (finalObj: {
                                   : currentLine.includes('getByLabel') &&
                                       currentLine.includes('exact')
                                     ? `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}',{ exact: true }).fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');`
-                                    : `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');`
+                                    : `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : exactLineLabel ? exactLineLabel : label}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');`
                               : dataObj.type.toLowerCase().includes('select') ||
-                                  dataObj.type.toLowerCase().includes('drop')
+                                  dataObj.type.toLowerCase().includes('drop') ||
+                                  dataObj.type.toLowerCase().includes('tag')
                                 ? dataObj.name
                                   ? `await ${currentPage == 1 ? 'page' : 'page1'}.locator('select[name="${dataObj.name}"]').selectOption('${value}');`
                                   : currentLine.includes('selectOption')

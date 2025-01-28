@@ -1392,6 +1392,9 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
             selectedColumnIndex={selectedColumnIndex}
             setOpenMappedModal={setOpenMappedModal}
             typeOfFILE={'Checkbox'}
+            activeIndexForDependentInnerChild={
+              activeIndexForDependentInnerChild
+            }
           />
         }
         width={500}
