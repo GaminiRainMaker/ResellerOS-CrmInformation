@@ -187,7 +187,6 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
                       handleChangeDistributorOem(
                         'distributor_name',
                         index,
-
                         e?.target?.value,
                         false,
                       );
