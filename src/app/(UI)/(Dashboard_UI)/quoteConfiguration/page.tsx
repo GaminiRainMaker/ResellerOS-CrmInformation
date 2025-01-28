@@ -118,170 +118,173 @@ const AllQuote: React.FC = () => {
   const [renderColumnData, setRenderColumnData] = useState<any>();
 
   const addNewColumnDataa = (optionsForPartner: any) => {
-    if (optionsForPartner && optionsForPartner?.length > 0) {
-      const RenderColumns = [
-        {
-          title: (
-            <Typography
-              name="Body 4/Medium"
-              className="dragHandler"
-              color={token?.colorPrimaryText}
-            >
-              Distributor
-            </Typography>
-          ),
-          dataIndex: 'distributor',
-          key: 'distributor',
-          width: 187,
-          render: (text: string, record: any, index: number) => (
-            <>
-              <CommonSelect
-                options={optionsForPartner}
-                style={{width: '100%'}}
-                disabled={record?.oem_id}
-                defaultValue={
-                  record?.distributor_id &&
-                  formatStatus(record?.Partner?.partner)
-                }
-                onChange={(value: any) => {
-                  setQuoteConfig((prev: any) =>
-                    prev.map((prevItem: any, prevIndex: any) => {
-                      if (prevIndex === index) {
-                        const obj = {
-                          ...prevItem,
-                          partner_id: value,
-                          distributor_id: value,
-                        };
-
-                        return obj;
-                      }
-                      return prevItem;
-                    }),
-                  );
-                }}
-              />
-
-              {record.error && (
-                <Typography name="Body 4/Regular" color={token?.colorError}>
-                  Duplicate Entry
-                </Typography>
-              )}
-            </>
-          ),
-        },
-        {
-          title: (
-            <Typography
-              name="Body 4/Medium"
-              className="dragHandler"
-              color={token?.colorPrimaryText}
-            >
-              OEM
-            </Typography>
-          ),
-          dataIndex: 'oem',
-          key: 'oem',
-          width: 130,
-          render: (text: string, record: any, index: number) => (
-            <>
-              <CommonSelect
-                style={{width: '100%'}}
-                disabled={record?.distributor_id}
-                options={optionsForPartner}
-                defaultValue={
-                  record?.oem_id && formatStatus(record?.Partner?.partner)
-                }
-                onChange={(value: any) => {
-                  setQuoteConfig((prev: any) =>
-                    prev.map((prevItem: any, prevIndex: any) => {
-                      if (prevIndex === index) {
-                        const obj = {
-                          ...prevItem,
-                          oem_id: value,
-                          partner_id: value,
-                        };
-
-                        return obj;
-                      }
-                      return prevItem;
-                    }),
-                  );
-                }}
-              />
-
-              {record.error && (
-                <Typography name="Body 4/Regular" color={token?.colorError}>
-                  Duplicate Entry
-                </Typography>
-              )}
-            </>
-          ),
-        },
-        {
-          title: (
-            <Typography
-              name="Body 4/Medium"
-              className="dragHandler"
-              color={token?.colorPrimaryText}
-            >
-              Model ID
-            </Typography>
-          ),
-          dataIndex: 'model_id',
-          key: 'model_id',
-          width: 187,
-          render: (text: string, record: any, index: number) => (
-            <OsInput
-              name={`model_${index}`}
-              placeholder="Write here"
-              style={{height: '38px'}}
-              defaultValue={text}
-              onChange={(e) => {
+    // if (optionsForPartner && optionsForPartner?.length > 0) {
+    const RenderColumns = [
+      {
+        title: (
+          <Typography
+            name="Body 4/Medium"
+            className="dragHandler"
+            color={token?.colorPrimaryText}
+          >
+            Distributor
+          </Typography>
+        ),
+        dataIndex: 'distributor',
+        key: 'distributor',
+        width: 187,
+        render: (text: string, record: any, index: number) => (
+          <>
+            <CommonSelect
+              options={optionsForPartner}
+              style={{width: '100%'}}
+              disabled={record?.oem_id}
+              defaultValue={
+                record?.distributor_id && formatStatus(record?.Partner?.partner)
+              }
+              onChange={(value: any) => {
                 setQuoteConfig((prev: any) =>
-                  prev.map((prevItem: any, prevIndex: number) => {
+                  prev.map((prevItem: any, prevIndex: any) => {
                     if (prevIndex === index) {
-                      return {
+                      const obj = {
                         ...prevItem,
-                        model_id: e?.target?.value,
+                        partner_id: value,
+                        distributor_id: value,
                       };
+
+                      return obj;
                     }
                     return prevItem;
                   }),
                 );
               }}
             />
-          ),
-        },
-        {
-          title: 'Action',
-          dataIndex: 'actions',
-          key: 'actions',
-          width: 54,
-          render: (text: string, record: any, index: number) => (
-            <Space size={18}>
-              <TrashIcon
-                height={24}
-                width={24}
-                color={token.colorError}
-                style={{cursor: 'pointer'}}
-                onClick={() => {
-                  setQuoteConfig((prev: any) =>
-                    prev.filter(
-                      (prevItem: any, prevIndex: number) => prevIndex !== index,
-                    ),
-                  );
-                }}
-              />
-            </Space>
-          ),
-        },
-      ];
-      setRenderColumnData(RenderColumns);
-    }
+
+            {record.error && (
+              <Typography name="Body 4/Regular" color={token?.colorError}>
+                Duplicate Entry
+              </Typography>
+            )}
+          </>
+        ),
+      },
+      {
+        title: (
+          <Typography
+            name="Body 4/Medium"
+            className="dragHandler"
+            color={token?.colorPrimaryText}
+          >
+            OEM
+          </Typography>
+        ),
+        dataIndex: 'oem',
+        key: 'oem',
+        width: 130,
+        render: (text: string, record: any, index: number) => (
+          <>
+            <CommonSelect
+              style={{width: '100%'}}
+              disabled={record?.distributor_id}
+              options={optionsForPartner}
+              defaultValue={
+                record?.oem_id && formatStatus(record?.Partner?.partner)
+              }
+              onChange={(value: any) => {
+                setQuoteConfig((prev: any) =>
+                  prev.map((prevItem: any, prevIndex: any) => {
+                    if (prevIndex === index) {
+                      const obj = {
+                        ...prevItem,
+                        oem_id: value,
+                        partner_id: value,
+                      };
+
+                      return obj;
+                    }
+                    return prevItem;
+                  }),
+                );
+              }}
+            />
+
+            {record.error && (
+              <Typography name="Body 4/Regular" color={token?.colorError}>
+                Duplicate Entry
+              </Typography>
+            )}
+          </>
+        ),
+      },
+      {
+        title: (
+          <Typography
+            name="Body 4/Medium"
+            className="dragHandler"
+            color={token?.colorPrimaryText}
+          >
+            Model ID
+          </Typography>
+        ),
+        dataIndex: 'model_id',
+        key: 'model_id',
+        width: 187,
+        render: (text: string, record: any, index: number) => (
+          <OsInput
+            name={`model_${index}`}
+            placeholder="Write here"
+            style={{height: '38px'}}
+            defaultValue={text}
+            onChange={(e) => {
+              setQuoteConfig((prev: any) =>
+                prev.map((prevItem: any, prevIndex: number) => {
+                  if (prevIndex === index) {
+                    return {
+                      ...prevItem,
+                      model_id: e?.target?.value,
+                    };
+                  }
+                  return prevItem;
+                }),
+              );
+            }}
+          />
+        ),
+      },
+      {
+        title: 'Action',
+        dataIndex: 'actions',
+        key: 'actions',
+        width: 54,
+        render: (text: string, record: any, index: number) => (
+          <Space size={18}>
+            <TrashIcon
+              height={24}
+              width={24}
+              color={token.colorError}
+              style={{cursor: 'pointer'}}
+              onClick={() => {
+                setQuoteConfig((prev: any) =>
+                  prev.filter(
+                    (prevItem: any, prevIndex: number) => prevIndex !== index,
+                  ),
+                );
+              }}
+            />
+          </Space>
+        ),
+      },
+    ];
+    setRenderColumnData(RenderColumns);
+    // }
   };
   useEffect(() => {
     addNewColumnDataa(optionsForPartner);
-  }, [optionsForPartner, JSON?.stringify(optionsForPartner)]);
+  }, [
+    optionsForPartner,
+    JSON?.stringify(optionsForPartner),
+    optionsForPartner,
+  ]);
 
   return (
     <>
