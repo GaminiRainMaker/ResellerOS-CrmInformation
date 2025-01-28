@@ -181,6 +181,8 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
                   {' '}
                   <OsInput
                     style={{height: '35px'}}
+                    value={item?.distributor_name}
+                    disabled={item?.oem_name ? true : false}
                     onChange={(e: any) => {
                       handleChangeDistributorOem(
                         'distributor_name',
@@ -195,6 +197,8 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
                 <Col span={5}>
                   <OsInput
                     style={{height: '35px'}}
+                    disabled={item?.distributor_name ? true : false}
+                    value={item?.oem_name}
                     onChange={(e: any) => {
                       handleChangeDistributorOem(
                         'oem_name',
