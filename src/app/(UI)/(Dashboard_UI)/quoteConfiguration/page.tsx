@@ -439,14 +439,21 @@ const AllQuote: React.FC = () => {
           });
         });
       }
-      if (arrOfPartnerss?.length < 0) {
+      if (arrOfPartnerss?.length <= 0) {
         addNewColumnDataa(optionsForPartner);
+      } else {
+        addNewColumnDataaNew(optionsForPartner);
       }
       setOptionsFOrPartner(arrOfPartnerss);
     });
   };
   useEffect(() => {
-    addNewColumnDataaNew(optionsForPartner);
+    if (optionsForPartner?.length <= 0) {
+      addNewColumnDataa(optionsForPartner);
+    } else {
+      addNewColumnDataaNew(optionsForPartner);
+    }
+    // addNewColumnDataaNew(optionsForPartner);
   }, [
     optionsForPartner,
     JSON?.stringify(optionsForPartner),
