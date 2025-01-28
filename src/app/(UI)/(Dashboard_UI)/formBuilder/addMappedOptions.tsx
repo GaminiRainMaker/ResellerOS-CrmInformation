@@ -18,6 +18,7 @@ const AddMappedOptionsForFormBuilder: FC<any> = ({
   typeOfFILE,
   activeIndexForDependent,
   dependedAdd,
+  activeIndexForDependentInnerChild,
 }) => {
   const [loadingApi, setLoadingApi] = useState<boolean>(true);
   const [mappedOptions, setMappedOptions] = useState<any>();
@@ -68,10 +69,19 @@ const AddMappedOptionsForFormBuilder: FC<any> = ({
                 dependentFiledArr: contItem?.dependentFiledArr?.map(
                   (deItem: any, deIndex: number) => {
                     if (activeIndexForDependent === deIndex) {
-                      return {
-                        ...deItem,
-                        [labelTypeVal]: newValue,
-                      };
+                      return deItem?.map(
+                        (itemsDeInChil: any, indexDeInChil: number) => {
+                          if (
+                            indexDeInChil === activeIndexForDependentInnerChild
+                          ) {
+                            return {
+                              ...itemsDeInChil,
+                              [labelTypeVal]: newValue,
+                            };
+                          }
+                          return itemsDeInChil;
+                        },
+                      );
                     }
                     return deItem;
                   },
@@ -85,13 +95,10 @@ const AddMappedOptionsForFormBuilder: FC<any> = ({
       return sectItem;
     });
 
-    // tempvalue?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.[
-    //   nameOptions
-    // ]?.[activeIndexForDependent || 0]?.['options']?.push('');
-
     setCartItems(newTempArr);
     setOpenMappedModal(false);
   };
+
   return (
     <GlobalLoader loading={loadingApi}>
       {mappedOptions?.length > 0 ? (
@@ -124,9 +131,7 @@ const AddMappedOptionsForFormBuilder: FC<any> = ({
                         if (dependedAdd) {
                           addnewOptionsForDependent(
                             JSON?.parse(items?.values_option),
-                            typeOfFILE === 'Checkbox'
-                              ? 'labelOptions'
-                              : 'options',
+                            typeOfFILE === 'Checkbox' ? 'options' : 'options',
                           );
                         } else {
                           changeFieldValues(

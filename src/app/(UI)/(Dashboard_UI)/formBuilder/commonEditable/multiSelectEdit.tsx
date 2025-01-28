@@ -1484,6 +1484,9 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
             typeOfFILE={'select'}
             activeIndexForDependent={activeIndexForDependent}
             dependedAdd={openModalForDependentFiled}
+            activeIndexForDependentInnerChild={
+              activeIndexForDependentInnerChild
+            }
           />
         }
         width={500}
