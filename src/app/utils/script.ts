@@ -124,6 +124,7 @@ type TemplateItem = {
   user_fill: boolean;
   required?: boolean;
   customFieldName?: string;
+  userFillTextValue?: string;
   locater?: string;
   dateformat?: string;
   dependentFiled?: boolean;
@@ -194,6 +195,7 @@ export let processFormData = (
       const name = matchingTemplateItem?.customFieldName || '';
       const locater = matchingTemplateItem?.locater || '';
       const dateformat = matchingTemplateItem?.dateformat || '';
+      const userFillTextValue = matchingTemplateItem?.userFillTextValue || '';
 
       if (finalUniqueData[key] && (type || name)) {
         transformedData.push({
@@ -203,6 +205,7 @@ export let processFormData = (
           name: name,
           locater: locater,
           dateformat: dateformat,
+          userFillTextValue: userFillTextValue,
         });
       }
     }
@@ -218,6 +221,7 @@ export let processFormData = (
       const name = matchingTemplateItem?.customFieldName || '';
       const locater = matchingTemplateItem?.locater || '';
       const dateformat = matchingTemplateItem?.dateformat || '';
+      const userFillTextValue = matchingTemplateItem?.userFillTextValue || '';
 
       transformedData.push({
         [label]: '',
@@ -226,6 +230,7 @@ export let processFormData = (
         name: name,
         locater: locater,
         dateformat: dateformat,
+        userFillTextValue: userFillTextValue,
       });
     }
   });
@@ -292,7 +297,6 @@ export let addLocatorAndNameForDependentFields = (
         (dependentFieldItem) =>
           dependentFieldItem?.label === dependentFormDataKey,
       );
-
     // If a matching dependent field is found, update the dependentFormData object
     if (matchingDependentField) {
       dependentFormData.customFieldName =
@@ -300,6 +304,8 @@ export let addLocatorAndNameForDependentFields = (
       dependentFormData.locater = matchingDependentField?.locater;
       dependentFormData.dateformat = matchingDependentField?.dateformat;
       dependentFormData.userFill = matchingDependentField?.user_fill;
+      dependentFormData.userFillTextValue =
+        matchingDependentField?.userFillTextValue;
     }
   });
 
@@ -334,6 +340,7 @@ export let processScript = (finalObj: {
     'dateformat',
     'dependentfill',
     'dependentlabel',
+    'userfilltextvalue',
   ];
   for (let i = 0; i < parsedScript.length; i++) {
     const lastline = i > 0 ? parsedScript[i - 1].trim() : '';
@@ -835,8 +842,7 @@ export let processScript = (finalObj: {
               messageDiv.style.borderRadius = '12px';
               messageDiv.style.zIndex = '1000';
               messageDiv.innerHTML =  \`
-              <h3>${newLabel}</h3>
-              <p>Please Enter ${newLabel}.</p>
+              <p>${dataObj?.userFillTextValue ? dataObj?.userFillTextValue : `Please Enter ${newLabel}`}.</p>
               <button id="close-popup-${newLabel}">Close</button>
             \`;
               document.body.appendChild(messageDiv);
