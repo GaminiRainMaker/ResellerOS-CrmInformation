@@ -50,10 +50,12 @@ const QuoteMappings = () => {
   );
   const [activeTab, setActiveTab] = useState<number>(1);
   const [query, setQuery] = useState<{
-    searchValue: string;
+    searchValuepdfheader: string;
+    searchValuelineItem: string;
     asserType: boolean;
   }>({
-    searchValue: '',
+    searchValuepdfheader: '',
+    searchValuelineItem: '',
     asserType: false,
   });
   const [showApproveModal, setShowApproveModal] = useState<boolean>(false);
@@ -397,13 +399,49 @@ const QuoteMappings = () => {
           <OsTabs
             tabBarExtraContent={
               <Space size={12} align="center">
-                <OsButton
-                  buttontype="PRIMARY"
-                  text="Add New Syncing"
-                  clickHandler={() => {
-                    setShowSyncModal(true);
-                  }}
-                />
+                <div style={{marginBottom: '15px'}}>
+                  {' '}
+                  <Space
+                    direction="vertical"
+                    size={0}
+                    style={{marginRight: '5px'}}
+                  >
+                    <Typography name="Body 4/Medium">Doc Headers</Typography>
+                    <OsInput
+                      value={query?.searchValuepdfheader}
+                      onChange={(e: any) => {
+                        setQuery({
+                          ...query,
+                          searchValuepdfheader: e?.target?.value,
+                        });
+                      }}
+                    />
+                  </Space>
+                  <Space direction="vertical" size={0}>
+                    <Typography name="Body 4/Medium">
+                      Quote Line Item Headers
+                    </Typography>
+                    <OsInput
+                      value={query?.searchValuelineItem}
+                      onChange={(e: any) => {
+                        setQuery({
+                          ...query,
+                          searchValuelineItem: e?.target?.value,
+                        });
+                      }}
+                    />
+                  </Space>
+                </div>
+                <div>
+                  {' '}
+                  <OsButton
+                    buttontype="PRIMARY"
+                    text="Add New Syncing"
+                    clickHandler={() => {
+                      setShowSyncModal(true);
+                    }}
+                  />
+                </div>
               </Space>
             }
             items={superAdmintabItems}
