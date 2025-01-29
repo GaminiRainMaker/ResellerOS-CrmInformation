@@ -804,6 +804,18 @@ const SuperAdminPartner: React.FC = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
+          Master Partner Name
+        </Typography>
+      ),
+      dataIndex: 'master_partner_id',
+      key: 'master_partner_id',
+      render: (text: string, record: any) => (
+        <CustomTextCapitalization text={record?.master_partner?.partner} />
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
           Industry
         </Typography>
       ),
@@ -861,7 +873,6 @@ const SuperAdminPartner: React.FC = () => {
       ),
     },
   ];
-
   const superAdmintabItems = [
     {
       label: (
