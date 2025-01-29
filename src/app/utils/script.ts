@@ -789,7 +789,10 @@ export let processScript = (finalObj: {
                                   : currentLine.includes('getByLabel') &&
                                       currentLine.includes('exact')
                                     ? `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}',{ exact: true }).fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');`
-                                    : `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : exactLineLabel ? exactLineLabel : label}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');`
+                                    : currentLine.includes('getByLabel') &&
+                                        currentLine.includes('textbox')
+                                      ? `await ${currentPage == 1 ? 'page' : 'page1'}.getByRole('textbox', { name: '${exactLineLabel ? exactLineLabel : label}' }).fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');`
+                                      : `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : exactLineLabel ? exactLineLabel : label}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');`
                               : dataObj.type.toLowerCase().includes('select') ||
                                   dataObj.type.toLowerCase().includes('drop') ||
                                   dataObj.type.toLowerCase().includes('tag')
