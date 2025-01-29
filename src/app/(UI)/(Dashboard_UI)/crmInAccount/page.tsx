@@ -146,6 +146,7 @@ const CrmInformation: React.FC = () => {
       industry: record?.industry,
       website: record?.website,
     });
+
     dispatch(
       setBillingContact({
         BillingContacts: record?.BillingContacts,
@@ -185,13 +186,6 @@ const CrmInformation: React.FC = () => {
       icon: <ClockIcon width={24} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,
     },
-    // {
-    //   key: 5,
-    //   primary: <div>{deletedData?.length ?? 0}</div>,
-    //   secondry: 'Deleted',
-    //   icon: <TrashIcon width={24} color={token?.colorError} />,
-    //   iconBg: token?.colorErrorBg,
-    // },
   ];
 
   const AccountColumns = [
