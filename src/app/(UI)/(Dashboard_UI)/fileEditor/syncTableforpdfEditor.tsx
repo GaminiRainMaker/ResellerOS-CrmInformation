@@ -411,7 +411,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       );
     }
     setNanonetsLoading(false);
-    return;
+
     mergedValue?.map((obj: any) => {
       const newObj: any = {};
       syncedNewValue?.forEach((mapping: any) => {
