@@ -9,7 +9,7 @@ import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
 import {industryOptions} from '@/app/utils/CONSTANTS';
 import {Form, notification} from 'antd';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {
   getAllPartnerandProgram,
   insertPartner,
@@ -19,6 +19,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import CommonSelect from '../os-select';
 import {AddPartnerInterface} from './os-add-partner.interface';
 import {usePathname, useSearchParams} from 'next/navigation';
+import CustomTextCapitalization from '../hooks/CustomTextCapitalizationHook';
 
 const AddPartner: React.FC<AddPartnerInterface> = ({
   form,
@@ -39,6 +40,10 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
   const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
+  const {setGetAllPartnerandProgramFilterDataForAdmin} = useAppSelector(
+    (state) => state.partner,
+  );
+  const [masterPartnerOption, setMasterPartnerOption] = useState<any>();
 
   useEffect(() => {
     form?.resetFields();
@@ -114,6 +119,19 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
   useEffect(() => {
     form?.resetFields();
   }, [formPartnerData]);
+
+  useEffect(() => {
+    if (setGetAllPartnerandProgramFilterDataForAdmin?.AllPartner) {
+      const options =
+        setGetAllPartnerandProgramFilterDataForAdmin?.AllPartner?.map(
+          (partner: any) => ({
+            label: <CustomTextCapitalization text={partner?.partner} />, // Partner name as label
+            value: partner?.id, // Partner ID as value
+          }),
+        );
+      setMasterPartnerOption(options);
+    }
+  }, [setGetAllPartnerandProgramFilterDataForAdmin?.AllPartner]);
   return (
     <>
       {!drawer && (
@@ -210,7 +228,7 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
                 <CommonSelect
                   style={{width: '100%'}}
                   placeholder="Select"
-                  // options={industryOptions}
+                  options={masterPartnerOption}
                   allowClear
                 />
               </Form.Item>

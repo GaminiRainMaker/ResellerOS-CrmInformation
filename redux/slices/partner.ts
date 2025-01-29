@@ -26,6 +26,7 @@ type PartnerState = {
   insertPartnerData: any;
   error: string | null;
   data: any;
+  setGetAllPartnerandProgramFilterDataForAdmin: any;
   partner: any;
   partnerRequestData: any;
   AllPartnerandProgramFilterData: any;
@@ -37,6 +38,7 @@ const initialState: PartnerState = {
   insertPartnerData: {},
   error: null,
   data: [],
+  setGetAllPartnerandProgramFilterDataForAdmin: [],
   partner: [],
   partnerRequestData: {},
   AllPartnerandProgramFilterData: [],
@@ -172,7 +174,7 @@ const partnerSlice = createSlice({
         getAllPartnerandProgramFilterDataForAdmin.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.setGetAllPartnerandProgramFilterDataForAdmin = action.payload;
         },
       )
       .addCase(
