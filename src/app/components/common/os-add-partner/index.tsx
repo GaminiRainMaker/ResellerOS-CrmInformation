@@ -199,6 +199,22 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
                 <OsInput placeholder="www.website.com" />
               </Form.Item>
             </Col>
+            <Col span={drawer ? 24 : 12}>
+              <Form.Item
+                label="Master Partner"
+                name="master_partner_id"
+                rules={[
+                  {required: false, message: 'Please select master partner!'},
+                ]}
+              >
+                <CommonSelect
+                  style={{width: '100%'}}
+                  placeholder="Select"
+                  // options={industryOptions}
+                  allowClear
+                />
+              </Form.Item>
+            </Col>
           </Row>
         </Form>
       </Space>
