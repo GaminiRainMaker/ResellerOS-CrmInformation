@@ -773,8 +773,6 @@ const EditorFile = () => {
   const mergeTableData = (quoteItemsData: any) => {
     const flattenedArray = quoteItemsData?.flat();
 
-    console.log('2343242', flattenedArray);
-
     const uniqueKeys = Array.from(
       new Set(flattenedArray.flatMap((obj: any) => Object.keys(obj))),
     );
@@ -806,6 +804,7 @@ const EditorFile = () => {
         // Remove special characters (e.g., periods, spaces) from the key
         // Issue with inconsistent row with data value solution
         const cleanedKey: any = key.replace(/[^\w]/g, '');
+
         cleanedObj[
           EditSalesLineItems
             ? key.replace(/\.$/, '')
@@ -1784,7 +1783,6 @@ const EditorFile = () => {
                           });
                         }
 
-                        console.log('54353432423', quoteItems);
                         return (
                           <div>
                             <Space

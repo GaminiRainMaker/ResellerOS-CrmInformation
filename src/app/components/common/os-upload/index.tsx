@@ -83,7 +83,7 @@ const OsUpload: React.FC<any> = ({
   useEffect(() => {
     setLoading(true);
     dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
-      setAdvancedSetting(payload?.payload?.advanced_excel);
+      setAdvancedSetting(true);
     });
     setLoading(false);
   }, []);
@@ -661,8 +661,6 @@ const OsUpload: React.FC<any> = ({
 
     for (let i = 0; i < uploadFileData.length; i++) {
       let obj: any = {...uploadFileData[i]};
-
-      console.log('32432432433', obj);
 
       if (obj?.manualquote) {
         if (!obj?.distributor_name && !obj?.oem_name) {
