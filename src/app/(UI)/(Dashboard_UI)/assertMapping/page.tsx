@@ -28,6 +28,8 @@ import {
   rejectAssertMappingColumns,
 } from './assertMapping';
 import {handleDate} from '@/app/utils/base';
+import {formatStatus} from '@/app/utils/CONSTANTS';
+import CommonSelect from '@/app/components/common/os-select';
 
 const QuoteMappings = () => {
   const dispatch = useAppDispatch();
@@ -39,17 +41,68 @@ const QuoteMappings = () => {
   );
   const [activeTab, setActiveTab] = useState<number>(1);
   const [query, setQuery] = useState<{
-    searchValue: string;
+    searchValuepdfheader: string;
+    searchValuelineItem: string;
     asserType: boolean;
   }>({
-    searchValue: '',
+    searchValuepdfheader: '',
+    searchValuelineItem: '',
     asserType: true,
   });
+
   const [showApproveModal, setShowApproveModal] = useState<boolean>(false);
   const [showRejectModal, setShowRejectModal] = useState<boolean>(false);
   const [selectedId, setSelectedId] = useState<any>([]);
   const [recordData, setRecordData] = useState<any>();
   const searchQuery = useDebounceHook(query, 500);
+
+  const [itemsHeader, setItemsHeader] = useState<any>();
+  const [pdfHeader, setPdfHeader] = useState<any>();
+
+  useEffect(() => {
+    let pdfHeadersValue: any = [];
+    let quoteHeadersValue: any = [];
+
+    if (LineItemSyncingData && LineItemSyncingData?.length > 0) {
+      let pdfHeadersCheck: any = [];
+      let quoteHeadersCheck: any = [];
+      LineItemSyncingData?.map((items: any) => {
+        if (
+          !pdfHeadersCheck?.includes(items?.pdf_header) &&
+          items?.pdf_header
+        ) {
+          pdfHeadersCheck?.push(items?.pdf_header);
+          // pdfHeadersValue?.push({
+          //   label: formatStatus(items?.pdf_header),
+          //   value: items?.pdf_header,
+          // });
+        }
+        if (
+          !quoteHeadersCheck?.includes(items?.quote_header) &&
+          items?.quote_header
+        ) {
+          quoteHeadersCheck?.push(items?.quote_header);
+
+          // quoteHeadersValue?.push({
+          //   label: formatStatus(items?.quote_header),
+          //   value: items?.quote_header,
+          // });
+        }
+      });
+      if (quoteHeadersCheck && quoteHeadersCheck?.length > 0) {
+        quoteHeadersCheck?.map((items: any) => {
+          quoteHeadersValue?.push({label: formatStatus(items), value: items});
+        });
+      }
+      if (pdfHeadersCheck && pdfHeadersCheck?.length > 0) {
+        pdfHeadersCheck?.map((items: any) => {
+          pdfHeadersValue?.push({label: formatStatus(items), value: items});
+        });
+      }
+    }
+    setItemsHeader(quoteHeadersValue);
+    setPdfHeader(pdfHeadersValue);
+  }, [LineItemSyncingData]);
 
   useEffect(() => {
     dispatch(queryLineItemSyncing(searchQuery));
@@ -300,42 +353,69 @@ const QuoteMappings = () => {
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
           <OsTabs
-            // tabBarExtraContent={
-            //   <Space size={12} align="center">
-            //     <Space direction="vertical" size={0}>
-            //       <Typography name="Body 4/Medium">Search here</Typography>
-            //       <OsInput
-            //         style={{width: '250px'}}
-            //         placeholder="Search here"
-            //         onChange={(e) => {
-            //           setQuery({
-            //             ...query,
-            //             searchValue: e?.target?.value,
-            //           });
-            //         }}
-            //         value={query?.searchValue}
-            //       />
-            //     </Space>
-            //     <div
-            //       style={{
-            //         marginTop: '15px',
-            //       }}
-            //     >
-            //       <Typography
-            //         cursor="pointer"
-            //         name="Button 1"
-            //         color={query?.searchValue ? '#0D0D0D' : '#C6CDD5'}
-            //         onClick={() => {
-            //           setQuery({
-            //             searchValue: '',
-            //           });
-            //         }}
-            //       >
-            //         Reset
-            //       </Typography>
-            //     </div>
-            //   </Space>
-            // }
+            tabBarExtraContent={
+              <Space size={12} align="center">
+                <div style={{marginBottom: '15px'}}>
+                  {' '}
+                  <Space
+                    direction="vertical"
+                    size={0}
+                    style={{marginRight: '5px'}}
+                  >
+                    <Typography name="Body 4/Medium">Doc Headers</Typography>
+
+                    <CommonSelect
+                      placeholder="Select"
+                      // disabled={isDisable}
+                      allowClear
+                      onChange={(e: any) => {
+                        setQuery({
+                          ...query,
+                          searchValuepdfheader: e,
+                        });
+                      }}
+                      showSearch
+                      onSearch={(e: any) => {
+                        setQuery({
+                          ...query,
+                          searchValuepdfheader: e,
+                        });
+                      }}
+                      style={{width: '200px'}}
+                      options={pdfHeader}
+                      value={query?.searchValuepdfheader}
+                    />
+                  </Space>
+                  <Space direction="vertical" size={0}>
+                    <Typography name="Body 4/Medium">
+                      Quote Line Item Headers
+                    </Typography>
+
+                    <CommonSelect
+                      placeholder="Select"
+                      // disabled={isDisable}
+                      allowClear
+                      onChange={(e: any) => {
+                        setQuery({
+                          ...query,
+                          searchValuelineItem: e,
+                        });
+                      }}
+                      showSearch
+                      onSearch={(e: any) => {
+                        setQuery({
+                          ...query,
+                          searchValuelineItem: e,
+                        });
+                      }}
+                      style={{width: '200px'}}
+                      options={itemsHeader}
+                      value={query?.searchValuelineItem}
+                    />
+                  </Space>
+                </div>
+              </Space>
+            }
             items={superAdmintabItems}
           />
         </Row>
