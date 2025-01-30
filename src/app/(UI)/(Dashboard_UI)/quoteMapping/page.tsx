@@ -102,8 +102,19 @@ const QuoteMappings = () => {
         }
       });
       if (quoteHeadersCheck && quoteHeadersCheck?.length > 0) {
+        console.log();
         quoteHeadersCheck?.map((items: any) => {
-          quoteHeadersValue?.push({label: formatStatus(items), value: items});
+          quoteHeadersValue?.push({
+            label:
+              items === 'product_code'
+                ? 'SKU'
+                : items === 'adjusted_price'
+                  ? 'Cost'
+                  : items === 'list_price'
+                    ? 'MSRP'
+                    : formatStatus(items),
+            value: items,
+          });
         });
       }
       if (pdfHeadersCheck && pdfHeadersCheck?.length > 0) {
@@ -112,6 +123,17 @@ const QuoteMappings = () => {
         });
       }
     }
+    quoteHeadersValue.sort((a: any, b: any) => {
+      if (a.label < b.label) return -1;
+      if (a.label > b.label) return 1;
+      return 0;
+    });
+    pdfHeadersValue.sort((a: any, b: any) => {
+      if (a.label < b.label) return -1;
+      if (a.label > b.label) return 1;
+      return 0;
+    });
+
     setItemsHeader(quoteHeadersValue);
     setPdfHeader(pdfHeadersValue);
   }, [LineItemSyncingData]);
