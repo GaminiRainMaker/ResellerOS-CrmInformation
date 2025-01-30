@@ -362,7 +362,7 @@ const QuoteMappings = () => {
                     size={0}
                     style={{marginRight: '5px'}}
                   >
-                    <Typography name="Body 4/Medium">Assert Headers</Typography>
+                    <Typography name="Body 4/Medium">Asset Headers</Typography>
 
                     <CommonSelect
                       placeholder="Select"
