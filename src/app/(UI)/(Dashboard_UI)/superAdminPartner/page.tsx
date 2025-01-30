@@ -27,9 +27,9 @@ import {
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
-import {Form, notification} from 'antd';
+import {Form, message, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {updateAssignPartnerProgramById} from '../../../../../redux/actions/assignPartnerProgram';
 import {
   deletePartner,
@@ -52,6 +52,9 @@ import React from 'react';
 import OsInput from '@/app/components/common/os-input';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import {Checkbox} from '@/app/components/common/antd/Checkbox';
+import AddSalesForceCredentials, {
+  AddSalesForceCredentialsRef,
+} from '../salesForceCredentials/AddSalesForceCredentials';
 
 export interface SeparatedData {
   [partnerId: number]: {
@@ -62,6 +65,7 @@ export interface SeparatedData {
 }
 
 const SuperAdminPartner: React.FC = () => {
+  const csvUploadRef = useRef<AddSalesForceCredentialsRef>(null);
   const [token] = useThemeToken();
   const [form] = Form.useForm();
   const [programScriptForm] = Form.useForm();
@@ -114,6 +118,8 @@ const SuperAdminPartner: React.FC = () => {
   const [showRejectModal, setShowRejectModal] = useState<boolean>(false);
   const [rejectReason, setRejectReason] = useState<any>();
   const [rejectedRecord, setRejectedRecord] = useState<any>();
+  const [showUploadMasterPartnerModal, setShowUploadMasterPartnerModal] =
+    useState<boolean>(false);
 
   useEffect(() => {
     dispatch(getUserByTokenAccess('')).then((res: any) => {
@@ -1233,6 +1239,18 @@ const SuperAdminPartner: React.FC = () => {
     setShowLoginScriptModal(false);
   };
 
+  const handleSaveClick = async () => {
+    if (csvUploadRef.current) {
+      try {
+        await csvUploadRef.current.uploadToDatabase();
+        getPartnerDataForSuperAdmin();
+      } catch (error) {
+        message.error('Failed to upload data');
+      } finally {
+      }
+    }
+  };
+
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -1245,6 +1263,12 @@ const SuperAdminPartner: React.FC = () => {
           </Col>
           <Col style={{display: 'flex', alignItems: 'center'}}>
             <Space size={12} style={{height: '48px'}}>
+              <OsButton
+                text="Upload Master Partner"
+                buttontype="PRIMARY"
+                icon={<PlusIcon />}
+                clickHandler={() => setShowUploadMasterPartnerModal((p) => !p)}
+              />
               <OsButton
                 text="New Partner"
                 buttontype="PRIMARY"
@@ -1438,9 +1462,7 @@ const SuperAdminPartner: React.FC = () => {
       />
 
       <OsDrawer
-        title={
-          <Typography name="Body 1/Regular">Update Partner</Typography>
-        }
+        title={<Typography name="Body 1/Regular">Update Partner</Typography>}
         placement="right"
         onClose={() => {
           setShowPartnerDrawer((p) => !p);
@@ -1724,6 +1746,26 @@ const SuperAdminPartner: React.FC = () => {
         primaryButtonText="Reject"
         onOk={form.submit}
         styleFooter
+      />
+
+      <OsModal
+        title="Upload Master Partners"
+        loading={loading}
+        body={
+          <AddSalesForceCredentials
+            ref={csvUploadRef}
+            setShowAddUserModal={setShowUploadMasterPartnerModal}
+            isMasterPartnerUpload
+          />
+        }
+        width={696}
+        open={showUploadMasterPartnerModal}
+        onCancel={() => {
+          setShowUploadMasterPartnerModal((p) => !p);
+        }}
+        onOk={handleSaveClick}
+        primaryButtonText="Save"
+        bodyPadding={24}
       />
     </>
   );

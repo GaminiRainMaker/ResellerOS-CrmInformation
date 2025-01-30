@@ -12,6 +12,7 @@ import {
   getSalesForceDataaForEditAsItIs,
   getSalesForceFields,
   getSalesForceFileData,
+  masterPartnerFetchAndParseExcel,
   runSalesForceBot,
   sendForgotPasswordEmail,
   sendNewUserEmail,
@@ -299,6 +300,24 @@ const authSlice = createSlice({
       )
       .addCase(
         getPDFFileDataByAzureForSales.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(masterPartnerFetchAndParseExcel.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        masterPartnerFetchAndParseExcel.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          // state.data = action.payload;
+        },
+      )
+      .addCase(
+        masterPartnerFetchAndParseExcel.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

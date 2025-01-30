@@ -191,3 +191,14 @@ export const fetchAndParseExcel = createAsyncThunk(
     }
   },
 );
+export const masterPartnerFetchAndParseExcel = createAsyncThunk(
+  'auth/masterPartnerFetchAndParseExcel',
+  async (data: any, thunkApi) => {
+    try {
+      const res: any = await AUTH_API.masterPartnerFetchAndParseExcel(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

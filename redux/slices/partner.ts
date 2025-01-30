@@ -18,6 +18,7 @@ import {
   getAllPartnerById,
   getAllApprovedPartnerForQuoteConfiq,
   getAllPartnerandProgramApprovedDataSalesForce,
+  createOrUpdateMasterPartner,
 } from '../actions/partner';
 
 type PartnerState = {
@@ -335,6 +336,24 @@ const partnerSlice = createSlice({
       )
       .addCase(
         getAllPartnerandProgramApprovedDataSalesForce.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(createOrUpdateMasterPartner.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        createOrUpdateMasterPartner.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          // state.allPartnersById = action.payload;
+        },
+      )
+      .addCase(
+        createOrUpdateMasterPartner.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

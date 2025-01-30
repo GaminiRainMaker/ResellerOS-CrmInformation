@@ -17,6 +17,7 @@ export const API = {
     getPDFFileDataForSales:
       '/auth/fetchDataWithIntellengenceForPDFFileForSalesForceExport',
     fetchAndParseExcel: '/auth/fetchAndParseExcel',
+    MasterPartnerFetchAndParseExcel: '/auth/masterPartnerFetchAndParseExcel',
   },
   QUOTE: {
     INDEX: '/quote',
@@ -227,6 +228,7 @@ export const API = {
       'partner/getAllPartnerandProgramApprovedDataSalesForce',
     getAllApprovedPartnerForQuoteConfiq:
       'partner/getAllApprovedPartnerForQuoteConfiq',
+    CreateOrUpdateMasterPartner: 'partner/createOrUpdateMasterPartner',
   },
   PARTNER_PROGRAM: {
     INDEX: '/partnerProgram',

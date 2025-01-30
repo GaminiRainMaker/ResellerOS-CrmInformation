@@ -1,14 +1,20 @@
 import {Button} from '@/app/components/common/antd/Button';
+import {Card} from '@/app/components/common/antd/Card';
 import {Upload} from '@/app/components/common/antd/Upload';
-import {UploadOutlined, CheckCircleOutlined} from '@ant-design/icons';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import {convertFileToBase64} from '@/app/utils/base';
+import {FileTextOutlined, UploadOutlined} from '@ant-design/icons';
 import {message} from 'antd';
-import React, {FC, forwardRef, useState, useImperativeHandle, Ref} from 'react';
 import Papa from 'papaparse';
-import {useAppDispatch} from '../../../../../redux/hook';
+import React, {forwardRef, useImperativeHandle, useState} from 'react';
+import {masterPartnerFetchAndParseExcel} from '../../../../../redux/actions/auth';
+import {createOrUpdateMasterPartner} from '../../../../../redux/actions/partner';
 import {
   addSalesForceCredentials,
   queryAddSalesForceCredentials,
 } from '../../../../../redux/actions/salesForceCredentials';
+import {uploadExcelFileToAws} from '../../../../../redux/actions/upload';
+import {useAppDispatch} from '../../../../../redux/hook';
 
 export interface AddSalesForceCredentialsRef {
   uploadToDatabase: () => Promise<void>;
@@ -21,75 +27,158 @@ interface CsvRecord {
 
 interface Props {
   setShowAddUserModal: React.Dispatch<React.SetStateAction<boolean>>;
+  isMasterPartnerUpload?: boolean;
 }
 
 const AddSalesForceCredentials = forwardRef<AddSalesForceCredentialsRef, Props>(
   (props, ref) => {
-    const {setShowAddUserModal} = props;
-    const [csvData, setCsvData] = useState<CsvRecord[]>([]);
-    const [uploadSuccess, setUploadSuccess] = useState(false); 
+    const [token] = useThemeToken();
+    const {setShowAddUserModal, isMasterPartnerUpload} = props;
+    const [fileData, setFileData] = useState<CsvRecord[]>([]);
+    const [uploadSuccess, setUploadSuccess] = useState(false);
+    const [fileName, setFileName] = useState<string>('');
     const dispatch = useAppDispatch();
 
-    const handleFileUpload = (file: File) => {
-      Papa.parse(file, {
-        header: true,
-        complete: function (results: Papa.ParseResult<CsvRecord>) {
-          const filteredData = results?.data?.filter(
-            (record: CsvRecord) => record?.saleforce_org_Id,
+    const handleFileUpload = async (file: File) => {
+      // Validate file type based on isMasterPartnerUpload
+      if (isMasterPartnerUpload) {
+        if (!file.name.endsWith('.xlsx')) {
+          message.error(
+            'Only .xlsx files are accepted for master partner upload.',
           );
+          return false; // Prevent file upload
+        }
+      } else {
+        if (!file.name.endsWith('.csv')) {
+          message.error(
+            'Only .csv files are accepted for salesforce credentials upload.',
+          );
+          return false; // Prevent file upload
+        }
+      }
 
-          if (filteredData.length > 0) {
-            setCsvData(filteredData); 
-            message.success(`${file.name} file uploaded successfully.`);
-            setUploadSuccess(true); 
-          } else {
-            message.warning('No valid records with saleforce_org_Id found.');
-          }
-        },
-        error: function (err) {
-          message.error(`Failed to parse CSV file: ${err.message}`);
-        },
-      });
-      return false;
+      setFileName(file.name); // Store the file name
+
+      if (isMasterPartnerUpload) {
+        try {
+          const base64String = await convertFileToBase64(file);
+          if (!base64String)
+            throw new Error('Failed to convert file to base64');
+
+          const response = await dispatch(
+            uploadExcelFileToAws({document: base64String}),
+          );
+          const fileUrl = response?.payload; // Extract the file URL from the dispatched action
+
+          if (!fileUrl)
+            throw new Error('File upload failed or URL not returned');
+
+          const masterDataResponse = await dispatch(
+            masterPartnerFetchAndParseExcel({Url: fileUrl?.data}),
+          );
+          const finalMasterData = masterDataResponse?.payload; // Extract parsed data
+
+          setFileData(finalMasterData);
+          message.success(
+            `${file.name} file uploaded and processed successfully.`,
+          );
+        } catch (error: any) {
+          console.error(
+            'Error processing master partner upload:',
+            error.message,
+          );
+          message.error(`Error processing file: ${error.message}`);
+        }
+      } else {
+        Papa.parse(file, {
+          header: true,
+          complete: function (results: Papa.ParseResult<CsvRecord>) {
+            const filteredData = results?.data?.filter(
+              (record: CsvRecord) => record?.saleforce_org_Id,
+            );
+
+            if (filteredData.length > 0) {
+              setFileData(filteredData);
+              message.success(`${file.name} file uploaded successfully.`);
+              setUploadSuccess(true);
+            } else {
+              message.warning('No valid records with saleforce_org_Id found.');
+            }
+          },
+          error: function (err) {
+            message.error(`Failed to parse CSV file: ${err.message}`);
+          },
+        });
+      }
+      return false; // Prevent default upload behavior
     };
 
     const uploadToDatabase = async () => {
-      if (csvData.length === 0) {
+      if (fileData.length === 0) {
         message.error('No data to upload.');
         return;
       }
       try {
-        dispatch(addSalesForceCredentials(csvData)).then((res) => {
+        if (isMasterPartnerUpload) {
+          // Handle master partner upload
+          await dispatch(createOrUpdateMasterPartner(fileData));
+        } else {
+          // Handle sales force credentials upload
+          const res = await dispatch(addSalesForceCredentials(fileData));
           if (res?.payload) {
             message.success('Data uploaded to database successfully!');
-            setUploadSuccess(true);
-            setShowAddUserModal(false);
-            dispatch(queryAddSalesForceCredentials(''));
+            dispatch(queryAddSalesForceCredentials('')); // Clear query if needed
           } else {
-            message.error('Failed to upload data to database.');
-            setShowAddUserModal(false);
+            throw new Error('Failed to upload data to database.');
           }
-        });
+        }
+
+        // Common success actions
+        setUploadSuccess(true);
+        setShowAddUserModal(false);
       } catch (error: any) {
+        // Handle errors
         message.error(`Error uploading data: ${error.message}`);
         setShowAddUserModal(false);
       }
     };
+
     useImperativeHandle(ref, () => ({
       uploadToDatabase,
     }));
 
     return (
       <div>
+        <br />
         <Upload beforeUpload={handleFileUpload} showUploadList={false}>
-          <Button icon={<UploadOutlined />}>Click to Upload CSV</Button>
+          <Button
+            icon={<UploadOutlined />}
+            type="primary"
+            style={{
+              backgroundColor: token.colorPrimary,
+              borderRadius: '15px',
+              fontWeight: '500',
+              padding: '20px',
+            }}
+          >
+            Click to Upload {isMasterPartnerUpload ? 'Xlsx' : 'CSV'}
+          </Button>
         </Upload>
 
-        {uploadSuccess && (
-          <div style={{marginTop: 16, color: 'green'}}>
-            <CheckCircleOutlined style={{marginRight: 8}} />
-            Data uploaded successfully!
-          </div>
+        {fileName && (
+          <Card
+            style={{
+              marginTop: 16,
+              border: '1px solid #f0f0f0',
+              borderRadius: '4px',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+            }}
+          >
+            <div style={{display: 'flex', alignItems: 'center'}}>
+              <FileTextOutlined style={{marginRight: 8, color: '#1890ff'}} />
+              <span style={{fontWeight: '500'}}>{fileName}</span>
+            </div>
+          </Card>
         )}
       </div>
     );
