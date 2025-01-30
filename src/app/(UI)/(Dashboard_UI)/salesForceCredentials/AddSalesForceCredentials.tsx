@@ -1,20 +1,20 @@
 import {Button} from '@/app/components/common/antd/Button';
 import {Card} from '@/app/components/common/antd/Card';
 import {Upload} from '@/app/components/common/antd/Upload';
-import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import {convertFileToBase64} from '@/app/utils/base';
 import {FileTextOutlined, UploadOutlined} from '@ant-design/icons';
 import {message} from 'antd';
-import Papa from 'papaparse';
 import React, {forwardRef, useImperativeHandle, useState} from 'react';
-import {masterPartnerFetchAndParseExcel} from '../../../../../redux/actions/auth';
-import {createOrUpdateMasterPartner} from '../../../../../redux/actions/partner';
+import Papa from 'papaparse';
+import {useAppDispatch} from '../../../../../redux/hook';
 import {
   addSalesForceCredentials,
   queryAddSalesForceCredentials,
 } from '../../../../../redux/actions/salesForceCredentials';
+import {convertFileToBase64} from '@/app/utils/base';
 import {uploadExcelFileToAws} from '../../../../../redux/actions/upload';
-import {useAppDispatch} from '../../../../../redux/hook';
+import {masterPartnerFetchAndParseExcel} from '../../../../../redux/actions/auth';
+import {createOrUpdateMasterPartner} from '../../../../../redux/actions/partner';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 
 export interface AddSalesForceCredentialsRef {
   uploadToDatabase: () => Promise<void>;
@@ -38,14 +38,17 @@ const AddSalesForceCredentials = forwardRef<AddSalesForceCredentialsRef, Props>(
     const [uploadSuccess, setUploadSuccess] = useState(false);
     const [fileName, setFileName] = useState<string>('');
     const dispatch = useAppDispatch();
+    const [dataUploadLoading, setDataUploadLoading] = useState<boolean>(false);
 
     const handleFileUpload = async (file: File) => {
+      setDataUploadLoading(true);
       // Validate file type based on isMasterPartnerUpload
       if (isMasterPartnerUpload) {
         if (!file.name.endsWith('.xlsx')) {
           message.error(
             'Only .xlsx files are accepted for master partner upload.',
           );
+          setDataUploadLoading(false);
           return false; // Prevent file upload
         }
       } else {
@@ -53,6 +56,7 @@ const AddSalesForceCredentials = forwardRef<AddSalesForceCredentialsRef, Props>(
           message.error(
             'Only .csv files are accepted for salesforce credentials upload.',
           );
+          setDataUploadLoading(false);
           return false; // Prevent file upload
         }
       }
@@ -82,7 +86,9 @@ const AddSalesForceCredentials = forwardRef<AddSalesForceCredentialsRef, Props>(
           message.success(
             `${file.name} file uploaded and processed successfully.`,
           );
+          setDataUploadLoading(false);
         } catch (error: any) {
+          setDataUploadLoading(false);
           console.error(
             'Error processing master partner upload:',
             error.message,
@@ -104,8 +110,10 @@ const AddSalesForceCredentials = forwardRef<AddSalesForceCredentialsRef, Props>(
             } else {
               message.warning('No valid records with saleforce_org_Id found.');
             }
+            setDataUploadLoading(false);
           },
           error: function (err) {
+            setDataUploadLoading(false);
             message.error(`Failed to parse CSV file: ${err.message}`);
           },
         });
@@ -118,6 +126,7 @@ const AddSalesForceCredentials = forwardRef<AddSalesForceCredentialsRef, Props>(
         message.error('No data to upload.');
         return;
       }
+
       try {
         if (isMasterPartnerUpload) {
           // Handle master partner upload
@@ -150,15 +159,25 @@ const AddSalesForceCredentials = forwardRef<AddSalesForceCredentialsRef, Props>(
     return (
       <div>
         <br />
-        <Upload beforeUpload={handleFileUpload} showUploadList={false}>
+        <Upload
+          beforeUpload={handleFileUpload}
+          showUploadList={false}
+          disabled={fileData.length > 0} // Disable upload if data exists
+          openFileDialogOnClick={fileData.length === 0} // Prevent opening file dialog if data exists
+        >
           <Button
             icon={<UploadOutlined />}
+            loading={dataUploadLoading}
             type="primary"
             style={{
-              backgroundColor: token.colorPrimary,
+              backgroundColor:
+                fileData.length > 0
+                  ? token.colorTextDisabled
+                  : token.colorPrimary, // Disabled color when data exists
               borderRadius: '15px',
               fontWeight: '500',
               padding: '20px',
+              cursor: fileData.length > 0 ? 'not-allowed' : 'pointer', // Change cursor when disabled
             }}
           >
             Click to Upload {isMasterPartnerUpload ? 'Xlsx' : 'CSV'}
