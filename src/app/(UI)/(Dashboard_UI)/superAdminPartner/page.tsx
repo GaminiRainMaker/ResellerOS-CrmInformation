@@ -901,6 +901,7 @@ const SuperAdminPartner: React.FC = () => {
                         email: record?.email,
                         website: record?.website,
                         id: record?.id,
+                        master_partner_id: record?.master_partner_id,
                       };
                       setUpdateTheObject(newObj);
 
@@ -1086,6 +1087,7 @@ const SuperAdminPartner: React.FC = () => {
                   description: record?.description,
                   partner_program: formatStatus(record?.partner_program),
                   id: record?.id,
+                  master_partner_id: record?.master_partner_id,
                 };
                 setUpdateTheObject(newObj);
                 setShowPartnerProgramDrawer(true);
@@ -1436,7 +1438,9 @@ const SuperAdminPartner: React.FC = () => {
       />
 
       <OsDrawer
-        title={<Typography name="Body 1/Regular">Update Partner</Typography>}
+        title={
+          <Typography name="Body 1/Regular">Update Partner</Typography>
+        }
         placement="right"
         onClose={() => {
           setShowPartnerDrawer((p) => !p);
