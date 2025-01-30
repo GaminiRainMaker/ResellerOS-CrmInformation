@@ -362,7 +362,7 @@ const QuoteMappings = () => {
                     size={0}
                     style={{marginRight: '5px'}}
                   >
-                    <Typography name="Body 4/Medium">Doc Headers</Typography>
+                    <Typography name="Body 4/Medium">Assert Headers</Typography>
 
                     <CommonSelect
                       placeholder="Select"
@@ -388,7 +388,7 @@ const QuoteMappings = () => {
                   </Space>
                   <Space direction="vertical" size={0}>
                     <Typography name="Body 4/Medium">
-                      Quote Line Item Headers
+                      Salesforce Item Headers
                     </Typography>
 
                     <CommonSelect
