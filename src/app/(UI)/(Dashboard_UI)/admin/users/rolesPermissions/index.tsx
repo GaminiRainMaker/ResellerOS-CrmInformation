@@ -253,34 +253,34 @@ const RolesAndPermission = () => {
     }
   };
 
-  const toolTipData = (
-    <Space direction="vertical" size={6}>
-      <Typography color={token?.colorBgContainer} name="Body 3/Medium">
-        Limit Left
-      </Typography>
-      <span>
-        <Typography
-          color={token?.colorBgContainer}
-          name="Body 3/Medium"
-          as="div"
-        >
-          Quote AI:{' '}
-          <Typography color={token?.colorBgContainer} name="Body 3/Bold">
-            {' '}
-            {10}/{10}
-          </Typography>
-        </Typography>
+  // const toolTipData = (
+  //   <Space direction="vertical" size={6}>
+  //     <Typography color={token?.colorBgContainer} name="Body 3/Medium">
+  //       Limit Left
+  //     </Typography>
+  //     <span>
+  //       <Typography
+  //         color={token?.colorBgContainer}
+  //         name="Body 3/Medium"
+  //         as="div"
+  //       >
+  //         Quote AI:{' '}
+  //         <Typography color={token?.colorBgContainer} name="Body 3/Bold">
+  //           {' '}
+  //           {10}/{10}
+  //         </Typography>
+  //       </Typography>
 
-        <Typography color={token?.colorBgContainer} name="Body 3/Medium">
-          DealReg AI:{' '}
-          <Typography color={token?.colorBgContainer} name="Body 3/Bold">
-            {' '}
-            {10}/{10}
-          </Typography>
-        </Typography>
-      </span>
-    </Space>
-  );
+  //       <Typography color={token?.colorBgContainer} name="Body 3/Medium">
+  //         DealReg AI:{' '}
+  //         <Typography color={token?.colorBgContainer} name="Body 3/Bold">
+  //           {' '}
+  //           {10}/{10}
+  //         </Typography>
+  //       </Typography>
+  //     </span>
+  //   </Space>
+  // );
 
   const handleClose = () => {
     setVisible(false);
@@ -362,7 +362,7 @@ const RolesAndPermission = () => {
             {isSubscribed && (
               <Col>
                 <Space size={8}>
-                  <Tooltip
+                  {/* <Tooltip
                     placement="leftBottom"
                     title={toolTipData}
                     overlayInnerStyle={{
@@ -374,7 +374,7 @@ const RolesAndPermission = () => {
                       cursor={'pointer'}
                       color={'#A0AAB8'}
                     />
-                  </Tooltip>
+                  </Tooltip> */}
                   <OsButton
                     text="SAVE"
                     buttontype="PRIMARY"
