@@ -354,6 +354,7 @@ export let processScript = (finalObj: {
     if (pageIndex > -1) {
       currentPage = 2;
     }
+
     if (currentLine) {
       if (currentLine.includes('page.goto')) {
         let index = newScript.findIndex((script) =>
@@ -559,8 +560,8 @@ export let processScript = (finalObj: {
               const dataObjAll = finalObj.data.filter((objItem: any) =>
                 Object.keys(objItem).find(
                   (key) =>
-                    (!excludedKeys.includes(key.toLowerCase()) &&
-                      lineLabel &&
+                    (lineLabel &&
+                      !excludedKeys.includes(key.toLowerCase()) &&
                       key.replace(/\s+/g, '').trim().includes(lineLabel)) ||
                     (lineName &&
                       objItem?.name &&
@@ -729,27 +730,35 @@ export let processScript = (finalObj: {
                           dataObj.type.toLowerCase().includes('drop') ||
                           dataObj.type.toLowerCase().includes('date') ||
                           dataObj.type.toLowerCase().includes('tag') ||
-                          dataObj.type.toLowerCase().includes('text'))
+                          dataObj.type.toLowerCase().includes('text') ||
+                          dataObj.type.toLowerCase().includes('checkbox'))
                       ) {
-                        newScript.push(currentLine);
-                        if (dataObj.type.toLowerCase().includes('text')) {
-                          newScript.push(
-                            `await ${currentPage == 1 ? 'page' : 'page1'}.locator('${dataObj.locater}').fill('${value}');`,
-                          );
-                        } else if (
-                          value &&
-                          value.length > 0 &&
-                          typeof value !== 'string'
-                        ) {
-                          for (let i = 0; i < value?.length; i++) {
-                            newScript.push(
-                              `await ${currentPage == 1 ? 'page' : 'page1'}.getByText('${value[i]}').first().click();`,
-                            );
+                        if (dataObj.type.toLowerCase().includes('checkbox')) {
+                          if (value && value.length > 0 && value[0]) {
+                            newScript.push(currentLine);
                           }
                         } else {
-                          newScript.push(
-                            `await ${currentPage == 1 ? 'page' : 'page1'}.getByRole('option', { name: '${value}' , exact: true}).locator('span').first().click();;`,
-                          );
+                          newScript.push(currentLine);
+
+                          if (dataObj.type.toLowerCase().includes('text')) {
+                            newScript.push(
+                              `await ${currentPage == 1 ? 'page' : 'page1'}.locator('${dataObj.locater}').fill('${value}');`,
+                            );
+                          } else if (
+                            value &&
+                            value.length > 0 &&
+                            typeof value !== 'string'
+                          ) {
+                            for (let i = 0; i < value?.length; i++) {
+                              newScript.push(
+                                `await ${currentPage == 1 ? 'page' : 'page1'}.getByText('${value[i]}').first().click();`,
+                              );
+                            }
+                          } else {
+                            newScript.push(
+                              `await ${currentPage == 1 ? 'page' : 'page1'}.getByRole('option', { name: '${value}' , exact: true}).locator('span').first().click();;`,
+                            );
+                          }
                         }
 
                         formValues.push(label);
@@ -789,9 +798,9 @@ export let processScript = (finalObj: {
                                   : currentLine.includes('getByLabel') &&
                                       currentLine.includes('exact')
                                     ? `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}',{ exact: true }).fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');`
-                                    : currentLine.includes('getByLabel') &&
+                                    : currentLine.includes('getByRole') &&
                                         currentLine.includes('textbox')
-                                      ? `await ${currentPage == 1 ? 'page' : 'page1'}.getByRole('textbox', { name: '${exactLineLabel ? exactLineLabel : label}' }).fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');`
+                                      ? `await ${currentPage == 1 ? 'page' : 'page1'}.getByRole('textbox', { name: '${exactLineLabel ? exactLineLabel : label}' }).fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}',{ force: true });`
                                       : `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : exactLineLabel ? exactLineLabel : label}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');`
                               : dataObj.type.toLowerCase().includes('select') ||
                                   dataObj.type.toLowerCase().includes('drop') ||
@@ -806,6 +815,7 @@ export let processScript = (finalObj: {
                           }
                           labelFilled.push('${label}');
                           `;
+
                       const stateIndex = newScript.findIndex(
                         (item) =>
                           item.includes('State') && !item.includes('States'),
@@ -919,7 +929,20 @@ export let processScript = (finalObj: {
                   currentLine.includes('click') &&
                   !currentLine.includes('option')
                 ) {
-                  newScript.push(currentLine);
+                  if (currentLine.includes('checkbox')) {
+                    const checkBoxObj = finalObj.data.find(
+                      (item) =>
+                        item.type.toLowerCase() === 'checkbox' &&
+                        item.locater.replace(/[^a-zA-Z0-9]/g, '') === lineName,
+                    );
+                    if (checkBoxObj) {
+                      if (checkBoxObj[''].length > 0) {
+                        newScript.push(currentLine);
+                      }
+                    }
+                  } else {
+                    newScript.push(currentLine);
+                  }
                 }
               }
             } else {
