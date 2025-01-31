@@ -354,6 +354,7 @@ export let processScript = (finalObj: {
     if (pageIndex > -1) {
       currentPage = 2;
     }
+
     if (currentLine) {
       if (currentLine.includes('page.goto')) {
         let index = newScript.findIndex((script) =>
@@ -797,7 +798,7 @@ export let processScript = (finalObj: {
                                   : currentLine.includes('getByLabel') &&
                                       currentLine.includes('exact')
                                     ? `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}',{ exact: true }).fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');`
-                                    : currentLine.includes('getByLabel') &&
+                                    : currentLine.includes('getByRole') &&
                                         currentLine.includes('textbox')
                                       ? `await ${currentPage == 1 ? 'page' : 'page1'}.getByRole('textbox', { name: '${exactLineLabel ? exactLineLabel : label}' }).fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');`
                                       : `await ${currentPage == 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : exactLineLabel ? exactLineLabel : label}').fill('${dataObj.type.toLowerCase().includes('date') ? dayjs(value).format(dataObj.dateformat) : value?.replace(/'/g, "\\'")}');`
@@ -814,6 +815,7 @@ export let processScript = (finalObj: {
                           }
                           labelFilled.push('${label}');
                           `;
+
                       const stateIndex = newScript.findIndex(
                         (item) =>
                           item.includes('State') && !item.includes('States'),
