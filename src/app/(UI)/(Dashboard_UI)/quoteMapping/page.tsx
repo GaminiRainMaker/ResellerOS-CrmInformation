@@ -438,6 +438,8 @@ const QuoteMappings = () => {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(' ');
   };
+
+  console.log('234532432432', recordData);
   return (
     <>
       <Space direction="vertical" size={24} style={{width: '100%'}}>

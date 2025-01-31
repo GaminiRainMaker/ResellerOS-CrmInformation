@@ -118,6 +118,7 @@ export const quoteLineItemColumnForSync = [
   {value: 'list_price', label: 'MSRP'},
   {value: 'adjusted_price', label: 'COST'},
   {value: 'description', label: 'DESCRIPTION'},
+  {value: 'subscription_term', label: 'Subscription Term'},
 ];
 
 export const quoteLineItemColumnForSyncFOrSalesFporceUpdatedOnce = [
@@ -236,6 +237,7 @@ export const quoteLineItemColumnForSyncFOrSalesFporceUpdatedOnce = [
     value: 'rosquoteai__Vendor_Disti_LR__c',
     label: 'Vendor/Disti',
   },
+  {value: 'subscription_term', label: 'Subscription Term'},
 ];
 
 export const SaleForceQuoteLineItemColumnSync = [
