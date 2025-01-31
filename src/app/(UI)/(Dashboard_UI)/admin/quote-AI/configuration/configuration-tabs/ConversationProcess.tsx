@@ -49,8 +49,7 @@ const ConverSationProcess = () => {
   }, []);
   useEffect(() => {
     dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
-      setAdvancedSetting(true);
-      // setAdvancedSetting(payload?.payload?.advanced_excel);
+      setAdvancedSetting(payload?.payload?.advanced_excel);
     });
   }, []);
   const updateAdvancedSettingdd = async (value: boolean) => {
@@ -63,7 +62,7 @@ const ConverSationProcess = () => {
     <TabContainerStyle>
       <Row>
         <Col span={24}>
-          {/* {userInformation?.Admin && (
+          {userInformation?.Admin && (
             <Space
               size={24}
               direction="horizontal"
@@ -86,7 +85,7 @@ const ConverSationProcess = () => {
                 Advanced Excel/Pdf Files Processing
               </Typography>
             </Space>
-          )} */}
+          )}
           <Space
             size={24}
             direction="vertical"
