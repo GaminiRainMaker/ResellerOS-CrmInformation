@@ -29,6 +29,7 @@ const AssignPartnerProgram: FC<UserManagementInterface> = ({
   const [partnerValue, setPartnerValue] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
   const [alreadyAssignedPartner, setAlreadyAssignedPartner] = useState<any>();
+  const [salesForceExistingOrg, setSalesForceExistingOrg] = useState<any>();
 
   const onChange = (key: string) => {
     setActiveKey(key);
@@ -123,6 +124,41 @@ const AssignPartnerProgram: FC<UserManagementInterface> = ({
     emptyText: <EmptyContainer title="No Data" />,
   };
 
+  useEffect(() => {
+    if (
+      selectedRowRecord?.org_id &&
+      alreadyAssignedPartner &&
+      partnerToBeAssigned
+    ) {
+      // Get the filtered result
+      if (alreadyAssignedPartner) {
+        const filteredPartners = partnerToBeAssigned
+          ?.map((partner: any) => {
+            // Find matching partner in alreadyApprovedData
+            const approvedPartner = alreadyAssignedPartner?.AllPartner?.find(
+              (approved: any) => approved.partner === partner.partner,
+            );
+            // If found, filter out approved programs
+            const filteredPrograms = partner.PartnerPrograms.filter(
+              (program: any) =>
+                !approvedPartner?.PartnerPrograms.some(
+                  (approvedProgram: any) =>
+                    approvedProgram.partner === program.partner &&
+                    approvedProgram.partner_program === program.partner_program,
+                ),
+            );
+
+            // Keep only partners with remaining programs
+            return filteredPrograms.length > 0
+              ? {...partner, PartnerPrograms: filteredPrograms}
+              : null;
+          })
+          .filter(Boolean);
+        setSalesForceExistingOrg(filteredPartners);
+      }
+    }
+  }, [alreadyAssignedPartner, partnerToBeAssigned]);
+
   return (
     <GlobalLoader loading={loading}>
       {' '}
@@ -153,7 +189,11 @@ const AssignPartnerProgram: FC<UserManagementInterface> = ({
                       partnerProgramName="partner_program_id"
                       isRequired
                       isSuperAdmin
-                      allPartnerDataForSuperAdmin={partnerToBeAssigned}
+                      allPartnerDataForSuperAdmin={
+                        selectedRowRecord?.org_id
+                          ? salesForceExistingOrg
+                          : partnerToBeAssigned
+                      }
                     />
                   </Col>
 

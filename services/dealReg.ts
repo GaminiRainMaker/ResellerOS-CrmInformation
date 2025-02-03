@@ -18,11 +18,13 @@ export const DEALREG_API = {
     patch(API.DEALREG.INDEX, data) as Promise<AxiosResponse<any>>,
   getDealRegByOpportunityId: (id: number) =>
     get(`${API.DEALREG.GetDealRegByOpportunityId}/${id}`) as Promise<
-      AxiosResponse<any>
-    >,
+  AxiosResponse<any>
+  >,
   getDealRegByPartnerProgramId: (id: number) =>
     get(`${API.DEALREG.GetDealRegByPartnerProgramId}/${id}`) as Promise<
-      AxiosResponse<any>
-    >,
+  AxiosResponse<any>
+  >,
   dealRegFormScript: (data: any) => post(API.DEALREG.DealRegFormScript, data),
+  deleteDealRegForm: (data: any) =>
+    post(API.DEALREG.DeleteDealRegForm, data) as Promise<AxiosResponse<any>>,
 };

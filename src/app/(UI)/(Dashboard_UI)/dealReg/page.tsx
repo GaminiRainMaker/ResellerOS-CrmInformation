@@ -20,17 +20,22 @@ import {
   ArrowTopRightOnSquareIcon,
   MinusIcon,
   PlusIcon,
+  TrashIcon,
 } from '@heroicons/react/24/outline';
 import {TabsProps} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
-import {queryDealReg} from '../../../../../redux/actions/dealReg';
+import {
+  deleteDealregForm,
+  queryDealReg,
+} from '../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {SeparatedData} from '../dealRegDetail/dealReg.interface';
 import NewRegistrationForm from './NewRegistrationForm';
 import DealRegAnalytics from './dealRegAnalytics';
 import {StyledTable} from './styled-components';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 
 const DealReg: React.FC = () => {
   const [token] = useThemeToken();
@@ -38,10 +43,13 @@ const DealReg: React.FC = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [showModal, setShowModal] = useState<boolean>(false);
-  const {data: DealRegData} = useAppSelector((state) => state.dealReg);
+  const {data: DealRegData, loading} = useAppSelector((state) => state.dealReg);
   const {isCanvas} = useAppSelector((state) => state.canvas);
   const {userInformation} = useAppSelector((state) => state.user);
   const [finalDealRegData, setFinalDealRegData] = useState<any>();
+  const [deleteIds, setDeleteIds] = useState<any>();
+  const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
+
   const [query, setQuery] = useState<{
     customer: string | null;
   }>({
@@ -59,7 +67,7 @@ const DealReg: React.FC = () => {
       ),
       dataIndex: 'date',
       key: 'date',
-      width: 187,
+      // width: 187,
       render: (text: string, record: any) => (
         <Typography name="Body 4/Regular">
           {text
@@ -76,7 +84,7 @@ const DealReg: React.FC = () => {
       ),
       dataIndex: 'type',
       key: 'type',
-      width: 187,
+      // width: 187,
       render: (text: string) => <CustomTextCapitalization text={text} />,
     },
     {
@@ -87,7 +95,7 @@ const DealReg: React.FC = () => {
       ),
       dataIndex: 'account',
       key: 'account',
-      width: 187,
+      // width: 187,
       render: (text: string, record: any) => (
         <Typography
           name="Body 4/Regular"
@@ -108,7 +116,7 @@ const DealReg: React.FC = () => {
       ),
       dataIndex: 'partner_id',
       key: 'partner_id',
-      width: 187,
+      // width: 187,
       render: (text: string, record: any) => (
         <CustomTextCapitalization text={record?.Partner?.partner} />
       ),
@@ -121,7 +129,7 @@ const DealReg: React.FC = () => {
       ),
       dataIndex: 'partner_program_id',
       key: 'partner_program_id',
-      width: 187,
+      // width: 187,
       render: (text: string, record: any) => (
         <CustomTextCapitalization
           text={record?.PartnerProgram?.partner_program}
@@ -136,7 +144,7 @@ const DealReg: React.FC = () => {
       ),
       dataIndex: 'created_by',
       key: 'created_by',
-      width: 187,
+      // width: 187,
       render: (text: string, record: any) => (
         <Typography name="Body 4/Regular">
           {record?.User?.first_name && record?.User?.last_name
@@ -155,11 +163,33 @@ const DealReg: React.FC = () => {
       ),
       dataIndex: 'status',
       key: 'status',
-      width: 187,
+      // width: 187,
       render: (text: string) => (
         <div style={{display: 'flex', justifyContent: 'center'}}>
           <OsStatusWrapper value={text} />
         </div>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Action
+        </Typography>
+      ),
+      dataIndex: 'actions',
+      key: 'actions',
+      // width: 187,
+      render: (text: string, record: any) => (
+        <TrashIcon
+          height={24}
+          width={24}
+          color={token.colorError}
+          style={{cursor: 'pointer'}}
+          onClick={() => {
+            setDeleteIds([record?.id]);
+            setShowModalDelete(true);
+          }}
+        />
       ),
     },
   ];
@@ -172,7 +202,7 @@ const DealReg: React.FC = () => {
       ),
       dataIndex: 'opportunity',
       key: 'opportunity',
-      width: 200,
+      // width: 200,
       render: (text: string, record: any) => (
         <Typography name="Body 4/Regular">{record?.title}</Typography>
       ),
@@ -185,7 +215,7 @@ const DealReg: React.FC = () => {
       ),
       dataIndex: 'Action',
       key: 'Action',
-      width: 187,
+      // width: 187,
       render: (text: string, record: any) => (
         <ArrowTopRightOnSquareIcon
           height={24}
@@ -300,6 +330,7 @@ const DealReg: React.FC = () => {
       />
     );
   };
+
   const tabItems: TabsProps['items'] = [
     {
       label: (
@@ -397,6 +428,23 @@ const DealReg: React.FC = () => {
     }
   }, [isCanvas]);
 
+  const deleteSelectedIds = async () => {
+    const data = {Ids: deleteIds};
+    try {
+      const deletedRecord: any = await dispatch(deleteDealregForm(data));
+      if (deletedRecord?.payload) {
+        const queryData = await dispatch(queryDealReg(searchQuery));
+        if (queryData?.payload) {
+          setDeleteIds([]);
+          setShowModalDelete(false);
+        }
+      }
+    } catch {
+      setDeleteIds([]);
+      setShowModalDelete(false);
+    }
+  };
+
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -491,6 +539,15 @@ const DealReg: React.FC = () => {
         }}
         footer={false}
         isSalesForce={!isCanvas}
+      />
+      <DeleteModal
+        loading={loading}
+        setShowModalDelete={setShowModalDelete}
+        setDeleteIds={setDeleteIds}
+        showModalDelete={showModalDelete}
+        deleteSelectedIds={deleteSelectedIds}
+        heading="Delete Dealreg Form"
+        description={'Are you sure you want to delete this form?'}
       />
     </>
   );

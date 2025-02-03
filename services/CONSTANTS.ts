@@ -200,6 +200,7 @@ export const API = {
     UpdateDealRegStatus: '/dealReg/updateDealRegStatus',
     GetDealRegById: '/dealReg/getDealRegById',
     DealRegFormScript: '/dealReg/dealRegFormScript',
+    DeleteDealRegForm: '/dealReg/deleteDealRegForm',
   },
   DEALREGADDRESS: {
     INDEX: '/dealRegAddress',
