@@ -24,6 +24,26 @@ export const OSDraggerStyle = styled(Dragger)`
     border-radius: 12px;
   }
 `;
+export const OSDraggerStyleForSupport = styled(Dragger)`
+  &.ant-upload-wrapper .ant-upload-drag {
+    background: var(--foundation-n-pri-2-n-30, #f0f4f7);
+    border: 1px solid grey;
+  }
+  &.ant-upload-wrapper .ant-upload-list .ant-upload-list-item {
+    // background: cyan;
+    display: flex;
+    width: 20px;
+    height: 164px;
+    padding: 14px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+    word-break: break-word;
+    display: revert-layer;
+    border-radius: 12px;
+  }
+`;
 export const UploadCardAvatarStyle = styled(Avatar)<{colorErrorBg?: string}>`
   position: absolute;
   top: 0%;

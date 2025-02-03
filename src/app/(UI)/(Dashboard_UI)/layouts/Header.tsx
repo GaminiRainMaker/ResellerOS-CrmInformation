@@ -27,7 +27,7 @@ import {
   UserCircleIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline';
-import {Avatar, Badge, Layout, Upload} from 'antd';
+import {Avatar, Badge, Layout, Upload, Input, message} from 'antd';
 import {MenuProps} from 'antd/es/menu';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
@@ -40,6 +40,22 @@ import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/o
 import {getCountOfNotification} from '../../../../../redux/actions/notifications';
 import {getGloabalySearchDataa} from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {
+  QuestionCircleFilled,
+  QuestionCircleOutlined,
+  QuestionOutlined,
+} from '@ant-design/icons';
+import OsModal from '@/app/components/common/os-modal';
+import {
+  OSDraggerStyle,
+  OSDraggerStyleForSupport,
+} from '@/app/components/common/os-upload/styled-components';
+import OsInput from '@/app/components/common/os-input';
+import {
+  uploadExcelFileToAws,
+  uploadToAws,
+} from '../../../../../redux/actions/upload';
+import {convertFileToBase64} from '@/app/utils/base';
 
 export const CustomUpload = styled(Upload)`
   .ant-upload-list-text {
@@ -83,6 +99,7 @@ export const CustomUpload = styled(Upload)`
 const CustomHeader = () => {
   const [token] = useThemeToken();
   const router = useRouter();
+  const {TextArea} = Input;
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams()!;
   const loginAccount = searchParams.get('self');
@@ -97,10 +114,10 @@ const CustomHeader = () => {
   const {isCanvas} = useAppSelector((state) => state.canvas);
   const salesForceUrl = searchParams.get('instance_url');
 
-
   const [userRole, setUserRole] = useState<string>('');
   const [searchFinalData, setSearchFinalData] = useState<any>();
   const [profileImg, setProfileImg] = useState<any>();
+  const [openSupportModal, setOpenSupportModel] = useState<boolean>(false);
   const [query, setQuery] = useState<{
     searchText: string | null;
   }>({
@@ -296,6 +313,25 @@ const CustomHeader = () => {
     }
   }, [loginUserInformation]);
 
+  const beforeUpload = async (file: File) => {
+    const obj: any = {...file};
+    let pathUsedToUpload = file?.type?.split('.')?.includes('spreadsheetml')
+      ? uploadExcelFileToAws
+      : uploadToAws;
+
+    convertFileToBase64(file)
+      .then((base64String: string) => {
+        obj.base64 = base64String;
+        obj.name = file?.name;
+        dispatch(uploadToAws({document: base64String})).then(
+          (payload: any) => {},
+        );
+      })
+      .catch((error: any) => {
+        message.error('Error converting file to base64', error);
+      });
+  };
+
   return (
     <Layout>
       <Row
@@ -352,6 +388,19 @@ const CustomHeader = () => {
                 />
               }
             /> */}
+              <AvatarStyled
+                background={token?.colorInfoBg}
+                icon={
+                  <QuestionOutlined
+                    style={{color: 'grey'}}
+                    onClick={() => {
+                      setOpenSupportModel(true);
+                    }}
+                    width={24}
+                    color={token?.colorInfoBorder}
+                  />
+                }
+              />
 
               <Dropdown
                 trigger={['click']}
@@ -550,6 +599,51 @@ const CustomHeader = () => {
           )}
         </Col>
       </Row>
+      <OsModal
+        // title={<Typography name="Body 1/Medium">Report an Issue</Typography>}
+        bodyPadding={15}
+        width={800}
+        body={
+          <>
+            <Typography name="Body 2/Medium">Report an Issue</Typography>
+            <Divider />
+            <Space
+              content="center"
+              style={{display: 'flex', justifyContent: 'center'}}
+            >
+              <Typography name="Body 2/Medium">
+                Please provide detail for your issue.
+              </Typography>
+            </Space>
+            <Space
+              content="center"
+              direction="vertical"
+              style={{width: '100%', marginTop: '20px'}}
+              // style={{display: 'flex', justifyContent: 'center'}}
+            >
+              <Typography name="Body 3/Medium">Issue Details:</Typography>
+              <TextArea style={{width: '100%', height: '100px'}} />
+              <div style={{width: '200px'}}>
+                {' '}
+                <OSDraggerStyleForSupport
+                  beforeUpload={beforeUpload}
+                  showUploadList={false}
+                  multiple
+                  accept=".pdf,.jpg,.jpeg,.png,.docx"
+                >
+                  {' '}
+                  Upload a file
+                </OSDraggerStyleForSupport>
+              </div>
+            </Space>
+            <div style={{display: 'flex', justifyContent: 'right'}}>
+              <OsButton buttontype="PRIMARY" text="Submit" />
+            </div>
+          </>
+        }
+        open={openSupportModal}
+        // open={true}
+      />
     </Layout>
   );
 };
