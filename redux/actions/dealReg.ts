@@ -111,3 +111,15 @@ export const dealRegFormScript = createAsyncThunk(
     }
   },
 );
+
+export const deleteDealregForm = createAsyncThunk(
+  'dealReg/deleteDealRegForm',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await DEALREG_API.deleteDealRegForm(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

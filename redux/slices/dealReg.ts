@@ -11,6 +11,7 @@ import {
   queryDealReg,
   updateDealRegStatus,
   dealRegFormScript,
+  deleteDealregForm,
 } from '../actions/dealReg';
 
 type DealRegState = {
@@ -197,6 +198,23 @@ const dealRegSlice = createSlice({
       )
       .addCase(
         dealRegFormScript.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(deleteDealregForm.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        deleteDealregForm.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+        },
+      )
+      .addCase(
+        deleteDealregForm.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
