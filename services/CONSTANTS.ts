@@ -371,4 +371,12 @@ export const API = {
       '/salesForceCredential/getSalesForceCrendenialsByOrgId',
     GetSalesForceAccessToken: '/salesForceCredential/getSalesForceAccessToken',
   },
+  LICENSE: {
+    INDEX: '/license',
+    QUERY: '/license/query',
+    ASSIGN: '/license/assign',
+    REVOKE: '/license/revoke',
+    Get_LICENSE_Count: '/license/count',
+    DeleteById: '/license/deleteById',
+  },
 };
