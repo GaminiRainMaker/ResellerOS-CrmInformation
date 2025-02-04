@@ -3,16 +3,15 @@
 import Typography from '@/app/components/common/typography';
 import {
   CheckBadgeIcon,
-  ClockIcon,
   PencilSquareIcon,
   PhoneIcon,
   PlusIcon,
   TrashIcon,
-  UserGroupIcon,
+  UserGroupIcon
 } from '@heroicons/react/24/outline';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -24,28 +23,24 @@ import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
-import CommonStageSelect from '@/app/components/common/os-stage-select';
+import OsStatusWrapper from '@/app/components/common/os-status';
 import CommonTable from '@/app/components/common/os-table/CommonTable';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import OsTabs from '@/app/components/common/os-tabs';
-import {StageValue} from '@/app/utils/CONSTANTS';
-import {Form, MenuProps, notification, TabsProps} from 'antd';
-import {Option} from 'antd/es/mentions';
-import {useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
-import {queryContact} from '../../../../../redux/actions/billingContact';
-import {queryCustomer} from '../../../../../redux/actions/customer';
+import { Form, MenuProps, notification, TabsProps } from 'antd';
+import { Option } from 'antd/es/mentions';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { queryContact } from '../../../../../redux/actions/billingContact';
+import { queryCustomer } from '../../../../../redux/actions/customer';
 import {
   deleteOpportunity,
   getAllOpportunity,
-  getdeleteOpportunity,
   insertOpportunity,
   queryOpportunity,
-  updateOpportunity,
+  updateOpportunity
 } from '../../../../../redux/actions/opportunity';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import React from 'react';
-import OsStatusWrapper from '@/app/components/common/os-status';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 
 const CrmOpportunity: React.FC = () => {
   const dispatch = useAppDispatch();

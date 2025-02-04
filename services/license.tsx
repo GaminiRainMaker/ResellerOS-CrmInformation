@@ -18,4 +18,6 @@ export const LICENSE_API = {
     post(API.LICENSE.CheckQuoteAIAccess, data) as Promise<AxiosResponse<any>>,
   Activate_Trail_Phase: (data: any) =>
     post(API.LICENSE.ActivateTrailPhase, data) as Promise<AxiosResponse<any>>,
+  getActiveLicensesByOrg: (data: any) =>
+    post(API.LICENSE.GetActiveLicensesByOrg, data) as Promise<AxiosResponse<any>>,
 };

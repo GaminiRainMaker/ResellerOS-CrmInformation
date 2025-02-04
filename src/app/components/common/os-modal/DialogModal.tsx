@@ -20,6 +20,7 @@ const DailogModal: FC<OSDailogInterface> = ({
   secondryButtontype = 'SECONDARY',
   width = 600,
   image,
+  loading
 }) => (
   <OsModal
     width={width}
@@ -70,6 +71,7 @@ const DailogModal: FC<OSDailogInterface> = ({
 
             {primaryButtonText && (
               <OsButton
+              loading={loading}
                 text={primaryButtonText}
                 buttontype="PRIMARY"
                 clickHandler={() => {

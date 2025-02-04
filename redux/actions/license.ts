@@ -61,3 +61,14 @@ export const activateTrailPhase = createAsyncThunk(
     }
   },
 );
+export const getActiveLicensesByOrg = createAsyncThunk(
+  'license/getActiveLicensesByOrg',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await LICENSE_API.getActiveLicensesByOrg(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

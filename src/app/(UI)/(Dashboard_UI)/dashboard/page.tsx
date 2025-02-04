@@ -6,6 +6,7 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
+import DailogModal from '@/app/components/common/os-modal/DialogModal';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import {
@@ -14,18 +15,17 @@ import {
   InformationCircleIcon,
   MapPinIcon,
   PhoneIcon,
-  ShieldCheckIcon,
 } from '@heroicons/react/24/outline';
 import {Avatar, Form, Tag} from 'antd';
 import {useEffect, useState} from 'react';
 import {contactSales} from '../../../../../redux/actions/auth';
+import {
+  activateTrailPhase,
+  getActiveLicensesByOrg,
+} from '../../../../../redux/actions/license';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import ContactSales from './ContactSales';
 import {CustomCardStyle} from './styled-components';
-import {fileDataa2, fileDataaJSON} from '@/app/utils/saleforce';
-import DailogModal from '@/app/components/common/os-modal/DialogModal';
-import {activateTrailPhase} from '../../../../../redux/actions/license';
-import {notification} from 'antd/lib';
 
 const Dashboard = () => {
   const [token] = useThemeToken();
@@ -34,11 +34,14 @@ const Dashboard = () => {
   const {isSubscribed, loading: cacheFlowLoading} = useAppSelector(
     (state) => state.cacheFLow,
   );
-  const {loading: licenseLoading} = useAppSelector((state) => state.license);
+  const {loading: licenseLoading, activeLicensesByOrg} = useAppSelector(
+    (state) => state.license,
+  );
   const {loading} = useAppSelector((state) => state.auth);
   const {userInformation} = useAppSelector((state) => state.user);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showTrailModal, setShowTrailModal] = useState<boolean>(false);
+  const [licenseMessage, setLicenseMessage] = useState<string>('');
 
   const ContactData = [
     {
@@ -105,6 +108,35 @@ const Dashboard = () => {
       }
     }
   };
+
+  useEffect(() => {
+    if (userInformation) {
+      dispatch(
+        getActiveLicensesByOrg({org_id: userInformation?.organization}),
+      ).then((data) => {
+        if (data?.payload) {
+          // debugger;
+          if (data?.payload.activeLicenses?.length > 0) {
+            const demoLicense = data?.payload?.activeLicenses?.find(
+              (l: any) => l.license_type === 'demo',
+            );
+            const trialLicense = data?.payload?.activeLicenses?.find(
+              (l: any) => l.license_type === 'trial',
+            );
+
+            if (demoLicense) {
+              setLicenseMessage('You are currently in the Demo phase.');
+            } else if (trialLicense) {
+              setLicenseMessage(
+                'You are now in the Trial phase. Please subscribe for continued access.',
+              );
+            }
+          }
+        }
+      });
+    }
+  }, [userInformation]);
+
 
   return (
     <GlobalLoader loading={cacheFlowLoading}>
@@ -189,6 +221,38 @@ const Dashboard = () => {
             </Col>
           </Row>
         </Tag>
+      ) : activeLicensesByOrg?.activeLicenses?.length > 0 ? (
+        <Tag
+          style={{
+            display: 'flex',
+            padding: '20px',
+            borderRadius: '4px',
+            border: `1px solid ${token?.colorWarning}`,
+          }}
+          color="success"
+        >
+          <Row justify="space-between" style={{width: '100%'}} align="middle">
+            <Col span={12}>
+              <>
+                <Avatar
+                  size={24}
+                  style={{
+                    marginTop: '-12px',
+                    marginRight: '5px',
+                    background: 'none',
+                  }}
+                  icon={
+                    <CheckBadgeIcon width={24} color={token?.colorWarning} />
+                  }
+                />
+
+                <Typography color={token?.colorWarning} name="Heading 3/Bold">
+                  {licenseMessage ?? '--'}
+                </Typography>
+              </>
+            </Col>
+          </Row>
+        </Tag>
       ) : (
         <>
           <Space direction="vertical" size={24}>
@@ -262,156 +326,143 @@ const Dashboard = () => {
                 </Col>
               </Row>
             </Tag>
-
-            <Row justify="space-between">
-              <Col>
-                <Typography
-                  name="Heading 3/Medium"
-                  color={token?.colorPrimaryText}
-                >
-                  Get In Touch
-                </Typography>
-              </Col>
-              <Col>
-                <OsButton
-                  text="Sign Up For a Trail Version"
-                  buttontype="PRIMARY"
-                  // loading={loading}
-                  clickHandler={() => {
-                    setShowTrailModal(true);
-                  }}
-                />
-              </Col>
-              <Col>
-                <OsButton
-                  text="Testing Azure AI"
-                  buttontype="PRIMARY"
-                  // loading={loading}
-                  clickHandler={() => {
-                    window?.open('/azzureAi?excel=false');
-                  }}
-                />
-              </Col>
-              <Col>
-                <OsButton
-                  text="Testing Excel"
-                  buttontype="PRIMARY"
-                  // loading={loading}
-                  clickHandler={() => {
-                    window?.open('/azzureAi?excel=true');
-                  }}
-                />
-              </Col>
-              <Col>
-                <OsButton
-                  text="Contact Us"
-                  buttontype="PRIMARY"
-                  // loading={loading}
-                  clickHandler={() => {
-                    setShowModal(true);
-                  }}
-                />
-              </Col>
-            </Row>
-
-            <CustomCardStyle>
-              <Space direction="vertical" size={24}>
-                <span>
-                  <Typography
-                    name="Body 1/Bold"
-                    color={token?.colorPrimary}
-                    as="div"
-                  >
-                    Contact Sales
-                  </Typography>
-                  <Typography
-                    name="Body 3/Medium"
-                    color={token?.colorPrimaryText}
-                  >
-                    For seamless access to our web application's premium
-                    features and exclusive benefits, reach out to our dedicated
-                    sales team today. Whether you're seeking enhanced
-                    functionality, personalized assistance, or specialized
-                    packages tailored to your needs, our experts are here to
-                    guide you through the subscription process. Contact us now
-                    to elevate your experience and maximize the value of our
-                    platform.
-                  </Typography>
-                </span>
-                <Row justify="space-between" gutter={[16, 16]}>
-                  {ContactData?.map((ContactDataItem) => {
-                    return (
-                      <Col
-                        xs={24}
-                        sm={24}
-                        md={24}
-                        lg={12}
-                        xl={8}
-                        xxl={8}
-                        key={ContactDataItem?.key}
-                      >
-                        <Space direction="vertical" size={4}>
-                          <Typography
-                            name="Body 1/Bold"
-                            color={token?.colorPrimary}
-                          >
-                            {ContactDataItem?.title}
-                          </Typography>
-                          <Space>
-                            {ContactDataItem?.data1 && (
-                              <Space align="center">
-                                <AvatarStyled
-                                  icon={ContactDataItem?.icon}
-                                  background={token?.colorInfoHover}
-                                  size={36}
-                                />
-
-                                <Typography
-                                  key={ContactDataItem?.key}
-                                  name="Body 3/Medium"
-                                  color={'#575757'}
-                                  ellipsis
-                                  maxWidth={250}
-                                  as="div"
-                                  tooltip
-                                >
-                                  {ContactDataItem?.data1}
-                                </Typography>
-                              </Space>
-                            )}
-                            {ContactDataItem?.data2 && (
-                              <Space align="center">
-                                <AvatarStyled
-                                  icon={ContactDataItem?.icon}
-                                  background={token?.colorInfoHover}
-                                  size={36}
-                                />
-
-                                <Typography
-                                  key={ContactDataItem?.key}
-                                  name="Body 3/Medium"
-                                  color={'#575757'}
-                                  ellipsis
-                                  maxWidth={200}
-                                  as="div"
-                                  tooltip
-                                >
-                                  {ContactDataItem?.data2}
-                                </Typography>
-                              </Space>
-                            )}
-                          </Space>
-                          {/* <div style={{border: '1px solid grey'}} /> */}
-                        </Space>
-                      </Col>
-                    );
-                  })}
-                </Row>
-              </Space>
-            </CustomCardStyle>
           </Space>
         </>
       )}
+      <br />
+      <br />
+      <Row justify="space-between">
+        <Col>
+          <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
+            Get In Touch
+          </Typography>
+        </Col>
+        <Col>
+          <OsButton
+            text="Sign Up For a Trail Version"
+            buttontype="PRIMARY"
+            // loading={loading}
+            clickHandler={() => {
+              setShowTrailModal(true);
+            }}
+          />
+        </Col>
+        <Col>
+          <OsButton
+            text="Testing Azure AI"
+            buttontype="PRIMARY"
+            // loading={loading}
+            clickHandler={() => {
+              window?.open('/azzureAi?excel=false');
+            }}
+          />
+        </Col>
+        <Col>
+          <OsButton
+            text="Testing Excel"
+            buttontype="PRIMARY"
+            // loading={loading}
+            clickHandler={() => {
+              window?.open('/azzureAi?excel=true');
+            }}
+          />
+        </Col>
+        <Col>
+          <OsButton
+            text="Contact Us"
+            buttontype="PRIMARY"
+            // loading={loading}
+            clickHandler={() => {
+              setShowModal(true);
+            }}
+          />
+        </Col>
+      </Row>
+
+      <CustomCardStyle>
+        <Space direction="vertical" size={24}>
+          <span>
+            <Typography name="Body 1/Bold" color={token?.colorPrimary} as="div">
+              Contact Sales
+            </Typography>
+            <Typography name="Body 3/Medium" color={token?.colorPrimaryText}>
+              For seamless access to our web application's premium features and
+              exclusive benefits, reach out to our dedicated sales team today.
+              Whether you're seeking enhanced functionality, personalized
+              assistance, or specialized packages tailored to your needs, our
+              experts are here to guide you through the subscription process.
+              Contact us now to elevate your experience and maximize the value
+              of our platform.
+            </Typography>
+          </span>
+          <Row justify="space-between" gutter={[16, 16]}>
+            {ContactData?.map((ContactDataItem) => {
+              return (
+                <Col
+                  xs={24}
+                  sm={24}
+                  md={24}
+                  lg={12}
+                  xl={8}
+                  xxl={8}
+                  key={ContactDataItem?.key}
+                >
+                  <Space direction="vertical" size={4}>
+                    <Typography name="Body 1/Bold" color={token?.colorPrimary}>
+                      {ContactDataItem?.title}
+                    </Typography>
+                    <Space>
+                      {ContactDataItem?.data1 && (
+                        <Space align="center">
+                          <AvatarStyled
+                            icon={ContactDataItem?.icon}
+                            background={token?.colorInfoHover}
+                            size={36}
+                          />
+
+                          <Typography
+                            key={ContactDataItem?.key}
+                            name="Body 3/Medium"
+                            color={'#575757'}
+                            ellipsis
+                            maxWidth={250}
+                            as="div"
+                            tooltip
+                          >
+                            {ContactDataItem?.data1}
+                          </Typography>
+                        </Space>
+                      )}
+                      {ContactDataItem?.data2 && (
+                        <Space align="center">
+                          <AvatarStyled
+                            icon={ContactDataItem?.icon}
+                            background={token?.colorInfoHover}
+                            size={36}
+                          />
+
+                          <Typography
+                            key={ContactDataItem?.key}
+                            name="Body 3/Medium"
+                            color={'#575757'}
+                            ellipsis
+                            maxWidth={200}
+                            as="div"
+                            tooltip
+                          >
+                            {ContactDataItem?.data2}
+                          </Typography>
+                        </Space>
+                      )}
+                    </Space>
+                    {/* <div style={{border: '1px solid grey'}} /> */}
+                  </Space>
+                </Col>
+              );
+            })}
+          </Row>
+        </Space>
+      </CustomCardStyle>
 
       <OsModal
         loading={loading}
@@ -428,8 +479,8 @@ const Dashboard = () => {
       />
       <DailogModal
         loading={licenseLoading}
-        title="Sign Up Trail Version"
-        subTitle="Are you sure to enable the signup trail?"
+        title="Sign Up Trial Version"
+        subTitle="Are you sure to enable the signup trial?"
         primaryButtonText="Yes"
         secondaryButtonText="No"
         onOk={() => {

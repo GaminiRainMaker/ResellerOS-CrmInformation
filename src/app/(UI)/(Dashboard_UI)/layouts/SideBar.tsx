@@ -38,6 +38,7 @@ import {LayoutMenuStyle} from './styled-components';
 const {Sider} = Layout;
 
 const SideBar = () => {
+  const pathname = usePathname();
   const [token] = useThemeToken();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -94,7 +95,7 @@ const SideBar = () => {
         );
       });
     }
-  }, []);
+  }, [pathname]);
 
   function getItem(
     label: React.ReactNode,
@@ -116,7 +117,6 @@ const SideBar = () => {
   const isOrderAI = userInformation?.OrderAI;
   const Role = userInformation?.Role;
 
-  const pathname = usePathname();
 
   useEffect(() => {
     if (pathname === null) {
