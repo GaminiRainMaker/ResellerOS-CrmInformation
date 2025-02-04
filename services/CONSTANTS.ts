@@ -378,5 +378,7 @@ export const API = {
     REVOKE: '/license/revoke',
     Get_LICENSE_Count: '/license/count',
     DeleteById: '/license/deleteById',
+    CheckQuoteAIAccess: '/license/checkQuoteAIAccess',
+    ActivateTrailPhase: '/license/activateTrailPhase',
   },
 };

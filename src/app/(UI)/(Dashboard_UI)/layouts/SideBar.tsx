@@ -24,6 +24,7 @@ import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
 import ActiveCrmIcon from '../../../../../public/assets/static/activeCrmIcon.svg';
 import InActiveCrmIcon from '../../../../../public/assets/static/inActiveCrmIcon.svg';
+import {checkQuoteAIAccess} from '../../../../../redux/actions/license';
 import {getUserByTokenAccess} from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setUserInformation} from '../../../../../redux/slices/user';
@@ -63,6 +64,17 @@ const SideBar = () => {
           QuoteAI: payload?.payload?.is_quote,
           DealReg: payload?.payload?.is_dealReg,
         };
+        if (payload) {
+          dispatch(checkQuoteAIAccess({user_id: payload?.payload?.id})).then(
+            (data) => {
+              if (data?.payload) {
+                if (data?.payload?.error) {
+                  router?.push(`/dashboard`);
+                }
+              }
+            },
+          );
+        }
 
         localStorage.setItem('userInfo', JSON.stringify(relevantData));
         return dispatch(
@@ -1022,7 +1034,7 @@ const SideBar = () => {
         ],
       ),
     // isOrderAI &&
-    
+
     //   getItem(
     //     <Typography
     //       cursor="pointer"

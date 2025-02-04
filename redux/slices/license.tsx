@@ -1,19 +1,27 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-extraneous-dependencies */
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
-import {assignLicense, getLicense, revokeLicense} from '../actions/license';
+import {
+  activateTrailPhase,
+  assignLicense,
+  checkQuoteAIAccess,
+  getLicense,
+  revokeLicense,
+} from '../actions/license';
 
 type LicenseState = {
   loading: boolean;
   error: string | null;
   data: any;
   license: any;
+  quoteAIAccess: any;
 };
 const initialState: LicenseState = {
   loading: false,
   error: null,
   data: [],
   license: [],
+  quoteAIAccess: [],
 };
 
 const licenseSlice = createSlice({
@@ -61,7 +69,43 @@ const licenseSlice = createSlice({
       .addCase(getLicense.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      .addCase(checkQuoteAIAccess.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        checkQuoteAIAccess.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.quoteAIAccess = action.payload;
+        },
+      )
+      .addCase(
+        checkQuoteAIAccess.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(activateTrailPhase.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        activateTrailPhase.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          // state.quoteAIAccess = action.payload;
+        },
+      )
+      .addCase(
+        activateTrailPhase.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      );
   },
 });
 

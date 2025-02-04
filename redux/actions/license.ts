@@ -37,3 +37,27 @@ export const getLicense = createAsyncThunk(
     }
   },
 );
+
+export const checkQuoteAIAccess = createAsyncThunk(
+  'license/checkQuoteAIAccess',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await LICENSE_API.CheckQuoteAIAccess(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+
+export const activateTrailPhase = createAsyncThunk(
+  'license/activateTrailPhase',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await LICENSE_API.Activate_Trail_Phase(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

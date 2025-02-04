@@ -14,6 +14,7 @@ import {
   InformationCircleIcon,
   MapPinIcon,
   PhoneIcon,
+  ShieldCheckIcon,
 } from '@heroicons/react/24/outline';
 import {Avatar, Form, Tag} from 'antd';
 import {useEffect, useState} from 'react';
@@ -22,6 +23,9 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import ContactSales from './ContactSales';
 import {CustomCardStyle} from './styled-components';
 import {fileDataa2, fileDataaJSON} from '@/app/utils/saleforce';
+import DailogModal from '@/app/components/common/os-modal/DialogModal';
+import {activateTrailPhase} from '../../../../../redux/actions/license';
+import {notification} from 'antd/lib';
 
 const Dashboard = () => {
   const [token] = useThemeToken();
@@ -30,9 +34,11 @@ const Dashboard = () => {
   const {isSubscribed, loading: cacheFlowLoading} = useAppSelector(
     (state) => state.cacheFLow,
   );
+  const {loading: licenseLoading} = useAppSelector((state) => state.license);
   const {loading} = useAppSelector((state) => state.auth);
   const {userInformation} = useAppSelector((state) => state.user);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [showTrailModal, setShowTrailModal] = useState<boolean>(false);
 
   const ContactData = [
     {
@@ -73,6 +79,32 @@ const Dashboard = () => {
       behavior: 'smooth',
     });
   }, []);
+
+  const enableTrailVersion = async () => {
+    if (userInformation) {
+      try {
+        const data = await dispatch(
+          activateTrailPhase({
+            user_id: userInformation?.id,
+            feature_name: 'QuoteAI',
+          }),
+        );
+        console.log({data});
+        if (data?.payload?.message) {
+          location.reload();
+          setShowTrailModal(false);
+        }
+        // else {
+        //   notification?.open({
+        //     message: `${data?.payload?.message}`,
+        //     type: 'info',
+        //   });
+        // }
+      } catch {
+        setShowTrailModal(false);
+      }
+    }
+  };
 
   return (
     <GlobalLoader loading={cacheFlowLoading}>
@@ -242,6 +274,16 @@ const Dashboard = () => {
               </Col>
               <Col>
                 <OsButton
+                  text="Sign Up For a Trail Version"
+                  buttontype="PRIMARY"
+                  // loading={loading}
+                  clickHandler={() => {
+                    setShowTrailModal(true);
+                  }}
+                />
+              </Col>
+              <Col>
+                <OsButton
                   text="Testing Azure AI"
                   buttontype="PRIMARY"
                   // loading={loading}
@@ -383,6 +425,18 @@ const Dashboard = () => {
         onOk={form.submit}
         primaryButtonText="Send Query"
         footerPadding={30}
+      />
+      <DailogModal
+        loading={licenseLoading}
+        title="Sign Up Trail Version"
+        subTitle="Are you sure to enable the signup trail?"
+        primaryButtonText="Yes"
+        secondaryButtonText="No"
+        onOk={() => {
+          enableTrailVersion();
+        }}
+        showDailogModal={showTrailModal}
+        setShowDailogModal={setShowTrailModal}
       />
     </GlobalLoader>
   );

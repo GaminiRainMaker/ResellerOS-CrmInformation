@@ -14,4 +14,8 @@ export const LICENSE_API = {
     post(API.LICENSE.REVOKE, data) as Promise<AxiosResponse<any>>,
   getLicenseCount: (data: any) =>
     post(API.LICENSE.Get_LICENSE_Count, data) as Promise<AxiosResponse<any>>,
+  CheckQuoteAIAccess: (data: any) =>
+    post(API.LICENSE.CheckQuoteAIAccess, data) as Promise<AxiosResponse<any>>,
+  Activate_Trail_Phase: (data: any) =>
+    post(API.LICENSE.ActivateTrailPhase, data) as Promise<AxiosResponse<any>>,
 };
