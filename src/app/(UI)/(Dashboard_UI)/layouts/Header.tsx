@@ -29,7 +29,15 @@ import {
   UserCircleIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline';
-import {Avatar, Badge, Layout, Upload, Input, message} from 'antd';
+import {
+  Avatar,
+  Badge,
+  Layout,
+  Upload,
+  Input,
+  message,
+  notification,
+} from 'antd';
 import {MenuProps} from 'antd/es/menu';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
@@ -388,7 +396,12 @@ const CustomHeader = () => {
       tab: pathname,
     };
 
-    await dispatch(sendEmailForSuport(newObj));
+    await dispatch(sendEmailForSuport(newObj))?.then((payload: any) => {
+      notification?.open({
+        message: 'Your issue request submitted successfully',
+        type: 'success',
+      });
+    });
     setLoadingSpin(false);
     setOpenSupportModel(false);
     SetAddIssueToSupport('');
@@ -751,6 +764,10 @@ const CustomHeader = () => {
         open={openSupportModal}
         onCancel={() => {
           setOpenSupportModel(false);
+          setLoadingSpin(false);
+          setOpenSupportModel(false);
+          SetAddIssueToSupport('');
+          setUpoadedData([]);
         }}
         // open={true}
       />
