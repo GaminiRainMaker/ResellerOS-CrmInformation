@@ -17,6 +17,7 @@ export const API = {
     getPDFFileDataForSales:
       '/auth/fetchDataWithIntellengenceForPDFFileForSalesForceExport',
     fetchAndParseExcel: '/auth/fetchAndParseExcel',
+    sendEmailForSuport: '/auth/sendEmailForSuport',
   },
   QUOTE: {
     INDEX: '/quote',
@@ -188,6 +189,8 @@ export const API = {
     INDEX: '/upload/uploadDocument',
     IMAGE: '/upload/imageUpload',
     EXCEL: '/upload/uploadExcelFile',
+    uploadDocumentTypeDocOnAzure: '/upload/uploadDocumentTypeDocOnAzure',
+    uploadImagesOnAzure: '/upload/uploadImagesOnAzure',
   },
   OPPORLINEITEM: {
     INDEX: '/opportunityLineItem',

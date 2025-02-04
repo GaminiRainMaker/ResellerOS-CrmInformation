@@ -25,4 +25,5 @@ export const AUTH_API = {
   fetchAndParseExcel: (data: any) => post(API.AUTH.fetchAndParseExcel, data),
 
   getFields: (data: any) => post(API.AUTH.getFields, data),
+  sendEmailForSuport: (data: any) => post(API.AUTH.sendEmailForSuport, data),
 };

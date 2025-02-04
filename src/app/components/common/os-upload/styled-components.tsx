@@ -26,8 +26,8 @@ export const OSDraggerStyle = styled(Dragger)`
 `;
 export const OSDraggerStyleForSupport = styled(Dragger)`
   &.ant-upload-wrapper .ant-upload-drag {
-    background: var(--foundation-n-pri-2-n-30, #f0f4f7);
-    border: 1px solid grey;
+    background: white;
+    border: 1px solid 3da5d9;
   }
   &.ant-upload-wrapper .ant-upload-list .ant-upload-list-item {
     // background: cyan;
