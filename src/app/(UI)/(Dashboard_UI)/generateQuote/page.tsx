@@ -23,6 +23,7 @@ import {getAllBundle} from '../../../../../redux/actions/bundle';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
 import {
   getQuoteById,
+  getQuoteByIdForEditQuoteHeader,
   getQuoteByIdForFormStack,
   updateQuoteById,
   updateQuoteStatusById,
@@ -86,6 +87,8 @@ const GenerateQuote: React.FC = () => {
   const [validationTab, setValidationTab] = useState<boolean>(false);
   const {loading} = useAppSelector((state) => state.quoteLineItem);
   const {quoteById} = useAppSelector((state) => state.quote);
+  const [quoteByIdData, setQuoteByIdData] = useState<any>();
+
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [selectTedRowData, setSelectedRowData] = useState<any>([]);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
@@ -141,6 +144,18 @@ const GenerateQuote: React.FC = () => {
     dispatch(getAllTableColumn(''));
     dispatch(getAllContractSetting(''));
   }, []);
+
+  const getAlllApisData = async () => {
+    await dispatch(getQuoteByIdForEditQuoteHeader(Number(getQuoteID)))?.then(
+      (payload: any) => {
+        setQuoteByIdData(payload?.payload);
+      },
+    );
+  };
+
+  useEffect(() => {
+    getAlllApisData();
+  }, [getQuoteID]);
 
   useEffect(() => {
     if (reviewFileCount == 0) {
@@ -228,7 +243,7 @@ const GenerateQuote: React.FC = () => {
 
   const commonUpdateCompleteAndDraftMethod = (status: string) => {
     try {
-      setStatusUpdateLoading(true);
+      // setStatusUpdateLoading(true);
       if (getQuoteID) {
         api.info({
           message: 'Your changes have been saved.',
@@ -524,8 +539,10 @@ const GenerateQuote: React.FC = () => {
       key: '2',
       title: (
         <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-          {quoteById?.file_name ??
-            (quoteById?.date ? handleDate(quoteById?.date, true) : '--')}
+          {quoteByIdData?.file_name ??
+            (quoteByIdData?.date
+              ? handleDate(quoteByIdData?.date, true)
+              : '--')}
         </Typography>
       ),
     },

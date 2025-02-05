@@ -5,6 +5,7 @@ import {
   getAllQuotesByOrganization,
   getAllQuotesWithCompletedAndDraft,
   getQuoteById,
+  getQuoteByIdForEditQuoteHeader,
   getQuoteByIdForFormStack,
   getQuotesByDateFilter,
   getQuotesByExistingQuoteFilter,
@@ -287,6 +288,23 @@ const quoteSlice = createSlice({
       )
       .addCase(
         updateQuoteCustomerId.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.getExistingQuoteFilterLoading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getQuoteByIdForEditQuoteHeader.pending, (state) => {
+        state.getExistingQuoteFilterLoading = true;
+        state.error = null;
+      })
+      .addCase(
+        getQuoteByIdForEditQuoteHeader.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.getExistingQuoteFilterLoading = false;
+        },
+      )
+      .addCase(
+        getQuoteByIdForEditQuoteHeader.rejected,
         (state, action: PayloadAction<any>) => {
           state.getExistingQuoteFilterLoading = false;
           state.error = action.payload;

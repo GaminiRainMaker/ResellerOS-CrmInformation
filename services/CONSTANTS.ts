@@ -28,6 +28,8 @@ export const API = {
     DeleteById: '/quote/deleteQuote',
     GetQuotesByDateFilter: '/quote/getQuotesByDateFilter',
     GetQuoteByID: '/quote/getQuoteById',
+    getQuoteByIdForEditQuoteHeader: '/quote/getQuoteByIdForEditQuoteHeader',
+
     getQuoteByIdForFormStack: '/quote/getQuoteByIdForFormStack',
     GetQuoteByManual: '/quote/getAllManualQuotes',
     UpdateQuoteWithNewlineItemAdd: '/quote/updateQuoteWithNewlineItemAdd',
