@@ -2,9 +2,11 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
+  uploadDocumentOnAzure,
   uploadExcelFileToAws,
   uploadToAws,
   uploadToAwsForUserImage,
+  uploalImageonAzure,
 } from '../actions/upload';
 
 type UploadState = {
@@ -75,6 +77,42 @@ const uploadSlice = createSlice({
       )
       .addCase(
         uploadExcelFileToAws.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(uploalImageonAzure.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        uploalImageonAzure.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = [action.payload];
+        },
+      )
+      .addCase(
+        uploalImageonAzure.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(uploadDocumentOnAzure.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        uploadDocumentOnAzure.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = [action.payload];
+        },
+      )
+      .addCase(
+        uploadDocumentOnAzure.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

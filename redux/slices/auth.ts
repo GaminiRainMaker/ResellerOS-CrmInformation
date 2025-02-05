@@ -13,6 +13,7 @@ import {
   getSalesForceFields,
   getSalesForceFileData,
   runSalesForceBot,
+  sendEmailForSuport,
   sendForgotPasswordEmail,
   sendNewUserEmail,
   sendPartnerRequestEmail,
@@ -299,6 +300,24 @@ const authSlice = createSlice({
       )
       .addCase(
         getPDFFileDataByAzureForSales.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(sendEmailForSuport.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        sendEmailForSuport.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          // state.data = action.payload;
+        },
+      )
+      .addCase(
+        sendEmailForSuport.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
