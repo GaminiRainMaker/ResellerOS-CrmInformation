@@ -43,86 +43,87 @@ const AddSalesForceCredentials = forwardRef<AddSalesForceCredentialsRef, Props>(
     const handleFileUpload = async (file: File) => {
       setDataUploadLoading(true);
       // Validate file type based on isMasterPartnerUpload
-      if (isMasterPartnerUpload) {
-        if (!file.name.endsWith('.xlsx')) {
-          message.error(
-            'Only .xlsx files are accepted for master partner upload.',
-          );
-          setDataUploadLoading(false);
-          return false; // Prevent file upload
-        }
-      } else {
-        if (!file.name.endsWith('.csv')) {
-          message.error(
-            'Only .csv files are accepted for salesforce credentials upload.',
-          );
-          setDataUploadLoading(false);
-          return false; // Prevent file upload
-        }
+      if (!file.name.endsWith('.csv')) {
+        message.error(
+          'Only .csv files are accepted for salesforce credentials upload.',
+        );
+        setDataUploadLoading(false);
+        return false; // Prevent file upload
       }
 
       setFileName(file.name); // Store the file name
 
-      if (isMasterPartnerUpload) {
-        try {
-          const base64String = await convertFileToBase64(file);
-          if (!base64String)
-            throw new Error('Failed to convert file to base64');
+      // if (!isMasterPartnerUpload) {
+      //   try {
+      //     const base64String = await convertFileToBase64(file);
+      //     if (!base64String)
+      //       throw new Error('Failed to convert file to base64');
 
-          const response = await dispatch(
-            uploadExcelFileToAws({document: base64String}),
-          );
-          const fileUrl = response?.payload; // Extract the file URL from the dispatched action
+      //     const response = await dispatch(
+      //       uploadExcelFileToAws({document: base64String}),
+      //     );
+      //     const fileUrl = response?.payload; // Extract the file URL from the dispatched action
 
-          if (!fileUrl)
-            throw new Error('File upload failed or URL not returned');
+      //     if (!fileUrl)
+      //       throw new Error('File upload failed or URL not returned');
 
-          const masterDataResponse = await dispatch(
-            masterPartnerFetchAndParseExcel({Url: fileUrl?.data}),
-          );
-          const finalMasterData = masterDataResponse?.payload; // Extract parsed data
+      //     const masterDataResponse = await dispatch(
+      //       masterPartnerFetchAndParseExcel({Url: fileUrl?.data}),
+      //     );
+      //     const finalMasterData = masterDataResponse?.payload; // Extract parsed data
 
-          setFileData(finalMasterData);
-          message.success(
-            `${file.name} file uploaded and processed successfully.`,
-          );
-          setDataUploadLoading(false);
-        } catch (error: any) {
-          setDataUploadLoading(false);
-          console.error(
-            'Error processing master partner upload:',
-            error.message,
-          );
-          message.error(`Error processing file: ${error.message}`);
-        }
-      } else {
-        Papa.parse(file, {
-          header: true,
-          complete: function (results: Papa.ParseResult<CsvRecord>) {
-            const filteredData = results?.data?.filter(
-              (record: CsvRecord) => record?.saleforce_org_Id,
-            );
+      //     setFileData(finalMasterData);
+      //     message.success(
+      //       `${file.name} file uploaded and processed successfully.`,
+      //     );
+      //     setDataUploadLoading(false);
+      //   } catch (error: any) {
+      //     setDataUploadLoading(false);
+      //     console.error(
+      //       'Error processing master partner upload:',
+      //       error.message,
+      //     );
+      //     message.error(`Error processing file: ${error.message}`);
+      //   }
+      // } else {
 
-            if (filteredData.length > 0) {
-              setFileData(filteredData);
+      Papa.parse(file, {
+        header: true,
+        complete: function (results: Papa.ParseResult<CsvRecord>) {
+          if (isMasterPartnerUpload) {
+            if (results?.data.length > 0) {
+              setFileData(results?.data);
               message.success(`${file.name} file uploaded successfully.`);
               setUploadSuccess(true);
             } else {
               message.warning('No valid records with saleforce_org_Id found.');
             }
-            setDataUploadLoading(false);
-          },
-          error: function (err) {
-            setDataUploadLoading(false);
-            message.error(`Failed to parse CSV file: ${err.message}`);
-          },
-        });
-      }
+          } else {
+            const filteredData = results?.data?.filter(
+              (record: CsvRecord) => record?.saleforce_org_Id,
+            );
+            if (filteredData.length > 0) {
+              setFileData(filteredData);
+
+              message.success(`${file.name} file uploaded successfully.`);
+              setUploadSuccess(true);
+            } else {
+              message.warning('No valid records with saleforce_org_Id found.');
+            }
+          }
+          setDataUploadLoading(false);
+        },
+        error: function (err) {
+          setDataUploadLoading(false);
+          message.error(`Failed to parse CSV file: ${err.message}`);
+        },
+      });
+      // }
       return false; // Prevent default upload behavior
     };
 
     const uploadToDatabase = async () => {
-      if (fileData.length === 0) {
+      if (fileData?.length === 0) {
         message.error('No data to upload.');
         return;
       }
