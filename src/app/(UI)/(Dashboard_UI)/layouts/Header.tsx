@@ -744,7 +744,7 @@ const CustomHeader = () => {
                     beforeUpload={beforeUpload}
                     showUploadList={false}
                     multiple
-                    accept=".pdf,.jpg,.jpeg,.png,.docx"
+                    accept=".pdf,.jpg,.jpeg,.png,.docx,.pdf"
                   >
                     {' '}
                     <span style={{color: '#3da5d9'}}>Upload a file</span>

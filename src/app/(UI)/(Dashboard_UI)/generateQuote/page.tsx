@@ -249,7 +249,6 @@ const GenerateQuote: React.FC = () => {
     }
   };
 
-  console.log('324324324', activeTab);
   const items: MenuProps['items'] = [
     {
       key: '1',
