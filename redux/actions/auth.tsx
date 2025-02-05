@@ -214,3 +214,15 @@ export const masterPartnerFetchAndParseExcel = createAsyncThunk(
     }
   },
 );
+
+export const verifyEmail = createAsyncThunk(
+  'auth/verifyEmail',
+  async (data: any, thunkApi) => {
+    try {
+      const res: any = await AUTH_API.verifyEmail(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
