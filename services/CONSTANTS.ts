@@ -17,6 +17,8 @@ export const API = {
     getPDFFileDataForSales:
       '/auth/fetchDataWithIntellengenceForPDFFileForSalesForceExport',
     fetchAndParseExcel: '/auth/fetchAndParseExcel',
+    sendEmailForSuport: '/auth/sendEmailForSuport',
+    VerifyEmail: '/auth/verifyEmail',
   },
   QUOTE: {
     INDEX: '/quote',
@@ -27,6 +29,8 @@ export const API = {
     DeleteById: '/quote/deleteQuote',
     GetQuotesByDateFilter: '/quote/getQuotesByDateFilter',
     GetQuoteByID: '/quote/getQuoteById',
+    getQuoteByIdForEditQuoteHeader: '/quote/getQuoteByIdForEditQuoteHeader',
+
     getQuoteByIdForFormStack: '/quote/getQuoteByIdForFormStack',
     GetQuoteByManual: '/quote/getAllManualQuotes',
     UpdateQuoteWithNewlineItemAdd: '/quote/updateQuoteWithNewlineItemAdd',
@@ -188,6 +192,8 @@ export const API = {
     INDEX: '/upload/uploadDocument',
     IMAGE: '/upload/imageUpload',
     EXCEL: '/upload/uploadExcelFile',
+    uploadDocumentTypeDocOnAzure: '/upload/uploadDocumentTypeDocOnAzure',
+    uploadImagesOnAzure: '/upload/uploadImagesOnAzure',
   },
   OPPORLINEITEM: {
     INDEX: '/opportunityLineItem',

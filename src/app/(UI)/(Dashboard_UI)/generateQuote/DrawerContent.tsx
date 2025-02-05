@@ -18,7 +18,10 @@ import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
 import {getAllOpportunity} from '../../../../../redux/actions/opportunity';
-import {getQuoteById} from '../../../../../redux/actions/quote';
+import {
+  getQuoteById,
+  getQuoteByIdForEditQuoteHeader,
+} from '../../../../../redux/actions/quote';
 import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsInputNumber from '@/app/components/common/os-input/InputNumber';
@@ -30,12 +33,17 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
   const getQuoteId = searchParams.get('id');
   const isView = searchParams.get('isView');
   const {data: dataAddress} = useAppSelector((state) => state.customer);
-  const {quoteById, quoteByIdLoading} = useAppSelector((state) => state.quote);
+  // const {quoteById, quoteByIdLoading} = useAppSelector((state) => state.quote);
   const [customerValue, setCustomerValue] = useState<number>();
   const [billingOptionsData, setBillingOptionData] = useState<any>();
   const {data: syncTableData} = useAppSelector((state) => state.syncTable);
   const [opportunityObject, setOpportunityObject] = useState<any>();
-  const [stageNewValue, setStageNewValue] = useState<string>(quoteById?.status);
+  const [quoteByIdData, setQuoteByIdData] = useState<any>();
+
+  const [stageNewValue, setStageNewValue] = useState<string>(
+    quoteByIdData?.status,
+  );
+  const [quoteByIdLoading, setQuoteByIdLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const customerOptions: any = [];
@@ -72,12 +80,22 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
 
     setBillingOptionData(updatedAllBillingContact);
   }, [dataAddress, customerValue]);
+  const getAlllApisData = async () => {
+    setQuoteByIdLoading(true);
+    await dispatch(getQuoteByIdForEditQuoteHeader(Number(getQuoteId)))?.then(
+      (payload: any) => {
+        setQuoteByIdData(payload?.payload);
+        setStageNewValue(payload?.payload?.status);
+      },
+    );
+    await dispatch(getAllCustomer({}));
+    await dispatch(getAllOpportunity());
+    await dispatch(getAllSyncTable('Quote'));
+    setQuoteByIdLoading(false);
+  };
 
   useEffect(() => {
-    dispatch(getQuoteById(Number(getQuoteId)));
-    dispatch(getAllCustomer({}));
-    dispatch(getAllOpportunity());
-    dispatch(getAllSyncTable('Quote'));
+    getAlllApisData();
   }, [getQuoteId]);
 
   useEffect(() => {
@@ -108,19 +126,19 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
 
   useEffect(() => {
     form.setFieldsValue({
-      file_name: quoteById?.file_name,
-      opportunity_id: quoteById?.opportunity_id,
-      customer_id: quoteById?.customer_id,
-      contact_id: quoteById?.contact_id,
-      status: quoteById?.status,
-      quote_notes: quoteById?.quote_notes,
-      quote_shipping: quoteById?.quote_shipping,
-      quote_tax: quoteById?.quote_tax,
-      quote_name: quoteById?.quote_name,
+      file_name: quoteByIdData?.file_name,
+      opportunity_id: quoteByIdData?.opportunity_id,
+      customer_id: quoteByIdData?.customer_id,
+      contact_id: quoteByIdData?.contact_id,
+      status: quoteByIdData?.status,
+      quote_notes: quoteByIdData?.quote_notes,
+      quote_shipping: quoteByIdData?.quote_shipping,
+      quote_tax: quoteByIdData?.quote_tax,
+      quote_name: quoteByIdData?.quote_name,
     });
-    setStageNewValue(quoteById?.status);
-    setCustomerValue(quoteById?.customer_id);
-  }, [quoteById]);
+    setStageNewValue(quoteByIdData?.status);
+    setCustomerValue(quoteByIdData?.customer_id);
+  }, [quoteByIdData]);
 
   return (
     <GlobalLoader loading={quoteByIdLoading}>
@@ -137,7 +155,7 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
               Quote Generate Date
             </Typography>
             <Typography name="Body 2/Regular">
-              {formatDate(quoteById?.createdAt, 'MM/DD/YYYY | HH:MM')}
+              {formatDate(quoteByIdData?.createdAt, 'MM/DD/YYYY | HH:MM')}
             </Typography>
           </Col>
           <Col>

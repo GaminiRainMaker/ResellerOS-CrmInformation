@@ -96,6 +96,18 @@ export const sendForgotPasswordEmail = createAsyncThunk(
     }
   },
 );
+
+export const sendEmailForSuport = createAsyncThunk(
+  'auth/sendEmailForSuport',
+  async (data: any, thunkApi) => {
+    try {
+      const res: any = await AUTH_API.sendEmailForSuport(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
 export const contactSales = createAsyncThunk(
   'auth/contactSales',
   async (data: any, thunkApi) => {
@@ -185,6 +197,18 @@ export const fetchAndParseExcel = createAsyncThunk(
   async (data: any, thunkApi) => {
     try {
       const res: any = await AUTH_API.fetchAndParseExcel(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+
+export const verifyEmail = createAsyncThunk(
+  'auth/verifyEmail',
+  async (data: any, thunkApi) => {
+    try {
+      const res: any = await AUTH_API.verifyEmail(data);
       return res.data;
     } catch (error: any) {
       return thunkApi.rejectWithValue(error?.message);

@@ -16,6 +16,7 @@ import {
   sendForgotPasswordEmail,
   signUpAuth,
   verifyAuth,
+  verifyEmail,
 } from '../../../../../redux/actions/auth';
 import {
   getUserByTokenAccess,
@@ -54,6 +55,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   const [showDailogModal, setShowDailogModal] = useState<boolean>(false);
   const {loading} = useAppSelector((state) => state.auth);
   const rememberPass: any = Cookies.get('remeber');
+  const Verifytoken = searchParams.get('verifytoken');
 
   useEffect(() => {
     const tokendata: any = Cookies.get('token');
@@ -94,6 +96,15 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   }, []);
 
   const onSubmitForm = (formValues: any, type: any) => {
+    if (type === 'Verify Email') {
+      dispatch(verifyEmail({token: Verifytoken})).then((d) => {
+        if (d?.payload) {
+          router.push('/login');
+        }
+      });
+      return;
+    }
+
     const validateEmail = (email: any) =>
       String(email)
         .toLowerCase()
