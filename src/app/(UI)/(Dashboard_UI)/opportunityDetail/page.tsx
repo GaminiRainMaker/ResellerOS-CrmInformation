@@ -3,8 +3,8 @@
 'use client';
 
 import AddQuote from '@/app/components/common/addQuote';
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import AddOpportunity from '@/app/components/common/os-add-opportunity';
@@ -18,22 +18,22 @@ import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import { formatDate, getResultedValue } from '@/app/utils/base';
-import { Form } from 'antd';
-import { TabsProps } from 'antd/lib';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import {formatDate, getResultedValue} from '@/app/utils/base';
+import {Form} from 'antd';
+import {TabsProps} from 'antd/lib';
+import {useRouter, useSearchParams} from 'next/navigation';
+import {useEffect, useState} from 'react';
 import {
   deleteOpportunity,
   getOpportunityById,
   updateOpportunity,
 } from '../../../../../redux/actions/opportunity';
-import { updateQuoteCustomerId } from '../../../../../redux/actions/quote';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
-import { tabItems } from '../allQuote/constants';
+import {updateQuoteCustomerId} from '../../../../../redux/actions/quote';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {tabItems} from '../allQuote/constants';
 import OsModal from '@/app/components/common/os-modal';
 import NewRegistrationForm from '../dealReg/NewRegistrationForm';
-import { PlusIcon } from '@heroicons/react/24/outline';
+import {PlusIcon} from '@heroicons/react/24/outline';
 
 const OpportunityDetails = () => {
   const [token] = useThemeToken();
@@ -42,10 +42,10 @@ const OpportunityDetails = () => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams()!;
   const opportunityId = searchParams.get('id');
-  const { loading, opportunityById: opportunityData } = useAppSelector(
+  const {loading, opportunityById: opportunityData} = useAppSelector(
     (state) => state.Opportunity,
   );
-  const { userInformation } = useAppSelector((state) => state.user);
+  const {userInformation} = useAppSelector((state) => state.user);
   const [formValue, setFormValue] = useState<any>();
   const [showDrawer, setShowDrawer] = useState(false);
   const [deleteIds, setDeleteIds] = useState<any>();
@@ -62,7 +62,7 @@ const OpportunityDetails = () => {
 
   const isDealReg = userInformation?.DealReg ?? false;
 
-  const { loading: QuoteLoading } = useAppSelector((state) => state.quote);
+  const {loading: QuoteLoading} = useAppSelector((state) => state.quote);
   useEffect(() => {
     dispatch(getOpportunityById(opportunityId));
   }, []);
@@ -96,53 +96,53 @@ const OpportunityDetails = () => {
       const quoteItems =
         activeTab === '3'
           ? opportunityData?.Quotes?.filter((item: any) =>
-            userInformation?.Admin
-              ? item?.status?.includes('In Progress')
-              : userInformation?.id === item?.user_id &&
-              item?.status?.includes('In Progress'),
-          )
+              userInformation?.Admin
+                ? item?.status?.includes('In Progress')
+                : userInformation?.id === item?.user_id &&
+                  item?.status?.includes('In Progress'),
+            )
           : activeTab === '5'
             ? opportunityData?.Quotes?.filter((item: any) =>
-              userInformation?.Admin
-                ? item?.status?.includes('Needs Review') &&
-                item?.user_id !== userInformation?.id
-                : item?.status?.includes('Needs Review') &&
-                item?.approver_id === userInformation?.id,
-            )
+                userInformation?.Admin
+                  ? item?.status?.includes('Needs Review') &&
+                    item?.user_id !== userInformation?.id
+                  : item?.status?.includes('Needs Review') &&
+                    item?.approver_id === userInformation?.id,
+              )
             : activeTab === '4'
               ? opportunityData?.Quotes?.filter((item: any) =>
-                userInformation?.Admin
-                  ? item?.status?.includes('Needs Review')
-                  : item?.status?.includes('Needs Review') &&
-                  item?.completed_by === userInformation?.id,
-              )
+                  userInformation?.Admin
+                    ? item?.status?.includes('Needs Review')
+                    : item?.status?.includes('Needs Review') &&
+                      item?.completed_by === userInformation?.id,
+                )
               : activeTab === '1'
                 ? userInformation?.Admin
                   ? opportunityData?.Quotes
                   : opportunityData?.Quotes?.filter(
-                    (item: any) => item?.user_id === userInformation?.id,
-                  )
+                      (item: any) => item?.user_id === userInformation?.id,
+                    )
                 : activeTab === '6'
                   ? opportunityData?.Quotes?.filter((item: any) =>
-                    userInformation?.Admin
-                      ? item?.status?.includes('Approved')
-                      : item?.status?.includes('Approved') &&
-                      item?.user_id === userInformation?.id,
-                  )
+                      userInformation?.Admin
+                        ? item?.status?.includes('Approved')
+                        : item?.status?.includes('Approved') &&
+                          item?.user_id === userInformation?.id,
+                    )
                   : activeTab === '7'
                     ? opportunityData?.Quotes?.filter((item: any) =>
-                      userInformation?.Admin
-                        ? item?.status?.includes('Rejected')
-                        : item?.status?.includes('Rejected') &&
-                        item?.user_id === userInformation?.id,
-                    )
+                        userInformation?.Admin
+                          ? item?.status?.includes('Rejected')
+                          : item?.status?.includes('Rejected') &&
+                            item?.user_id === userInformation?.id,
+                      )
                     : activeTab === '2'
                       ? opportunityData?.Quotes?.filter((item: any) =>
-                        userInformation?.Admin
-                          ? item?.status?.includes('Drafts')
-                          : userInformation?.id === item?.user_id &&
-                          item?.status?.includes('Drafts'),
-                      )
+                          userInformation?.Admin
+                            ? item?.status?.includes('Drafts')
+                            : userInformation?.id === item?.user_id &&
+                              item?.status?.includes('Drafts'),
+                        )
                       : [];
       setActiveQuotes(quoteItems);
     } else {
@@ -154,9 +154,9 @@ const OpportunityDetails = () => {
     const finalData = userInformation?.Admin
       ? dealRegData
       : dealRegData?.filter(
-        (dealRegDataItem: any) =>
-          dealRegDataItem?.user_id === userInformation?.id,
-      );
+          (dealRegDataItem: any) =>
+            dealRegDataItem?.user_id === userInformation?.id,
+        );
 
     const filteredDealRegData =
       status === 'All'
@@ -196,7 +196,7 @@ const OpportunityDetails = () => {
           name="Heading 3/Medium"
           cursor="pointer"
           color={token?.colorPrimaryText}
-          onClick={() => { }}
+          onClick={() => {}}
         >
           {OpportunityObjectData?.title}
         </Typography>
@@ -229,7 +229,7 @@ const OpportunityDetails = () => {
   };
 
   const deleteSelectedIds = async () => {
-    const data = { Ids: deleteIds };
+    const data = {Ids: deleteIds};
     await dispatch(deleteOpportunity(data));
     router.push('/crmOpportunity');
     setDeleteIds([]);
@@ -289,7 +289,7 @@ const OpportunityDetails = () => {
       key: 'status',
       width: 187,
       render: (text: string, record: any) => (
-        <span style={{ display: 'flex', justifyContent: 'center' }}>
+        <span style={{display: 'flex', justifyContent: 'center'}}>
           <OsStatusWrapper value={text} />
         </span>
       ),
@@ -329,7 +329,7 @@ const OpportunityDetails = () => {
       render: (text: string, record: any) => (
         <Typography
           name="Body 4/Regular"
-          style={{ cursor: 'pointer' }}
+          style={{cursor: 'pointer'}}
           hoverOnText
           color={token?.colorInfo}
           onClick={() => {
@@ -431,7 +431,7 @@ const OpportunityDetails = () => {
       key: 'status',
       width: 187,
       render: (text: string) => (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div style={{display: 'flex', justifyContent: 'center'}}>
           <OsStatusWrapper value={text} />
         </div>
       ),
@@ -591,7 +591,7 @@ const OpportunityDetails = () => {
 
   return (
     <>
-      <Space direction="vertical" size={12} style={{ width: '100%' }}>
+      <Space direction="vertical" size={12} style={{width: '100%'}}>
         <OsBreadCrumb items={menuItems} />
 
         <OpportunityAnalyticCard
@@ -601,12 +601,12 @@ const OpportunityDetails = () => {
           setDeleteIds={setDeleteIds}
           setShowModalDelete={setShowModalDelete}
         />
-        <Row justify="space-between" align="middle" style={{ marginTop: '10px' }}>
+        <Row justify="space-between" align="middle" style={{marginTop: '10px'}}>
           <Col>
             <Typography name="Heading 3/Medium">All Quotes</Typography>
           </Col>
           {/* {!isDealReg && ( */}
-          <Col style={{ float: 'right' }}>
+          <Col style={{float: 'right'}}>
             <AddQuote
               uploadFileData={uploadFileData}
               setUploadFileData={setUploadFileData}
@@ -629,7 +629,7 @@ const OpportunityDetails = () => {
           }}
         >
           <OsTabs
-            style={{ margin: '0px' }}
+            style={{margin: '0px'}}
             onChange={(e) => {
               setActiveTab(e);
             }}
@@ -665,19 +665,22 @@ const OpportunityDetails = () => {
         </Row>
         {isDealReg && (
           <>
-            <Row justify="space-between" align="middle" style={{ marginTop: '10px' }}>
+            <Row
+              justify="space-between"
+              align="middle"
+              style={{marginTop: '10px'}}
+            >
               <Col>
                 <Typography name="Heading 3/Medium">All DealReg</Typography>
               </Col>
               {/* {!isDealReg && ( */}
-              <Col style={{ float: 'right' }}>
+              <Col style={{float: 'right'}}>
                 <OsButton
                   text="New Registration"
                   buttontype="PRIMARY"
                   icon={<PlusIcon />}
                   clickHandler={() => setShowModal((p) => !p)}
                 />
-
               </Col>
               {/* )} */}
             </Row>
@@ -697,7 +700,7 @@ const OpportunityDetails = () => {
                 borderRadius: '12px',
               }}
             >
-              <OsTabs style={{ margin: '0px' }} items={dealRegTabItems} />
+              <OsTabs style={{margin: '0px'}} items={dealRegTabItems} />
             </Row>
           </>
         )}
@@ -717,7 +720,7 @@ const OpportunityDetails = () => {
         footer={
           <OsButton
             loading={loading}
-            btnStyle={{ width: '100%' }}
+            btnStyle={{width: '100%'}}
             buttontype="PRIMARY"
             text="Update Changes"
             clickHandler={form.submit}
@@ -738,7 +741,7 @@ const OpportunityDetails = () => {
         body={<NewRegistrationForm setShowModal={setShowModal} />}
         width={583}
         open={showModal}
-        onOk={() => { }}
+        onOk={() => {}}
         onCancel={() => {
           setShowModal((p) => !p);
         }}
