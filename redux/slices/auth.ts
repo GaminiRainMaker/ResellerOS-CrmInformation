@@ -19,6 +19,7 @@ import {
   sendPartnerRequestEmail,
   signUpAuth,
   verifyAuth,
+  verifyEmail,
 } from '../actions/auth';
 
 type AuthState = {
@@ -322,7 +323,19 @@ const authSlice = createSlice({
           state.loading = false;
           state.error = action.payload;
         },
-      );
+      )
+      .addCase(verifyEmail.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(verifyEmail.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        // state.data = action.payload;
+      })
+      .addCase(verifyEmail.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 
