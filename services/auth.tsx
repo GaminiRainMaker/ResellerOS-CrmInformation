@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import {AxiosResponse} from 'axios';
 import {API} from './CONSTANTS';
 import {post, get} from './index';
 
@@ -24,6 +25,7 @@ export const AUTH_API = {
     post(API.AUTH.getPDFFileDataForSales, data),
   fetchAndParseExcel: (data: any) => post(API.AUTH.fetchAndParseExcel, data),
   masterPartnerFetchAndParseExcel: (data: any) => post(API.AUTH.MasterPartnerFetchAndParseExcel, data),
-
   getFields: (data: any) => post(API.AUTH.getFields, data),
+  sendEmailForSuport: (data: any) => post(API.AUTH.sendEmailForSuport, data),
+  verifyEmail: (data: any) => post(API.AUTH.VerifyEmail, data),
 };

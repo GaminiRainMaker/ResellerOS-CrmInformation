@@ -28,6 +28,28 @@ export const uploadExcelFileToAws = createAsyncThunk(
     }
   },
 );
+export const uploalImageonAzure = createAsyncThunk(
+  'upload/uploadDocument',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await UPLOAD_API.uploadImagesOnAzure(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);
+export const uploadDocumentOnAzure = createAsyncThunk(
+  'upload/uploadDocument',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await UPLOAD_API.uploadDocumentTypeDocOnAzure(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);
 
 export const uploadToAwsForUserImage = createAsyncThunk(
   'upload/uploadImage',

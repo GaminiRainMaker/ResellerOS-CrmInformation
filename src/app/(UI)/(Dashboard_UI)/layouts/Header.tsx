@@ -20,6 +20,8 @@ import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import styled from '@emotion/styled';
+import {usePathname} from 'next/navigation';
+
 import {
   ArrowLeftStartOnRectangleIcon,
   BellIcon,
@@ -27,7 +29,15 @@ import {
   UserCircleIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline';
-import {Avatar, Badge, Layout, Upload} from 'antd';
+import {
+  Avatar,
+  Badge,
+  Layout,
+  Upload,
+  Input,
+  message,
+  notification,
+} from 'antd';
 import {MenuProps} from 'antd/es/menu';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
@@ -40,6 +50,25 @@ import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/o
 import {getCountOfNotification} from '../../../../../redux/actions/notifications';
 import {getGloabalySearchDataa} from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {
+  QuestionCircleFilled,
+  QuestionCircleOutlined,
+  QuestionOutlined,
+} from '@ant-design/icons';
+import OsModal from '@/app/components/common/os-modal';
+import {
+  OSDraggerStyle,
+  OSDraggerStyleForSupport,
+} from '@/app/components/common/os-upload/styled-components';
+import OsInput from '@/app/components/common/os-input';
+import {
+  uploadExcelFileToAws,
+  uploadToAws,
+  uploadDocumentOnAzure,
+  uploalImageonAzure,
+} from '../../../../../redux/actions/upload';
+import {convertFileToBase64} from '@/app/utils/base';
+import {sendEmailForSuport} from '../../../../../redux/actions/auth';
 
 export const CustomUpload = styled(Upload)`
   .ant-upload-list-text {
@@ -83,8 +112,11 @@ export const CustomUpload = styled(Upload)`
 const CustomHeader = () => {
   const [token] = useThemeToken();
   const router = useRouter();
+  const {TextArea} = Input;
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams()!;
+
+  const pathname = usePathname();
   const loginAccount = searchParams.get('self');
   const {userInformation, searchDataa, loginUserInformation} = useAppSelector(
     (state) => state.user,
@@ -97,15 +129,19 @@ const CustomHeader = () => {
   const {isCanvas} = useAppSelector((state) => state.canvas);
   const salesForceUrl = searchParams.get('instance_url');
 
-
   const [userRole, setUserRole] = useState<string>('');
   const [searchFinalData, setSearchFinalData] = useState<any>();
   const [profileImg, setProfileImg] = useState<any>();
+  const [openSupportModal, setOpenSupportModel] = useState<boolean>(false);
+  const [uploadedData, setUpoadedData] = useState<any>();
+  const [addIssueToSupport, SetAddIssueToSupport] = useState<any>();
+  const [loadingSpin, setLoadingSpin] = useState<boolean>(false);
   const [query, setQuery] = useState<{
     searchText: string | null;
   }>({
     searchText: null,
   });
+
   const searchQuery = useDebounceHook(query, 400);
   useEffect(() => {
     if (searchQuery && searchQuery?.length > 0) {
@@ -296,6 +332,81 @@ const CustomHeader = () => {
     }
   }, [loginUserInformation]);
 
+  const setDataFunc = (namess: string, location: any) => {
+    // Using the functional setState to access the latest state
+    setUpoadedData((prevData: any) => {
+      // Ensure prevData is always an array
+      const validPrevData = Array.isArray(prevData) ? prevData : [];
+
+      // Create a new array with the updated data
+      const newArr = [...validPrevData, {name: namess, urlAdded: location}];
+
+      // Log the updated array before setting the state
+
+      // Return the updated array to be set as the new state
+      return newArr;
+    });
+  };
+
+  const beforeUpload = async (file: File) => {
+    const obj: any = {...file};
+    setLoadingSpin(true);
+    let pathUsedToUpload = file?.type?.split('.')?.includes('document')
+      ? uploadDocumentOnAzure
+      : file?.type?.split('.')?.includes('image/jpeg') ||
+          file?.type?.split('/')?.includes('image')
+        ? uploalImageonAzure
+        : uploadToAws;
+
+    convertFileToBase64(file)
+      .then(async (base64String: string) => {
+        obj.base64 = base64String;
+        obj.name = file?.name;
+
+        await dispatch(pathUsedToUpload({document: base64String})).then(
+          (payload: any) => {
+            setDataFunc(file?.name, payload?.payload?.data);
+          },
+        );
+
+        setLoadingSpin(false);
+      })
+      .catch((error: any) => {
+        message.error('Error converting file to base64', error);
+      });
+  };
+
+  const sendEmailTOSupport = async () => {
+    setLoadingSpin(true);
+    let newArrForUploadded: any = [];
+
+    if (uploadedData && uploadedData?.length > 0) {
+      uploadedData?.map((items: any) => {
+        newArrForUploadded?.push(items?.urlAdded);
+      });
+    }
+
+    let newObj = {
+      issue: addIssueToSupport,
+      attach: newArrForUploadded,
+      // organizationName: userInformation?.organization,
+      organizationName: userInformation?.organization,
+      userName: userInformation?.username,
+      userEmail: userInformation?.email,
+      tab: pathname,
+    };
+
+    await dispatch(sendEmailForSuport(newObj))?.then((payload: any) => {
+      notification?.open({
+        message: 'Your issue request submitted successfully',
+        type: 'success',
+      });
+    });
+    setLoadingSpin(false);
+    setOpenSupportModel(false);
+    SetAddIssueToSupport('');
+    setUpoadedData([]);
+  };
   return (
     <Layout>
       <Row
@@ -352,6 +463,19 @@ const CustomHeader = () => {
                 />
               }
             /> */}
+              <AvatarStyled
+                background={token?.colorInfoBg}
+                icon={
+                  <QuestionOutlined
+                    style={{color: 'grey'}}
+                    onClick={() => {
+                      setOpenSupportModel(true);
+                    }}
+                    width={24}
+                    color={token?.colorInfoBorder}
+                  />
+                }
+              />
 
               <Dropdown
                 trigger={['click']}
@@ -550,6 +674,103 @@ const CustomHeader = () => {
           )}
         </Col>
       </Row>
+      <OsModal
+        // title={<Typography name="Body 1/Medium">Report an Issue</Typography>}
+        bodyPadding={15}
+        loading={loadingSpin}
+        width={800}
+        body={
+          <>
+            <GlobalLoader loading={loadingSpin}>
+              <Typography name="Body 2/Medium">Report an Issue</Typography>
+              <Divider />
+              <Space
+                content="center"
+                style={{display: 'flex', justifyContent: 'center'}}
+              >
+                <Typography name="Body 2/Medium">
+                  Please provide detail for your issue.
+                </Typography>
+              </Space>
+              <Space
+                content="center"
+                direction="vertical"
+                style={{width: '100%', marginTop: '20px'}}
+                // style={{display: 'flex', justifyContent: 'center'}}
+              >
+                <Typography name="Body 3/Medium">Issue Details:</Typography>
+                <TextArea
+                  style={{width: '100%', height: '100px'}}
+                  value={addIssueToSupport}
+                  onChange={(e: any) => {
+                    SetAddIssueToSupport(e?.target?.value);
+                  }}
+                />
+                <div>
+                  <Row>
+                    {uploadedData &&
+                      uploadedData?.length > 0 &&
+                      uploadedData?.map((items: any) => {
+                        return (
+                          <Col
+                            span={6}
+                            style={{
+                              width: '300px',
+                              height: '100px',
+                              background:
+                                'var(--foundation-n-pri-2-n-30, #f0f4f7)',
+                              margin: '5px',
+                              borderRadius: '5px',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              display: 'flex',
+                              padding: '10px',
+                              border: ' 1px solid #3da5d9',
+                              borderStyle: 'dashed',
+                            }}
+                            onClick={() => {
+                              window?.open(items?.urlAdded);
+                            }}
+                          >
+                            {items?.name?.toString()?.slice(0, 30)}
+                          </Col>
+                        );
+                      })}
+                  </Row>
+                </div>
+                <div style={{width: '200px'}}>
+                  {' '}
+                  <OSDraggerStyleForSupport
+                    beforeUpload={beforeUpload}
+                    showUploadList={false}
+                    multiple
+                    accept=".pdf,.jpg,.jpeg,.png,.docx,.pdf"
+                  >
+                    {' '}
+                    <span style={{color: '#3da5d9'}}>Upload a file</span>
+                  </OSDraggerStyleForSupport>
+                </div>
+              </Space>
+              <div style={{display: 'flex', justifyContent: 'right'}}>
+                <OsButton
+                  buttontype="PRIMARY"
+                  text="Submit"
+                  clickHandler={sendEmailTOSupport}
+                />
+              </div>
+            </GlobalLoader>
+          </>
+        }
+        open={openSupportModal}
+        onCancel={() => {
+          setOpenSupportModel(false);
+          setLoadingSpin(false);
+          setOpenSupportModel(false);
+          SetAddIssueToSupport('');
+          setUpoadedData([]);
+        }}
+        // open={true}
+      />
     </Layout>
   );
 };

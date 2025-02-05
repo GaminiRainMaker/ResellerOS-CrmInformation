@@ -23,7 +23,9 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useRef, useState} from 'react';
 import {
   dealRegFormScript,
+  deleteDealregForm,
   getDealRegByOpportunityId,
+  queryDealReg,
   updateDealRegStatus,
 } from '../../../../../redux/actions/dealReg';
 import {getScriptTimer} from '../../../../../redux/actions/generalSetting';
@@ -40,6 +42,7 @@ import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import DealRegCustomTabs, {DealRegCustomTabsHandle} from './DealRegCustomTabs';
 import ElectronBot from './ElectronBot';
 import SubmitDealRegForms from './SubmitDealRegForms';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 
 const DealRegDetail = () => {
   const [getFormData] = Form.useForm();
@@ -65,6 +68,11 @@ const DealRegDetail = () => {
   const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
   const [dealregAppTimer, setDealregAppTimer] = useState<string>('');
 
+  const [activeKey, setActiveKey] = useState<number>();
+
+  const [deleteIds, setDeleteIds] = useState<any>();
+  const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
+
   // Initialize variables with default values
   let userId: string | undefined;
   let salesForceinstanceUrl: string | undefined;
@@ -77,8 +85,6 @@ const DealRegDetail = () => {
     salesForceToken = client?.oauthToken;
   }
   const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
-
-  console.log('test working fine')
 
   useEffect(() => {
     if (getOpportunityId && !isCanvas) {
@@ -123,7 +129,7 @@ const DealRegDetail = () => {
     },
   ];
 
-  const dropDownItemss: MenuProps['items'] = [
+  const dropDownItemss: any = [
     {
       key: '1',
       label: (
@@ -137,7 +143,25 @@ const DealRegDetail = () => {
         </Typography>
       ),
     },
-  ];
+    !isCanvas && {
+      key: '2',
+      label: (
+        <Typography
+          name="Body 3/Regular"
+          color="#EB445A"
+          cursor="pointer"
+          onClick={() => {
+            if (activeKey) {
+              setDeleteIds([activeKey]);
+              setShowModalDelete(true);
+            }
+          }}
+        >
+          Delete Selected
+        </Typography>
+      ),
+    },
+  ].filter(Boolean);
 
   const submitDealRegFormFun = async () => {
     const SubmitDealRegForm = submitDealRegForm.getFieldsValue();
@@ -374,6 +398,25 @@ const DealRegDetail = () => {
     }
   };
 
+  const deleteSelectedIds = async () => {
+    const data = {Ids: deleteIds};
+    try {
+      const deletedRecord: any = await dispatch(deleteDealregForm(data));
+      if (deletedRecord?.payload) {
+        const queryData = await dispatch(
+          getDealRegByOpportunityId(Number(getOpportunityId)),
+        );
+        if (queryData?.payload) {
+          setDeleteIds([]);
+          setShowModalDelete(false);
+        }
+      }
+    } catch {
+      setDeleteIds([]);
+      setShowModalDelete(false);
+    }
+  };
+
   return (
     <div>
       <Row justify="space-between" align="middle">
@@ -426,6 +469,8 @@ const DealRegDetail = () => {
           formData={formData}
           setFormData={setFormData}
           setSalesForceDealregData={setSalesForceDealregData}
+          activeKey={activeKey}
+          setActiveKey={setActiveKey}
           ref={dealRegTabsRef}
         />
       </GlobalLoader>
@@ -481,7 +526,19 @@ const DealRegDetail = () => {
         onCancel={() => {
           showElectronBotModal(false);
         }}
-        // primaryButtonText={'Save'}
+        // primaryB
+        //
+        // uttonText={'Save'}
+      />
+
+      <DeleteModal
+        loading={dealRegLoading}
+        setShowModalDelete={setShowModalDelete}
+        setDeleteIds={setDeleteIds}
+        showModalDelete={showModalDelete}
+        deleteSelectedIds={deleteSelectedIds}
+        heading="Delete Dealreg Form"
+        description={'Are you sure you want to delete this form?'}
       />
     </div>
   );

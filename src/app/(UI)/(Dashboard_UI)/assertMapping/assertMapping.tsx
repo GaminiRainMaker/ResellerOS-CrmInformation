@@ -27,7 +27,7 @@ function newAssertMappingColumns(
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Assert Headers
+          Asset Headers
         </Typography>
       ),
       dataIndex: 'pdf_header',
@@ -147,7 +147,7 @@ function approvedAssertMappingColumns(
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Assert Headers
+          Asset Headers
         </Typography>
       ),
       dataIndex: 'pdf_header',
@@ -270,7 +270,7 @@ function rejectAssertMappingColumns(
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Assert Headers
+          Asset Headers
         </Typography>
       ),
       dataIndex: 'pdf_header',

@@ -28,6 +28,10 @@ export const QUOTEAPI = {
     post(API.QUOTE.GetQuotesByDateFilter, data) as Promise<AxiosResponse<any>>,
   getQuoteByID: (id: number) =>
     get(`${API.QUOTE.GetQuoteByID}/${id}`) as Promise<AxiosResponse<any>>,
+  getQuoteByIdForEditQuoteHeader: (id: number) =>
+    get(`${API.QUOTE.getQuoteByIdForEditQuoteHeader}/${id}`) as Promise<
+      AxiosResponse<any>
+    >,
   getQuoteByIdForFormStack: (id: number) =>
     get(`${API.QUOTE.getQuoteByIdForFormStack}/${id}`) as Promise<
       AxiosResponse<any>

@@ -68,6 +68,75 @@ const QuoteMappings = () => {
   const [showError, setShowError] = useState<boolean>(false);
   const [rejectedReason, setRejectedReason] = useState<any>();
   const [errorField, setErrorField] = useState<boolean>(false);
+  const [itemsHeader, setItemsHeader] = useState<any>();
+  const [pdfHeader, setPdfHeader] = useState<any>();
+
+  useEffect(() => {
+    let pdfHeadersValue: any = [];
+    let quoteHeadersValue: any = [];
+
+    if (LineItemSyncingData && LineItemSyncingData?.length > 0) {
+      let pdfHeadersCheck: any = [];
+      let quoteHeadersCheck: any = [];
+      LineItemSyncingData?.map((items: any) => {
+        if (
+          !pdfHeadersCheck?.includes(items?.pdf_header) &&
+          items?.pdf_header
+        ) {
+          pdfHeadersCheck?.push(items?.pdf_header);
+          // pdfHeadersValue?.push({
+          //   label: formatStatus(items?.pdf_header),
+          //   value: items?.pdf_header,
+          // });
+        }
+        if (
+          !quoteHeadersCheck?.includes(items?.quote_header) &&
+          items?.quote_header
+        ) {
+          quoteHeadersCheck?.push(items?.quote_header);
+
+          // quoteHeadersValue?.push({
+          //   label: formatStatus(items?.quote_header),
+          //   value: items?.quote_header,
+          // });
+        }
+      });
+      if (quoteHeadersCheck && quoteHeadersCheck?.length > 0) {
+        console.log();
+        quoteHeadersCheck?.map((items: any) => {
+          quoteHeadersValue?.push({
+            label:
+              items === 'product_code'
+                ? 'SKU'
+                : items === 'adjusted_price'
+                  ? 'Cost'
+                  : items === 'list_price'
+                    ? 'MSRP'
+                    : formatStatus(items),
+            value: items,
+          });
+        });
+      }
+      if (pdfHeadersCheck && pdfHeadersCheck?.length > 0) {
+        pdfHeadersCheck?.map((items: any) => {
+          pdfHeadersValue?.push({label: formatStatus(items), value: items});
+        });
+      }
+    }
+    quoteHeadersValue.sort((a: any, b: any) => {
+      if (a.label < b.label) return -1;
+      if (a.label > b.label) return 1;
+      return 0;
+    });
+    pdfHeadersValue.sort((a: any, b: any) => {
+      if (a.label < b.label) return -1;
+      if (a.label > b.label) return 1;
+      return 0;
+    });
+
+    setItemsHeader(quoteHeadersValue);
+    setPdfHeader(pdfHeadersValue);
+  }, [LineItemSyncingData]);
 
   useEffect(() => {
     dispatch(queryLineItemSyncing(searchQuery));
@@ -369,6 +438,8 @@ const QuoteMappings = () => {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(' ');
   };
+
+  console.log('234532432432', recordData);
   return (
     <>
       <Space direction="vertical" size={24} style={{width: '100%'}}>
@@ -407,28 +478,54 @@ const QuoteMappings = () => {
                     style={{marginRight: '5px'}}
                   >
                     <Typography name="Body 4/Medium">Doc Headers</Typography>
-                    <OsInput
-                      value={query?.searchValuepdfheader}
+
+                    <CommonSelect
+                      placeholder="Select"
+                      // disabled={isDisable}
+                      allowClear
                       onChange={(e: any) => {
                         setQuery({
                           ...query,
-                          searchValuepdfheader: e?.target?.value,
+                          searchValuepdfheader: e,
                         });
                       }}
+                      showSearch
+                      onSearch={(e: any) => {
+                        setQuery({
+                          ...query,
+                          searchValuepdfheader: e,
+                        });
+                      }}
+                      style={{width: '200px'}}
+                      options={pdfHeader}
+                      value={query?.searchValuepdfheader}
                     />
                   </Space>
                   <Space direction="vertical" size={0}>
                     <Typography name="Body 4/Medium">
                       Quote Line Item Headers
                     </Typography>
-                    <OsInput
-                      value={query?.searchValuelineItem}
+
+                    <CommonSelect
+                      placeholder="Select"
+                      // disabled={isDisable}
+                      allowClear
                       onChange={(e: any) => {
                         setQuery({
                           ...query,
-                          searchValuelineItem: e?.target?.value,
+                          searchValuelineItem: e,
                         });
                       }}
+                      showSearch
+                      onSearch={(e: any) => {
+                        setQuery({
+                          ...query,
+                          searchValuelineItem: e,
+                        });
+                      }}
+                      style={{width: '200px'}}
+                      options={itemsHeader}
+                      value={query?.searchValuelineItem}
                     />
                   </Space>
                 </div>

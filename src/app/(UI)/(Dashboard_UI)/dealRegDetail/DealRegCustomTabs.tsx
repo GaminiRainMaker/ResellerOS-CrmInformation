@@ -42,6 +42,8 @@ type DealRegCustomTabsProps = {
   formData: any;
   setFormData: (data: any) => void;
   setSalesForceDealregData: (data: any) => void;
+  activeKey: number | undefined;
+  setActiveKey: any;
 };
 
 export type DealRegCustomTabsHandle = {
@@ -51,250 +53,173 @@ export type DealRegCustomTabsHandle = {
 const DealRegCustomTabs = forwardRef<
   DealRegCustomTabsHandle,
   DealRegCustomTabsProps
->(({form, formData, setFormData, setSalesForceDealregData}, ref) => {
-  const dispatch = useAppDispatch();
-  const [token] = useThemeToken();
-  const searchParams = useSearchParams()!;
-  const {
-    data: DealRegData,
-    getDealRegForNew,
-    finalUpdatedDealRegData,
-  } = useAppSelector((state) => state.dealReg);
-  const [activeKey, setActiveKey] = useState<number>();
-  const [tabItems, setTabItems] = useState([]);
-  const [isData, setIsData] = useState<boolean>(false);
-  const {queryData} = useAppSelector((state) => state.attributeField);
-  const {allPartnersById} = useAppSelector((state) => state.partner);
-  const {allPartnerProgramById} = useAppSelector(
-    (state) => state.partnerProgram,
-  );
-  const getDealRegId = searchParams && searchParams.get('id');
-  const [salesForceDealregById, setSalesForceDealregById] = useState<any>();
-  const {isCanvas, isDecryptedRecord, navigationKey} = useAppSelector(
-    (state) => state.canvas,
-  );
+>(
+  (
+    {
+      form,
+      formData,
+      setFormData,
+      setSalesForceDealregData,
+      activeKey,
+      setActiveKey,
+    },
+    ref,
+  ) => {
+    const dispatch = useAppDispatch();
+    const [token] = useThemeToken();
+    const searchParams = useSearchParams()!;
+    const {
+      data: DealRegData,
+      getDealRegForNew,
+      finalUpdatedDealRegData,
+    } = useAppSelector((state) => state.dealReg);
+    const [tabItems, setTabItems] = useState([]);
+    const [isData, setIsData] = useState<boolean>(false);
+    const {queryData} = useAppSelector((state) => state.attributeField);
+    const {allPartnersById} = useAppSelector((state) => state.partner);
+    const {allPartnerProgramById} = useAppSelector(
+      (state) => state.partnerProgram,
+    );
+    const getDealRegId = searchParams && searchParams.get('id');
+    const [salesForceDealregById, setSalesForceDealregById] = useState<any>();
+    const {isCanvas, isDecryptedRecord, navigationKey} = useAppSelector(
+      (state) => state.canvas,
+    );
 
-  // Initialize variables with default values
-  let salesForceinstanceUrl: string | undefined;
-  let salesForceToken: string | undefined;
-  let salesForceParamsId: string | any;
+    // Initialize variables with default values
+    let salesForceinstanceUrl: string | undefined;
+    let salesForceToken: string | undefined;
+    let salesForceParamsId: string | any;
 
-  if (isCanvas && isDecryptedRecord) {
-    const {client, context} = isDecryptedRecord as any;
-    salesForceinstanceUrl = client?.instanceUrl;
-    salesForceToken = client?.oauthToken;
+    if (isCanvas && isDecryptedRecord) {
+      const {client, context} = isDecryptedRecord as any;
+      salesForceinstanceUrl = client?.instanceUrl;
+      salesForceToken = client?.oauthToken;
 
-    const {environment} = context || {};
-    const {parameters} = environment || {};
-    salesForceParamsId = parameters?.recordId;
-  }
-
-  const [salesforceOpportunityId, setSalesForceOpportunityId] =
-    useState<string>();
-
-  useEffect(() => {
-    if (
-      navigationKey === 'rosdealregai__Partner_Registration__c' &&
-      isDecryptedRecord
-    ) {
-      setSalesForceOpportunityId(
-        isDecryptedRecord?.context?.environment?.parameters?.recordData
-          ?.rosdealregai__Opportunity__c,
-      );
-    } else {
-      setSalesForceOpportunityId(salesForceParamsId);
+      const {environment} = context || {};
+      const {parameters} = environment || {};
+      salesForceParamsId = parameters?.recordId;
     }
-  }, [navigationKey, isDecryptedRecord]);
 
-  useEffect(() => {
-    if (getDealRegId && DealRegData && DealRegData.length > 0 && !isCanvas) {
-      setActiveKey(Number(getDealRegId));
-    } else if (DealRegData && DealRegData.length > 0) {
-      setActiveKey(DealRegData[0]?.id);
-    }
-    if (DealRegData) {
-      dispatch(setFinalUpdatedDealRegData(DealRegData));
-    }
-  }, [DealRegData]);
+    const [salesforceOpportunityId, setSalesForceOpportunityId] =
+      useState<string>();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const obj = {
-        baseURL: salesForceinstanceUrl,
-        token: salesForceToken,
-        opportunityId: salesforceOpportunityId,
-      };
-      if (salesforceOpportunityId && salesForceinstanceUrl && salesForceToken) {
-        try {
-          const res: any = await dispatch(
-            getSalesForceDealregByOpportunityId(obj),
-          );
-          const newdata = await fetchAndDecryptRecords(
-            res?.payload,
-            SECRET_KEY as string,
-          );
-          if (newdata) {
-            const finalData = await updateSalesForceData(
-              newdata,
-              allPartnersById,
-              allPartnerProgramById,
-              dispatch,
-              setIsData,
+    useEffect(() => {
+      if (
+        navigationKey === 'rosdealregai__Partner_Registration__c' &&
+        isDecryptedRecord
+      ) {
+        setSalesForceOpportunityId(
+          isDecryptedRecord?.context?.environment?.parameters?.recordData
+            ?.rosdealregai__Opportunity__c,
+        );
+      } else {
+        setSalesForceOpportunityId(salesForceParamsId);
+      }
+    }, [navigationKey, isDecryptedRecord]);
+
+    useEffect(() => {
+      if (getDealRegId && DealRegData && DealRegData.length > 0 && !isCanvas) {
+        setActiveKey(Number(getDealRegId));
+      } else if (DealRegData && DealRegData.length > 0) {
+        setActiveKey(DealRegData[0]?.id);
+      }
+      if (DealRegData) {
+        dispatch(setFinalUpdatedDealRegData(DealRegData));
+      }
+    }, [DealRegData]);
+
+    useEffect(() => {
+      const fetchData = async () => {
+        const obj = {
+          baseURL: salesForceinstanceUrl,
+          token: salesForceToken,
+          opportunityId: salesforceOpportunityId,
+        };
+        if (
+          salesforceOpportunityId &&
+          salesForceinstanceUrl &&
+          salesForceToken
+        ) {
+          try {
+            const res: any = await dispatch(
+              getSalesForceDealregByOpportunityId(obj),
             );
-            if (finalData) {
-              setSalesForceDealregData(finalData);
-              setActiveKey(finalData[0]?.id);
-              dispatch(setFinalUpdatedDealRegData(finalData));
+            const newdata = await fetchAndDecryptRecords(
+              res?.payload,
+              SECRET_KEY as string,
+            );
+            if (newdata) {
+              const finalData = await updateSalesForceData(
+                newdata,
+                allPartnersById,
+                allPartnerProgramById,
+                dispatch,
+                setIsData,
+              );
+              if (finalData) {
+                setSalesForceDealregData(finalData);
+                setActiveKey(finalData[0]?.id);
+                dispatch(setFinalUpdatedDealRegData(finalData));
+              }
             }
+          } catch (error) {
+            console.error(
+              'Error fetching salesforce deal registration data:',
+              error,
+            );
           }
-        } catch (error) {
-          console.error(
-            'Error fetching salesforce deal registration data:',
-            error,
-          );
         }
+      };
+
+      fetchData();
+    }, [isData, salesforceOpportunityId]);
+
+    const callDealregApi = async (obj: any) => {
+      try {
+        // Wait for the dispatch to complete and get the result
+        const d: any = await dispatch(getSalesForceDealregById(obj));
+        const newdata = await fetchAndDecryptRecords(
+          d?.payload,
+          SECRET_KEY as string,
+        );
+        if (newdata) {
+          const finalData = await updateSalesForceData(
+            newdata,
+            allPartnersById,
+            allPartnerProgramById,
+            dispatch,
+            setIsData,
+          );
+          // console.log('finalData3333', finalData, d?.payload);
+          setSalesForceDealregById(finalData);
+        }
+        // Set salesForceDealregById after the update
+      } catch (error) {
+        console.error('Error calling Dealreg API:', error);
       }
     };
 
-    fetchData();
-  }, [isData, salesforceOpportunityId]);
-
-  const callDealregApi = async (obj: any) => {
-    try {
-      // Wait for the dispatch to complete and get the result
-      const d: any = await dispatch(getSalesForceDealregById(obj));
-      const newdata = await fetchAndDecryptRecords(
-        d?.payload,
-        SECRET_KEY as string,
-      );
-      if (newdata) {
-        const finalData = await updateSalesForceData(
-          newdata,
-          allPartnersById,
-          allPartnerProgramById,
-          dispatch,
-          setIsData,
-        );
-        // console.log('finalData3333', finalData, d?.payload);
-        setSalesForceDealregById(finalData);
+    useEffect(() => {
+      if (activeKey && !salesForceinstanceUrl) {
+        dispatch(getDealRegById(activeKey));
+      } else if (activeKey && salesForceinstanceUrl) {
+        // call salesforce API get dealreg By id
+        let obj = {
+          baseURL: salesForceinstanceUrl,
+          token: salesForceToken,
+          dealRegId: activeKey,
+        };
+        callDealregApi(obj);
       }
-      // Set salesForceDealregById after the update
-    } catch (error) {
-      console.error('Error calling Dealreg API:', error);
-    }
-  };
+    }, [activeKey]);
 
-  useEffect(() => {
-    if (activeKey && !salesForceinstanceUrl) {
-      dispatch(getDealRegById(activeKey));
-    } else if (activeKey && salesForceinstanceUrl) {
-      // call salesforce API get dealreg By id
-      let obj = {
-        baseURL: salesForceinstanceUrl,
-        token: salesForceToken,
-        dealRegId: activeKey,
-      };
-      callDealregApi(obj);
-    }
-  }, [activeKey]);
-
-  useEffect(() => {
-    const selectedDealRegData =
-      (salesForceDealregById?.length > 0 && salesForceDealregById?.[0]) ||
-      getDealRegForNew;
-    if (selectedDealRegData && Object.keys(selectedDealRegData).length > 0) {
-      let finalDealReg = selectedDealRegData;
-      let commonFormData =
-        typeof finalDealReg?.common_form_data === 'string' &&
-        finalDealReg?.common_form_data !== ''
-          ? JSON.parse(finalDealReg?.common_form_data)
-          : Array.isArray(finalDealReg?.common_form_data) &&
-              finalDealReg?.common_form_data.length === 0
-            ? []
-            : finalDealReg?.common_form_data;
-
-      let uniqueFormData =
-        typeof finalDealReg?.unique_form_data === 'string' &&
-        finalDealReg?.unique_form_data !== ''
-          ? JSON.parse(finalDealReg?.unique_form_data)
-          : Array.isArray(finalDealReg?.unique_form_data) &&
-              finalDealReg?.unique_form_data.length === 0
-            ? []
-            : finalDealReg?.unique_form_data;
-
-      const obj = {
-        common_form_data:
-          commonFormData && commonFormData.length > 0
-            ? JSON?.parse(commonFormData?.[0])
-            : {},
-        unique_form_data:
-          uniqueFormData && uniqueFormData.length > 0
-            ? JSON?.parse(uniqueFormData?.[0])
-            : {},
-        id: finalDealReg?.id,
-        unique_template:
-          finalDealReg?.PartnerProgram?.form_data &&
-          finalDealReg?.PartnerProgram?.form_data?.length > 0
-            ? JSON.parse(finalDealReg?.PartnerProgram?.form_data?.[0])
-            : {},
-        common_template: queryData,
-        Partner: finalDealReg?.Partner,
-        PartnerProgram: finalDealReg?.PartnerProgram,
-        partner_approval_id:
-          finalDealReg?.partner_approval_id ??
-          finalDealReg?.rosdealregai__Partner_Approval_ID__c,
-        partner_deal_id:
-          finalDealReg?.partner_deal_id ??
-          finalDealReg?.rosdealregai__Partner_Deal_ID__c,
-        expiration_date:
-          finalDealReg?.expiration_date ??
-          finalDealReg?.rosdealregai__Expiration_Date__c,
-        submitted_date:
-          finalDealReg?.submitted_date ??
-          finalDealReg?.rosdealregai__Submitted_Date__c,
-        status: finalDealReg?.status ?? finalDealReg?.rosdealregai__Status__c,
-        type: finalDealReg?.type,
-      };
-      setFormData(obj);
-    }
-  }, [getDealRegForNew, salesForceDealregById]);
-
-  useEffect(() => {
-    dispatch(queryAttributeFieldForForm(''));
-  }, [dispatch]);
-
-  const updateDealRegFinalData = (activeKey: any, formObj: any) => {
-    const updatedData = finalUpdatedDealRegData?.map((item: any) =>
-      item?.id === activeKey ? {...item, ...formObj} : item,
-    );
-    dispatch(setFinalUpdatedDealRegData(updatedData));
-  };
-
-  const onFinish = async () => {
-    const commonFieldFormData = form.getFieldsValue();
-    const commonFieldObject: any = {};
-    const responseFieldObject: any = {};
-
-    const uniqueFieldObject: any = {};
-    let finalDealReg: any = {};
-
-    if (commonFieldFormData) {
-      for (const [key, value] of Object?.entries(commonFieldFormData)) {
-        if (key?.startsWith('c_')) {
-          commonFieldObject[key] = value;
-        } else if (key?.startsWith('u_')) {
-          uniqueFieldObject[key] = value;
-        } else {
-          responseFieldObject[key] = value;
-        }
-      }
+    useEffect(() => {
       const selectedDealRegData =
         (salesForceDealregById?.length > 0 && salesForceDealregById?.[0]) ||
         getDealRegForNew;
-
-      if (selectedDealRegData && Object?.keys(selectedDealRegData).length > 0) {
-        finalDealReg = selectedDealRegData;
-
+      if (selectedDealRegData && Object.keys(selectedDealRegData).length > 0) {
+        let finalDealReg = selectedDealRegData;
         let commonFormData =
           typeof finalDealReg?.common_form_data === 'string' &&
           finalDealReg?.common_form_data !== ''
@@ -313,298 +238,396 @@ const DealRegCustomTabs = forwardRef<
               ? []
               : finalDealReg?.unique_form_data;
 
-        const parsedCommonFormData = commonFormData?.[0]
-          ? JSON.parse(commonFormData[0])
-          : {};
-        const parsedUniqueFormData = uniqueFormData?.[0]
-          ? JSON.parse(uniqueFormData[0])
-          : {};
-
-        // Iterate over all keys in parsedUniqueFormData
-        Object.keys(parsedCommonFormData).forEach((key) => {
-          // Extract the ID from parsedUniqueFormData key
-          const arr = Object.keys(commonFieldObject);
-          if (!arr.includes(key)) {
-            commonFieldObject[key] = parsedCommonFormData[key];
-          }
-        });
-
-        // Iterate over all keys in parsedUniqueFormData
-        Object.keys(parsedUniqueFormData).forEach((key) => {
-          // Extract the ID from parsedUniqueFormData key
-          const arr = Object.keys(uniqueFieldObject);
-          if (!arr.includes(key)) {
-            uniqueFieldObject[key] = parsedUniqueFormData[key];
-          }
-        });
+        const obj = {
+          common_form_data:
+            commonFormData && commonFormData.length > 0
+              ? JSON?.parse(commonFormData?.[0])
+              : {},
+          unique_form_data:
+            uniqueFormData && uniqueFormData.length > 0
+              ? JSON?.parse(uniqueFormData?.[0])
+              : {},
+          id: finalDealReg?.id,
+          unique_template:
+            finalDealReg?.PartnerProgram?.form_data &&
+            finalDealReg?.PartnerProgram?.form_data?.length > 0
+              ? JSON.parse(finalDealReg?.PartnerProgram?.form_data?.[0])
+              : {},
+          common_template: queryData,
+          Partner: finalDealReg?.Partner,
+          PartnerProgram: finalDealReg?.PartnerProgram,
+          partner_approval_id:
+            finalDealReg?.partner_approval_id ??
+            finalDealReg?.rosdealregai__Partner_Approval_ID__c,
+          partner_deal_id:
+            finalDealReg?.partner_deal_id ??
+            finalDealReg?.rosdealregai__Partner_Deal_ID__c,
+          expiration_date:
+            finalDealReg?.expiration_date ??
+            finalDealReg?.rosdealregai__Expiration_Date__c,
+          submitted_date:
+            finalDealReg?.submitted_date ??
+            finalDealReg?.rosdealregai__Submitted_Date__c,
+          status: finalDealReg?.status ?? finalDealReg?.rosdealregai__Status__c,
+          type: finalDealReg?.type,
+        };
+        setFormData(obj);
       }
-      const tabPercentage = calculateTabBarPercentage(
-        finalDealReg?.PartnerProgram?.form_data,
-        queryData,
-        uniqueFieldObject,
-        commonFieldObject,
-        false,
-        finalDealReg?.type,
+    }, [getDealRegForNew, salesForceDealregById]);
+
+    useEffect(() => {
+      dispatch(queryAttributeFieldForForm(''));
+    }, [dispatch]);
+
+    const updateDealRegFinalData = (activeKey: any, formObj: any) => {
+      const updatedData = finalUpdatedDealRegData?.map((item: any) =>
+        item?.id === activeKey ? {...item, ...formObj} : item,
       );
+      dispatch(setFinalUpdatedDealRegData(updatedData));
+    };
 
-      const obj = {
-        common_form_data: [JSON.stringify(commonFieldObject)],
-        unique_form_data: [JSON.stringify(uniqueFieldObject)],
-        id: activeKey,
-      };
-      const formObj = {
-        common_form_data: commonFieldObject,
-        unique_form_data: uniqueFieldObject,
-        id: activeKey,
-        unique_template:
-          finalDealReg?.PartnerProgram?.form_data &&
-          finalDealReg?.PartnerProgram?.form_data?.length > 0
-            ? JSON.parse(finalDealReg?.PartnerProgram?.form_data?.[0])
-            : {},
-        common_template: queryData,
-        Partner: finalDealReg?.Partner,
-        PartnerProgram: finalDealReg?.PartnerProgram,
-        partner_approval_id: isCanvas
-          ? responseFieldObject?.partner_approval_id || ''
-          : finalDealReg?.partner_approval_id,
-        partner_deal_id: isCanvas
-          ? responseFieldObject?.partner_deal_id || ''
-          : finalDealReg?.partner_deal_id,
-        expiration_date: isCanvas
-          ? dayjs(responseFieldObject?.expiration_date).isValid()
-            ? dayjs(responseFieldObject?.expiration_date)
-                .hour(18)
-                .minute(30)
-                .second(0)
-                .millisecond(0)
-                .toISOString()
-            : ''
-          : finalDealReg?.expiration_date,
-        submitted_date: isCanvas
-          ? dayjs(responseFieldObject?.submitted_date).isValid()
-            ? dayjs(responseFieldObject?.submitted_date)
-                .hour(18)
-                .minute(30)
-                .second(0)
-                .millisecond(0)
-                .toISOString()
-            : ''
-          : finalDealReg?.submitted_date,
-        status: isCanvas
-          ? responseFieldObject?.status || ''
-          : finalDealReg?.status,
-      };
-      const newObj = {
-        common_form_data: [JSON.stringify(commonFieldObject)],
-        unique_form_data: [JSON.stringify(uniqueFieldObject)],
-        id: activeKey,
-        unique_template: finalDealReg?.PartnerProgram?.form_data,
-        common_template: queryData,
-        Partner: finalDealReg?.Partner,
-        PartnerProgram: finalDealReg?.PartnerProgram,
-        partner_approval_id: isCanvas
-          ? responseFieldObject?.partner_approval_id || ''
-          : finalDealReg?.partner_approval_id,
-        partner_deal_id: isCanvas
-          ? responseFieldObject?.partner_deal_id || ''
-          : finalDealReg?.partner_deal_id,
-        expiration_date: isCanvas
-          ? dayjs(responseFieldObject?.expiration_date).isValid()
-            ? dayjs(responseFieldObject?.expiration_date)
-                .hour(18)
-                .minute(30)
-                .second(0)
-                .millisecond(0)
-                .toISOString()
-            : ''
-          : finalDealReg?.expiration_date,
-        submitted_date: isCanvas
-          ? dayjs(responseFieldObject?.submitted_date).isValid()
-            ? dayjs(responseFieldObject?.submitted_date)
-                .hour(18)
-                .minute(30)
-                .second(0)
-                .millisecond(0)
-                .toISOString()
-            : ''
-          : finalDealReg?.submitted_date,
-        status: isCanvas
-          ? responseFieldObject?.status || ''
-          : finalDealReg?.status,
-        percentage: tabPercentage,
-      };
+    const onFinish = async () => {
+      const commonFieldFormData = form.getFieldsValue();
+      const commonFieldObject: any = {};
+      const responseFieldObject: any = {};
 
-      // return;
+      const uniqueFieldObject: any = {};
+      let finalDealReg: any = {};
 
-      setFormData(formObj);
-      updateDealRegFinalData(activeKey, newObj);
-
-      if (obj && !isCanvas) {
-        await dispatch(updateDealRegById(obj));
-        if (activeKey && tabPercentage > 0 && tabPercentage < 100) {
-          const statusObj = {
-            id: activeKey,
-            status: 'In Progress',
-          };
-          dispatch(updateDealRegStatus(statusObj));
+      if (commonFieldFormData) {
+        for (const [key, value] of Object?.entries(commonFieldFormData)) {
+          if (key?.startsWith('c_')) {
+            commonFieldObject[key] = value;
+          } else if (key?.startsWith('u_')) {
+            uniqueFieldObject[key] = value;
+          } else {
+            responseFieldObject[key] = value;
+          }
         }
-      } else if (newObj && isCanvas) {
-        const finalObj: any = {
+        const selectedDealRegData =
+          (salesForceDealregById?.length > 0 && salesForceDealregById?.[0]) ||
+          getDealRegForNew;
+
+        if (
+          selectedDealRegData &&
+          Object?.keys(selectedDealRegData).length > 0
+        ) {
+          finalDealReg = selectedDealRegData;
+
+          let commonFormData =
+            typeof finalDealReg?.common_form_data === 'string' &&
+            finalDealReg?.common_form_data !== ''
+              ? JSON.parse(finalDealReg?.common_form_data)
+              : Array.isArray(finalDealReg?.common_form_data) &&
+                  finalDealReg?.common_form_data.length === 0
+                ? []
+                : finalDealReg?.common_form_data;
+
+          let uniqueFormData =
+            typeof finalDealReg?.unique_form_data === 'string' &&
+            finalDealReg?.unique_form_data !== ''
+              ? JSON.parse(finalDealReg?.unique_form_data)
+              : Array.isArray(finalDealReg?.unique_form_data) &&
+                  finalDealReg?.unique_form_data.length === 0
+                ? []
+                : finalDealReg?.unique_form_data;
+
+          const parsedCommonFormData = commonFormData?.[0]
+            ? JSON.parse(commonFormData[0])
+            : {};
+          const parsedUniqueFormData = uniqueFormData?.[0]
+            ? JSON.parse(uniqueFormData[0])
+            : {};
+
+          // Iterate over all keys in parsedUniqueFormData
+          Object.keys(parsedCommonFormData).forEach((key) => {
+            // Extract the ID from parsedUniqueFormData key
+            const arr = Object.keys(commonFieldObject);
+            if (!arr.includes(key)) {
+              commonFieldObject[key] = parsedCommonFormData[key];
+            }
+          });
+
+          // Iterate over all keys in parsedUniqueFormData
+          Object.keys(parsedUniqueFormData).forEach((key) => {
+            // Extract the ID from parsedUniqueFormData key
+            const arr = Object.keys(uniqueFieldObject);
+            if (!arr.includes(key)) {
+              uniqueFieldObject[key] = parsedUniqueFormData[key];
+            }
+          });
+        }
+        const tabPercentage = calculateTabBarPercentage(
+          finalDealReg?.PartnerProgram?.form_data,
+          queryData,
+          uniqueFieldObject,
+          commonFieldObject,
+          false,
+          finalDealReg?.type,
+        );
+
+        const obj = {
           common_form_data: [JSON.stringify(commonFieldObject)],
           unique_form_data: [JSON.stringify(uniqueFieldObject)],
           id: activeKey,
-          baseURL: salesForceinstanceUrl,
-          token: salesForceToken,
+        };
+        const formObj = {
+          common_form_data: commonFieldObject,
+          unique_form_data: uniqueFieldObject,
+          id: activeKey,
+          unique_template:
+            finalDealReg?.PartnerProgram?.form_data &&
+            finalDealReg?.PartnerProgram?.form_data?.length > 0
+              ? JSON.parse(finalDealReg?.PartnerProgram?.form_data?.[0])
+              : {},
+          common_template: queryData,
+          Partner: finalDealReg?.Partner,
+          PartnerProgram: finalDealReg?.PartnerProgram,
+          partner_approval_id: isCanvas
+            ? responseFieldObject?.partner_approval_id || ''
+            : finalDealReg?.partner_approval_id,
+          partner_deal_id: isCanvas
+            ? responseFieldObject?.partner_deal_id || ''
+            : finalDealReg?.partner_deal_id,
+          expiration_date: isCanvas
+            ? dayjs(responseFieldObject?.expiration_date).isValid()
+              ? dayjs(responseFieldObject?.expiration_date)
+                  .hour(18)
+                  .minute(30)
+                  .second(0)
+                  .millisecond(0)
+                  .toISOString()
+              : ''
+            : finalDealReg?.expiration_date,
+          submitted_date: isCanvas
+            ? dayjs(responseFieldObject?.submitted_date).isValid()
+              ? dayjs(responseFieldObject?.submitted_date)
+                  .hour(18)
+                  .minute(30)
+                  .second(0)
+                  .millisecond(0)
+                  .toISOString()
+              : ''
+            : finalDealReg?.submitted_date,
+          status: isCanvas
+            ? responseFieldObject?.status || ''
+            : finalDealReg?.status,
+        };
+        const newObj = {
+          common_form_data: [JSON.stringify(commonFieldObject)],
+          unique_form_data: [JSON.stringify(uniqueFieldObject)],
+          id: activeKey,
+          unique_template: finalDealReg?.PartnerProgram?.form_data,
+          common_template: queryData,
+          Partner: finalDealReg?.Partner,
+          PartnerProgram: finalDealReg?.PartnerProgram,
+          partner_approval_id: isCanvas
+            ? responseFieldObject?.partner_approval_id || ''
+            : finalDealReg?.partner_approval_id,
+          partner_deal_id: isCanvas
+            ? responseFieldObject?.partner_deal_id || ''
+            : finalDealReg?.partner_deal_id,
+          expiration_date: isCanvas
+            ? dayjs(responseFieldObject?.expiration_date).isValid()
+              ? dayjs(responseFieldObject?.expiration_date)
+                  .hour(18)
+                  .minute(30)
+                  .second(0)
+                  .millisecond(0)
+                  .toISOString()
+              : ''
+            : finalDealReg?.expiration_date,
+          submitted_date: isCanvas
+            ? dayjs(responseFieldObject?.submitted_date).isValid()
+              ? dayjs(responseFieldObject?.submitted_date)
+                  .hour(18)
+                  .minute(30)
+                  .second(0)
+                  .millisecond(0)
+                  .toISOString()
+              : ''
+            : finalDealReg?.submitted_date,
+          status: isCanvas
+            ? responseFieldObject?.status || ''
+            : finalDealReg?.status,
           percentage: tabPercentage,
         };
 
-        // Encrypt and replace `common_form_data` if it exists
-        if (finalObj?.common_form_data) {
-          const commonFormDataString = JSON.stringify(
-            finalObj.common_form_data,
-          ); // Convert to string
-          const {iv, data} = await encrypt(
-            commonFormDataString,
-            SECRET_KEY as string,
-          ); // Encrypt
-          finalObj.common_form_data = `${iv}:${data}`; // Replace with encrypted value
-        }
+        // return;
 
-        // Encrypt and replace `unique_form_data` if it exists
-        if (finalObj?.unique_form_data) {
-          const uniqueFormDataString = JSON.stringify(
-            finalObj.unique_form_data,
-          ); // Convert to string
-          const {iv, data} = await encrypt(
-            uniqueFormDataString,
-            SECRET_KEY as string,
-          ); // Encrypt
-          finalObj.unique_form_data = `${iv}:${data}`; // Replace with encrypted value
-          finalObj.rosdealregai__Status__c = responseFieldObject?.status || '';
-          finalObj.rosdealregai__Partner_Deal_ID__c =
-            responseFieldObject?.partner_deal_id || '';
-          finalObj.rosdealregai__Partner_Approval_ID__c =
-            responseFieldObject?.partner_approval_id || '';
-          finalObj.rosdealregai__Expiration_Date__c =
-            responseFieldObject.expiration_date
-              ? new Date(
-                  responseFieldObject.expiration_date,
-                ).toLocaleDateString('en-CA')
-              : new Date().toLocaleDateString('en-CA');
-          finalObj.rosdealregai__Submitted_Date__c =
-            responseFieldObject.submitted_date
-              ? new Date(responseFieldObject.submitted_date).toLocaleDateString(
-                  'en-CA',
-                )
-              : new Date().toLocaleDateString('en-CA');
-        }
-        dispatch(updateSalesForceDealregById(finalObj));
-      }
-    }
-  };
+        setFormData(formObj);
+        updateDealRegFinalData(activeKey, newObj);
 
-  useEffect(() => {
-    if (!finalUpdatedDealRegData) {
-      setTabItems([]);
-      return;
-    }
-    const newTabItems =
-      finalUpdatedDealRegData &&
-      finalUpdatedDealRegData?.map((element: any) => {
-        if (element) {
-          const {Partner, PartnerProgram, id, type} = element;
-          const isActive = activeKey?.toString() === id?.toString();
-          const tabPercentage: number = calculateTabBarPercentage(
-            element?.PartnerProgram?.form_data,
-            queryData,
-            element?.unique_form_data,
-            element?.common_form_data,
-            true,
-            type || 'registered',
-          );
-          const headerStyle = {
-            background: isActive ? token.colorInfo : token.colorInfoBg,
+        if (obj && !isCanvas) {
+          await dispatch(updateDealRegById(obj));
+          if (activeKey && tabPercentage > 0 && tabPercentage < 100) {
+            const statusObj = {
+              id: activeKey,
+              status: 'In Progress',
+            };
+            dispatch(updateDealRegStatus(statusObj));
+          }
+        } else if (newObj && isCanvas) {
+          const finalObj: any = {
+            common_form_data: [JSON.stringify(commonFieldObject)],
+            unique_form_data: [JSON.stringify(uniqueFieldObject)],
+            id: activeKey,
+            baseURL: salesForceinstanceUrl,
+            token: salesForceToken,
+            percentage: tabPercentage,
           };
-          const textColor = isActive
-            ? token.colorBgContainer
-            : token?.colorTextDisabled;
-          const ribbonColor = isActive ? token.colorPrimary : token?.colorInfo;
-          return {
-            key: id,
-            label: (
-              <Row
-                key={id}
-                gutter={[0, 10]}
-                style={{width: 'fit-content', margin: '24px 0px'}}
-              >
-                <Badge.Ribbon
-                  text="Self Registered"
-                  color={ribbonColor}
-                  style={{
-                    marginRight: '24px',
-                    display:
-                      (isCanvas &&
-                        element?.rosdealregai__Registration_Type__c ===
-                          'self_registered') ||
-                      (!isCanvas && element?.type === 'self_registered')
-                        ? ''
-                        : 'none',
-                  }}
+
+          // Encrypt and replace `common_form_data` if it exists
+          if (finalObj?.common_form_data) {
+            const commonFormDataString = JSON.stringify(
+              finalObj.common_form_data,
+            ); // Convert to string
+            const {iv, data} = await encrypt(
+              commonFormDataString,
+              SECRET_KEY as string,
+            ); // Encrypt
+            finalObj.common_form_data = `${iv}:${data}`; // Replace with encrypted value
+          }
+
+          // Encrypt and replace `unique_form_data` if it exists
+          if (finalObj?.unique_form_data) {
+            const uniqueFormDataString = JSON.stringify(
+              finalObj.unique_form_data,
+            ); // Convert to string
+            const {iv, data} = await encrypt(
+              uniqueFormDataString,
+              SECRET_KEY as string,
+            ); // Encrypt
+            finalObj.unique_form_data = `${iv}:${data}`; // Replace with encrypted value
+            finalObj.rosdealregai__Status__c =
+              responseFieldObject?.status || '';
+            finalObj.rosdealregai__Partner_Deal_ID__c =
+              responseFieldObject?.partner_deal_id || '';
+            finalObj.rosdealregai__Partner_Approval_ID__c =
+              responseFieldObject?.partner_approval_id || '';
+            finalObj.rosdealregai__Expiration_Date__c =
+              responseFieldObject.expiration_date
+                ? new Date(
+                    responseFieldObject.expiration_date,
+                  ).toLocaleDateString('en-CA')
+                : new Date().toLocaleDateString('en-CA');
+            finalObj.rosdealregai__Submitted_Date__c =
+              responseFieldObject.submitted_date
+                ? new Date(
+                    responseFieldObject.submitted_date,
+                  ).toLocaleDateString('en-CA')
+                : new Date().toLocaleDateString('en-CA');
+          }
+          dispatch(updateSalesForceDealregById(finalObj));
+        }
+      }
+    };
+
+    useEffect(() => {
+      if (!finalUpdatedDealRegData) {
+        setTabItems([]);
+        return;
+      }
+      const newTabItems =
+        finalUpdatedDealRegData &&
+        finalUpdatedDealRegData?.map((element: any) => {
+          if (element) {
+            const {Partner, PartnerProgram, id, type} = element;
+            const isActive = activeKey?.toString() === id?.toString();
+            const tabPercentage: number = calculateTabBarPercentage(
+              element?.PartnerProgram?.form_data,
+              queryData,
+              element?.unique_form_data,
+              element?.common_form_data,
+              true,
+              type || 'registered',
+            );
+            const headerStyle = {
+              background: isActive ? token.colorInfo : token.colorInfoBg,
+            };
+            const textColor = isActive
+              ? token.colorBgContainer
+              : token?.colorTextDisabled;
+            const ribbonColor = isActive
+              ? token.colorPrimary
+              : token?.colorInfo;
+            return {
+              key: id,
+              label: (
+                <Row
+                  key={id}
+                  gutter={[0, 10]}
+                  style={{width: 'fit-content', margin: '24px 0px'}}
                 >
-                  <DealRegCustomTabHeaderStyle
-                    token={token}
-                    style={headerStyle}
-                    onClick={() => {
-                      setActiveKey(id);
+                  <Badge.Ribbon
+                    text="Self Registered"
+                    color={ribbonColor}
+                    style={{
+                      marginRight: '24px',
+                      display:
+                        (isCanvas &&
+                          element?.rosdealregai__Registration_Type__c ===
+                            'self_registered') ||
+                        (!isCanvas && element?.type === 'self_registered')
+                          ? ''
+                          : 'none',
                     }}
                   >
-                    <Space>
-                      <CustomProgress
-                        isActive={isActive}
-                        token={token}
-                        percent={tabPercentage || element?.percentage}
-                      />
-                      <Typography
-                        style={{color: textColor}}
-                        cursor="pointer"
-                        name="Button 1"
-                      >
-                        {`${formatStatus(Partner?.partner)} - ${formatStatus(PartnerProgram?.partner_program)}`}
-                      </Typography>
-                    </Space>
-                  </DealRegCustomTabHeaderStyle>
-                </Badge.Ribbon>
-              </Row>
-            ),
-            children: (
-              <div key={id}>
-                <DealRegDetailForm
-                  data={element}
-                  activeKey={activeKey}
-                  form={form}
-                  handleBlur={onFinish}
-                  formData={formData}
-                />
-              </div>
-            ),
-          };
-        }
-      });
+                    <DealRegCustomTabHeaderStyle
+                      token={token}
+                      style={headerStyle}
+                      onClick={() => {
+                        setActiveKey(id);
+                      }}
+                    >
+                      <Space>
+                        <CustomProgress
+                          isActive={isActive}
+                          token={token}
+                          percent={tabPercentage || element?.percentage}
+                        />
+                        <Typography
+                          style={{color: textColor}}
+                          cursor="pointer"
+                          name="Button 1"
+                        >
+                          {`${formatStatus(Partner?.partner)} - ${formatStatus(PartnerProgram?.partner_program)}`}
+                        </Typography>
+                      </Space>
+                    </DealRegCustomTabHeaderStyle>
+                  </Badge.Ribbon>
+                </Row>
+              ),
+              children: (
+                <div key={id}>
+                  <DealRegDetailForm
+                    data={element}
+                    activeKey={activeKey}
+                    form={form}
+                    handleBlur={onFinish}
+                    formData={formData}
+                  />
+                </div>
+              ),
+            };
+          }
+        });
 
-    setTabItems(newTabItems);
-  }, [finalUpdatedDealRegData, activeKey, token, dispatch, formData]);
+      setTabItems(newTabItems);
+    }, [finalUpdatedDealRegData, activeKey, token, dispatch, formData]);
 
-  useImperativeHandle(ref, () => ({
-    onFinish,
-  }));
+    useImperativeHandle(ref, () => ({
+      onFinish,
+    }));
 
-  return (
-    <CustmDealRegTab
-      token={token}
-      activeKey={activeKey as any}
-      items={tabItems}
-    />
-  );
-});
+    return (
+      <CustmDealRegTab
+        token={token}
+        activeKey={activeKey as any}
+        items={tabItems}
+      />
+    );
+  },
+);
 
 export default DealRegCustomTabs;

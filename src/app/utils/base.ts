@@ -108,7 +108,13 @@ export const calculateProfitabilityData = (
 };
 
 export const useRemoveDollarAndCommahook = (value: any) => {
-  const cleanedD = value && value?.replace(/\$|,/g, '');
+  const cleanedD =
+    value &&
+    value
+      ?.replace(/\$|,/g, '')
+      ?.toString()
+      ?.replace(/[^0-9]/g, '')
+      .replace(/^0+/, '');
   const numberD = parseFloat(cleanedD);
   return numberD;
 };
