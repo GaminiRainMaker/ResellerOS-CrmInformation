@@ -21,11 +21,12 @@ import {useEffect, useState} from 'react';
 import {contactSales} from '../../../../../redux/actions/auth';
 import {
   activateTrailPhase,
-  getActiveLicensesByOrg,
+  getActiveLicensesByOrgUserId,
 } from '../../../../../redux/actions/license';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import ContactSales from './ContactSales';
 import {CustomCardStyle} from './styled-components';
+import TrialBanner from '@/app/components/common/trialBanner/TrialBanner';
 
 const Dashboard = () => {
   const [token] = useThemeToken();
@@ -42,6 +43,7 @@ const Dashboard = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showTrailModal, setShowTrailModal] = useState<boolean>(false);
   const [licenseMessage, setLicenseMessage] = useState<string>('');
+  const [currentQuoteLicense, setCurrentQuoteLicense] = useState<any>();
 
   const ContactData = [
     {
@@ -110,12 +112,11 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    if (userInformation) {
+    if (userInformation?.id) {
       dispatch(
-        getActiveLicensesByOrg({org_id: userInformation?.organization}),
+        getActiveLicensesByOrgUserId({user_id: userInformation?.id}),
       ).then((data) => {
         if (data?.payload) {
-          // debugger;
           if (data?.payload.activeLicenses?.length > 0) {
             const demoLicense = data?.payload?.activeLicenses?.find(
               (l: any) => l.license_type === 'demo',
@@ -125,7 +126,7 @@ const Dashboard = () => {
             );
 
             if (demoLicense) {
-              setLicenseMessage('You are currently in the Demo phase.');
+              setLicenseMessage('You are currently in the Demo phase. Please subscribe for continued access.');
             } else if (trialLicense) {
               setLicenseMessage(
                 'You are now in the Trial phase. Please subscribe for continued access.',
@@ -137,9 +138,22 @@ const Dashboard = () => {
     }
   }, [userInformation]);
 
+  useEffect(() => {
+    if (activeLicensesByOrg) {
+      setCurrentQuoteLicense(
+        activeLicensesByOrg?.activeLicenses?.find(
+          (l: any) => l?.feature_name === 'QuoteAI',
+        ),
+      );
+    }
+  }, [activeLicensesByOrg]);
 
   return (
-    <GlobalLoader loading={cacheFlowLoading}>
+    <GlobalLoader loading={licenseLoading}>
+      <TrialBanner
+        trialExpiry={currentQuoteLicense?.expiration_date}
+        licenseMessage={licenseMessage}
+      />
       {isSubscribed &&
       userInformation?.Role === 'reseller' &&
       (userInformation?.DealReg || userInformation?.QuoteAI) ? (
@@ -221,113 +235,82 @@ const Dashboard = () => {
             </Col>
           </Row>
         </Tag>
-      ) : activeLicensesByOrg?.activeLicenses?.length > 0 ? (
-        <Tag
-          style={{
-            display: 'flex',
-            padding: '20px',
-            borderRadius: '4px',
-            border: `1px solid ${token?.colorWarning}`,
-          }}
-          color="success"
-        >
-          <Row justify="space-between" style={{width: '100%'}} align="middle">
-            <Col span={12}>
-              <>
-                <Avatar
-                  size={24}
-                  style={{
-                    marginTop: '-12px',
-                    marginRight: '5px',
-                    background: 'none',
-                  }}
-                  icon={
-                    <CheckBadgeIcon width={24} color={token?.colorWarning} />
-                  }
-                />
-
-                <Typography color={token?.colorWarning} name="Heading 3/Bold">
-                  {licenseMessage ?? '--'}
-                </Typography>
-              </>
-            </Col>
-          </Row>
-        </Tag>
       ) : (
-        <>
-          <Space direction="vertical" size={24}>
-            <Tag
-              style={{
-                display: 'flex',
-                padding: '20px',
-                borderRadius: '4px',
-                border: `1px solid ${token?.colorError}`,
-              }}
-              color="error"
-            >
-              <Row
-                justify="space-between"
-                style={{width: '100%'}}
-                align="middle"
-              >
-                <Col span={12}>
-                  <>
-                    <Avatar
-                      size={24}
-                      style={{
-                        marginTop: '-12px',
-                        marginRight: '5px',
-                        background: 'none',
-                      }}
-                      icon={
-                        <InformationCircleIcon
-                          width={24}
-                          color={token?.colorError}
-                        />
-                      }
-                    />
+        // <>
+        //   <Space direction="vertical" size={24}>
+        //     <Tag
+        //       style={{
+        //         display: 'flex',
+        //         padding: '20px',
+        //         borderRadius: '4px',
+        //         border: `1px solid ${token?.colorError}`,
+        //       }}
+        //       color="error"
+        //     >
+        //       <Row
+        //         justify="space-between"
+        //         style={{width: '100%'}}
+        //         align="middle"
+        //       >
+        //         <Col span={12}>
+        //           <>
+        //             <Avatar
+        //               size={24}
+        //               style={{
+        //                 marginTop: '-12px',
+        //                 marginRight: '5px',
+        //                 background: 'none',
+        //               }}
+        //               icon={
+        //                 <InformationCircleIcon
+        //                   width={24}
+        //                   color={token?.colorError}
+        //                 />
+        //               }
+        //             />
 
-                    <Space direction="vertical" size={0}>
-                      <Typography
-                        color={token?.colorError}
-                        name="Heading 3/Bold"
-                      >
-                        Unsubscribed User
-                      </Typography>
+        //             <Space direction="vertical" size={0}>
+        //               <Typography
+        //                 color={token?.colorError}
+        //                 name="Heading 3/Bold"
+        //               >
+        //                 Unsubscribed User
+        //               </Typography>
 
-                      <Typography
-                        color={token?.colorError}
-                        name="Body 3/Medium"
-                        as="span"
-                        // style={{display: 'flex', flexWrap: 'wrap'}}
-                      >
-                        Unlock premium features and exclusive content by
-                        subscribing to our web application today!
-                      </Typography>
-                    </Space>
-                  </>
-                </Col>
-                <Col
-                  span={12}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'end',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Typography
-                    color={token?.colorLink}
-                    name="Button 1"
-                    style={{fontWeight: 700}}
-                    hoverOnText
-                  >
-                    Subscribe Now
-                  </Typography>
-                </Col>
-              </Row>
-            </Tag>
-          </Space>
-        </>
+        //               <Typography
+        //                 color={token?.colorError}
+        //                 name="Body 3/Medium"
+        //                 as="span"
+        //                 // style={{display: 'flex', flexWrap: 'wrap'}}
+        //               >
+        //                 Unlock premium features and exclusive content by
+        //                 subscribing to our web application today!
+        //               </Typography>
+        //             </Space>
+        //           </>
+        //         </Col>
+        //         <Col
+        //           span={12}
+        //           style={{
+        //             display: 'flex',
+        //             justifyContent: 'end',
+        //             alignItems: 'center',
+        //           }}
+        //         >
+        //           <Typography
+        //             color={token?.colorLink}
+        //             name="Button 1"
+        //             style={{fontWeight: 700}}
+        //             hoverOnText
+        //           >
+        //             Subscribe Now
+        //           </Typography>
+        //         </Col>
+        //       </Row>
+        //     </Tag>
+        //   </Space>
+        // </>
+        <></>
       )}
       <br />
       <br />

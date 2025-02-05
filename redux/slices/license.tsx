@@ -5,7 +5,7 @@ import {
   activateTrailPhase,
   assignLicense,
   checkQuoteAIAccess,
-  getActiveLicensesByOrg,
+  getActiveLicensesByOrgUserId,
   getLicense,
   revokeLicense,
 } from '../actions/license';
@@ -109,19 +109,19 @@ const licenseSlice = createSlice({
           state.error = action.payload;
         },
       )
-      .addCase(getActiveLicensesByOrg.pending, (state) => {
+      .addCase(getActiveLicensesByOrgUserId.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        getActiveLicensesByOrg.fulfilled,
+        getActiveLicensesByOrgUserId.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.activeLicensesByOrg = action.payload;
         },
       )
       .addCase(
-        getActiveLicensesByOrg.rejected,
+        getActiveLicensesByOrgUserId.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

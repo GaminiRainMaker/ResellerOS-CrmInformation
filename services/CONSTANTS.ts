@@ -380,6 +380,6 @@ export const API = {
     DeleteById: '/license/deleteById',
     CheckQuoteAIAccess: '/license/checkQuoteAIAccess',
     ActivateTrailPhase: '/license/activateTrailPhase',
-    GetActiveLicensesByOrg: '/license/getActiveLicensesByOrg',
+    getActiveLicensesByOrgUserId: '/license/getActiveLicensesByOrgUserId',
   },
 };
