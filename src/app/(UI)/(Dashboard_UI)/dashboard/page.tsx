@@ -126,7 +126,9 @@ const Dashboard = () => {
             );
 
             if (demoLicense) {
-              setLicenseMessage('You are currently in the Demo phase. Please subscribe for continued access.');
+              setLicenseMessage(
+                'You are currently in the Demo phase. Please subscribe for continued access.',
+              );
             } else if (trialLicense) {
               setLicenseMessage(
                 'You are now in the Trial phase. Please subscribe for continued access.',
