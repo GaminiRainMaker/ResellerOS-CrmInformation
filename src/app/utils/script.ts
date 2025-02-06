@@ -1052,10 +1052,15 @@ export const calculateMetrics = (quoteData: Quote[]): Metrics => {
     const uniqueCustomers = new Set<string>();
 
     quoteData.forEach((quote) => {
-      if (quote.customer_id) {
-        uniqueCustomers.add(quote.customer_id);
+      if (quote.opportunity_id) {
+        uniqueCustomers.add(quote.opportunity_id);
       }
     });
+    // quoteData.forEach((quote) => {
+    //   if (quote.customer_id) {
+    //     uniqueCustomers.add(quote.customer_id);
+    //   }
+    // });
 
     return uniqueCustomers.size;
   };
@@ -1097,13 +1102,25 @@ export const calculateMetrics = (quoteData: Quote[]): Metrics => {
   };
 
   const getTotalHoursSpent = (): string => {
+    // const secondsPerLineItem = 56;
+    // const secondsInHour = 3600;
+
+    // const totalLineItems = getTotalLineItems();
+    // const totalSeconds = totalLineItems * secondsPerLineItem;
+
+    // return (totalSeconds / secondsInHour).toFixed(2);
+
     const secondsPerLineItem = 56;
     const secondsInHour = 3600;
-
+    const minutesInHour = 60;
+  
     const totalLineItems = getTotalLineItems();
     const totalSeconds = totalLineItems * secondsPerLineItem;
-
-    return (totalSeconds / secondsInHour).toFixed(2);
+  
+    const hours = Math.floor(totalSeconds / secondsInHour);
+    const minutes = Math.round((totalSeconds % secondsInHour) / 60);
+  
+    return `${hours} hr ${minutes} min`;
   };
 
   const getAverageRevenue = (): string => {
