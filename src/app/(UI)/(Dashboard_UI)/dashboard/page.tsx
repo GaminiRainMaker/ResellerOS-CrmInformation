@@ -1,49 +1,45 @@
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
 import DailogModal from '@/app/components/common/os-modal/DialogModal';
-import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
+import { AvatarStyled } from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import {
   CheckBadgeIcon,
   EnvelopeIcon,
-  InformationCircleIcon,
   MapPinIcon,
-  PhoneIcon,
+  PhoneIcon
 } from '@heroicons/react/24/outline';
-import {Avatar, Form, Tag} from 'antd';
-import {useEffect, useState} from 'react';
-import {contactSales} from '../../../../../redux/actions/auth';
+import { Avatar, Form, Tag } from 'antd';
+import { useEffect, useState } from 'react';
+import { contactSales } from '../../../../../redux/actions/auth';
 import {
-  activateTrailPhase,
-  getActiveLicensesByOrgUserId,
+  activateTrailPhase
 } from '../../../../../redux/actions/license';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import ContactSales from './ContactSales';
-import {CustomCardStyle} from './styled-components';
-import TrialBanner from '@/app/components/common/trialBanner/TrialBanner';
+import { CustomCardStyle } from './styled-components';
 
 const Dashboard = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const {isSubscribed, loading: cacheFlowLoading} = useAppSelector(
+  const {isSubscribed} = useAppSelector(
     (state) => state.cacheFLow,
   );
-  const {loading: licenseLoading, activeLicensesByOrg} = useAppSelector(
+  const {loading: licenseLoading} = useAppSelector(
     (state) => state.license,
   );
   const {loading} = useAppSelector((state) => state.auth);
   const {userInformation} = useAppSelector((state) => state.user);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showTrailModal, setShowTrailModal] = useState<boolean>(false);
-  const [licenseMessage, setLicenseMessage] = useState<string>('');
-  const [currentQuoteLicense, setCurrentQuoteLicense] = useState<any>();
+ 
 
   const ContactData = [
     {
@@ -111,51 +107,9 @@ const Dashboard = () => {
     }
   };
 
-  useEffect(() => {
-    if (userInformation?.id) {
-      dispatch(
-        getActiveLicensesByOrgUserId({user_id: userInformation?.id}),
-      ).then((data) => {
-        if (data?.payload) {
-          if (data?.payload.activeLicenses?.length > 0) {
-            const demoLicense = data?.payload?.activeLicenses?.find(
-              (l: any) => l.license_type === 'demo',
-            );
-            const trialLicense = data?.payload?.activeLicenses?.find(
-              (l: any) => l.license_type === 'trial',
-            );
-
-            if (demoLicense) {
-              setLicenseMessage(
-                'You are currently in the Demo phase. Please subscribe for continued access.',
-              );
-            } else if (trialLicense) {
-              setLicenseMessage(
-                'You are now in the Trial phase. Please subscribe for continued access.',
-              );
-            }
-          }
-        }
-      });
-    }
-  }, [userInformation]);
-
-  useEffect(() => {
-    if (activeLicensesByOrg) {
-      setCurrentQuoteLicense(
-        activeLicensesByOrg?.activeLicenses?.find(
-          (l: any) => l?.feature_name === 'QuoteAI',
-        ),
-      );
-    }
-  }, [activeLicensesByOrg]);
 
   return (
     <GlobalLoader loading={licenseLoading}>
-      <TrialBanner
-        trialExpiry={currentQuoteLicense?.expiration_date}
-        licenseMessage={licenseMessage}
-      />
       {isSubscribed &&
       userInformation?.Role === 'reseller' &&
       (userInformation?.DealReg || userInformation?.QuoteAI) ? (
