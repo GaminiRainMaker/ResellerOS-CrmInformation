@@ -80,12 +80,7 @@ const TrialBanner: React.FC = () => {
     }
   }, [pathname]); // Reset when navigating
 
-  const handleClose = () => {
-    setIsHidden(true);
-    sessionStorage.setItem('trialBannerClosed', 'true'); // Store banner close state
-  };
-
-  if (isHidden || remainingDays === null || remainingDays <= 0) return null;
+  // if (isHidden || remainingDays === null || remainingDays <= 0) return null;
 
   return (
     <Layout>
@@ -94,7 +89,7 @@ const TrialBanner: React.FC = () => {
           display: 'flex',
           padding: '20px',
           borderRadius: '4px',
-          border: `12px solid ${token?.colorSuccess}`,
+          border: `1px solid ${token?.colorWarning}`,
         }}
         message={
           <Typography color={token?.colorWarning} name="Heading 3/Bold">
@@ -102,16 +97,14 @@ const TrialBanner: React.FC = () => {
             expires in {remainingDays} days!
           </Typography>
         }
+        type='warning'
         description={
           <Typography color={token?.colorWarning} name="Body 3/Medium">
             {licenseMessage}
           </Typography>
         }
         icon={<CheckBadgeIcon width={24} color={token?.colorSuccess} />}
-        banner
-        closable
-        onClose={handleClose}
-        closeIcon={<CloseOutlined />}
+        
       />
     </Layout>
   );

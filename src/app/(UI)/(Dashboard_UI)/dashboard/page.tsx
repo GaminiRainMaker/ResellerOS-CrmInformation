@@ -11,6 +11,7 @@ import Typography from '@/app/components/common/typography';
 import {
   CheckBadgeIcon,
   EnvelopeIcon,
+  InformationCircleIcon,
   MapPinIcon,
   PhoneIcon,
 } from '@heroicons/react/24/outline';
@@ -190,7 +191,7 @@ const Dashboard = () => {
 
   return (
     <GlobalLoader loading={quoteLoading}>
-      {isSubscribed &&
+      {/* {isSubscribed &&
       userInformation?.Role === 'reseller' &&
       (userInformation?.DealReg || userInformation?.QuoteAI) ? (
         <Tag
@@ -272,84 +273,261 @@ const Dashboard = () => {
           </Row>
         </Tag>
       ) : (
-        // <>
-        //   <Space direction="vertical" size={24}>
-        //     <Tag
-        //       style={{
-        //         display: 'flex',
-        //         padding: '20px',
-        //         borderRadius: '4px',
-        //         border: `1px solid ${token?.colorError}`,
-        //       }}
-        //       color="error"
-        //     >
-        //       <Row
-        //         justify="space-between"
-        //         style={{width: '100%'}}
-        //         align="middle"
-        //       >
-        //         <Col span={12}>
-        //           <>
-        //             <Avatar
-        //               size={24}
-        //               style={{
-        //                 marginTop: '-12px',
-        //                 marginRight: '5px',
-        //                 background: 'none',
-        //               }}
-        //               icon={
-        //                 <InformationCircleIcon
-        //                   width={24}
-        //                   color={token?.colorError}
-        //                 />
-        //               }
-        //             />
+        <>
+          <Space direction="vertical" style={{width: '100%'}}>
+            <Tag
+              style={{
+                display: 'flex',
+                padding: '20px',
+                borderRadius: '4px',
+                border: `1px solid ${token?.colorError}`,
+              }}
+              color="error"
+            >
+              <Row
+                justify="space-between"
+                style={{width: '100%'}}
+                align="middle"
+              >
+                <Col span={12}>
+                  <>
+                    <Avatar
+                      size={24}
+                      style={{
+                        marginTop: '-12px',
+                        marginRight: '5px',
+                        background: 'none',
+                      }}
+                      icon={
+                        <InformationCircleIcon
+                          width={24}
+                          color={token?.colorError}
+                        />
+                      }
+                    />
 
-        //             <Space direction="vertical" size={0}>
-        //               <Typography
-        //                 color={token?.colorError}
-        //                 name="Heading 3/Bold"
-        //               >
-        //                 Unsubscribed User
-        //               </Typography>
+                    <Space direction="vertical" size={0}>
+                      <Typography
+                        color={token?.colorError}
+                        name="Heading 3/Bold"
+                      >
+                        Unsubscribed User
+                      </Typography>
 
-        //               <Typography
-        //                 color={token?.colorError}
-        //                 name="Body 3/Medium"
-        //                 as="span"
-        //                 // style={{display: 'flex', flexWrap: 'wrap'}}
-        //               >
-        //                 Unlock premium features and exclusive content by
-        //                 subscribing to our web application today!
-        //               </Typography>
-        //             </Space>
-        //           </>
-        //         </Col>
-        //         <Col
-        //           span={12}
-        //           style={{
-        //             display: 'flex',
-        //             justifyContent: 'end',
-        //             alignItems: 'center',
-        //           }}
-        //         >
-        //           <Typography
-        //             color={token?.colorLink}
-        //             name="Button 1"
-        //             style={{fontWeight: 700}}
-        //             hoverOnText
-        //           >
-        //             Subscribe Now
-        //           </Typography>
-        //         </Col>
-        //       </Row>
-        //     </Tag>
-        //   </Space>
-        // </>
-        <></>
+                      <Typography
+                        color={token?.colorError}
+                        name="Body 3/Medium"
+                        as="span"
+                      >
+                        Unlock premium features and exclusive content by
+                        subscribing to our web application today!
+                      </Typography>
+                    </Space>
+                  </>
+                </Col>
+                <Col
+                  span={12}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'end',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Typography
+                    color={token?.colorLink}
+                    name="Button 1"
+                    style={{fontWeight: 700}}
+                    hoverOnText
+                  >
+                    Subscribe Now
+                  </Typography>
+                </Col>
+              </Row>
+            </Tag>
+          </Space>
+        </>
+      )} */}
+      <br />
+      <br />
+      <Row justify={'space-between'} align={'middle'}>
+        <Col>
+          <Typography name="Heading 3/Bold">
+            {' '}
+            This {timeframe}'s Metrics
+          </Typography>
+        </Col>
+        <Col>
+          <Space direction="vertical" size={0}>
+            <Typography name="Body 4/Medium">Timeframe:</Typography>
+            <CommonSelect
+              options={selectOption}
+              style={{width: '200px'}}
+              placeholder="Select Dealreg Forms"
+              onChange={(value) => setTimeframe(value)}
+              defaultValue={'Month'}
+            />
+          </Space>
+        </Col>
+      </Row>
+
+      {currentData && (
+        <div style={{padding: '16px'}}>
+          {/* Metrics and Charts Grid */}
+          <Row gutter={16} style={{marginBottom: '32px'}}>
+            <Col span={12}>
+              <Card title="You've Converted">
+                <Typography name="Body 4/Regular" as="div">
+                  Vendor Quotes: {currentData.Converted.vendorQuotes}
+                </Typography>
+                <Typography name="Body 4/Regular" as="div">
+                  Pages: {currentData.Converted.totalPages}{' '}
+                </Typography>
+                <Typography name="Body 4/Regular" as="div">
+                  Line Items: {currentData.Converted.totalLineItems}{' '}
+                </Typography>
+                <br />
+                <ResponsiveContainer width="100%" height={200}>
+                  <PieChart>
+                    <Pie
+                      data={pieData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                      label
+                    >
+                      {pieData?.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </Card>
+            </Col>
+
+            <Col span={12}>
+              <Card title="You've Quoted">
+                <Typography name="Body 4/Regular" as="div">
+                  Customers: {currentData.Quoted.totalCustomers}{' '}
+                </Typography>
+                <Typography name="Body 4/Regular" as="div">
+                  Revenue: ${currentData.Quoted.totalRevenue}{' '}
+                </Typography>
+                <Typography name="Body 4/Regular" as="div">
+                  Gross Profit: ${currentData.Quoted.grossProfit}{' '}
+                </Typography>
+                <br />
+                <ResponsiveContainer width="100%" height={200}>
+                  <BarChart
+                    data={Object?.entries(currentData.Quoted).map(
+                      ([key, value]) => ({
+                        name: key,
+                        value,
+                      }),
+                    )}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="value">
+                      {Object.entries(currentData).map(
+                        ([key, value], index) => (
+                          <Cell
+                            key={key}
+                            fill={COLORS[index % COLORS.length]}
+                          />
+                        ),
+                      )}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </Card>
+            </Col>
+          </Row>
+
+          <Row gutter={16} style={{marginBottom: '32px'}}>
+            <Col span={12}>
+              <Card title="You've Earned">
+                <Typography name="Body 4/Regular" as="div">
+                  Hours of Time: {currentData.Earned.hoursOfTime}{' '}
+                </Typography>
+                <Typography name="Body 4/Regular" as="div">
+                  Gross Profit: ${currentData.Earned.grossProfit}
+                </Typography>
+                <br />
+                <br />
+                <ResponsiveContainer width="100%" height={180}>
+                  <BarChart
+                    data={[
+                      {
+                        name: 'Gross Profit',
+                        value: currentData.Earned.vendorQuotes,
+                      },
+                    ]}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="value">
+                      <Cell fill={COLORS[3]} />{' '}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </Card>
+            </Col>
+            <Col span={12}>
+              <Card title="Average per Quote">
+                <Typography name="Body 4/Regular" as="div">
+                  Revenue: ${currentData.AverageQuote.averageRevenue}{' '}
+                </Typography>
+                <Typography name="Body 4/Regular" as="div">
+                  Gross Profit: ${currentData.AverageQuote.averageGrossProfit}{' '}
+                </Typography>
+                <Typography name="Body 4/Regular" as="div">
+                  Profit Margin:
+                  {currentData.AverageQuote.averageProfitMargin}%{' '}
+                </Typography>
+                <Progress
+                  percent={currentData.AverageQuote.averageProfitMargin}
+                  status="active"
+                  strokeColor={'#31576F'}
+                />
+                <br />
+                <br />
+                <ResponsiveContainer width="100%" height={158}>
+                  <BarChart data={barData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="value">
+                      {barData.map((entry: any, index: number) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </Card>
+            </Col>
+          </Row>
+        </div>
       )}
-      <br />
-      <br />
+
       <Row justify="space-between">
         <Col>
           <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
@@ -360,7 +538,6 @@ const Dashboard = () => {
           <OsButton
             text="Sign Up For a Trail Version"
             buttontype="PRIMARY"
-            // loading={loading}
             clickHandler={() => {
               setShowTrailModal(true);
             }}
@@ -370,7 +547,6 @@ const Dashboard = () => {
           <OsButton
             text="Testing Azure AI"
             buttontype="PRIMARY"
-            // loading={loading}
             clickHandler={() => {
               window?.open('/azzureAi?excel=false');
             }}
@@ -380,7 +556,6 @@ const Dashboard = () => {
           <OsButton
             text="Testing Excel"
             buttontype="PRIMARY"
-            // loading={loading}
             clickHandler={() => {
               window?.open('/azzureAi?excel=true');
             }}
@@ -390,7 +565,6 @@ const Dashboard = () => {
           <OsButton
             text="Contact Us"
             buttontype="PRIMARY"
-            // loading={loading}
             clickHandler={() => {
               setShowModal(true);
             }}
@@ -474,7 +648,6 @@ const Dashboard = () => {
                         </Space>
                       )}
                     </Space>
-                    {/* <div style={{border: '1px solid grey'}} /> */}
                   </Space>
                 </Col>
               );
