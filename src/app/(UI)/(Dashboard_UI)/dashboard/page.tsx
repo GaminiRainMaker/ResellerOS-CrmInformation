@@ -41,9 +41,11 @@ import {
 import OsButton from '@/app/components/common/os-button';
 import {getQuotesByUserAndTimeframe} from '../../../../../redux/actions/quote';
 import {calculateMetrics} from '@/app/utils/script';
+import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 
 const Dashboard = () => {
   const [token] = useThemeToken();
+  const {abbreviate} = useAbbreviationHook(0);
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const {isSubscribed} = useAppSelector((state) => state.cacheFLow);
@@ -414,20 +416,22 @@ const Dashboard = () => {
             <Col span={12}>
               <Card title="You've Quoted">
                 <Typography name="Body 4/Regular" as="div">
-                  Customers: {currentData.Quoted.totalCustomers}{' '}
+                  Customers: {currentData.Quoted.Customers}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
-                  Revenue: ${currentData.Quoted.totalRevenue}{' '}
+                  Revenue: ${abbreviate(currentData.Quoted?.["Total Revenue"] ?? 0)}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
-                  Gross Profit: ${currentData.Quoted.grossProfit}{' '}
+                  Gross Profit: $
+                  {abbreviate(currentData.Quoted?.["Gross Profit"] ?? 0)}
                 </Typography>
                 <br />
                 <ResponsiveContainer width="100%" height={200}>
                   <BarChart
-                    data={Object?.entries(currentData.Quoted).map(
+                    data={Object?.entries(currentData.Quoted)?.map(
                       ([key, value]) => ({
                         name: key,
+                        // value: abbreviate(value),
                         value,
                       }),
                     )}
@@ -460,7 +464,8 @@ const Dashboard = () => {
                   Hours of Time: {currentData.Earned.hoursOfTime}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
-                  Gross Profit: ${currentData.Earned.grossProfit}
+                  Gross Profit: $
+                  {abbreviate(currentData.Earned?.["Gross Profit"] ?? 0)}
                 </Typography>
                 <br />
                 <br />
@@ -469,7 +474,7 @@ const Dashboard = () => {
                     data={[
                       {
                         name: 'Gross Profit',
-                        value: currentData.Earned.vendorQuotes,
+                        value: currentData.Earned?.["Gross Profit"] 
                       },
                     ]}
                   >
@@ -488,14 +493,18 @@ const Dashboard = () => {
             <Col span={12}>
               <Card title="Average per Quote">
                 <Typography name="Body 4/Regular" as="div">
-                  Revenue: ${currentData.AverageQuote.averageRevenue}{' '}
+                  Revenue: $
+                  {abbreviate(currentData.AverageQuote.averageRevenue ?? 0)}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
-                  Gross Profit: ${currentData.AverageQuote.averageGrossProfit}{' '}
+                  Gross Profit: $
+                  {abbreviate(currentData.AverageQuote.averageGrossProfit ?? 0)}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
                   Profit Margin:
-                  {currentData.AverageQuote.averageProfitMargin}%{' '}
+                  {abbreviate(
+                    currentData.AverageQuote.averageProfitMargin,
+                  )}%{' '}
                 </Typography>
                 <Progress
                   percent={currentData.AverageQuote.averageProfitMargin}

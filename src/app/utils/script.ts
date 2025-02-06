@@ -1007,6 +1007,8 @@ type Quote = {
   QuoteLineItems: {adjusted_price: string}[];
   customer_id?: string;
   opportunity_id: string;
+  quote_total: string;
+  total_cost: string;
   quote_amount?: number;
 };
 
@@ -1014,9 +1016,9 @@ type Metrics = {
   vendorQuotes: number;
   totalPages: number;
   totalLineItems: number;
-  totalCustomers: number;
-  totalRevenue: number;
-  grossProfit: number;
+  Customers: number;
+  'Total Revenue': number;
+  'Gross Profit': number;
   hoursOfTime: string;
   averageRevenue: string;
   averageGrossProfit: string;
@@ -1069,14 +1071,14 @@ export const calculateMetrics = (quoteData: Quote[]): Metrics => {
     const opportunityTotals: Record<string, number> = {};
 
     quoteData.forEach((quote) => {
-      const opportunityId = quote.opportunity_id;
-      const quoteTotal = quote.quote_amount || 0;
+      const {opportunity_id, quote_total} = quote;
+      const key = opportunity_id.toString();
 
       if (
-        !opportunityTotals[opportunityId] ||
-        quoteTotal > opportunityTotals[opportunityId]
+        !opportunityTotals[key] ||
+        Number(quote_total) > opportunityTotals[key]
       ) {
-        opportunityTotals[opportunityId] = quoteTotal;
+        opportunityTotals[key] = Number(quote_total);
       }
     });
 
@@ -1087,18 +1089,12 @@ export const calculateMetrics = (quoteData: Quote[]): Metrics => {
   };
 
   const getGrossProfit = (): number => {
-    let totalGrossProfit = 0;
+    return quoteData.reduce((totalGrossProfit, quote) => {
+      const quoteTotal = Number(quote.quote_total) || 0;
+      const totalCost = Number(quote.total_cost) || 0;
 
-    quoteData.forEach((quote) => {
-      const quoteTotal = quote.quote_amount || 0;
-      const totalCost = quote.QuoteLineItems.reduce(
-        (sum, item) => sum + (parseFloat(item.adjusted_price) || 0),
-        0,
-      );
-      totalGrossProfit += quoteTotal - totalCost;
-    });
-
-    return totalGrossProfit;
+      return totalGrossProfit + (quoteTotal - totalCost);
+    }, 0);
   };
 
   const getTotalHoursSpent = (): string => {
@@ -1112,32 +1108,44 @@ export const calculateMetrics = (quoteData: Quote[]): Metrics => {
 
     const secondsPerLineItem = 56;
     const secondsInHour = 3600;
-    const minutesInHour = 60;
-  
     const totalLineItems = getTotalLineItems();
     const totalSeconds = totalLineItems * secondsPerLineItem;
-  
     const hours = Math.floor(totalSeconds / secondsInHour);
     const minutes = Math.round((totalSeconds % secondsInHour) / 60);
-  
+
     return `${hours} hr ${minutes} min`;
   };
 
   const getAverageRevenue = (): string => {
-    const totalRevenue = getTotalRevenue();
+    if (quoteData.length === 0) return '0.00'; // Handle empty data case
+
+    const totalRevenue = quoteData.reduce(
+      (sum, quote) => sum + (Number(quote.quote_total) || 0),
+      0,
+    );
     return (totalRevenue / quoteData.length).toFixed(2);
   };
 
   const getAverageGrossProfit = (): string => {
-    const totalGrossProfit = getGrossProfit();
+    if (quoteData.length === 0) return '0.00'; // Handle empty data case
+
+    const totalGrossProfit = quoteData.reduce(
+      (sum, quote) =>
+        sum +
+        ((Number(quote.quote_total) || 0) - (Number(quote.total_cost) || 0)),
+      0,
+    );
+
     return (totalGrossProfit / quoteData.length).toFixed(2);
   };
 
   const getAverageProfitMargin = (): string => {
     const averageRevenue = parseFloat(getAverageRevenue());
-    const averageCost = parseFloat(getAverageGrossProfit()) - averageRevenue;
+    const averageGrossProfit = parseFloat(getAverageGrossProfit());
 
-    return (((averageRevenue - averageCost) / averageRevenue) * 100).toFixed(2);
+    if (averageRevenue === 0) return '0.00'; // Avoid division by zero
+
+    return ((averageGrossProfit / averageRevenue) * 100).toFixed(2);
   };
 
   // Calculate all metrics
@@ -1148,13 +1156,13 @@ export const calculateMetrics = (quoteData: Quote[]): Metrics => {
       totalLineItems: getTotalLineItems(),
     },
     Quoted: {
-      totalCustomers: getTotalCustomers(),
-      totalRevenue: getTotalRevenue(),
-      grossProfit: getGrossProfit(),
+      Customers: getTotalCustomers(),
+      'Total Revenue': getTotalRevenue(),
+      'Gross Profit': getGrossProfit(),
     },
     Earned: {
       hoursOfTime: getTotalHoursSpent(),
-      grossProfit: getGrossProfit(),
+      'Gross Profit': getGrossProfit(),
     },
     AverageQuote: {
       averageRevenue: getAverageRevenue(),
