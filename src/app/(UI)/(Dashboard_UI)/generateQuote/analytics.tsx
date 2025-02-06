@@ -100,8 +100,6 @@ const GenerateQuoteAnalytics: FC<any> = () => {
     if (totalExitPrice > 0) {
       grossProfitPercentage = (totalGrossProfit / totalExitPrice) * 100;
     }
-    console.log("profitabilityDataByQuoteIdprofitabilityDataByQuoteId", profitabilityDataByQuoteId, grossProfitPercentage)
-
     setTotalValues({
       GrossProfit: totalGrossProfit,
       GrossProfitPercentage: grossProfitPercentage,

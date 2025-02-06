@@ -1,45 +1,126 @@
 'use client';
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
 import DailogModal from '@/app/components/common/os-modal/DialogModal';
-import { AvatarStyled } from '@/app/components/common/os-table/styled-components';
+import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import {
   CheckBadgeIcon,
   EnvelopeIcon,
   MapPinIcon,
-  PhoneIcon
+  PhoneIcon,
 } from '@heroicons/react/24/outline';
-import { Avatar, Form, Tag } from 'antd';
-import { useEffect, useState } from 'react';
-import { contactSales } from '../../../../../redux/actions/auth';
-import {
-  activateTrailPhase
-} from '../../../../../redux/actions/license';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {Avatar, Form, Tag, Progress} from 'antd';
+import {useEffect, useState} from 'react';
+import {contactSales} from '../../../../../redux/actions/auth';
+import {activateTrailPhase} from '../../../../../redux/actions/license';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {CustomCardStyle} from './styled-components';
 import ContactSales from './ContactSales';
-import { CustomCardStyle } from './styled-components';
+
+import CommonSelect from '@/app/components/common/os-select';
+import {Card} from 'antd';
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
+import OsButton from '@/app/components/common/os-button';
+import {getQuotesByUserAndTimeframe} from '../../../../../redux/actions/quote';
+import {calculateMetrics} from '@/app/utils/script';
 
 const Dashboard = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const {isSubscribed} = useAppSelector(
-    (state) => state.cacheFLow,
-  );
-  const {loading: licenseLoading} = useAppSelector(
-    (state) => state.license,
-  );
+  const {isSubscribed} = useAppSelector((state) => state.cacheFLow);
+  const {loading: licenseLoading} = useAppSelector((state) => state.license);
   const {loading} = useAppSelector((state) => state.auth);
+  const {loading: quoteLoading} = useAppSelector((state) => state.quote);
   const {userInformation} = useAppSelector((state) => state.user);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showTrailModal, setShowTrailModal] = useState<boolean>(false);
- 
+
+  const [timeframe, setTimeframe] = useState('Month');
+  const [currentData, setCurrentData] = useState<any>();
+
+  useEffect(() => {
+    if (userInformation?.id) {
+      dispatch(
+        getQuotesByUserAndTimeframe({
+          user_id: userInformation?.id,
+          timeframe: timeframe,
+        }),
+      ).then((data) => {
+        if (data?.payload) {
+          const FinalData = calculateMetrics(data?.payload);
+          if (FinalData) {
+            console.log('FinalData', FinalData);
+            setCurrentData(FinalData);
+          }
+        }
+      });
+    }
+  }, [userInformation, timeframe]);
+
+  // Data for Pie Chart
+  const pieData = currentData
+    ? [
+        {name: 'Vendor Quotes', value: currentData.Converted.vendorQuotes},
+        {name: 'Pages', value: currentData.Converted.totalPages},
+        {name: 'Line Items', value: currentData.Converted.totalLineItems},
+      ]
+    : [];
+
+  // Data for Bar Chart (Revenue and Gross Profit)
+  const barData = currentData
+    ? [
+        {name: 'Revenue', value: currentData.AverageQuote.averageRevenue},
+        {
+          name: 'Gross Profit',
+          value: currentData.AverageQuote.averageGrossProfit,
+        },
+      ]
+    : [];
+  const COLORS: string[] = [
+    token?.colorPrimary,
+    token?.colorInfo,
+    token?.colorTextDisabled,
+    '#2B759A',
+    '#495D79',
+    '#31576F',
+  ];
+
+  const selectOption = [
+    {
+      label: 'Day',
+      value: 'Day',
+    },
+    {
+      label: 'Week',
+      value: 'Week',
+    },
+    {
+      label: 'Month',
+      value: 'Month',
+    },
+    {
+      label: 'Year',
+      value: 'Year',
+    },
+  ];
 
   const ContactData = [
     {
@@ -107,9 +188,8 @@ const Dashboard = () => {
     }
   };
 
-
   return (
-    <GlobalLoader loading={licenseLoading}>
+    <GlobalLoader loading={quoteLoading}>
       {isSubscribed &&
       userInformation?.Role === 'reseller' &&
       (userInformation?.DealReg || userInformation?.QuoteAI) ? (
@@ -317,7 +397,7 @@ const Dashboard = () => {
           />
         </Col>
       </Row>
-<br/>
+      <br />
       <CustomCardStyle>
         <Space direction="vertical" size={24}>
           <span>

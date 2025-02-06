@@ -208,9 +208,20 @@ export const getQuotesByExistingQuoteFilter = createAsyncThunk(
 export const updateQuoteCustomerId = createAsyncThunk(
   'quote/updateQuoteCustomerId',
   async (data: any, thunkApi) => {
-    console.log('dataaa', data);
     try {
       const res = await QUOTEAPI.updateQuoteCustomerId(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+
+export const getQuotesByUserAndTimeframe = createAsyncThunk(
+  'quote/getQuotesByUserAndTimeframe',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await QUOTEAPI.GetQuotesByUserAndTimeframe(data);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);

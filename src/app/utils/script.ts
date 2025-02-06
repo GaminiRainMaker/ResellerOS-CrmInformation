@@ -1002,3 +1002,166 @@ export let processScript = (finalObj: {
 
   return updatedScript;
 };
+
+type Quote = {
+  QuoteLineItems: {adjusted_price: string}[];
+  customer_id?: string;
+  opportunity_id: string;
+  quote_amount?: number;
+};
+
+type Metrics = {
+  vendorQuotes: number;
+  totalPages: number;
+  totalLineItems: number;
+  totalCustomers: number;
+  totalRevenue: number;
+  grossProfit: number;
+  hoursOfTime: string;
+  averageRevenue: string;
+  averageGrossProfit: string;
+  averageProfitMargin: string;
+};
+
+export const calculateMetrics = (quoteData: Quote[]): Metrics => {
+  // Helper functions
+  const getVendorQuotesCount = (): number => quoteData.length;
+
+  const getTotalPages = (): number => {
+    const rowsPerPage = 50;
+    let totalRows = 0;
+
+    quoteData.forEach((quote) => {
+      totalRows += quote.QuoteLineItems.length;
+    });
+
+    return Math.ceil(totalRows / rowsPerPage);
+  };
+
+  const getTotalLineItems = (): number => {
+    let totalLineItems = 0;
+
+    quoteData.forEach((quote) => {
+      totalLineItems += quote.QuoteLineItems.length;
+    });
+
+    return totalLineItems;
+  };
+
+  const getTotalCustomers = (): number => {
+    const uniqueCustomers = new Set<string>();
+
+    quoteData.forEach((quote) => {
+      if (quote.opportunity_id) {
+        uniqueCustomers.add(quote.opportunity_id);
+      }
+    });
+    // quoteData.forEach((quote) => {
+    //   if (quote.customer_id) {
+    //     uniqueCustomers.add(quote.customer_id);
+    //   }
+    // });
+
+    return uniqueCustomers.size;
+  };
+
+  const getTotalRevenue = (): number => {
+    const opportunityTotals: Record<string, number> = {};
+
+    quoteData.forEach((quote) => {
+      const opportunityId = quote.opportunity_id;
+      const quoteTotal = quote.quote_amount || 0;
+
+      if (
+        !opportunityTotals[opportunityId] ||
+        quoteTotal > opportunityTotals[opportunityId]
+      ) {
+        opportunityTotals[opportunityId] = quoteTotal;
+      }
+    });
+
+    return Object.values(opportunityTotals).reduce(
+      (sum, total) => sum + total,
+      0,
+    );
+  };
+
+  const getGrossProfit = (): number => {
+    let totalGrossProfit = 0;
+
+    quoteData.forEach((quote) => {
+      const quoteTotal = quote.quote_amount || 0;
+      const totalCost = quote.QuoteLineItems.reduce(
+        (sum, item) => sum + (parseFloat(item.adjusted_price) || 0),
+        0,
+      );
+      totalGrossProfit += quoteTotal - totalCost;
+    });
+
+    return totalGrossProfit;
+  };
+
+  const getTotalHoursSpent = (): string => {
+    // const secondsPerLineItem = 56;
+    // const secondsInHour = 3600;
+
+    // const totalLineItems = getTotalLineItems();
+    // const totalSeconds = totalLineItems * secondsPerLineItem;
+
+    // return (totalSeconds / secondsInHour).toFixed(2);
+
+    const secondsPerLineItem = 56;
+    const secondsInHour = 3600;
+    const minutesInHour = 60;
+  
+    const totalLineItems = getTotalLineItems();
+    const totalSeconds = totalLineItems * secondsPerLineItem;
+  
+    const hours = Math.floor(totalSeconds / secondsInHour);
+    const minutes = Math.round((totalSeconds % secondsInHour) / 60);
+  
+    return `${hours} hr ${minutes} min`;
+  };
+
+  const getAverageRevenue = (): string => {
+    const totalRevenue = getTotalRevenue();
+    return (totalRevenue / quoteData.length).toFixed(2);
+  };
+
+  const getAverageGrossProfit = (): string => {
+    const totalGrossProfit = getGrossProfit();
+    return (totalGrossProfit / quoteData.length).toFixed(2);
+  };
+
+  const getAverageProfitMargin = (): string => {
+    const averageRevenue = parseFloat(getAverageRevenue());
+    const averageCost = parseFloat(getAverageGrossProfit()) - averageRevenue;
+
+    return (((averageRevenue - averageCost) / averageRevenue) * 100).toFixed(2);
+  };
+
+  // Calculate all metrics
+  const metrics: any = {
+    Converted: {
+      vendorQuotes: getVendorQuotesCount(),
+      totalPages: getTotalPages(),
+      totalLineItems: getTotalLineItems(),
+    },
+    Quoted: {
+      totalCustomers: getTotalCustomers(),
+      totalRevenue: getTotalRevenue(),
+      grossProfit: getGrossProfit(),
+    },
+    Earned: {
+      hoursOfTime: getTotalHoursSpent(),
+      grossProfit: getGrossProfit(),
+    },
+    AverageQuote: {
+      averageRevenue: getAverageRevenue(),
+      averageGrossProfit: getAverageGrossProfit(),
+      averageProfitMargin: getAverageProfitMargin(),
+    },
+  };
+
+  return metrics;
+};
