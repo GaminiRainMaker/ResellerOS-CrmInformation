@@ -85,6 +85,19 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
     await dispatch(getQuoteByIdForEditQuoteHeader(Number(getQuoteId)))?.then(
       (payload: any) => {
         setQuoteByIdData(payload?.payload);
+        form.setFieldsValue({
+          file_name: payload?.payload?.file_name,
+          opportunity_id: payload?.payload?.opportunity_id,
+          customer_id: payload?.payload?.customer_id,
+          contact_id: payload?.payload?.contact_id,
+          status: payload?.payload?.status,
+          quote_notes: payload?.payload?.quote_notes,
+          quote_shipping: payload?.payload?.quote_shipping,
+          quote_tax: payload?.payload?.quote_tax,
+          quote_name: payload?.payload?.quote_name,
+        });
+        setStageNewValue(payload?.payload?.status);
+        setCustomerValue(payload?.payload?.customer_id);
         setStageNewValue(payload?.payload?.status);
       },
     );
@@ -124,21 +137,23 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
     setOpportunityObject(singleObjects);
   }, [syncTableData, getQuoteId]);
 
-  useEffect(() => {
-    form.setFieldsValue({
-      file_name: quoteByIdData?.file_name,
-      opportunity_id: quoteByIdData?.opportunity_id,
-      customer_id: quoteByIdData?.customer_id,
-      contact_id: quoteByIdData?.contact_id,
-      status: quoteByIdData?.status,
-      quote_notes: quoteByIdData?.quote_notes,
-      quote_shipping: quoteByIdData?.quote_shipping,
-      quote_tax: quoteByIdData?.quote_tax,
-      quote_name: quoteByIdData?.quote_name,
-    });
-    setStageNewValue(quoteByIdData?.status);
-    setCustomerValue(quoteByIdData?.customer_id);
-  }, [quoteByIdData]);
+  // useEffect(() => {
+  //   setQuoteByIdLoading(true);
+  //   form.setFieldsValue({
+  //     file_name: quoteByIdData?.file_name,
+  //     opportunity_id: quoteByIdData?.opportunity_id,
+  //     customer_id: quoteByIdData?.customer_id,
+  //     contact_id: quoteByIdData?.contact_id,
+  //     status: quoteByIdData?.status,
+  //     quote_notes: quoteByIdData?.quote_notes,
+  //     quote_shipping: quoteByIdData?.quote_shipping,
+  //     quote_tax: quoteByIdData?.quote_tax,
+  //     quote_name: quoteByIdData?.quote_name,
+  //   });
+  //   setStageNewValue(quoteByIdData?.status);
+  //   setCustomerValue(quoteByIdData?.customer_id);
+  //   setQuoteByIdLoading(false);
+  // }, [quoteByIdData]);
 
   return (
     <GlobalLoader loading={quoteByIdLoading}>
