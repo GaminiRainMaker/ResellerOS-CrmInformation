@@ -314,7 +314,7 @@ const quoteSlice = createSlice({
         },
       )
       .addCase(getQuotesByUserAndTimeframe.pending, (state) => {
-        state.getExistingQuoteFilterLoading = true;
+        state.loading = true;
         state.error = null;
       })
       .addCase(
@@ -327,7 +327,7 @@ const quoteSlice = createSlice({
       .addCase(
         getQuotesByUserAndTimeframe.rejected,
         (state, action: PayloadAction<any>) => {
-          state.getExistingQuoteFilterLoading = false;
+          state.loading = false;
           state.error = action.payload;
         },
       )

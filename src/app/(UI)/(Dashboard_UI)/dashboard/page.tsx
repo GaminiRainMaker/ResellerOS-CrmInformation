@@ -48,6 +48,7 @@ const Dashboard = () => {
     (state) => state.cacheFLow,
   );
   const {loading} = useAppSelector((state) => state.auth);
+  const {loading: quoteLoading} = useAppSelector((state) => state.quote);
   const {userInformation} = useAppSelector((state) => state.user);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [timeframe, setTimeframe] = useState('Month');
@@ -119,6 +120,10 @@ const Dashboard = () => {
 
   const selectOption = [
     {
+      label: 'Day',
+      value: 'Day',
+    },
+    {
       label: 'Week',
       value: 'Week',
     },
@@ -157,7 +162,7 @@ const Dashboard = () => {
 
   useEffect;
   return (
-    <GlobalLoader loading={cacheFlowLoading}>
+    <GlobalLoader loading={quoteLoading}>
       {isSubscribed &&
       userInformation?.Role === 'reseller' &&
       (userInformation?.DealReg || userInformation?.QuoteAI) ? (
