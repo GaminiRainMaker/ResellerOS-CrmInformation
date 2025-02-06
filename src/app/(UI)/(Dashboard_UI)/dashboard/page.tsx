@@ -160,7 +160,6 @@ const Dashboard = () => {
     },
   ];
 
-  useEffect;
   return (
     <GlobalLoader loading={quoteLoading}>
       {isSubscribed &&
