@@ -38,6 +38,7 @@ import {CustomCardStyle} from './styled-components';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import OsButton from '@/app/components/common/os-button';
 import {getQuotesByUserAndTimeframe} from '../../../../../redux/actions/quote';
+import {calculateMetrics} from '@/app/utils/script';
 
 const Dashboard = () => {
   const [token] = useThemeToken();
@@ -50,6 +51,7 @@ const Dashboard = () => {
   const {userInformation} = useAppSelector((state) => state.user);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [timeframe, setTimeframe] = useState('Month');
+  const [currentData, setCurrentData] = useState<any>();
 
   useEffect(() => {
     if (userInformation?.id) {
@@ -58,7 +60,15 @@ const Dashboard = () => {
           user_id: userInformation?.id,
           timeframe: timeframe,
         }),
-      );
+      ).then((data) => {
+        if (data?.payload) {
+          const FinalData = calculateMetrics(data?.payload);
+          if (FinalData) {
+            console.log('FinalData', FinalData);
+            setCurrentData(FinalData);
+          }
+        }
+      });
     }
   }, [userInformation, timeframe]);
 
@@ -79,43 +89,25 @@ const Dashboard = () => {
     });
   }, []);
 
-  // Dummy data for demonstration
-  const data: any = {
-    Week: {
-      converted: {vendorQuotes: 10, pages: 15, lineItems: 150},
-      quoted: {customers: 5, revenue: 50000, grossProfit: 15000},
-      earned: {hours: 20, grossProfit: 15000},
-      average: {revenue: 10000, grossProfit: 3000, profitMargin: 13.6},
-    },
-    Month: {
-      converted: {vendorQuotes: 27, pages: 40, lineItems: 400},
-      quoted: {customers: 16, revenue: 183734, grossProfit: 23718},
-      earned: {hours: 45, grossProfit: 23718},
-      average: {revenue: 15618, grossProfit: 1883, profitMargin: 13.6},
-    },
-    Year: {
-      converted: {vendorQuotes: 120, pages: 200, lineItems: 2000},
-      quoted: {customers: 80, revenue: 1000000, grossProfit: 200000},
-      earned: {hours: 240, grossProfit: 200000},
-      average: {revenue: 12500, grossProfit: 2500, profitMargin: 15.0},
-    },
-  };
-
-  const currentData = data[timeframe];
-
   // Data for Pie Chart
-  const pieData = [
-    {name: 'Vendor Quotes', value: currentData.converted.vendorQuotes},
-    {name: 'Pages', value: currentData.converted.pages},
-    {name: 'Line Items', value: currentData.converted.lineItems},
-  ];
+  const pieData = currentData
+    ? [
+        {name: 'Vendor Quotes', value: currentData.Converted.vendorQuotes},
+        {name: 'Pages', value: currentData.Converted.totalPages},
+        {name: 'Line Items', value: currentData.Converted.totalLineItems},
+      ]
+    : [];
 
   // Data for Bar Chart (Revenue and Gross Profit)
-  const barData: any = [
-    {name: 'Revenue', value: currentData.average.revenue},
-    {name: 'Gross Profit', value: currentData.average.grossProfit},
-  ];
-
+  const barData = currentData
+    ? [
+        {name: 'Revenue', value: currentData.AverageQuote.averageRevenue},
+        {
+          name: 'Gross Profit',
+          value: currentData.AverageQuote.averageGrossProfit,
+        },
+      ]
+    : [];
   const COLORS: string[] = [
     token?.colorPrimary,
     token?.colorInfo,
@@ -163,8 +155,7 @@ const Dashboard = () => {
     },
   ];
 
-  console.log('dataaa123');
-
+  useEffect;
   return (
     <GlobalLoader loading={cacheFlowLoading}>
       {isSubscribed &&
@@ -346,159 +337,163 @@ const Dashboard = () => {
         </Col>
       </Row>
 
-      <div style={{padding: '16px'}}>
-        {/* Metrics and Charts Grid */}
-        <Row gutter={16} style={{marginBottom: '32px'}}>
-          <Col span={12}>
-            <Card title="You've Converted">
-              <Typography name="Body 4/Regular" as="div">
-                Vendor Quotes: {currentData.converted.vendorQuotes}
-              </Typography>
-              <Typography name="Body 4/Regular" as="div">
-                Pages: {currentData.converted.pages}{' '}
-              </Typography>
-              <Typography name="Body 4/Regular" as="div">
-                Line Items: {currentData.converted.lineItems}{' '}
-              </Typography>
-              <br />
-              <ResponsiveContainer width="100%" height={200}>
-                <PieChart>
-                  <Pie
-                    data={pieData}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                    label
-                  >
-                    {pieData.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index % COLORS.length]}
-                      />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            </Card>
-          </Col>
+      {currentData && (
+        <div style={{padding: '16px'}}>
+          {/* Metrics and Charts Grid */}
+          <Row gutter={16} style={{marginBottom: '32px'}}>
+            <Col span={12}>
+              <Card title="You've Converted">
+                <Typography name="Body 4/Regular" as="div">
+                  Vendor Quotes: {currentData.Converted.vendorQuotes}
+                </Typography>
+                <Typography name="Body 4/Regular" as="div">
+                  Pages: {currentData.Converted.totalPages}{' '}
+                </Typography>
+                <Typography name="Body 4/Regular" as="div">
+                  Line Items: {currentData.Converted.totalLineItems}{' '}
+                </Typography>
+                <br />
+                <ResponsiveContainer width="100%" height={200}>
+                  <PieChart>
+                    <Pie
+                      data={pieData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                      label
+                    >
+                      {pieData?.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </Card>
+            </Col>
 
-          <Col span={12}>
-            <Card title="You've Quoted">
-              <Typography name="Body 4/Regular" as="div">
-                Customers: {currentData.quoted.customers}{' '}
-              </Typography>
-              <Typography name="Body 4/Regular" as="div">
-                Revenue: ${currentData.quoted.revenue.toLocaleString()}{' '}
-              </Typography>
-              <Typography name="Body 4/Regular" as="div">
-                Gross Profit: ${currentData.quoted.grossProfit.toLocaleString()}{' '}
-              </Typography>
-              <br />
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart
-                  data={Object.entries(currentData.quoted).map(
-                    ([key, value]) => ({
-                      name: key,
-                      value,
-                    }),
-                  )}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="value">
-                    {Object.entries(currentData.quoted).map(
-                      ([key, value], index) => (
-                        <Cell key={key} fill={COLORS[index % COLORS.length]} />
-                      ),
+            <Col span={12}>
+              <Card title="You've Quoted">
+                <Typography name="Body 4/Regular" as="div">
+                  Customers: {currentData.Quoted.totalCustomers}{' '}
+                </Typography>
+                <Typography name="Body 4/Regular" as="div">
+                  Revenue: ${currentData.Quoted.totalRevenue}{' '}
+                </Typography>
+                <Typography name="Body 4/Regular" as="div">
+                  Gross Profit: ${currentData.Quoted.grossProfit}{' '}
+                </Typography>
+                <br />
+                <ResponsiveContainer width="100%" height={200}>
+                  <BarChart
+                    data={Object?.entries(currentData.Quoted).map(
+                      ([key, value]) => ({
+                        name: key,
+                        value,
+                      }),
                     )}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </Card>
-          </Col>
-        </Row>
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="value">
+                      {Object.entries(currentData).map(
+                        ([key, value], index) => (
+                          <Cell
+                            key={key}
+                            fill={COLORS[index % COLORS.length]}
+                          />
+                        ),
+                      )}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </Card>
+            </Col>
+          </Row>
 
-        <Row gutter={16} style={{marginBottom: '32px'}}>
-          <Col span={12}>
-            <Card title="You've Earned">
-              <Typography name="Body 4/Regular" as="div">
-                Hours of Time: {currentData.earned.hours}{' '}
-              </Typography>
-              <Typography name="Body 4/Regular" as="div">
-                Gross Profit: ${currentData.earned.grossProfit.toLocaleString()}
-              </Typography>
-              <br />
-              <br />
-              <ResponsiveContainer width="100%" height={180}>
-                <BarChart
-                  data={[
-                    {
-                      name: 'Gross Profit',
-                      value: currentData.earned.grossProfit,
-                    },
-                  ]}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="value">
-                    <Cell fill={COLORS[3]} />{' '}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </Card>
-          </Col>
-          <Col span={12}>
-            <Card title="Average per Quote">
-              <Typography name="Body 4/Regular" as="div">
-                Revenue: ${currentData.average.revenue.toLocaleString()}{' '}
-              </Typography>
-              <Typography name="Body 4/Regular" as="div">
-                Gross Profit: $
-                {currentData.average.grossProfit.toLocaleString()}{' '}
-              </Typography>
-              <Typography name="Body 4/Regular" as="div">
-                Profit Margin:
-                {currentData.average.profitMargin.toLocaleString()}%{' '}
-              </Typography>
-              <Progress
-                percent={currentData.average.profitMargin}
-                status="active"
-                strokeColor={'#31576F'}
-              />
-              <br />
-              <br />
-              <ResponsiveContainer width="100%" height={158}>
-                <BarChart data={barData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="value">
-                    {barData.map((entry: any, index: number) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index % COLORS.length]}
-                      />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </Card>
-          </Col>
-        </Row>
-      </div>
+          <Row gutter={16} style={{marginBottom: '32px'}}>
+            <Col span={12}>
+              <Card title="You've Earned">
+                <Typography name="Body 4/Regular" as="div">
+                  Hours of Time: {currentData.Earned.hoursOfTime}{' '}
+                </Typography>
+                <Typography name="Body 4/Regular" as="div">
+                  Gross Profit: ${currentData.Earned.grossProfit}
+                </Typography>
+                <br />
+                <br />
+                <ResponsiveContainer width="100%" height={180}>
+                  <BarChart
+                    data={[
+                      {
+                        name: 'Gross Profit',
+                        value: currentData.Earned.vendorQuotes,
+                      },
+                    ]}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="value">
+                      <Cell fill={COLORS[3]} />{' '}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </Card>
+            </Col>
+            <Col span={12}>
+              <Card title="Average per Quote">
+                <Typography name="Body 4/Regular" as="div">
+                  Revenue: ${currentData.AverageQuote.averageRevenue}{' '}
+                </Typography>
+                <Typography name="Body 4/Regular" as="div">
+                  Gross Profit: ${currentData.AverageQuote.averageGrossProfit}{' '}
+                </Typography>
+                <Typography name="Body 4/Regular" as="div">
+                  Profit Margin:
+                  {currentData.AverageQuote.averageProfitMargin}%{' '}
+                </Typography>
+                <Progress
+                  percent={currentData.AverageQuote.averageProfitMargin}
+                  status="active"
+                  strokeColor={'#31576F'}
+                />
+                <br />
+                <br />
+                <ResponsiveContainer width="100%" height={158}>
+                  <BarChart data={barData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="value">
+                      {barData.map((entry: any, index: number) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </Card>
+            </Col>
+          </Row>
+        </div>
+      )}
 
       <Row justify="space-between">
         <Col>
