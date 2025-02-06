@@ -29,9 +29,6 @@ export default function DashboardLayout({
               background: '#f5f5f5',
             }}
           >
-            {!isCanvas && <TrialBanner />}
-            <br />
-
             {children}
           </Content>
         </Layout>

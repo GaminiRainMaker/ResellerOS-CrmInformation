@@ -347,8 +347,7 @@ const Dashboard = () => {
           </Space>
         </>
       )} */}
-      <br />
-      <br />
+
       <Row justify={'space-between'} align={'middle'}>
         <Col>
           <Typography name="Heading 3/Bold">
@@ -527,6 +526,7 @@ const Dashboard = () => {
           </Row>
         </div>
       )}
+      <br/>
 
       <Row justify="space-between">
         <Col>

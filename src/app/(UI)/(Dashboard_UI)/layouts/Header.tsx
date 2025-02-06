@@ -69,6 +69,7 @@ import {
 } from '../../../../../redux/actions/upload';
 import {convertFileToBase64} from '@/app/utils/base';
 import {sendEmailForSuport} from '../../../../../redux/actions/auth';
+import TrialBanner from '@/app/components/common/trialBanner/TrialBanner';
 
 export const CustomUpload = styled(Upload)`
   .ant-upload-list-text {
@@ -463,6 +464,9 @@ const CustomHeader = () => {
                 />
               }
             /> */}
+
+              <TrialBanner PrimaryTextTypography='Body 3/Regular' />
+
               <AvatarStyled
                 background={token?.colorInfoBg}
                 icon={

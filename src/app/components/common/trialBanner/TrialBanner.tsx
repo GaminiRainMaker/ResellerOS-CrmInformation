@@ -8,8 +8,11 @@ import Typography from '../typography';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {getActiveLicensesByOrgUserId} from '../../../../../redux/actions/license';
 import {usePathname} from 'next/navigation';
+import {StyleName} from '../typography/typography.interface';
 
-const TrialBanner: React.FC = () => {
+const TrialBanner: React.FC<{
+  PrimaryTextTypography?: StyleName;
+}> = ({PrimaryTextTypography = 'Heading 3/Bold'}) => {
   const dispatch = useAppDispatch();
   const pathname = usePathname();
   const [remainingDays, setRemainingDays] = useState<number | null>(null);
@@ -92,19 +95,22 @@ const TrialBanner: React.FC = () => {
           border: `1px solid ${token?.colorWarning}`,
         }}
         message={
-          <Typography color={token?.colorWarning} name="Heading 3/Bold">
-            Your free {licenseMessage.includes('Demo') ? 'demo' : 'trial'}{' '}
-            expires in {remainingDays} days!
+          <Typography color={token?.colorWarning} name={PrimaryTextTypography}>
+            Your {licenseMessage.includes('Demo') ? 'Demo' : 'Trial'} expires in{' '}
+            {remainingDays} Days!
           </Typography>
         }
-        type='warning'
+        type="warning"
         description={
-          <Typography color={token?.colorWarning} name="Body 3/Medium">
-            {licenseMessage}
-          </Typography>
+          PrimaryTextTypography ? (
+            ''
+          ) : (
+            <Typography color={token?.colorWarning} name="Body 3/Medium">
+              {licenseMessage}
+            </Typography>
+          )
         }
         icon={<CheckBadgeIcon width={24} color={token?.colorSuccess} />}
-        
       />
     </Layout>
   );
