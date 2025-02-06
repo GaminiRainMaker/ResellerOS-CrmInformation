@@ -18,6 +18,7 @@ export const API = {
       '/auth/fetchDataWithIntellengenceForPDFFileForSalesForceExport',
     fetchAndParseExcel: '/auth/fetchAndParseExcel',
     sendEmailForSuport: '/auth/sendEmailForSuport',
+    VerifyEmail: '/auth/verifyEmail',
   },
   QUOTE: {
     INDEX: '/quote',
