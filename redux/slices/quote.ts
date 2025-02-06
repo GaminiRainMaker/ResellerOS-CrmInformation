@@ -9,6 +9,7 @@ import {
   getQuoteByIdForFormStack,
   getQuotesByDateFilter,
   getQuotesByExistingQuoteFilter,
+  getQuotesByUserAndTimeframe,
   insertQuote,
   queryAllManualQuotes,
   updateQuoteById,
@@ -30,6 +31,7 @@ type QuoteState = {
   getAllQuotesDataByOrganization: any;
   getExistingQuoteFilterData: any;
   getExistingQuoteFilterLoading: any;
+  quoteTimeFrameData: any;
 };
 const initialState: QuoteState = {
   loading: false,
@@ -42,6 +44,7 @@ const initialState: QuoteState = {
   filteredByDate: [],
   getAllQuotesDataByOrganization: [],
   getExistingQuoteFilterData: [],
+  quoteTimeFrameData: [],
 };
 
 const quoteSlice = createSlice({
@@ -309,7 +312,25 @@ const quoteSlice = createSlice({
           state.getExistingQuoteFilterLoading = false;
           state.error = action.payload;
         },
-      );
+      )
+      .addCase(getQuotesByUserAndTimeframe.pending, (state) => {
+        state.getExistingQuoteFilterLoading = true;
+        state.error = null;
+      })
+      .addCase(
+        getQuotesByUserAndTimeframe.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.quoteTimeFrameData = action.payload;
+        },
+      )
+      .addCase(
+        getQuotesByUserAndTimeframe.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.getExistingQuoteFilterLoading = false;
+          state.error = action.payload;
+        },
+      )
   },
 });
 

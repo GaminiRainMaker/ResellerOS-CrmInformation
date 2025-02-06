@@ -3,10 +3,8 @@
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
-import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import {
   CheckBadgeIcon,
@@ -15,13 +13,31 @@ import {
   MapPinIcon,
   PhoneIcon,
 } from '@heroicons/react/24/outline';
-import {Avatar, Form, Tag} from 'antd';
+import {Avatar, Form, Progress, Tag} from 'antd';
 import {useEffect, useState} from 'react';
 import {contactSales} from '../../../../../redux/actions/auth';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import ContactSales from './ContactSales';
+
+import CommonSelect from '@/app/components/common/os-select';
+import {Card} from 'antd';
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 import {CustomCardStyle} from './styled-components';
-import {fileDataa2, fileDataaJSON} from '@/app/utils/saleforce';
+import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
+import OsButton from '@/app/components/common/os-button';
+import {getQuotesByUserAndTimeframe} from '../../../../../redux/actions/quote';
 
 const Dashboard = () => {
   const [token] = useThemeToken();
@@ -33,6 +49,96 @@ const Dashboard = () => {
   const {loading} = useAppSelector((state) => state.auth);
   const {userInformation} = useAppSelector((state) => state.user);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [timeframe, setTimeframe] = useState('Month');
+
+  useEffect(() => {
+    if (userInformation?.id) {
+      dispatch(
+        getQuotesByUserAndTimeframe({
+          user_id: userInformation?.id,
+          timeframe: timeframe,
+        }),
+      );
+    }
+  }, [userInformation, timeframe]);
+
+  const onFinish = () => {
+    const data = form?.getFieldsValue();
+    dispatch(contactSales(data)).then((d: any) => {
+      if (d?.payload) {
+        setShowModal(false);
+        form.resetFields();
+      }
+    });
+  };
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, []);
+
+  // Dummy data for demonstration
+  const data: any = {
+    Week: {
+      converted: {vendorQuotes: 10, pages: 15, lineItems: 150},
+      quoted: {customers: 5, revenue: 50000, grossProfit: 15000},
+      earned: {hours: 20, grossProfit: 15000},
+      average: {revenue: 10000, grossProfit: 3000, profitMargin: 13.6},
+    },
+    Month: {
+      converted: {vendorQuotes: 27, pages: 40, lineItems: 400},
+      quoted: {customers: 16, revenue: 183734, grossProfit: 23718},
+      earned: {hours: 45, grossProfit: 23718},
+      average: {revenue: 15618, grossProfit: 1883, profitMargin: 13.6},
+    },
+    Year: {
+      converted: {vendorQuotes: 120, pages: 200, lineItems: 2000},
+      quoted: {customers: 80, revenue: 1000000, grossProfit: 200000},
+      earned: {hours: 240, grossProfit: 200000},
+      average: {revenue: 12500, grossProfit: 2500, profitMargin: 15.0},
+    },
+  };
+
+  const currentData = data[timeframe];
+
+  // Data for Pie Chart
+  const pieData = [
+    {name: 'Vendor Quotes', value: currentData.converted.vendorQuotes},
+    {name: 'Pages', value: currentData.converted.pages},
+    {name: 'Line Items', value: currentData.converted.lineItems},
+  ];
+
+  // Data for Bar Chart (Revenue and Gross Profit)
+  const barData: any = [
+    {name: 'Revenue', value: currentData.average.revenue},
+    {name: 'Gross Profit', value: currentData.average.grossProfit},
+  ];
+
+  const COLORS: string[] = [
+    token?.colorPrimary,
+    token?.colorInfo,
+    token?.colorTextDisabled,
+    '#2B759A',
+    '#495D79',
+    '#31576F',
+  ];
+
+  const selectOption = [
+    {
+      label: 'Week',
+      value: 'Week',
+    },
+    {
+      label: 'Month',
+      value: 'Month',
+    },
+    {
+      label: 'Year',
+      value: 'Year',
+    },
+  ];
 
   const ContactData = [
     {
@@ -57,22 +163,7 @@ const Dashboard = () => {
     },
   ];
 
-  const onFinish = () => {
-    const data = form?.getFieldsValue();
-    dispatch(contactSales(data)).then((d: any) => {
-      if (d?.payload) {
-        setShowModal(false);
-        form.resetFields();
-      }
-    });
-  };
-
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
-  }, []);
+  console.log('dataaa123');
 
   return (
     <GlobalLoader loading={cacheFlowLoading}>
@@ -159,7 +250,7 @@ const Dashboard = () => {
         </Tag>
       ) : (
         <>
-          <Space direction="vertical" size={24}>
+          <Space direction="vertical" style={{width: '100%'}}>
             <Tag
               style={{
                 display: 'flex',
@@ -203,7 +294,6 @@ const Dashboard = () => {
                         color={token?.colorError}
                         name="Body 3/Medium"
                         as="span"
-                        // style={{display: 'flex', flexWrap: 'wrap'}}
                       >
                         Unlock premium features and exclusive content by
                         subscribing to our web application today!
@@ -230,146 +320,304 @@ const Dashboard = () => {
                 </Col>
               </Row>
             </Tag>
-
-            <Row justify="space-between">
-              <Col>
-                <Typography
-                  name="Heading 3/Medium"
-                  color={token?.colorPrimaryText}
-                >
-                  Get In Touch
-                </Typography>
-              </Col>
-              <Col>
-                <OsButton
-                  text="Testing Azure AI"
-                  buttontype="PRIMARY"
-                  // loading={loading}
-                  clickHandler={() => {
-                    window?.open('/azzureAi?excel=false');
-                  }}
-                />
-              </Col>
-              <Col>
-                <OsButton
-                  text="Testing Excel"
-                  buttontype="PRIMARY"
-                  // loading={loading}
-                  clickHandler={() => {
-                    window?.open('/azzureAi?excel=true');
-                  }}
-                />
-              </Col>
-              <Col>
-                <OsButton
-                  text="Contact Us"
-                  buttontype="PRIMARY"
-                  // loading={loading}
-                  clickHandler={() => {
-                    setShowModal(true);
-                  }}
-                />
-              </Col>
-            </Row>
-
-            <CustomCardStyle>
-              <Space direction="vertical" size={24}>
-                <span>
-                  <Typography
-                    name="Body 1/Bold"
-                    color={token?.colorPrimary}
-                    as="div"
-                  >
-                    Contact Sales
-                  </Typography>
-                  <Typography
-                    name="Body 3/Medium"
-                    color={token?.colorPrimaryText}
-                  >
-                    For seamless access to our web application's premium
-                    features and exclusive benefits, reach out to our dedicated
-                    sales team today. Whether you're seeking enhanced
-                    functionality, personalized assistance, or specialized
-                    packages tailored to your needs, our experts are here to
-                    guide you through the subscription process. Contact us now
-                    to elevate your experience and maximize the value of our
-                    platform.
-                  </Typography>
-                </span>
-                <Row justify="space-between" gutter={[16, 16]}>
-                  {ContactData?.map((ContactDataItem) => {
-                    return (
-                      <Col
-                        xs={24}
-                        sm={24}
-                        md={24}
-                        lg={12}
-                        xl={8}
-                        xxl={8}
-                        key={ContactDataItem?.key}
-                      >
-                        <Space direction="vertical" size={4}>
-                          <Typography
-                            name="Body 1/Bold"
-                            color={token?.colorPrimary}
-                          >
-                            {ContactDataItem?.title}
-                          </Typography>
-                          <Space>
-                            {ContactDataItem?.data1 && (
-                              <Space align="center">
-                                <AvatarStyled
-                                  icon={ContactDataItem?.icon}
-                                  background={token?.colorInfoHover}
-                                  size={36}
-                                />
-
-                                <Typography
-                                  key={ContactDataItem?.key}
-                                  name="Body 3/Medium"
-                                  color={'#575757'}
-                                  ellipsis
-                                  maxWidth={250}
-                                  as="div"
-                                  tooltip
-                                >
-                                  {ContactDataItem?.data1}
-                                </Typography>
-                              </Space>
-                            )}
-                            {ContactDataItem?.data2 && (
-                              <Space align="center">
-                                <AvatarStyled
-                                  icon={ContactDataItem?.icon}
-                                  background={token?.colorInfoHover}
-                                  size={36}
-                                />
-
-                                <Typography
-                                  key={ContactDataItem?.key}
-                                  name="Body 3/Medium"
-                                  color={'#575757'}
-                                  ellipsis
-                                  maxWidth={200}
-                                  as="div"
-                                  tooltip
-                                >
-                                  {ContactDataItem?.data2}
-                                </Typography>
-                              </Space>
-                            )}
-                          </Space>
-                          {/* <div style={{border: '1px solid grey'}} /> */}
-                        </Space>
-                      </Col>
-                    );
-                  })}
-                </Row>
-              </Space>
-            </CustomCardStyle>
           </Space>
         </>
       )}
+      <br />
+      <br />
+      <Row justify={'space-between'} align={'middle'}>
+        <Col>
+          <Typography name="Heading 3/Bold">
+            {' '}
+            This {timeframe}'s Metrics
+          </Typography>
+        </Col>
+        <Col>
+          <Space direction="vertical" size={0}>
+            <Typography name="Body 4/Medium">Timeframe:</Typography>
+            <CommonSelect
+              options={selectOption}
+              style={{width: '200px'}}
+              placeholder="Select Dealreg Forms"
+              onChange={(value) => setTimeframe(value)}
+              defaultValue={'Month'}
+            />
+          </Space>
+        </Col>
+      </Row>
+
+      <div style={{padding: '16px'}}>
+        {/* Metrics and Charts Grid */}
+        <Row gutter={16} style={{marginBottom: '32px'}}>
+          <Col span={12}>
+            <Card title="You've Converted">
+              <Typography name="Body 4/Regular" as="div">
+                Vendor Quotes: {currentData.converted.vendorQuotes}
+              </Typography>
+              <Typography name="Body 4/Regular" as="div">
+                Pages: {currentData.converted.pages}{' '}
+              </Typography>
+              <Typography name="Body 4/Regular" as="div">
+                Line Items: {currentData.converted.lineItems}{' '}
+              </Typography>
+              <br />
+              <ResponsiveContainer width="100%" height={200}>
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                    label
+                  >
+                    {pieData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </Card>
+          </Col>
+
+          <Col span={12}>
+            <Card title="You've Quoted">
+              <Typography name="Body 4/Regular" as="div">
+                Customers: {currentData.quoted.customers}{' '}
+              </Typography>
+              <Typography name="Body 4/Regular" as="div">
+                Revenue: ${currentData.quoted.revenue.toLocaleString()}{' '}
+              </Typography>
+              <Typography name="Body 4/Regular" as="div">
+                Gross Profit: ${currentData.quoted.grossProfit.toLocaleString()}{' '}
+              </Typography>
+              <br />
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart
+                  data={Object.entries(currentData.quoted).map(
+                    ([key, value]) => ({
+                      name: key,
+                      value,
+                    }),
+                  )}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="value">
+                    {Object.entries(currentData.quoted).map(
+                      ([key, value], index) => (
+                        <Cell key={key} fill={COLORS[index % COLORS.length]} />
+                      ),
+                    )}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </Card>
+          </Col>
+        </Row>
+
+        <Row gutter={16} style={{marginBottom: '32px'}}>
+          <Col span={12}>
+            <Card title="You've Earned">
+              <Typography name="Body 4/Regular" as="div">
+                Hours of Time: {currentData.earned.hours}{' '}
+              </Typography>
+              <Typography name="Body 4/Regular" as="div">
+                Gross Profit: ${currentData.earned.grossProfit.toLocaleString()}
+              </Typography>
+              <br />
+              <br />
+              <ResponsiveContainer width="100%" height={180}>
+                <BarChart
+                  data={[
+                    {
+                      name: 'Gross Profit',
+                      value: currentData.earned.grossProfit,
+                    },
+                  ]}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="value">
+                    <Cell fill={COLORS[3]} />{' '}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </Card>
+          </Col>
+          <Col span={12}>
+            <Card title="Average per Quote">
+              <Typography name="Body 4/Regular" as="div">
+                Revenue: ${currentData.average.revenue.toLocaleString()}{' '}
+              </Typography>
+              <Typography name="Body 4/Regular" as="div">
+                Gross Profit: $
+                {currentData.average.grossProfit.toLocaleString()}{' '}
+              </Typography>
+              <Typography name="Body 4/Regular" as="div">
+                Profit Margin:
+                {currentData.average.profitMargin.toLocaleString()}%{' '}
+              </Typography>
+              <Progress
+                percent={currentData.average.profitMargin}
+                status="active"
+                strokeColor={'#31576F'}
+              />
+              <br />
+              <br />
+              <ResponsiveContainer width="100%" height={158}>
+                <BarChart data={barData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="value">
+                    {barData.map((entry: any, index: number) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </Card>
+          </Col>
+        </Row>
+      </div>
+
+      <Row justify="space-between">
+        <Col>
+          <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
+            Get In Touch
+          </Typography>
+        </Col>
+        <Col>
+          <OsButton
+            text="Testing Azure AI"
+            buttontype="PRIMARY"
+            clickHandler={() => {
+              window?.open('/azzureAi?excel=false');
+            }}
+          />
+        </Col>
+        <Col>
+          <OsButton
+            text="Testing Excel"
+            buttontype="PRIMARY"
+            clickHandler={() => {
+              window?.open('/azzureAi?excel=true');
+            }}
+          />
+        </Col>
+        <Col>
+          <OsButton
+            text="Contact Us"
+            buttontype="PRIMARY"
+            clickHandler={() => {
+              setShowModal(true);
+            }}
+          />
+        </Col>
+      </Row>
+      <br />
+      <CustomCardStyle>
+        <Space direction="vertical" size={24}>
+          <span>
+            <Typography name="Body 1/Bold" color={token?.colorPrimary} as="div">
+              Contact Sales
+            </Typography>
+            <Typography name="Body 3/Medium" color={token?.colorPrimaryText}>
+              For seamless access to our web application's premium features and
+              exclusive benefits, reach out to our dedicated sales team today.
+              Whether you're seeking enhanced functionality, personalized
+              assistance, or specialized packages tailored to your needs, our
+              experts are here to guide you through the subscription process.
+              Contact us now to elevate your experience and maximize the value
+              of our platform.
+            </Typography>
+          </span>
+          <Row justify="space-between" gutter={[16, 16]}>
+            {ContactData?.map((ContactDataItem) => {
+              return (
+                <Col
+                  xs={24}
+                  sm={24}
+                  md={24}
+                  lg={12}
+                  xl={8}
+                  xxl={8}
+                  key={ContactDataItem?.key}
+                >
+                  <Space direction="vertical" size={4}>
+                    <Typography name="Body 1/Bold" color={token?.colorPrimary}>
+                      {ContactDataItem?.title}
+                    </Typography>
+                    <Space>
+                      {ContactDataItem?.data1 && (
+                        <Space align="center">
+                          <AvatarStyled
+                            icon={ContactDataItem?.icon}
+                            background={token?.colorInfoHover}
+                            size={36}
+                          />
+
+                          <Typography
+                            key={ContactDataItem?.key}
+                            name="Body 3/Medium"
+                            color={'#575757'}
+                            ellipsis
+                            maxWidth={250}
+                            as="div"
+                            tooltip
+                          >
+                            {ContactDataItem?.data1}
+                          </Typography>
+                        </Space>
+                      )}
+                      {ContactDataItem?.data2 && (
+                        <Space align="center">
+                          <AvatarStyled
+                            icon={ContactDataItem?.icon}
+                            background={token?.colorInfoHover}
+                            size={36}
+                          />
+
+                          <Typography
+                            key={ContactDataItem?.key}
+                            name="Body 3/Medium"
+                            color={'#575757'}
+                            ellipsis
+                            maxWidth={200}
+                            as="div"
+                            tooltip
+                          >
+                            {ContactDataItem?.data2}
+                          </Typography>
+                        </Space>
+                      )}
+                    </Space>
+                  </Space>
+                </Col>
+              );
+            })}
+          </Row>
+        </Space>
+      </CustomCardStyle>
 
       <OsModal
         loading={loading}

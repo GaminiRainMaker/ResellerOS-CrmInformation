@@ -23,7 +23,10 @@ export default function DashboardLayout({
         <Layout>
           {!isCanvas && <SideBar />}
           <Content
-            style={{padding: pathname === '/formBuilder' ? '0px' : '12px'}}
+            style={{
+              padding: pathname === '/formBuilder' ? '0px' : '12px',
+              background: '#f5f5f5',
+            }}
           >
             {children}
           </Content>
