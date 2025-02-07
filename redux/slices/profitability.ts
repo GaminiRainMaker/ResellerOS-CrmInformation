@@ -9,6 +9,7 @@ import {
   getAllProfitabilityCount,
   updateProfitabilityValueForBulk,
   removeBundleLineItems,
+  updateProfitabilitySelectValues,
 } from '../actions/profitability';
 
 type ProfitabilityState = {
@@ -163,6 +164,24 @@ const profitabilitySlice = createSlice({
       )
       .addCase(
         removeBundleLineItems.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(updateProfitabilitySelectValues.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateProfitabilitySelectValues.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.removeBundleLineitemsData = action.payload;
+        },
+      )
+      .addCase(
+        updateProfitabilitySelectValues.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

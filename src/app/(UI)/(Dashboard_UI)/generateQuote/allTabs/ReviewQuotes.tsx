@@ -40,6 +40,7 @@ import {
 } from '../../../../../../redux/slices/quoteFile';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import CommonSelect from '@/app/components/common/os-select';
+import { countrupickList, EnergyStarFlagpicklist, EPEATFlagPickList, TAAFlagPickList } from '@/app/utils/CONSTANTS';
 
 const ReviewQuotes: FC<any> = ({
   tableColumnDataShow,
@@ -186,19 +187,13 @@ const ReviewQuotes: FC<any> = ({
 
   const InputDetailQuoteLineItemcolumns = [
     {
-      title: '#Line',
+      title: 'Line Number',
       dataIndex: 'line_number',
       key: 'line_number',
       render: (text: any, record: any, index: number) => (
         <Typography name="Body 4/Medium">{index + 1}</Typography>
       ),
       width: 130,
-    },
-    {
-      title: 'SKU',
-      dataIndex: 'product_code',
-      key: 'product_code',
-      width: 187,
     },
     {
       title: 'Quantity',
@@ -219,12 +214,15 @@ const ReviewQuotes: FC<any> = ({
       render: (text: number) => {
         const value = text ? useRemoveDollarAndCommahook(text) : 0;
         return (
-          <Typography name="Body 4/Medium">
-            {convertToNumber(value)}
-            {/* {`${abbreviate(Number(value ?? 0))}`} */}
-          </Typography>
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
         );
       },
+    },
+    {
+      title: 'Product Code',
+      dataIndex: 'product_code',
+      key: 'product_code',
+      width: 187,
     },
     {
       title: 'Cost ($)',
@@ -235,12 +233,15 @@ const ReviewQuotes: FC<any> = ({
       render: (text: any) => {
         const value = useRemoveDollarAndCommahook(text ? text : 0);
         return (
-          <Typography name="Body 4/Medium">
-            {convertToNumber(value)}
-            {/* {text === null ? 0.0 : `${abbreviate(value ?? 0.0)}`} */}
-          </Typography>
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
         );
       },
+    },
+    {
+      title: 'Product Description',
+      dataIndex: 'description',
+      key: 'description',
+      width: 365,
     },
     {
       title: 'Product Family',
@@ -262,10 +263,422 @@ const ReviewQuotes: FC<any> = ({
       },
     },
     {
-      title: 'Product Description',
-      dataIndex: 'description',
-      key: 'description',
-      width: 365,
+      title: 'Availability',
+      dataIndex: 'availability',
+      key: 'availability',
+      width: 150,
+    },
+    {
+      title: 'Adjusted Quantity',
+      dataIndex: 'adjusted_quantity',
+      key: 'adjusted_quantity',
+      width: 150,
+    },
+    {
+      title: 'Adjusted Price ($)',
+      dataIndex: 'adjusted_price',
+      key: 'adjusted_price',
+      width: 187,
+      render: (text: any) => {
+        const value = useRemoveDollarAndCommahook(text ? text : 0);
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'line_amount',
+      key: 'line_amount',
+      width: 187,
+      render: (text: any) => {
+        const value = useRemoveDollarAndCommahook(text ? text : 0);
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+    {
+      title: 'Unit Price ($)',
+      dataIndex: 'adjusted_price',
+      key: 'adjusted_price',
+      width: 150,
+      render: (text: any) => {
+        const value = useRemoveDollarAndCommahook(text ? text : 0);
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+    {
+      title: 'Extended Price ($)',
+      dataIndex: 'bundle_ext_price',
+      key: 'bundle_ext_price',
+      width: 187,
+      render: (text: any) => {
+        const value = useRemoveDollarAndCommahook(text ? text : 0);
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+    {
+      title: 'Gross Profit ($)',
+      dataIndex: 'bundle_gp',
+      key: 'bundle_gp',
+      width: 150,
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+    {
+      title: 'Gross Profit (%)',
+      dataIndex: 'bundle_gp_percentage',
+      key: 'bundle_gp_percentage',
+      width: 150,
+      render: (text: any) => {
+        const value = text || 0; // Default to 0 if no value
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+    {
+      title: 'Bundle Cost',
+      dataIndex: 'bundle_cost',
+      key: 'bundle_cost',
+      width: 150,
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+    {
+      title: 'Bundle Extended Price',
+      dataIndex: 'bundle_ext_price',
+      key: 'bundle_ext_price',
+      width: 187,
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+    {
+      title: 'Bundle Gross Profit',
+      dataIndex: 'bundle_gp',
+      key: 'bundle_gp',
+      width: 150,
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+    {
+      title: 'Bundle Gross Profit (%)',
+      dataIndex: 'bundle_gp_percentage',
+      key: 'bundle_gp_percentage',
+      width: 150,
+      render: (text: any) => {
+        const value = text || 0; // Default to 0 if no value
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+    {
+      title: 'Bundle MSRP',
+      dataIndex: 'bundle_msrp',
+      key: 'bundle_msrp',
+      width: 187,
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+
+    {
+      title: 'TAA Flag',
+      dataIndex: 'taa_flag',
+      key: 'taa_flag',
+      width: 150,
+      render(text: any, record: any) {
+        return {
+          children: (
+            <CommonSelect
+              disabled={true}
+              allowClear
+            
+              style={{width: '200px', height: '36px'}}
+              placeholder="Select"
+              defaultValue={text ?? record?.taa_flag}
+              options={TAAFlagPickList}
+         
+            />
+          ),
+        };
+      },
+    },
+    {
+      title: 'EPEAT Flag',
+      dataIndex: 'epeat_flag',
+      key: 'epeat_flag',
+      width: 150,
+      render(text: any, record: any) {
+        return {
+          children: (
+            <CommonSelect
+            disabled={true}
+        
+              style={{width: '200px', height: '36px'}}
+              placeholder="Select"
+              defaultValue={text ?? record?.epeat_flag}
+              options={EPEATFlagPickList}
+
+        
+            />
+          ),
+        };
+      },
+    },
+    {
+      title: 'Country Of Origin',
+      dataIndex: 'country_of_origin',
+      key: 'country_of_origin',
+      width: 150,
+      render(text: any, record: any) {
+        return {
+          children: (
+            <CommonSelect
+            disabled={true}
+         
+              style={{width: '200px', height: '36px'}}
+              placeholder="Select"
+              defaultValue={text ?? record?.country_of_origin}
+              options={countrupickList}
+     
+            />
+          ),
+        };
+      },
+    },
+    {
+      title: 'Energy Star Flag',
+      dataIndex: 'energy_star_flag',
+      key: 'energy_star_flag',
+      width: 150,
+      render(text: any, record: any) {
+        return {
+          children: (
+            <CommonSelect
+            disabled={true}
+            allowClear
+         
+              style={{width: '200px', height: '36px'}}
+              placeholder="Select"
+              defaultValue={text ?? record?.energy_star_flag}
+              options={EnergyStarFlagpicklist}
+           
+            />
+          ),
+        };
+      },
+    },
+    {
+      title: 'Bundle Name',
+      dataIndex: 'bundle_name',
+      key: 'bundle_name',
+      width: 285,
+    },
+    {
+      title: 'Bundle Rebate',
+      dataIndex: 'bundle_rebate',
+      key: 'bundle_rebate',
+      width: 150,
+    },
+    {
+      title: 'Bundle Rebate Amount',
+      dataIndex: 'bundle_rebate_amount',
+      key: 'bundle_rebate_amount',
+      width: 150,
+    },
+    {
+      title: 'Bundle Unit Price',
+      dataIndex: 'bundle_unit_price',
+      key: 'bundle_unit_price',
+      width: 150,
+    },
+    {
+      title: 'Contract Fee Percentage',
+      dataIndex: 'contract_fee_percentage',
+      key: 'contract_fee_percentage',
+      width: 150,
+    },
+    {
+      title: 'Contract Fee Amount',
+      dataIndex: 'contract_fee_amount',
+      key: 'contract_fee_amount',
+      width: 150,
+    },
+    {
+      title: 'Contract Price ($)',
+      dataIndex: 'line_amount',
+      key: 'line_amount',
+      width: 187,
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+    {
+      title: 'Subscription Term',
+      dataIndex: 'subscription_term',
+      key: 'subscription_term',
+      width: 150,
+    },
+    {
+      title: 'End Date',
+      dataIndex: 'end_date',
+      key: 'end_date',
+      width: 150,
+    },
+    {
+      title: 'Eol Date',
+      dataIndex: 'eol_date',
+      key: 'eol_date',
+      width: 150,
+    },
+    {
+      title: 'Epeat Flag',
+      dataIndex: 'epeat_flag',
+      key: 'epeat_flag',
+      width: 150,
+    },
+    {
+      title: 'Equivalent Clin',
+      dataIndex: 'equivalent_clin',
+      key: 'equivalent_clin',
+      width: 150,
+    },
+    {
+      title: 'Excel Bundle Name',
+      dataIndex: 'excel_bundle_name',
+      key: 'excel_bundle_name',
+      width: 150,
+    },
+    {
+      title: 'File Name',
+      dataIndex: 'file_name',
+      key: 'file_name',
+      width: 150,
+    },
+    {
+      title: 'Gsa Price',
+      dataIndex: 'gsa_price',
+      key: 'gsa_price',
+      width: 150,
+    },
+    {
+      title: 'Model Id',
+      dataIndex: 'model_id',
+      key: 'model_id',
+      width: 150,
+    },
+    {
+      title: 'Mpn',
+      dataIndex: 'mpn',
+      key: 'mpn',
+      width: 150,
+    },
+    {
+      title: 'Ndr Cost',
+      dataIndex: 'ndr_cost',
+      key: 'ndr_cost',
+      width: 150,
+    },
+    {
+      title: 'Notes',
+      dataIndex: 'notes',
+      key: 'notes',
+      width: 150,
+    },
+    {
+      title: 'Oem',
+      dataIndex: 'oem',
+      key: 'oem',
+      width: 150,
+    },
+    {
+      title: 'Oem Name',
+      dataIndex: 'oem_name',
+      key: 'oem_name',
+      width: 150,
+    },
+    {
+      title: 'Partner Fee (%)',
+      dataIndex: 'partner_fee_percentage',
+      key: 'partner_fee_percentage',
+      width: 150,
+    },
+    {
+      title: 'Partner Fee Amount',
+      dataIndex: 'partner_fee_amount',
+      key: 'partner_fee_amount',
+      width: 150,
+    },
+    {
+      title: 'Serial #',
+      dataIndex: 'serial_number',
+      key: 'serial_number',
+      width: 150,
+    },
+    {
+      title: 'Service Duration',
+      dataIndex: 'service_duration',
+      key: 'service_duration',
+      width: 150,
+    },
+    {
+      title: 'Ss Part',
+      dataIndex: 'ss_part',
+      key: 'ss_part',
+      width: 150,
+    },
+    {
+      title: 'Start Date',
+      dataIndex: 'start_date',
+      key: 'start_date',
+      width: 150,
+    },
+    {
+      title: 'Uom',
+      dataIndex: 'uom',
+      key: 'uom',
+      width: 150,
+    },
+    {
+      title: 'Warranty Flag',
+      dataIndex: 'warranty_flag',
+      key: 'warranty_flag',
+      width: 150,
+    },
+    {
+      title: 'Warranty Period',
+      dataIndex: 'warranty_period',
+      key: 'warranty_period',
+      width: 150,
     },
   ];
 

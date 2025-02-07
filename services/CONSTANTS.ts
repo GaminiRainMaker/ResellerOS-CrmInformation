@@ -97,6 +97,8 @@ export const API = {
     count: '/profitability/getAllProfitabilityCount',
     UpdateProfitabilityValueForBulk:
       '/profitability/updateProfitabilityValueForBulk',
+      updateProfitabilitySelectValues:
+      '/profitability/updateProfitabilitySelectValues',
   },
   BUNDLE: {
     INDEX: '/bundle',

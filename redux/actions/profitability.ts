@@ -83,3 +83,15 @@ export const updateProfitabilityValueForBulk = createAsyncThunk(
     }
   },
 );
+
+export const updateProfitabilitySelectValues = createAsyncThunk(
+  'profitability/updateProfitabilitySelectValues',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await PROFITABILITY_API.updateProfitabilitySelectValues(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

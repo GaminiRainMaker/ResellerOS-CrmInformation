@@ -13,11 +13,14 @@ import {
   quoteReviewStatusOptions,
 } from '@/app/utils/CONSTANTS';
 import {currencyFormatter, formatDate} from '@/app/utils/base';
-import {Form} from 'antd';
+import {Checkbox, Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
-import {getAllOpportunity} from '../../../../../redux/actions/opportunity';
+import {
+  getAllOpportunity,
+  updateOpportunity,
+} from '../../../../../redux/actions/opportunity';
 import {
   getQuoteById,
   getQuoteByIdForEditQuoteHeader,
@@ -26,8 +29,9 @@ import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 import CommonStageSelect from '@/app/components/common/os-stage-select';
+import OsButton from '@/app/components/common/os-button';
 
-const DrawerContent: FC<any> = ({form, onFinish}) => {
+const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams()!;
   const getQuoteId = searchParams.get('id');
@@ -45,6 +49,17 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
   );
   const [quoteByIdLoading, setQuoteByIdLoading] = useState<boolean>(false);
 
+  const [opportunitySynced, setOpportunitySynced] = useState<boolean>(false);
+
+  const syncTheOppWithQuote = async () => {
+    let data = {
+      id: quoteByIdData?.opportunity_id,
+      amount: totalValues?.ExitPrice,
+      synced_quote: getQuoteId,
+    };
+    await dispatch(updateOpportunity(data));
+    getAlllApisData();
+  };
   useEffect(() => {
     const customerOptions: any = [];
     const updatedAllBillingContact: any = [];
@@ -82,6 +97,7 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
   }, [dataAddress, customerValue]);
   const getAlllApisData = async () => {
     setQuoteByIdLoading(true);
+    let opportuntityId: any;
     await dispatch(getQuoteByIdForEditQuoteHeader(Number(getQuoteId)))?.then(
       (payload: any) => {
         setQuoteByIdData(payload?.payload);
@@ -96,17 +112,32 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
           quote_tax: payload?.payload?.quote_tax,
           quote_name: payload?.payload?.quote_name,
         });
+        opportuntityId = payload?.payload?.opportunity_id;
         setStageNewValue(payload?.payload?.status);
         setCustomerValue(payload?.payload?.customer_id);
         setStageNewValue(payload?.payload?.status);
       },
     );
     await dispatch(getAllCustomer({}));
-    await dispatch(getAllOpportunity());
+    await dispatch(getAllOpportunity())?.then((payload: any) => {
+      console.log('32423423', payload?.payload, opportuntityId);
+
+      let oppAdddetails = payload?.payload?.find(
+        (itemsIn: any) => itemsIn?.id == opportuntityId,
+      );
+      if (oppAdddetails?.synced_quote == getQuoteId) {
+        setOpportunitySynced(true);
+      } else {
+        setOpportunitySynced(false);
+      }
+      console.log('32423423', opportuntityId, oppAdddetails);
+    });
+
     await dispatch(getAllSyncTable('Quote'));
     setQuoteByIdLoading(false);
   };
 
+  console.log('32432423432', opportunitySynced, quoteByIdData);
   useEffect(() => {
     getAlllApisData();
   }, [getQuoteId]);
@@ -173,6 +204,7 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
               {formatDate(quoteByIdData?.createdAt, 'MM/DD/YYYY | HH:MM')}
             </Typography>
           </Col>
+
           <Col>
             <Form.Item
               label={
@@ -196,6 +228,16 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
               />
             </Form.Item>
           </Col>
+          <Col style={{marginBottom: '10px'}}>
+          {opportunitySynced ? (<Typography   name='Body 3/Regular'>Opportunity is synced to this quote</Typography>):(    <OsButton
+              text="Sync Opportunity"
+              buttontype="PRIMARY"
+              clickHandler={() => {
+                syncTheOppWithQuote();
+              }}
+            />)}
+        
+          </Col>
 
           <Col span={24}>
             <Form.Item label="Quote Name" name="file_name">
@@ -213,6 +255,15 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
               customerValue={customerValue}
               isDisable={isView === 'true' ? true : false}
             />
+            {/* <Typography name="Body 4/Regular">Sync Opportunity</Typography>
+
+            <span style={{marginLeft: '10px'}}>
+              <Checkbox
+                onChange={() => {
+                  syncTheOppWithQuote();
+                }}
+              />
+            </span> */}
 
             <Form.Item label="Contacts" name="contact_id">
               <CommonSelect

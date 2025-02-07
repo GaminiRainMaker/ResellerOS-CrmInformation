@@ -19,7 +19,7 @@ import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {formatDate, getResultedValue} from '@/app/utils/base';
-import {Form} from 'antd';
+import {Checkbox, Form} from 'antd';
 import {TabsProps} from 'antd/lib';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -45,6 +45,8 @@ const OpportunityDetails = () => {
   const {loading, opportunityById: opportunityData} = useAppSelector(
     (state) => state.Opportunity,
   );
+  const [oppSyncValue, setOppSyncValue] = useState<any>();
+
   const {userInformation} = useAppSelector((state) => state.user);
   const [formValue, setFormValue] = useState<any>();
   const [showDrawer, setShowDrawer] = useState(false);
@@ -75,6 +77,7 @@ const OpportunityDetails = () => {
     quotes: opportunityData?.Quotes,
     stages: opportunityData?.stages,
     opportunity: opportunityData,
+    synced_quote: opportunityData?.synced_quote,
   };
 
   useEffect(() => {
@@ -145,6 +148,7 @@ const OpportunityDetails = () => {
                         )
                       : [];
       setActiveQuotes(quoteItems);
+      setOppSyncValue(opportunityData?.synced_quote);
     } else {
       setActiveQuotes([]);
     }
@@ -236,8 +240,6 @@ const OpportunityDetails = () => {
     setShowModalDelete(false);
   };
 
-  console.log('isView', isView, 'userInformation', userInformation);
-
   const Quotecolumns = [
     {
       title: (
@@ -278,6 +280,19 @@ const OpportunityDetails = () => {
           {record?.Customer?.name ?? '--'}
         </Typography>
       ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Synced
+        </Typography>
+      ),
+      dataIndex: 'customer_name',
+      key: 'customer_name',
+      width: 187,
+      render: (text: string, record: any) => {
+        return <Checkbox disabled checked={record?.id === oppSyncValue} />;
+      },
     },
     {
       title: (
@@ -589,6 +604,8 @@ const OpportunityDetails = () => {
     },
   ];
 
+  console.log('324324324323', opportunityData?.synced_quote, activeQuotes);
+
   return (
     <>
       <Space direction="vertical" size={12} style={{width: '100%'}}>
@@ -606,6 +623,7 @@ const OpportunityDetails = () => {
             <Typography name="Heading 3/Medium">All Quotes</Typography>
           </Col>
           {/* {!isDealReg && ( */}
+
           <Col style={{float: 'right'}}>
             <AddQuote
               uploadFileData={uploadFileData}
@@ -621,6 +639,7 @@ const OpportunityDetails = () => {
           </Col>
           {/* )} */}
         </Row>
+        {/* {opportunityData && opportunityData?.length > 0 && ( */}
         <Row
           style={{
             background: 'white',
@@ -648,21 +667,26 @@ const OpportunityDetails = () => {
                   </Typography>
                 ),
                 children: (
-                  <OsTable
-                    key={tabItem?.key}
-                    columns={Quotecolumns}
-                    dataSource={activeQuotes}
-                    scroll
-                    loading={loading}
-                    locale={locale}
-                    scrolly={200}
-                  />
+                  <>
+                    {oppSyncValue && (
+                      <OsTable
+                        key={tabItem?.key}
+                        columns={Quotecolumns}
+                        dataSource={activeQuotes}
+                        scroll
+                        loading={loading}
+                        locale={locale}
+                        scrolly={200}
+                      />
+                    )}
+                  </>
                 ),
                 ...tabItem,
               }))
             }
           />
         </Row>
+        {/* )} */}
         {isDealReg && (
           <>
             <Row
