@@ -123,7 +123,7 @@ const ReviewQuotes: FC<any> = ({
           groupedData[name].QuoteLineItem.push(quoteLineItem);
 
           let Adjustted = Number(
-            useRemoveDollarAndCommahookDataa(
+            useRemoveDollarAndCommahook(
               quoteLineItem?.adjusted_price &&
                 quoteLineItem?.adjusted_price !== undefined &&
                 quoteLineItem?.adjusted_price !== null
@@ -133,7 +133,7 @@ const ReviewQuotes: FC<any> = ({
           );
 
           let QuantityValue = Number(
-            useRemoveDollarAndCommahookDataa(
+            useRemoveDollarAndCommahook(
               quoteLineItem?.quantity &&
                 quoteLineItem?.quantity !== undefined &&
                 quoteLineItem?.quantity !== null
