@@ -1026,7 +1026,6 @@ type Metrics = {
 };
 
 export const calculateMetrics = (quoteData: Quote[]): Metrics => {
-  // Helper functions
   const getVendorQuotesCount = (): number => quoteData.length;
 
   const getTotalPages = (): number => {
@@ -1054,16 +1053,10 @@ export const calculateMetrics = (quoteData: Quote[]): Metrics => {
     const uniqueCustomers = new Set<string>();
 
     quoteData.forEach((quote) => {
-      if (quote.opportunity_id) {
-        uniqueCustomers.add(quote.opportunity_id);
+      if (quote.customer_id) {
+        uniqueCustomers.add(quote.customer_id);
       }
     });
-    // quoteData.forEach((quote) => {
-    //   if (quote.customer_id) {
-    //     uniqueCustomers.add(quote.customer_id);
-    //   }
-    // });
-
     return uniqueCustomers.size;
   };
 
