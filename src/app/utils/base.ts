@@ -113,10 +113,19 @@ export const useRemoveDollarAndCommahook = (value: any) => {
     value
       ?.replace(/\$|,/g, '')
       ?.toString()
-      ?.replace(/[^0-9]/g, '')
+      ?.replace(/[^0-9,\.]/g, '')
       .replace(/^0+/, '');
-  const numberD = parseFloat(cleanedD);
-  return numberD;
+  const cleanedValue =
+    value &&
+    value
+      ?.replace(/\$|,/g, '') // Remove `$` and commas
+      ?.toString()
+      ?.replace(/[^0-9\.]/g, '') // Remove anything that's not a digit or period
+      ?.replace(/^0+(?=\d)/, '') // Remove leading zeros, but keep a single zero for numbers like "0.00"
+      .replace(/(\.\d{1})$/, '$1' + '0'); // Ensure the decimal has two digits (e.g., .1 -> .10)
+
+  const numberD = parseFloat(cleanedValue);
+  return cleanedValue;
 };
 
 export const useRemoveDollarAndCommahookDataa = (value: any) => {
@@ -2065,7 +2074,7 @@ export const handleDate = (
 };
 
 export function convertToNumber(variable: any) {
-  const num = Number(variable);
+  const num = variable;
   return isNaN(num) ? 0 : num;
 }
 

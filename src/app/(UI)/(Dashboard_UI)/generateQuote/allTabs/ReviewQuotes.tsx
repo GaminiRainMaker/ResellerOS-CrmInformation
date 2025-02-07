@@ -40,7 +40,12 @@ import {
 } from '../../../../../../redux/slices/quoteFile';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import CommonSelect from '@/app/components/common/os-select';
-import { countrupickList, EnergyStarFlagpicklist, EPEATFlagPickList, TAAFlagPickList } from '@/app/utils/CONSTANTS';
+import {
+  countrupickList,
+  EnergyStarFlagpicklist,
+  EPEATFlagPickList,
+  TAAFlagPickList,
+} from '@/app/utils/CONSTANTS';
 
 const ReviewQuotes: FC<any> = ({
   tableColumnDataShow,
@@ -196,6 +201,12 @@ const ReviewQuotes: FC<any> = ({
       width: 130,
     },
     {
+      title: 'Product Code',
+      dataIndex: 'product_code',
+      key: 'product_code',
+      width: 187,
+    },
+    {
       title: 'Quantity',
       dataIndex: 'quantity',
       key: 'quantity',
@@ -213,17 +224,14 @@ const ReviewQuotes: FC<any> = ({
       width: 187,
       render: (text: number) => {
         const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        console.log('32432432', value);
+
         return (
           <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
         );
       },
     },
-    {
-      title: 'Product Code',
-      dataIndex: 'product_code',
-      key: 'product_code',
-      width: 187,
-    },
+
     {
       title: 'Cost ($)',
       dataIndex: 'adjusted_price',
@@ -418,12 +426,10 @@ const ReviewQuotes: FC<any> = ({
             <CommonSelect
               disabled={true}
               allowClear
-            
               style={{width: '200px', height: '36px'}}
               placeholder="Select"
               defaultValue={text ?? record?.taa_flag}
               options={TAAFlagPickList}
-         
             />
           ),
         };
@@ -438,14 +444,11 @@ const ReviewQuotes: FC<any> = ({
         return {
           children: (
             <CommonSelect
-            disabled={true}
-        
+              disabled={true}
               style={{width: '200px', height: '36px'}}
               placeholder="Select"
               defaultValue={text ?? record?.epeat_flag}
               options={EPEATFlagPickList}
-
-        
             />
           ),
         };
@@ -460,13 +463,11 @@ const ReviewQuotes: FC<any> = ({
         return {
           children: (
             <CommonSelect
-            disabled={true}
-         
+              disabled={true}
               style={{width: '200px', height: '36px'}}
               placeholder="Select"
               defaultValue={text ?? record?.country_of_origin}
               options={countrupickList}
-     
             />
           ),
         };
@@ -481,14 +482,12 @@ const ReviewQuotes: FC<any> = ({
         return {
           children: (
             <CommonSelect
-            disabled={true}
-            allowClear
-         
+              disabled={true}
+              allowClear
               style={{width: '200px', height: '36px'}}
               placeholder="Select"
               defaultValue={text ?? record?.energy_star_flag}
               options={EnergyStarFlagpicklist}
-           
             />
           ),
         };
