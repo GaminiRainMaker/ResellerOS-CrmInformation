@@ -193,7 +193,7 @@ const Dashboard = () => {
 
   return (
     <GlobalLoader loading={quoteLoading}>
-      {isSubscribed &&
+      {/* {isSubscribed &&
       userInformation?.Role === 'reseller' &&
       (userInformation?.DealReg || userInformation?.QuoteAI) ? (
         <Tag
@@ -349,7 +349,7 @@ const Dashboard = () => {
             <br />
           </Space>
         </>
-      )}
+      )} */}
       <Row justify={'space-between'} align={'middle'}>
         <Col>
           <Typography name="Heading 3/Bold">

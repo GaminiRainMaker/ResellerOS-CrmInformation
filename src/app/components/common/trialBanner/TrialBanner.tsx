@@ -92,25 +92,25 @@ const TrialBanner: React.FC<{
           display: 'flex',
           padding: '20px',
           borderRadius: '4px',
-          border: `1px solid ${token?.colorWarning}`,
+          border: `1px solid ${token?.colorError}`,
         }}
         message={
-          <Typography color={token?.colorWarning} name={PrimaryTextTypography}>
+          <Typography color={token?.colorError} name={PrimaryTextTypography}>
             Your {licenseMessage.includes('Demo') ? 'Demo' : 'Trial'} expires in{' '}
             {remainingDays} Days!
           </Typography>
         }
-        type="warning"
+        type="error"
         description={
           PrimaryTextTypography ? (
             ''
           ) : (
-            <Typography color={token?.colorWarning} name="Body 3/Medium">
+            <Typography color={token?.colorError} name="Body 3/Medium">
               {licenseMessage}
             </Typography>
           )
         }
-        icon={<CheckBadgeIcon width={24} color={token?.colorSuccess} />}
+        icon={<CheckBadgeIcon width={24} color={token?.colorError} />}
       />
     </Layout>
   );
