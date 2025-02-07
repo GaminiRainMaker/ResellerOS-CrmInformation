@@ -87,12 +87,14 @@ const DetailCard = () => {
         if (defaultBilling) {
           separateAddress.BillingAddress = defaultBilling;
         }
+        // if (!defaultAddress && !defaultBilling && !defaultShipping) {
+        //   defaultAddress = anyNotFound;
+        // }
       }
 
       if (
-        !defaultAddress &&
-        (Object.keys(separateAddress.ShippingAddress).length === 0 ||
-          Object.keys(separateAddress.BillingAddress).length === 0)
+        Object.keys(separateAddress.ShippingAddress).length === 0 ||
+        Object.keys(separateAddress.BillingAddress).length === 0
       ) {
         const firstShipping = addresses.find(
           (address: any) => address?.address_type === 'Shipping',
@@ -100,10 +102,26 @@ const DetailCard = () => {
         const firstBilling = addresses.find(
           (address: any) => address?.address_type === 'Billing',
         );
+        const firstShippingNoDefault = addresses.find(
+          (address: any) =>
+            address?.address_type === 'Shipping' &&
+            address?.is_default_address === false,
+        );
+        const firstBillingNoDefault = addresses.find(
+          (address: any) =>
+            address?.address_type === 'Billing' &&
+            address?.is_default_address === false,
+        );
+
+        const anyNotFound = addresses.find(
+          (address: any) =>
+            address?.address_type === 'Both' &&
+            address?.is_default_address === false,
+        );
 
         // Prioritize Shipping first, then Billing if Shipping is missing
         if (
-          Object.keys(separateAddress.ShippingAddress).length === 0 &&
+          Object?.keys(separateAddress.ShippingAddress).length === 0 &&
           firstShipping
         ) {
           separateAddress.ShippingAddress = firstShipping;
@@ -111,10 +129,45 @@ const DetailCard = () => {
 
         // Prioritize Billing second if Billing is missing
         if (
-          Object.keys(separateAddress.BillingAddress).length === 0 &&
+          Object?.keys(separateAddress.BillingAddress).length === 0 &&
           firstBilling
         ) {
           separateAddress.BillingAddress = firstBilling;
+        }
+
+        // Prioritize Shipping first, then Billing if Shipping is missing
+        if (
+          Object?.keys(separateAddress.ShippingAddress).length === 0 &&
+          !firstShipping
+        ) {
+          separateAddress.ShippingAddress = firstShippingNoDefault;
+        }
+
+        // Prioritize Billing second if Billing is missing
+        if (
+          Object?.keys(separateAddress.BillingAddress).length === 0 &&
+          !firstBilling
+        ) {
+          separateAddress.BillingAddress = firstBillingNoDefault;
+        }
+
+        /////////
+        // Prioritize Shipping first, then Billing if Shipping is missing
+        if (
+          // Object?.keys(separateAddress.ShippingAddress).length === 0 &&
+          !firstShipping &&
+          !firstShippingNoDefault
+        ) {
+          separateAddress.ShippingAddress = anyNotFound;
+        }
+
+        // Prioritize Billing second if Billing is missing
+        if (
+          // Object?.keys(separateAddress.BillingAddress).length === 0 &&
+          !firstBilling &&
+          !firstBillingNoDefault
+        ) {
+          separateAddress.BillingAddress = anyNotFound;
         }
       }
 
@@ -127,7 +180,6 @@ const DetailCard = () => {
       }
     }
   }, [customerData]);
-
 
   const customerUpdatedData = {
     id: customerData?.id,
