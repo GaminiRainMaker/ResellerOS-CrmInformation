@@ -46,6 +46,7 @@ const OpportunityDetails = () => {
     (state) => state.Opportunity,
   );
   const [oppSyncValue, setOppSyncValue] = useState<any>();
+  const [oppSyncValueHave, setOppSyncValueHave] = useState<any>();
 
   const {userInformation} = useAppSelector((state) => state.user);
   const [formValue, setFormValue] = useState<any>();
@@ -149,6 +150,7 @@ const OpportunityDetails = () => {
                       : [];
       setActiveQuotes(quoteItems);
       setOppSyncValue(opportunityData?.synced_quote);
+      setOppSyncValueHave(opportunityData?.id);
     } else {
       setActiveQuotes([]);
     }
@@ -668,7 +670,7 @@ const OpportunityDetails = () => {
                 ),
                 children: (
                   <>
-                    {oppSyncValue && (
+                    {oppSyncValueHave && (
                       <OsTable
                         key={tabItem?.key}
                         columns={Quotecolumns}
