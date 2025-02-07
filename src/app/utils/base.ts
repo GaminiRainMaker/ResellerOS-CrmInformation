@@ -2165,3 +2165,85 @@ export const convertToBoolean = function (value: any) {
   }
   return false; // Default case if it's neither boolean nor string
 };
+
+export const transformAddressData = (addressData: any) => {
+  const addresses: any[] = [];
+
+  // Check if shipping address is filled (only check Address Line)
+  const isShippingFilled = Boolean(addressData.shiping_address_line?.trim());
+
+  // Check if billing address is filled (only check Address Line)
+  const isBillingFilled = Boolean(addressData.billing_address_line?.trim());
+
+  if (isShippingFilled && addressData.is_same_shipping_address) {
+    // If shipping is filled and same as billing, return one record with "Both"
+    addresses.push({
+      shiping_address_line: addressData.shiping_address_line,
+      shiping_city: addressData.shiping_city,
+      shiping_state: addressData.shiping_state,
+      shiping_pin_code: addressData.shiping_pin_code,
+      shiping_country: addressData.shiping_country,
+      is_default_address: addressData.is_shipping_default_address,
+      address_type: 'Both',
+    });
+  } else {
+    // If shipping is filled, add shipping address
+    if (isShippingFilled) {
+      addresses.push({
+        shiping_address_line: addressData.shiping_address_line,
+        shiping_city: addressData.shiping_city,
+        shiping_state: addressData.shiping_state,
+        shiping_pin_code: addressData.shiping_pin_code,
+        shiping_country: addressData.shiping_country,
+        is_default_address: addressData.is_shipping_default_address,
+        address_type: 'Shipping',
+      });
+    }
+
+    // If billing is filled, add billing address
+    if (isBillingFilled) {
+      addresses.push({
+        shiping_address_line: addressData.billing_address_line,
+        shiping_city: addressData.billing_city,
+        shiping_state: addressData.billing_state,
+        shiping_pin_code: addressData.billing_pin_code,
+        shiping_country: addressData.billing_country,
+        is_default_address: addressData.is_billing_default_address,
+        address_type: 'Billing',
+      });
+    }
+  }
+
+  return addresses;
+};
+
+export const transformExistAddressData = (
+  addressData: any,
+  recordData: any,
+) => {
+  const isBilling = recordData?.address_type === 'Billing';
+
+  return [
+    {
+      shiping_address_line: isBilling
+        ? addressData.billing_address_line
+        : addressData.shiping_address_line,
+      shiping_city: isBilling
+        ? addressData.billing_city
+        : addressData.shiping_city,
+      shiping_state: isBilling
+        ? addressData.billing_state
+        : addressData.shiping_state,
+      shiping_pin_code: isBilling
+        ? addressData.billing_pin_code
+        : addressData.shiping_pin_code,
+      shiping_country: isBilling
+        ? addressData.billing_country
+        : addressData.shiping_country,
+      is_default_address: isBilling
+        ? addressData.is_billing_default_address
+        : addressData.is_shipping_default_address,
+      address_type: recordData?.address_type,
+    },
+  ];
+};
