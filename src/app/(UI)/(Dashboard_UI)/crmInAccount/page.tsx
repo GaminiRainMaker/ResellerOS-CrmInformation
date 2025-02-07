@@ -53,6 +53,7 @@ import {queryOpportunity} from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setBillingContact} from '../../../../../redux/slices/billingAddress';
 import {setCustomerProfile} from '../../../../../redux/slices/customer';
+import {transformAddressData} from '@/app/utils/base';
 
 const CrmInformation: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -368,42 +369,64 @@ const CrmInformation: React.FC = () => {
   };
 
   const onFinish = async () => {
-    if (activeKeyForTabs < '3') {
-      setActiveKeyForTabs((Number(activeKeyForTabs) + 1)?.toString());
-      return;
-    }
-    const FormData = form.getFieldsValue();
     try {
-      dispatch(
-        insertCustomer({...FormData, profile_image: customerProfile}),
-      ).then(async (data) => {
-        const newAddressObj: any = {
-          ...FormData,
-          customer_id: data?.payload?.id,
-        };
-        const newBillingObject: any = {
-          customer_id: data?.payload?.id,
-          billing_first_name: FormData?.billing_first_name,
-          billing_email: FormData?.billing_email,
-          billing_role: FormData?.billing_role,
-          billing_last_name: FormData?.billing_last_name,
-          billing_state: FormData?.billing_state,
-        };
-        if (newAddressObj) {
-          await dispatch(insertAddAddress(newAddressObj));
-        }
-        if (FormData?.billing_last_name && newBillingObject) {
-          await dispatch(insertbillingContact(newBillingObject));
-        }
-        await dispatch(setCustomerProfile(''));
-        await dispatch(queryCustomer(searchQuery));
-        await dispatch(queryContact(''));
-      });
+      // Move to the next tab if applicable
+      if (Number(activeKeyForTabs) < 3) {
+        setActiveKeyForTabs((prev) => (Number(prev) + 1).toString());
+        return;
+      }
+
+      const formData = form.getFieldsValue();
+      const formattedAddresses = transformAddressData(formData);
+
+      // Insert Customer & Get response
+      const {payload} = await dispatch(
+        insertCustomer({...formData, profile_image: customerProfile}),
+      );
+
+      if (!payload?.id) throw new Error('Customer insertion failed');
+
+      const customerId = payload.id;
+
+      // Prepare billing contact object
+      const newBillingObject = formData?.billing_last_name
+        ? {
+            customer_id: customerId,
+            billing_first_name: formData?.billing_first_name,
+            billing_email: formData?.billing_email,
+            billing_role: formData?.billing_role,
+            billing_last_name: formData?.billing_last_name,
+            billing_state: formData?.billing_state,
+          }
+        : null;
+
+      // Insert Addresses if available
+      if (formattedAddresses?.length) {
+        await Promise.all(
+          formattedAddresses.map((addressObj) =>
+            dispatch(
+              insertAddAddress({...addressObj, customer_id: customerId}),
+            ),
+          ),
+        );
+      }
+
+      // Insert Billing Contact if applicable
+      if (newBillingObject) {
+        await dispatch(insertbillingContact(newBillingObject));
+      }
+
+      // Clear profile, refresh queries
+      await dispatch(setCustomerProfile(''));
+      await dispatch(queryCustomer(searchQuery));
+      await dispatch(queryContact(''));
+
+      // Reset form & modal state
       form.resetFields();
       setShowModal(false);
       setActiveKeyForTabs('1');
     } catch (error) {
-      console.log(error);
+      console.error('Error in onFinish:', error);
       form.resetFields();
       setShowModal(false);
     }
