@@ -213,7 +213,7 @@ const CrmInformation: React.FC = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Shipping Address
+          Address Line
         </Typography>
       ),
       dataIndex: 'shiping_address_line',
@@ -228,15 +228,30 @@ const CrmInformation: React.FC = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Billing Address
+          City{' '}
         </Typography>
       ),
-      dataIndex: 'billing_address_line',
-      key: 'billing_address_line',
+      dataIndex: 'shiping_city',
+      key: 'shiping_city',
       width: 187,
       render: (text: any, record: any) => (
         <Typography name="Body 4/Regular">
-          {record?.Addresses?.[0]?.billing_address_line ?? '--'}
+          {record?.Addresses?.[0]?.shiping_city ?? '--'}
+        </Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          State{' '}
+        </Typography>
+      ),
+      dataIndex: 'shiping_state',
+      key: 'shiping_state',
+      width: 187,
+      render: (text: any, record: any) => (
+        <Typography name="Body 4/Regular">
+          {record?.Addresses?.[0]?.shiping_state ?? '--'}
         </Typography>
       ),
     },
