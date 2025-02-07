@@ -79,7 +79,6 @@ const CrmInformation: React.FC = () => {
   const [deletedData, setDeletedData] = useState<any>();
   const [showDrawer, setShowDrawer] = useState<boolean>(false);
   const [editRecordData, setEditRecordData] = useState<any>();
-  const [errorFileds, setErrorFileds] = useState<boolean>(false);
 
   const [deleteModalDescription, setDeleteModalDescription] = useState<string>(
     `Are you sure you want to delete this account?`,
