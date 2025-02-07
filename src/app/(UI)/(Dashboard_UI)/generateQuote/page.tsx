@@ -153,6 +153,7 @@ const GenerateQuote: React.FC = () => {
     );
   };
 
+  console.log('32423432432', quoteByIdData?.status);
   useEffect(() => {
     getAlllApisData();
   }, [getQuoteID]);
@@ -241,7 +242,7 @@ const GenerateQuote: React.FC = () => {
     setTableColumnDataShow(filterRequired);
   }, [activeTab, tableColumnData]);
 
-  const commonUpdateCompleteAndDraftMethod = (status: string) => {
+  const commonUpdateCompleteAndDraftMethod = async (status: string) => {
     try {
       // setStatusUpdateLoading(true);
       if (getQuoteID) {
@@ -252,11 +253,12 @@ const GenerateQuote: React.FC = () => {
           ids: getQuoteID,
           status,
         };
-        dispatch(updateQuoteStatusById(obj)).then((d) => {
+        await dispatch(updateQuoteStatusById(obj)).then((d) => {
           if (d?.payload) {
             setStatusUpdateLoading(false);
           }
         });
+        getAlllApisData();
       }
     } catch (err) {
       setStatusUpdateLoading(false);
@@ -612,30 +614,32 @@ const GenerateQuote: React.FC = () => {
                     quoteDetails={objectForSyncingValues}
                     isGenerateQuotePage
                   />
-                  <OsButton
-                    loading={
-                      statusValue === 'Needs Review'
-                        ? statusUpdateLoading
-                        : false
-                    }
-                    text=" Mark as Complete"
-                    buttontype="PRIMARY"
-                    clickHandler={() => {
-                      if (
-                        quoteFileUnverifiedById &&
-                        quoteFileUnverifiedById?.length > 0
-                      ) {
-                        notification?.open({
-                          message:
-                            'Please verify all the files first to mark as Complete this Quote',
-                          type: 'info',
-                        });
-                        return;
+                  {quoteByIdData?.status !== 'Needs Review' && (
+                    <OsButton
+                      loading={
+                        statusValue === 'Needs Review'
+                          ? statusUpdateLoading
+                          : false
                       }
-                      setStatusValue('Needs Review');
-                      commonUpdateCompleteAndDraftMethod('Needs Review');
-                    }}
-                  />
+                      text="Submit For Review"
+                      buttontype="PRIMARY"
+                      clickHandler={() => {
+                        if (
+                          quoteFileUnverifiedById &&
+                          quoteFileUnverifiedById?.length > 0
+                        ) {
+                          notification?.open({
+                            message:
+                              'Please verify all the files first to mark as Complete this Quote',
+                            type: 'info',
+                          });
+                          return;
+                        }
+                        setStatusValue('Needs Review');
+                        commonUpdateCompleteAndDraftMethod('Needs Review');
+                      }}
+                    />
+                  )}
                 </>
               )}
 
