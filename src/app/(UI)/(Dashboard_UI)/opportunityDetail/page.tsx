@@ -34,6 +34,7 @@ import {tabItems} from '../allQuote/constants';
 import OsModal from '@/app/components/common/os-modal';
 import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import {PlusIcon} from '@heroicons/react/24/outline';
+import GlobalLoader from '@/app/components/common/os-global-loader';
 
 const OpportunityDetails = () => {
   const [token] = useThemeToken();
@@ -47,6 +48,7 @@ const OpportunityDetails = () => {
   );
   const [oppSyncValue, setOppSyncValue] = useState<any>();
   const [oppSyncValueHave, setOppSyncValueHave] = useState<any>();
+  const [oppSyncValueLoading, setOppSyncValueLoading] = useState<boolean>(true);
 
   const {userInformation} = useAppSelector((state) => state.user);
   const [formValue, setFormValue] = useState<any>();
@@ -92,6 +94,8 @@ const OpportunityDetails = () => {
     }
   }, [showDrawer]);
   useEffect(() => {
+    setOppSyncValueLoading(true);
+
     if (
       activeTab &&
       opportunityData?.Quotes &&
@@ -151,8 +155,14 @@ const OpportunityDetails = () => {
       setActiveQuotes(quoteItems);
       setOppSyncValue(opportunityData?.synced_quote);
       setOppSyncValueHave(opportunityData?.id);
+      setTimeout(() => {
+        setOppSyncValueLoading(false);
+      }, 2000);
     } else {
       setActiveQuotes([]);
+      setTimeout(() => {
+        setOppSyncValueLoading(false);
+      }, 2000);
     }
   }, [activeTab, opportunityData?.Quotes]);
 
@@ -606,8 +616,6 @@ const OpportunityDetails = () => {
     },
   ];
 
-  console.log('324324324323', opportunityData?.synced_quote, activeQuotes);
-
   return (
     <>
       <Space direction="vertical" size={12} style={{width: '100%'}}>
@@ -670,13 +678,13 @@ const OpportunityDetails = () => {
                 ),
                 children: (
                   <>
-                    {oppSyncValueHave && (
+                    {!oppSyncValueLoading && (
                       <OsTable
                         key={tabItem?.key}
                         columns={Quotecolumns}
                         dataSource={activeQuotes}
                         scroll
-                        loading={loading}
+                        loading={oppSyncValueLoading}
                         locale={locale}
                         scrolly={200}
                       />
