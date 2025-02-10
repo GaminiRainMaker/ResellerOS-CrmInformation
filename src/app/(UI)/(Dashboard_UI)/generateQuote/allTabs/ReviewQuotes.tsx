@@ -192,7 +192,7 @@ const ReviewQuotes: FC<any> = ({
 
   const InputDetailQuoteLineItemcolumns = [
     {
-      title: 'Line Number',
+      title: '#Line',
       dataIndex: 'line_number',
       key: 'line_number',
       render: (text: any, record: any, index: number) => (
@@ -201,7 +201,7 @@ const ReviewQuotes: FC<any> = ({
       width: 130,
     },
     {
-      title: 'Product Code',
+      title: 'SKU',
       dataIndex: 'product_code',
       key: 'product_code',
       width: 187,
