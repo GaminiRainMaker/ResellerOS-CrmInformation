@@ -354,7 +354,6 @@ const ContentSection: FC<AuthLayoutInterface> = ({
               requiredMark={false}
             >
               {inputFields?.map((item: any) => {
-                console.log('item');
                 return (
                   <Form.Item
                     style={{
