@@ -37,6 +37,7 @@ import {AddQuoteInterface, FormattedData} from './types';
 import {queryLineItemSyncingForSalesForce} from '../../../../../redux/actions/LineItemSyncing';
 import {getUserByTokenAccess} from '../../../../../redux/actions/user';
 import ConverSationProcess from '@/app/(UI)/(Dashboard_UI)/admin/quote-AI/configuration/configuration-tabs/ConversationProcess';
+import {Rethink_Sans} from 'next/font/google';
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,

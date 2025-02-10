@@ -19,7 +19,7 @@ import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {formatDate, getResultedValue} from '@/app/utils/base';
-import {Form} from 'antd';
+import {Checkbox, Form} from 'antd';
 import {TabsProps} from 'antd/lib';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -34,6 +34,7 @@ import {tabItems} from '../allQuote/constants';
 import OsModal from '@/app/components/common/os-modal';
 import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import {PlusIcon} from '@heroicons/react/24/outline';
+import GlobalLoader from '@/app/components/common/os-global-loader';
 
 const OpportunityDetails = () => {
   const [token] = useThemeToken();
@@ -45,6 +46,10 @@ const OpportunityDetails = () => {
   const {loading, opportunityById: opportunityData} = useAppSelector(
     (state) => state.Opportunity,
   );
+  const [oppSyncValue, setOppSyncValue] = useState<any>();
+  const [oppSyncValueHave, setOppSyncValueHave] = useState<any>();
+  const [oppSyncValueLoading, setOppSyncValueLoading] = useState<boolean>(true);
+
   const {userInformation} = useAppSelector((state) => state.user);
   const [formValue, setFormValue] = useState<any>();
   const [showDrawer, setShowDrawer] = useState(false);
@@ -75,6 +80,7 @@ const OpportunityDetails = () => {
     quotes: opportunityData?.Quotes,
     stages: opportunityData?.stages,
     opportunity: opportunityData,
+    synced_quote: opportunityData?.synced_quote,
   };
 
   useEffect(() => {
@@ -88,6 +94,8 @@ const OpportunityDetails = () => {
     }
   }, [showDrawer]);
   useEffect(() => {
+    setOppSyncValueLoading(true);
+
     if (
       activeTab &&
       opportunityData?.Quotes &&
@@ -145,8 +153,16 @@ const OpportunityDetails = () => {
                         )
                       : [];
       setActiveQuotes(quoteItems);
+      setOppSyncValue(opportunityData?.synced_quote);
+      setOppSyncValueHave(opportunityData?.id);
+      setTimeout(() => {
+        setOppSyncValueLoading(false);
+      }, 2000);
     } else {
       setActiveQuotes([]);
+      setTimeout(() => {
+        setOppSyncValueLoading(false);
+      }, 2000);
     }
   }, [activeTab, opportunityData?.Quotes]);
 
@@ -236,8 +252,6 @@ const OpportunityDetails = () => {
     setShowModalDelete(false);
   };
 
-  console.log('isView', isView, 'userInformation', userInformation);
-
   const Quotecolumns = [
     {
       title: (
@@ -278,6 +292,19 @@ const OpportunityDetails = () => {
           {record?.Customer?.name ?? '--'}
         </Typography>
       ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Synced
+        </Typography>
+      ),
+      dataIndex: 'customer_name',
+      key: 'customer_name',
+      width: 187,
+      render: (text: string, record: any) => {
+        return <Checkbox disabled checked={record?.id === oppSyncValue} />;
+      },
     },
     {
       title: (
@@ -606,6 +633,7 @@ const OpportunityDetails = () => {
             <Typography name="Heading 3/Medium">All Quotes</Typography>
           </Col>
           {/* {!isDealReg && ( */}
+
           <Col style={{float: 'right'}}>
             <AddQuote
               uploadFileData={uploadFileData}
@@ -621,6 +649,7 @@ const OpportunityDetails = () => {
           </Col>
           {/* )} */}
         </Row>
+        {/* {opportunityData && opportunityData?.length > 0 && ( */}
         <Row
           style={{
             background: 'white',
@@ -648,21 +677,26 @@ const OpportunityDetails = () => {
                   </Typography>
                 ),
                 children: (
-                  <OsTable
-                    key={tabItem?.key}
-                    columns={Quotecolumns}
-                    dataSource={activeQuotes}
-                    scroll
-                    loading={loading}
-                    locale={locale}
-                    scrolly={200}
-                  />
+                  <>
+                    {!oppSyncValueLoading && (
+                      <OsTable
+                        key={tabItem?.key}
+                        columns={Quotecolumns}
+                        dataSource={activeQuotes}
+                        scroll
+                        loading={oppSyncValueLoading}
+                        locale={locale}
+                        scrolly={200}
+                      />
+                    )}
+                  </>
                 ),
                 ...tabItem,
               }))
             }
           />
         </Row>
+        {/* )} */}
         {isDealReg && (
           <>
             <Row

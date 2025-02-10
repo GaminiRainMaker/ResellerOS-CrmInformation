@@ -20,12 +20,11 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {updateQuoteById} from '../../../../../redux/actions/quote';
 import {useSearchParams} from 'next/navigation';
 
-const GenerateQuoteAnalytics: FC<any> = () => {
+const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
   const [token] = useThemeToken();
   const searchParams = useSearchParams()!;
   const getQuoteID = searchParams.get('id');
   const dispatch = useAppDispatch();
-  const [totalValues, setTotalValues] = useState<any>();
   const [totalRebateAmount, setTotalRebateAmount] = useState<any>();
   const {data: profitabilityDataByQuoteId} = useAppSelector(
     (state) => state.profitability,
@@ -106,6 +105,8 @@ const GenerateQuoteAnalytics: FC<any> = () => {
     if (totalExitPrice > 0) {
       grossProfitPercentage = (totalGrossProfit / totalExitPrice) * 100;
     }
+
+
     setTotalValues({
       GrossProfit: totalGrossProfit,
       GrossProfitPercentage: grossProfitPercentage,
@@ -193,6 +194,7 @@ const GenerateQuoteAnalytics: FC<any> = () => {
       );
     }
   }, [totalValues]);
+
 
   return (
     <Row

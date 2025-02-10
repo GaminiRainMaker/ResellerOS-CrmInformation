@@ -85,9 +85,12 @@ const GenerateQuote: React.FC = () => {
   const [activeTab, setActiveTab] = useState<any>('1');
 
   const [validationTab, setValidationTab] = useState<boolean>(false);
-  const {loading} = useAppSelector((state) => state.quoteLineItem);
+  const {loading, quoteLineItem} = useAppSelector(
+    (state) => state.quoteLineItem,
+  );
   const {quoteById} = useAppSelector((state) => state.quote);
   const [quoteByIdData, setQuoteByIdData] = useState<any>();
+  const [totalValues, setTotalValues] = useState<any>();
 
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [selectTedRowData, setSelectedRowData] = useState<any>([]);
@@ -153,7 +156,7 @@ const GenerateQuote: React.FC = () => {
     );
   };
 
-  console.log('32423432432', quoteByIdData?.status);
+  // console.log('32423432432', totalValues);
   useEffect(() => {
     getAlllApisData();
   }, [getQuoteID]);
@@ -575,7 +578,10 @@ const GenerateQuote: React.FC = () => {
     <>
       {contextHolder}
       <Space size={12} direction="vertical" style={{width: '100%'}}>
-        <GenerateQuoteAnalytics />
+        <GenerateQuoteAnalytics
+          totalValues={totalValues}
+          setTotalValues={setTotalValues}
+        />
 
         <Row justify="space-between" align="middle">
           <Col>
@@ -614,7 +620,7 @@ const GenerateQuote: React.FC = () => {
                     quoteDetails={objectForSyncingValues}
                     isGenerateQuotePage
                   />
-                  {quoteByIdData?.status !== 'Needs Review' && (
+                  {/* {quoteByIdData?.status !== 'Needs Review' && (
                     <OsButton
                       loading={
                         statusValue === 'Needs Review'
@@ -639,7 +645,7 @@ const GenerateQuote: React.FC = () => {
                         commonUpdateCompleteAndDraftMethod('Needs Review');
                       }}
                     />
-                  )}
+                  )} */}
                 </>
               )}
 
@@ -784,7 +790,11 @@ const GenerateQuote: React.FC = () => {
           </Row>
         }
       >
-        <DrawerContent form={form} onFinish={onFinish} />
+        <DrawerContent
+          form={form}
+          onFinish={onFinish}
+          totalValues={totalValues}
+        />
       </OsDrawer>
 
       <OsModal
