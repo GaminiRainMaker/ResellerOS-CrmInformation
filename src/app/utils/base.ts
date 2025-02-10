@@ -2192,7 +2192,8 @@ export const transformAddressData = (addressData: any) => {
       shiping_state: addressData.shiping_state,
       shiping_pin_code: addressData.shiping_pin_code,
       shiping_country: addressData.shiping_country,
-      is_default_address: addressData.is_shipping_default_address,
+      primary_shipping: addressData.primary_shipping,
+      primary_billing: addressData.primary_billing,
       address_type: 'Both',
     });
   } else {
@@ -2204,7 +2205,7 @@ export const transformAddressData = (addressData: any) => {
         shiping_state: addressData.shiping_state,
         shiping_pin_code: addressData.shiping_pin_code,
         shiping_country: addressData.shiping_country,
-        is_default_address: addressData.is_shipping_default_address,
+        primary_shipping: addressData.primary_shipping,
         address_type: 'Shipping',
       });
     }
@@ -2217,7 +2218,7 @@ export const transformAddressData = (addressData: any) => {
         shiping_state: addressData.billing_state,
         shiping_pin_code: addressData.billing_pin_code,
         shiping_country: addressData.billing_country,
-        is_default_address: addressData.is_billing_default_address,
+        primary_billing: addressData.primary_billing,
         address_type: 'Billing',
       });
     }
@@ -2249,9 +2250,8 @@ export const transformExistAddressData = (
       shiping_country: isBilling
         ? addressData.billing_country
         : addressData.shiping_country,
-      is_default_address: isBilling
-        ? addressData.is_billing_default_address
-        : addressData.is_shipping_default_address,
+      primary_billing: addressData.primary_billing,
+      primary_shipping: addressData.primary_shipping,
       address_type: recordData?.address_type,
     },
   ];

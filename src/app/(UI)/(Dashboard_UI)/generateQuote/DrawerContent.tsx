@@ -11,9 +11,10 @@ import Typography from '@/app/components/common/typography';
 import {
   quoteStatusOptions,
   quoteReviewStatusOptions,
+  formatStatus,
 } from '@/app/utils/CONSTANTS';
 import {currencyFormatter, formatDate} from '@/app/utils/base';
-import {Checkbox, Form} from 'antd';
+import {Checkbox, DatePicker, Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
@@ -30,6 +31,10 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 import CommonStageSelect from '@/app/components/common/os-stage-select';
 import OsButton from '@/app/components/common/os-button';
+import moment from 'moment';
+import CommonDatePicker from '@/app/components/common/os-date-picker';
+import dayjs from 'dayjs';
+import {getAddressByCustomerId} from '../../../../../redux/actions/address';
 
 const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
   const dispatch = useAppDispatch();
@@ -43,6 +48,9 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
   const {data: syncTableData} = useAppSelector((state) => state.syncTable);
   const [opportunityObject, setOpportunityObject] = useState<any>();
   const [quoteByIdData, setQuoteByIdData] = useState<any>();
+
+  const [billingOptions, setBillingOptions] = useState<any>();
+  const [shippingOptions, setShippingOptions] = useState<any>();
 
   const [stageNewValue, setStageNewValue] = useState<string>(
     quoteByIdData?.status,
@@ -98,6 +106,7 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
   const getAlllApisData = async () => {
     setQuoteByIdLoading(true);
     let opportuntityId: any;
+    let customerId: any;
     await dispatch(getQuoteByIdForEditQuoteHeader(Number(getQuoteId)))?.then(
       (payload: any) => {
         setQuoteByIdData(payload?.payload);
@@ -111,17 +120,55 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
           quote_shipping: payload?.payload?.quote_shipping,
           quote_tax: payload?.payload?.quote_tax,
           quote_name: payload?.payload?.quote_name,
+          quote_unique_in: payload?.payload?.quote_unique_in,
+          expiration_date: payload?.payload?.expiration_date
+            ? moment(payload?.payload?.expiration_date)
+            : null,
+          billing_id: payload?.payload?.billing_id,
+          shipping_id: payload?.payload?.shipping_id,
         });
+        customerId = payload?.payload?.customer_id;
         opportuntityId = payload?.payload?.opportunity_id;
         setStageNewValue(payload?.payload?.status);
         setCustomerValue(payload?.payload?.customer_id);
         setStageNewValue(payload?.payload?.status);
       },
     );
-    await dispatch(getAllCustomer({}));
-    await dispatch(getAllOpportunity())?.then((payload: any) => {
-      console.log('32423423', payload?.payload, opportuntityId);
 
+    await dispatch(getAddressByCustomerId(customerId))?.then((payload: any) => {
+      let shipparry: any = [];
+      let billingArray: any = [];
+      if (payload?.payload && payload?.payload?.length > 0) {
+        payload?.payload?.map((itemsIn: any) => {
+          if (itemsIn?.address_type == 'Billing') {
+            billingArray?.push({
+              label: formatStatus(itemsIn?.shiping_city),
+              value: itemsIn?.id,
+            });
+          } else if (itemsIn?.address_type == 'Shipping') {
+            shipparry?.push({
+              label: formatStatus(itemsIn?.shiping_city),
+              value: itemsIn?.id,
+            });
+          } else {
+            billingArray?.push({
+              label: formatStatus(itemsIn?.shiping_city),
+              value: itemsIn?.id,
+            });
+            shipparry?.push({
+              label: formatStatus(itemsIn?.shiping_city),
+              value: itemsIn?.id,
+            });
+          }
+        });
+      }
+
+      setShippingOptions(shipparry);
+      setBillingOptions(billingArray);
+    });
+
+    await dispatch(getAllCustomer({}))?.then((payload: any) => {});
+    await dispatch(getAllOpportunity())?.then((payload: any) => {
       let oppAdddetails = payload?.payload?.find(
         (itemsIn: any) => itemsIn?.id == opportuntityId,
       );
@@ -130,14 +177,12 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
       } else {
         setOpportunitySynced(false);
       }
-      console.log('32423423', opportuntityId, oppAdddetails);
     });
 
     await dispatch(getAllSyncTable('Quote'));
     setQuoteByIdLoading(false);
   };
 
-  console.log('32432423432', opportunitySynced, quoteByIdData);
   useEffect(() => {
     getAlllApisData();
   }, [getQuoteId]);
@@ -229,14 +274,19 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
             </Form.Item>
           </Col>
           <Col style={{marginBottom: '10px'}}>
-          {opportunitySynced ? (<Typography   name='Body 3/Regular'>Opportunity is synced to this quote</Typography>):(    <OsButton
-              text="Sync Opportunity"
-              buttontype="PRIMARY"
-              clickHandler={() => {
-                syncTheOppWithQuote();
-              }}
-            />)}
-        
+            {opportunitySynced ? (
+              <Typography name="Body 3/Regular">
+                Opportunity is synced to this quote
+              </Typography>
+            ) : (
+              <OsButton
+                text="Sync Opportunity"
+                buttontype="PRIMARY"
+                clickHandler={() => {
+                  syncTheOppWithQuote();
+                }}
+              />
+            )}
           </Col>
 
           <Col span={24}>
@@ -274,6 +324,24 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
               />
             </Form.Item>
 
+            <Form.Item label="Quote #" name="quote_unique_in">
+              <OsInput placeholder="ID" disabled={true} />
+            </Form.Item>
+
+            <Form.Item label="Expiration Date" name="expiration_date">
+              <CommonDatePicker onBlur={undefined} />
+            </Form.Item>
+
+            <Form.Item label="Billing Address" name="billing_id">
+              <CommonSelect options={billingOptions} />
+            </Form.Item>
+            <Form.Item label="Shipping Address" name="shipping_id">
+              <CommonSelect options={shippingOptions} />
+            </Form.Item>
+
+            <Form.Item label="Expiration Date" name="expiration_date">
+              <CommonDatePicker onBlur={undefined} />
+            </Form.Item>
             <Form.Item label=" Quote Note" name="quote_notes">
               <OsInput
                 placeholder="Notes"

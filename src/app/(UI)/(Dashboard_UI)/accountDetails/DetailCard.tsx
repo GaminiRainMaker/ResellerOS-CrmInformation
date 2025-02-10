@@ -22,6 +22,19 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setBillingContact} from '../../../../../redux/slices/billingAddress';
 
+interface Address {
+  id: string;
+  address_type: 'Both' | 'Shipping' | 'Billing';
+  primary_shipping?: boolean;
+  primary_billing?: boolean;
+  created_at: string;
+  [key: string]: any; // For additional fields
+}
+
+interface CustomerData {
+  Addresses?: Address[];
+}
+
 const DetailCard = () => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -39,9 +52,12 @@ const DetailCard = () => {
   const [objectValuesForContact, setObjectValueForContact] = useState<any>();
   const [contactDetail, setContactDetail] = useState<any>();
   const [shipppingAddress, setShippingAddress] = useState<any>();
-  const [addressResults, setAddressResults] = useState<any>();
   const [showDrawer, setShowDrawer] = useState<boolean>(false);
   const [activeKeyForTabs, setActiveKeyForTabs] = useState<any>('1');
+  const [shippingNewAddress, setShippingNewAddress] = useState<Address | null>(
+    null,
+  );
+  const [billingAddress, setBillingAddress] = useState<Address | null>(null);
 
   const contactCardData = [
     {
@@ -54,131 +70,42 @@ const DetailCard = () => {
   ];
 
   useEffect(() => {
-    const addresses = customerData?.Addresses || [];
-    if (addresses) {
-      // Initialize separateAddress object to hold Shipping and Billing addresses
-      let separateAddress = {
-        ShippingAddress: {},
-        BillingAddress: {},
-      };
+    if (!customerData?.Addresses?.length) return;
 
-      // 1. Check if an address with "Both" type is default
-      let defaultAddress = addresses.find(
-        (address: any) =>
-          address?.address_type === 'Both' && address?.is_default_address,
-      );
-      // 2. If no "Both" type is found, check for separate Shipping and Billing defaults
-      if (!defaultAddress) {
-        const defaultShipping = addresses.find(
-          (address: any) =>
-            address?.address_type === 'Shipping' && address?.is_default_address,
-        );
+    const addresses = customerData.Addresses;
 
-        const defaultBilling = addresses.find(
-          (address: any) =>
-            address?.address_type === 'Billing' && address?.is_default_address,
-        );
+    // Find primary shipping & billing addresses
+    const primaryShipping = addresses.find(
+      (addr: any) => addr.primary_shipping,
+    );
+    const primaryBilling = addresses.find((addr: any) => addr.primary_billing);
 
-        // Assign defaultShipping or defaultBilling to separateAddress only if they are found
-        if (defaultShipping) {
-          separateAddress.ShippingAddress = defaultShipping;
-        }
+    // Fallback to first created addresses
+    const fallbackShipping =
+      addresses
+        .filter(
+          (addr: any) =>
+            addr.address_type === 'Both' || addr.address_type === 'Shipping',
+        )
+        .sort(
+          (a: any, b: any) =>
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+        )[0] || null;
 
-        if (defaultBilling) {
-          separateAddress.BillingAddress = defaultBilling;
-        }
-        // if (!defaultAddress && !defaultBilling && !defaultShipping) {
-        //   defaultAddress = anyNotFound;
-        // }
-      }
+    const fallbackBilling =
+      addresses
+        .filter(
+          (addr: any) =>
+            addr.address_type === 'Both' || addr.address_type === 'Billing',
+        )
+        .sort(
+          (a: any, b: any) =>
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+        )[0] || null;
 
-      if (
-        Object.keys(separateAddress.ShippingAddress).length === 0 ||
-        Object.keys(separateAddress.BillingAddress).length === 0
-      ) {
-        const firstShipping = addresses.find(
-          (address: any) => address?.address_type === 'Shipping',
-        );
-        const firstBilling = addresses.find(
-          (address: any) => address?.address_type === 'Billing',
-        );
-        const firstShippingNoDefault = addresses.find(
-          (address: any) =>
-            address?.address_type === 'Shipping' &&
-            address?.is_default_address === false,
-        );
-        const firstBillingNoDefault = addresses.find(
-          (address: any) =>
-            address?.address_type === 'Billing' &&
-            address?.is_default_address === false,
-        );
-
-        const anyNotFound = addresses.find(
-          (address: any) =>
-            address?.address_type === 'Both' &&
-            address?.is_default_address === false,
-        );
-
-        // Prioritize Shipping first, then Billing if Shipping is missing
-        if (
-          Object?.keys(separateAddress.ShippingAddress).length === 0 &&
-          firstShipping
-        ) {
-          separateAddress.ShippingAddress = firstShipping;
-        }
-
-        // Prioritize Billing second if Billing is missing
-        if (
-          Object?.keys(separateAddress.BillingAddress).length === 0 &&
-          firstBilling
-        ) {
-          separateAddress.BillingAddress = firstBilling;
-        }
-
-        // Prioritize Shipping first, then Billing if Shipping is missing
-        if (
-          Object?.keys(separateAddress.ShippingAddress).length === 0 &&
-          !firstShipping
-        ) {
-          separateAddress.ShippingAddress = firstShippingNoDefault;
-        }
-
-        // Prioritize Billing second if Billing is missing
-        if (
-          Object?.keys(separateAddress.BillingAddress).length === 0 &&
-          !firstBilling
-        ) {
-          separateAddress.BillingAddress = firstBillingNoDefault;
-        }
-
-        /////////
-        // Prioritize Shipping first, then Billing if Shipping is missing
-        if (
-          // Object?.keys(separateAddress.ShippingAddress).length === 0 &&
-          !firstShipping &&
-          !firstShippingNoDefault
-        ) {
-          separateAddress.ShippingAddress = anyNotFound;
-        }
-
-        // Prioritize Billing second if Billing is missing
-        if (
-          // Object?.keys(separateAddress.BillingAddress).length === 0 &&
-          !firstBilling &&
-          !firstBillingNoDefault
-        ) {
-          separateAddress.BillingAddress = anyNotFound;
-        }
-      }
-
-      const result = {
-        defaultAddress: defaultAddress || null,
-        separateAddress: separateAddress,
-      };
-      if (result) {
-        setAddressResults(result);
-      }
-    }
+    // Set state with priority
+    setShippingNewAddress(primaryShipping || fallbackShipping);
+    setBillingAddress(primaryBilling || fallbackBilling);
   }, [customerData]);
 
   const customerUpdatedData = {
@@ -186,51 +113,20 @@ const DetailCard = () => {
     name: customerData?.name,
     currency: customerData?.currency,
     BillingContacts: customerData?.BillingContacts,
-    shiping_address_line:
-      addressResults?.defaultAddress?.shiping_address_line ||
-      addressResults?.separateAddress?.ShippingAddress?.shiping_address_line,
-    shiping_city:
-      addressResults?.defaultAddress?.shiping_city ||
-      addressResults?.separateAddress?.ShippingAddress?.shiping_city,
-    shiping_state:
-      addressResults?.defaultAddress?.shiping_state ||
-      addressResults?.separateAddress?.ShippingAddress?.shiping_state,
-    shiping_pin_code:
-      addressResults?.defaultAddress?.shiping_pin_code ||
-      addressResults?.separateAddress?.ShippingAddress?.shiping_pin_code,
-    shiping_country:
-      addressResults?.defaultAddress?.shiping_country ||
-      addressResults?.separateAddress?.ShippingAddress?.shiping_country,
-    billing_address_line:
-      addressResults?.defaultAddress?.shiping_address_line ||
-      addressResults?.separateAddress?.BillingAddress?.shiping_address_line,
-    billing_city:
-      addressResults?.defaultAddress?.shiping_city ||
-      addressResults?.separateAddress?.BillingAddress?.shiping_city,
-    billing_state:
-      addressResults?.defaultAddress?.shiping_state ||
-      addressResults?.separateAddress?.BillingAddress?.shiping_state,
-    billing_pin_code:
-      addressResults?.defaultAddress?.shiping_pin_code ||
-      addressResults?.separateAddress?.BillingAddress?.shiping_pin_code,
-    billing_country:
-      addressResults?.defaultAddress?.shiping_country ||
-      addressResults?.separateAddress?.BillingAddress?.shiping_country,
+    shiping_address_line: shippingNewAddress?.shiping_address_line,
+    shiping_city: shippingNewAddress?.shiping_city,
+    shiping_state: shippingNewAddress?.shiping_state,
+    shiping_pin_code: shippingNewAddress?.shiping_pin_code,
+    shiping_country: shippingNewAddress?.shiping_country,
+    billing_address_line: billingAddress?.shiping_address_line,
+    billing_city: billingAddress?.shiping_city,
+    billing_state: billingAddress?.shiping_state,
+    billing_pin_code: billingAddress?.shiping_pin_code,
+    billing_country: billingAddress?.shiping_country,
   };
 
   const editCustomerFileds = (record: any) => {
     form.setFieldsValue({
-      // billing_address_line: record?.Addresses?.[0]?.billing_address_line,
-      // billing_city: record?.Addresses?.[0]?.billing_city,
-      // billing_state: record?.Addresses?.[0]?.billing_state,
-      // billing_pin_code: record?.Addresses?.[0]?.billing_pin_code,
-      // billing_country: record?.Addresses?.[0]?.billing_country,
-      // shiping_address_line: record?.Addresses?.[0]?.shiping_address_line,
-      // shiping_city: record?.Addresses?.[0]?.shiping_city,
-      // shiping_state: record?.Addresses?.[0]?.shiping_state,
-      // shiping_pin_code: record?.Addresses?.[0]?.shiping_pin_code,
-      // shiping_country: record?.Addresses?.[0]?.shiping_country,
-      // shipping_id: record?.Addresses?.[0]?.id,
       name: record?.name,
       currency: record?.currency,
       industry: record?.industry,

@@ -23,6 +23,7 @@ import {
 } from '../../../../../redux/actions/upload';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {sendEmailForSuport} from '../../../../../redux/actions/auth';
+import {Color} from 'antd/es/color-picker';
 
 const AdminCustomTabs: FC<any> = (tabs) => {
   const searchParams = useSearchParams()!;
@@ -39,6 +40,7 @@ const AdminCustomTabs: FC<any> = (tabs) => {
 
   const [uploadedData, setUpoadedData] = useState<any>();
   const [addIssueToSupport, SetAddIssueToSupport] = useState<any>();
+  const [errorForSupport, setErrorForSupport] = useState<boolean>(false);
   const [loadingSpin, setLoadingSpin] = useState<boolean>(false);
   const router = useRouter();
 
@@ -164,8 +166,19 @@ const AdminCustomTabs: FC<any> = (tabs) => {
         message.error('Error converting file to base64', error);
       });
   };
+  useEffect(() => {
+    if (addIssueToSupport && addIssueToSupport?.length > 0) {
+      setErrorForSupport(false);
+    }
+  }, [addIssueToSupport]);
 
   const sendEmailTOSupport = async () => {
+    if (!addIssueToSupport) {
+      setErrorForSupport(true);
+
+      return;
+    }
+
     setLoadingSpin(true);
     let newArrForUploadded: any = [];
 
@@ -185,9 +198,12 @@ const AdminCustomTabs: FC<any> = (tabs) => {
       tab: pathname,
     };
 
-    await dispatch(sendEmailForSuport(newObj))?.then((payload:any)=>{
-      notification?.open({message:'Your issue request submitted successfully', type:'success'})
-    })
+    await dispatch(sendEmailForSuport(newObj))?.then((payload: any) => {
+      notification?.open({
+        message: 'Your issue request submitted successfully',
+        type: 'success',
+      });
+    });
 
     setLoadingSpin(false);
     SetAddIssueToSupport('');
@@ -225,12 +241,19 @@ const AdminCustomTabs: FC<any> = (tabs) => {
                 >
                   <Typography name="Body 3/Medium">Issue Details:</Typography>
                   <TextArea
-                    style={{width: '100%', height: '100px'}}
+                    style={{
+                      width: '100%',
+                      height: '100px',
+                      border: errorForSupport ? '1px solid red' : '',
+                    }}
                     value={addIssueToSupport}
                     onChange={(e: any) => {
                       SetAddIssueToSupport(e?.target?.value);
                     }}
                   />
+                  {errorForSupport && (
+                    <div style={{color: 'red'}}>Issue details is required!</div>
+                  )}
                   <div>
                     <Row>
                       {uploadedData &&
