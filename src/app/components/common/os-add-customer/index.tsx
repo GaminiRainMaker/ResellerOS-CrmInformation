@@ -360,22 +360,20 @@ const AddCustomer: React.FC<any> = ({
           </SelectFormItem>
         </Col>
 
-        {!sameAsShippingAddress && (
-          <Col span={drawer ? 24 : 12}>
-            <Space align="start">
-              <SelectFormItem
-                label=""
-                valuePropName="checked"
-                name="primary_billing"
-              >
-                <Checkbox style={{paddingBottom: '10px'}} />
-              </SelectFormItem>
-              <Typography name="Body 3/Regular">
-                Should this be your default billing address?
-              </Typography>
-            </Space>
-          </Col>
-        )}
+        <Col span={drawer ? 24 : 12}>
+          <Space align="start">
+            <SelectFormItem
+              label=""
+              valuePropName="checked"
+              name="primary_billing"
+            >
+              <Checkbox style={{paddingBottom: '10px'}} />
+            </SelectFormItem>
+            <Typography name="Body 3/Regular">
+              Should this be your default billing address?
+            </Typography>
+          </Space>
+        </Col>
       </Row>
     );
   };
