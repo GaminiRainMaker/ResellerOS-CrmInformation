@@ -1,13 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import dayjs from 'dayjs';
-import {Alert, Layout} from 'antd';
-import {CloseOutlined} from '@ant-design/icons';
 import {CheckBadgeIcon} from '@heroicons/react/24/outline';
+import {Alert, Layout} from 'antd';
+import dayjs from 'dayjs';
+import {usePathname} from 'next/navigation';
+import React, {useEffect, useState} from 'react';
+import {getActiveLicensesByOrgUserId} from '../../../../../redux/actions/license';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {getActiveLicensesByOrgUserId} from '../../../../../redux/actions/license';
-import {usePathname} from 'next/navigation';
 import {StyleName} from '../typography/typography.interface';
 
 const TrialBanner: React.FC<{
@@ -29,29 +28,17 @@ const TrialBanner: React.FC<{
 
   useEffect(() => {
     if (userInformation?.id) {
-      dispatch(
-        getActiveLicensesByOrgUserId({user_id: userInformation.id}),
-      ).then((data) => {
-        const activeLicenses = data?.payload?.activeLicenses;
-        if (activeLicenses?.length > 0) {
-          const demoLicense = activeLicenses?.find(
-            (l: any) => l.license_type === 'demo',
-          );
-          const trialLicense = activeLicenses?.find(
-            (l: any) => l.license_type === 'trial',
-          );
-
-          if (demoLicense) {
-            setLicenseMessage(
-              'You are currently in the Demo phase. Please subscribe for continued access.',
-            );
-          } else if (trialLicense) {
-            setLicenseMessage(
-              'You are now in the Trial phase. Please subscribe for continued access.',
-            );
+      dispatch(getActiveLicensesByOrgUserId({user_id: userInformation.id}))
+        .then((data) => {
+          const activeLicenses = data?.payload?.activeLicenses;
+          if (activeLicenses?.length > 0) {
+          } else {
+            setLicenseMessage('Your Trial phase is expired!');
           }
-        }
-      });
+        })
+        .catch((err) => {
+          console.log('ERR===>', err);
+        });
     }
   }, [userInformation, dispatch]);
 
@@ -96,20 +83,13 @@ const TrialBanner: React.FC<{
         }}
         message={
           <Typography color={token?.colorError} name={PrimaryTextTypography}>
-            Your {licenseMessage.includes('Demo') ? 'Demo' : 'Trial'} expires in{' '}
-            {remainingDays} Days!
+            {licenseMessage
+              ? licenseMessage
+              : `Your ${remainingDays === 3 ? 'Demo' : 'Trial'} expires in 
+            ${remainingDays} Days!`}
           </Typography>
         }
         type="error"
-        description={
-          PrimaryTextTypography ? (
-            ''
-          ) : (
-            <Typography color={token?.colorError} name="Body 3/Medium">
-              {licenseMessage}
-            </Typography>
-          )
-        }
         icon={<CheckBadgeIcon width={24} color={token?.colorError} />}
       />
     </Layout>
