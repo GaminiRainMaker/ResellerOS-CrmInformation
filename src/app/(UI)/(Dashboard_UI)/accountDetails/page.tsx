@@ -35,7 +35,7 @@ import {
   transformAddressData,
   transformExistAddressData,
 } from '@/app/utils/base';
-import {Form, message} from 'antd';
+import {Form, message, Radio} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {
@@ -337,35 +337,20 @@ const AccountDetails = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Is Default
-        </Typography>
-      ),
-      dataIndex: 'is_default_address',
-      key: 'is_default_address',
-      width: 187,
-      render: (text: boolean) => {
-        return <Checkbox checked={text} disabled />;
-      },
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
           Shipping
         </Typography>
       ),
       dataIndex: 'address_type',
       key: 'address_type',
-      width: 187,
+      width: 90,
       render: (text: string, record: any) => {
         let AddressType =
           record?.address_type === 'Both'
-            ? 'True'
+            ? true
             : record?.address_type === 'Shipping'
-              ? 'True'
-              : 'False';
-        return (
-          <Typography name="Body 4/Regular">{AddressType ?? '--'}</Typography>
-        );
+              ? true
+              : false;
+        return <Checkbox checked={AddressType} disabled />;
       },
     },
     {
@@ -376,20 +361,43 @@ const AccountDetails = () => {
       ),
       dataIndex: 'address_type',
       key: 'address_type',
-      width: 187,
+      width: 80,
       render: (text: string, record: any) => {
         let AddressType =
           record?.address_type === 'Both'
-            ? 'True'
+            ? true
             : record?.address_type === 'Billing'
-              ? 'True'
-              : 'False';
-        return (
-          <Typography name="Body 4/Regular">{AddressType ?? '--'}</Typography>
-        );
+              ? true
+              : false;
+        return <Checkbox checked={AddressType} disabled />;
       },
     },
-
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Primary Shipping
+        </Typography>
+      ),
+      dataIndex: 'primary_shipping',
+      key: 'primary_shipping',
+      width: 150,
+      render: (text: boolean) => {
+        return <Radio checked={text} disabled />;
+      },
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Primary Billing
+        </Typography>
+      ),
+      dataIndex: 'primary_billing',
+      key: 'primary_billing',
+      width: 150,
+      render: (text: boolean) => {
+        return <Radio checked={text} disabled />;
+      },
+    },
     {
       title: 'Actions',
       dataIndex: 'actions',
@@ -417,8 +425,8 @@ const AccountDetails = () => {
                 shiping_pin_code: record?.shiping_pin_code,
                 shiping_country: record?.shiping_country,
                 shipping_id: record?.id,
-                is_shipping_default_address: record?.is_default_address,
-                is_billing_default_address: record?.is_default_address,
+                primary_shipping: record?.primary_shipping,
+                primary_billing: record?.primary_billing,
               });
               setShowDrawer(true);
             }}
@@ -446,10 +454,7 @@ const AccountDetails = () => {
     }
 
     const isAllFieldsUndefined = Object.entries(addressData)
-      .filter(
-        ([key]) =>
-          !['is_same_shipping_address', 'is_default_address'].includes(key),
-      )
+      .filter(([key]) => !['is_same_shipping_address'].includes(key))
       .every(([_, value]) => value === undefined || value === '');
 
     if (isAllFieldsUndefined) {
