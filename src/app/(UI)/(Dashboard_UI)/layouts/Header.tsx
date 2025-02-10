@@ -149,6 +149,7 @@ const CustomHeader = () => {
     }
   }, [searchQuery]);
   const [notificationCounts, setNotificationCounts] = useState<number>(0);
+  const [errorForSupport, setErrorForSupport] = useState<boolean>(false);
 
   useEffect(() => {
     if (!isCanvas && !salesForceUrl) {
@@ -376,7 +377,18 @@ const CustomHeader = () => {
       });
   };
 
+  useEffect(() => {
+    if (addIssueToSupport && addIssueToSupport?.length > 0) {
+      setErrorForSupport(false);
+    }
+  }, [addIssueToSupport]);
+
   const sendEmailTOSupport = async () => {
+    if (!addIssueToSupport) {
+      setErrorForSupport(true);
+
+      return;
+    }
     setLoadingSpin(true);
     let newArrForUploadded: any = [];
 
@@ -700,12 +712,19 @@ const CustomHeader = () => {
               >
                 <Typography name="Body 3/Medium">Issue Details:</Typography>
                 <TextArea
-                  style={{width: '100%', height: '100px'}}
+                  style={{
+                    width: '100%',
+                    height: '100px',
+                    border: errorForSupport ? '1px solid red' : '',
+                  }}
                   value={addIssueToSupport}
                   onChange={(e: any) => {
                     SetAddIssueToSupport(e?.target?.value);
                   }}
                 />
+                {errorForSupport && (
+                  <div style={{color: 'red'}}>Issue details is required!</div>
+                )}
                 <div>
                   <Row>
                     {uploadedData &&

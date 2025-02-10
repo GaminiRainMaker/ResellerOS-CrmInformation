@@ -18,7 +18,13 @@ import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {formatDate, getResultedValue} from '@/app/utils/base';
+import {
+  convertToNumber,
+  currencyFormatter,
+  formatDate,
+  getResultedValue,
+  useRemoveDollarAndCommahook,
+} from '@/app/utils/base';
 import {Checkbox, Form} from 'antd';
 import {TabsProps} from 'antd/lib';
 import {useRouter, useSearchParams} from 'next/navigation';
@@ -35,6 +41,19 @@ import OsModal from '@/app/components/common/os-modal';
 import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import GlobalLoader from '@/app/components/common/os-global-loader';
+import CommonSelect from '@/app/components/common/os-select';
+import {
+  countrupickList,
+  EnergyStarFlagpicklist,
+  EPEATFlagPickList,
+  pricingMethod,
+  selectDataForProduct,
+  TAAFlagPickList,
+} from '@/app/utils/CONSTANTS';
+import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
+import OsInputNumber from '@/app/components/common/os-input/InputNumber';
+import OsInput from '@/app/components/common/os-input';
+import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
 
 const OpportunityDetails = () => {
   const [token] = useThemeToken();
@@ -46,6 +65,8 @@ const OpportunityDetails = () => {
   const {loading, opportunityById: opportunityData} = useAppSelector(
     (state) => state.Opportunity,
   );
+  const {abbreviate} = useAbbreviationHook(0);
+
   const [oppSyncValue, setOppSyncValue] = useState<any>();
   const [oppSyncValueHave, setOppSyncValueHave] = useState<any>();
   const [oppSyncValueLoading, setOppSyncValueLoading] = useState<boolean>(true);
@@ -63,6 +84,9 @@ const OpportunityDetails = () => {
   const [finalDealRegData, setFinalDealRegData] = useState<React.Key[]>([]);
   const [statusValue, setStatusValue] = useState<string>('All');
   const isView = getResultedValue();
+  const [profitibiltyDataForSynced, setProfitibiltyDataForSynced] =
+    useState<any>();
+
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const isDealReg = userInformation?.DealReg ?? false;
@@ -93,6 +117,384 @@ const OpportunityDetails = () => {
       });
     }
   }, [showDrawer]);
+
+  const ProfitabilityQuoteLineItemcolumns = [
+    {
+      title: 'Line Number',
+      dataIndex: 'line_number',
+      key: 'line_number',
+      render: (text: string) => (
+        <OsInput disabled={true} style={{height: '36px'}} defaultValue={text} />
+      ),
+      width: 111,
+    },
+    {
+      title: 'Product Code',
+      dataIndex: 'product_code',
+      key: 'product_code',
+      width: 120,
+    },
+    {
+      title: 'Quantity',
+      dataIndex: 'quantity',
+      key: 'quantity',
+      sorter: (a: any, b: any) => a.quantity - b.quantity,
+      render: (text: string) => (
+        <OsInputNumber
+          formatter={currencyFormatter}
+          parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+          defaultValue={text ?? 0.0}
+          disabled={true}
+          style={{height: '36px', textAlignLast: 'right'}}
+          min={1}
+        />
+      ),
+      width: 120,
+    },
+    {
+      title: 'MSRP ($)',
+      dataIndex: 'list_price',
+      key: 'list_price',
+      sorter: (a: any, b: any) => a.list_price - b.list_price,
+      render: (text: string) => (
+        <OsInputNumber
+          min={0}
+          precision={2}
+          formatter={currencyFormatter}
+          parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+          disabled={true}
+          style={{height: '36px', textAlignLast: 'right', width: '100%'}}
+          defaultValue={text ?? 0.0}
+        />
+      ),
+      width: 150,
+    },
+    {
+      title: 'Cost ($)',
+      dataIndex: 'adjusted_price',
+      key: 'adjusted_price',
+      sorter: (a: any, b: any) => a.adjusted_price - b.adjusted_price,
+      render: (text: string) => (
+        <OsInputNumber
+          precision={2}
+          formatter={currencyFormatter}
+          parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+          min={0}
+          style={{height: '36px', textAlignLast: 'right', width: '100%'}}
+          disabled={true}
+          defaultValue={text ?? 0.0}
+        />
+      ),
+      width: 150,
+    },
+    {
+      title: 'Product Description',
+      dataIndex: 'description',
+      key: 'description',
+      width: 290,
+      render: (text: number) => (
+        <Typography name="Body 4/Medium" style={{color: '#0D0D0D'}}>
+          {text}
+        </Typography>
+      ),
+    },
+    {
+      title: 'Product Family',
+      dataIndex: 'product_family',
+      key: 'product_family',
+      width: 285,
+      render: (text: any, record: any) => (
+        <CommonSelect
+          disabled={true}
+          style={{width: '200px', height: '36px'}}
+          placeholder="Select"
+          defaultValue={text ?? record?.Product?.product_family}
+          options={selectDataForProduct}
+        />
+      ),
+    },
+    {
+      title: 'Pricing Method',
+      dataIndex: 'pricing_method',
+      key: 'pricing_method',
+      width: 200,
+      render: (text: string) => (
+        <CommonSelect
+          disabled={true}
+          style={{width: '100%', height: '36px'}}
+          placeholder="Select"
+          defaultValue={text}
+          options={pricingMethod}
+        />
+      ),
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'line_amount',
+      key: 'line_amount',
+      sorter: (a: any, b: any) => a.line_amount - b.line_amount,
+      width: 150,
+      render: (text: string) => (
+        <OsInputNumber
+          min={0}
+          disabled={true}
+          style={{height: '36px', textAlignLast: 'center', width: '100%'}}
+          precision={2}
+          formatter={currencyFormatter}
+          parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+          defaultValue={text ?? 0.0}
+        />
+      ),
+    },
+    {
+      title: 'Unit Price ($)',
+      dataIndex: 'unit_price',
+      key: 'unit_price',
+      sorter: (a: any, b: any) => a.unit_price - b.unit_price,
+      width: 150,
+      render: (text: number) => (
+        <Typography
+          name="Body 4/Medium"
+          style={{display: 'flex', justifyContent: 'end'}}
+        >
+          {abbreviate(text ?? 0)}
+        </Typography>
+      ),
+    },
+    {
+      title: 'Extended Price ($)',
+      dataIndex: 'exit_price',
+      key: 'exit_price',
+      sorter: (a: any, b: any) => a.exit_price - b.exit_price,
+      width: 190,
+      render: (text: number) => (
+        <Typography
+          name="Body 4/Medium"
+          style={{display: 'flex', justifyContent: 'end'}}
+        >
+          ${abbreviate(text) ?? 0}
+        </Typography>
+      ),
+    },
+    {
+      title: 'Gross Profit ($)',
+      dataIndex: 'gross_profit',
+      key: 'gross_profit',
+      sorter: (a: any, b: any) => a.gross_profit - b.gross_profit,
+      width: 150,
+      render: (text: number) => (
+        <Typography
+          name="Body 4/Medium"
+          style={{display: 'flex', justifyContent: 'end'}}
+        >
+          {abbreviate(text) ?? 0}
+        </Typography>
+      ),
+    },
+    {
+      title: 'Gross Profit %',
+      dataIndex: 'gross_profit_percentage',
+      key: 'gross_profit_percentage',
+      sorter: (a: any, b: any) =>
+        a.gross_profit_percentage - b.gross_profit_percentage,
+      width: 150,
+      render: (text: number) => (
+        <Typography
+          name="Body 4/Medium"
+          style={{display: 'flex', justifyContent: 'end'}}
+        >
+          {abbreviate(text ?? 0)}
+        </Typography>
+      ),
+    },
+    {
+      title: 'Bundle Cost',
+      dataIndex: 'bundle_cost',
+      key: 'bundle_cost',
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+      width: 150,
+    },
+    {
+      title: 'Bundle Extended Price',
+      dataIndex: 'bundle_ext_price',
+      key: 'bundle_ext_price',
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+      width: 150,
+    },
+    {
+      title: 'Bundle Gross Profit',
+      dataIndex: 'bundle_gp',
+      key: 'bundle_gp',
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+      width: 150,
+    },
+    {
+      title: 'Bundle Gross Profit (%)',
+      dataIndex: 'bundle_gp_percentage',
+      key: 'bundle_gp_percentage',
+      render: (text: any) => {
+        const value = text || 0; // Default to 0 if no value
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+      width: 150,
+    },
+    {
+      title: 'Taa Flag',
+      dataIndex: 'taa_flag',
+      key: 'taa_flag',
+      width: 250,
+      render: (text: any, record: any) => (
+        <CommonSelect
+          disabled={true}
+          style={{width: '200px', height: '36px'}}
+          placeholder="Select"
+          defaultValue={text ?? record?.taa_flag}
+          options={TAAFlagPickList}
+        />
+      ),
+    },
+    {
+      title: 'Epeat Flag',
+      dataIndex: 'epeat_flag',
+      key: 'epeat_flag',
+      width: 250,
+      render: (text: any, record: any) => (
+        <CommonSelect
+          disabled={true}
+          style={{width: '200px', height: '36px'}}
+          placeholder="Select"
+          defaultValue={text ?? record?.epeat_flag}
+          options={EPEATFlagPickList}
+        />
+      ),
+    },
+    {
+      title: 'Country Of Origin',
+      dataIndex: 'country_of_origin',
+      key: 'country_of_origin',
+      width: 250,
+      render: (text: any, record: any) => (
+        <CommonSelect
+          disabled={true}
+          style={{width: '200px', height: '36px'}}
+          placeholder="Select"
+          defaultValue={text ?? record?.country_of_origin}
+          options={countrupickList}
+        />
+      ),
+    },
+    {
+      title: 'Energy Star Flag',
+      dataIndex: 'energy_star_flag',
+      key: 'energy_star_flag',
+      width: 250,
+      render: (text: any, record: any) => (
+        <CommonSelect
+          disabled={true}
+          style={{width: '200px', height: '36px'}}
+          placeholder="Select"
+          defaultValue={text ?? record?.energy_star_flag}
+          options={EnergyStarFlagpicklist}
+        />
+      ),
+    },
+    {
+      title: 'Bundle MSRP',
+      dataIndex: 'bundle_msrp',
+      key: 'bundle_msrp',
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+      width: 150,
+    },
+    {
+      title: 'Bundle Name',
+      dataIndex: 'bundle_name',
+      key: 'bundle_name',
+      width: 150,
+    },
+    {
+      title: 'Bundle Rebate',
+      dataIndex: 'bundle_rebate',
+      key: 'bundle_rebate',
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+      width: 150,
+    },
+    {
+      title: 'Bundle Rebate Amount',
+      dataIndex: 'bundle_rebate_amount',
+      key: 'bundle_rebate_amount',
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+      width: 150,
+    },
+    {
+      title: 'Bundle Unit Price',
+      dataIndex: 'bundle_unit_price',
+      key: 'bundle_unit_price',
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+      width: 150,
+    },
+    {
+      title: 'Bundle Gross Profit Amount',
+      dataIndex: 'bundle_gross_profit_amount',
+      key: 'bundle_gross_profit_amount',
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+      width: 150,
+    },
+    {
+      title: 'Bundle Gross Profit Percentage',
+      dataIndex: 'bundle_gross_profit_percentage',
+      key: 'bundle_gross_profit_percentage',
+      render: (text: any) => {
+        const value = text || 0; // Default to 0 if no value
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+      width: 150,
+    },
+  ];
+
   useEffect(() => {
     setOppSyncValueLoading(true);
 
@@ -154,6 +556,11 @@ const OpportunityDetails = () => {
                       : [];
       setActiveQuotes(quoteItems);
       setOppSyncValue(opportunityData?.synced_quote);
+      dispatch(
+        getProfitabilityByQuoteId(Number(opportunityData?.synced_quote)),
+      )?.then((payload: any) => {
+        setProfitibiltyDataForSynced(payload?.payload);
+      });
       setOppSyncValueHave(opportunityData?.id);
       setTimeout(() => {
         setOppSyncValueLoading(false);
@@ -242,6 +649,9 @@ const OpportunityDetails = () => {
 
   const dealRegLocal = {
     emptyText: <EmptyContainer title="No Files" />,
+  };
+  const oppLinesLOcal = {
+    emptyText: <EmptyContainer title="No Opportunity Lines" />,
   };
 
   const deleteSelectedIds = async () => {
@@ -694,6 +1104,20 @@ const OpportunityDetails = () => {
                 ...tabItem,
               }))
             }
+          />
+        </Row>
+        <Row justify="space-between" align="middle" style={{marginTop: '10px'}}>
+          <Col style={{marginBottom: '30px'}}>
+            <Typography name="Heading 3/Medium"> Opportunity Lines</Typography>
+          </Col>
+          <OsTable
+            columns={ProfitabilityQuoteLineItemcolumns}
+            dataSource={profitibiltyDataForSynced}
+            scroll
+            loading={false}
+            paginationProps={false}
+            scrolly={200}
+            locale={oppLinesLOcal}
           />
         </Row>
         {/* )} */}
