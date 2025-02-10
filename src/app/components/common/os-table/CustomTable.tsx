@@ -26,6 +26,7 @@ const OsTableWithOutDrag: FC<any> = ({
 }) => {
   const [token] = useThemeToken();
   const roundPageSize = (size: number) => {
+    if (size <= 5) return 5;
     if (size <= 10) return 10;
     if (size <= 20) return 20;
     if (size <= 30) return 30;
@@ -113,7 +114,7 @@ const OsTableWithOutDrag: FC<any> = ({
         onChange: handlePaginationChange,
         position: ['bottomRight'],
         showSizeChanger: true,
-        pageSizeOptions: [10, 20, 30, 50, 100],
+        pageSizeOptions: [5, 10, 20, 30, 50, 100],
         // hideOnSinglePage: true,
       }}
       scroll={
