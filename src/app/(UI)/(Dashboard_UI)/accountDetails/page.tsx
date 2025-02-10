@@ -46,6 +46,7 @@ import {getCustomerBYId} from '../../../../../redux/actions/customer';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setBillingContact} from '../../../../../redux/slices/billingAddress';
 import DetailCard from './DetailCard';
+import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 
 const AccountDetails = () => {
   const [token] = useThemeToken();
@@ -448,71 +449,72 @@ const AccountDetails = () => {
 
   const [loadingStart, setLoadingStart] = useState(false);
 
-const onFinish = async () => {
-  const addressData = form.getFieldsValue();
-  if (activeKey < '2' && showAddressModal) {
-    setActiveKey((Number(activeKey) + 1)?.toString());
-    return;
-  }
-
-  const isAllFieldsUndefined = Object.entries(addressData)
-    .filter(([key]) => !['is_same_shipping_address'].includes(key))
-    .every(([_, value]) => value === undefined || value === '');
-
-  if (isAllFieldsUndefined) {
-    message.error(
-      'Empty record: The address fields cannot be saved with undefined values.',
-    );
-    return;
-  }
-
-  setLoadingStart(true); // Start loading
-
-  try {
-    // Transform the data
-    let formattedAddresses;
-    if (recordData) {
-      formattedAddresses = transformExistAddressData(addressData, recordData);
-    } else {
-      formattedAddresses = transformAddressData(addressData);
+  const onFinish = async () => {
+    const addressData = form.getFieldsValue();
+    if (activeKey < '2' && showAddressModal) {
+      setActiveKey((Number(activeKey) + 1)?.toString());
+      return;
     }
 
-    if (formattedAddresses) {
-      const addressPromises = formattedAddresses?.map(async (addressObj: any) => {
-        const newAddressObj: any = {
-          ...addressObj,
-          customer_id: getCustomerID,
-          id: recordId,
-        };
-        return dispatch(insertAddAddress(newAddressObj));
-      });
+    const isAllFieldsUndefined = Object.entries(addressData)
+      .filter(([key]) => !['is_same_shipping_address'].includes(key))
+      .every(([_, value]) => value === undefined || value === '');
 
-      // Wait for all insert API calls to complete
-      const results = await Promise.all(addressPromises);
+    if (isAllFieldsUndefined) {
+      message.error(
+        'Empty record: The address fields cannot be saved with undefined values.',
+      );
+      return;
+    }
 
-      // Check if at least one insert was successful
-      if (results.some((res) => res?.payload)) {
-        dispatch(getCustomerBYId(getCustomerID));
+    setLoadingStart(true); // Start loading
 
-        if (!isSaveAndCreate) {
-          setShowAddressModal(false);
-        }
-
-        form.resetFields();
-        setActiveKey('1');
-        setShowDrawer(false);
-        setRecordId('');
-        setLoadingStart(false); // Stop loading
+    try {
+      // Transform the data
+      let formattedAddresses;
+      if (recordData) {
+        formattedAddresses = transformExistAddressData(addressData, recordData);
+      } else {
+        formattedAddresses = transformAddressData(addressData);
       }
-    }
-  } catch (error) {
-    message.error('An error occurred while saving the address.');
-    setLoadingStart(false); // Stop loading
-  } finally {
-    setLoadingStart(false); // Stop loading
-  }
-};
 
+      if (formattedAddresses) {
+        const addressPromises = formattedAddresses?.map(
+          async (addressObj: any) => {
+            const newAddressObj: any = {
+              ...addressObj,
+              customer_id: getCustomerID,
+              id: recordId,
+            };
+            return dispatch(insertAddAddress(newAddressObj));
+          },
+        );
+
+        // Wait for all insert API calls to complete
+        const results = await Promise.all(addressPromises);
+
+        // Check if at least one insert was successful
+        if (results.some((res) => res?.payload)) {
+          dispatch(getCustomerBYId(getCustomerID));
+
+          if (!isSaveAndCreate) {
+            setShowAddressModal(false);
+          }
+
+          form.resetFields();
+          setActiveKey('1');
+          setShowDrawer(false);
+          setRecordId('');
+          setLoadingStart(false); // Stop loading
+        }
+      }
+    } catch (error) {
+      message.error('An error occurred while saving the address.');
+      setLoadingStart(false); // Stop loading
+    } finally {
+      setLoadingStart(false); // Stop loading
+    }
+  };
 
   const deleteSelectedIds = async () => {
     dispatch(deleteAddress({id: deleteIds})).then((res) => {
@@ -561,11 +563,12 @@ const onFinish = async () => {
             </Row>
 
             <OsCard>
-              <OsTable
+              <OsTableWithOutDrag
                 loading={loading}
                 columns={Addresscolumns}
                 dataSource={customerData?.Addresses}
                 locale={locale}
+                defaultPageSize={5}
               />
             </OsCard>
             <Row justify="start">
@@ -573,11 +576,12 @@ const onFinish = async () => {
             </Row>
 
             <OsCard>
-              <OsTable
+              <OsTableWithOutDrag
                 loading={loading}
                 columns={OpportunityColumns}
                 dataSource={customerData?.Opportunities}
                 locale={locale}
+                defaultPageSize={5}
               />
             </OsCard>
 
@@ -586,12 +590,13 @@ const onFinish = async () => {
             </Row>
 
             <OsCard>
-              <OsTable
+              <OsTableWithOutDrag
                 loading={loading}
                 columns={Quotecolumns}
                 dataSource={quotes}
                 scroll
                 locale={locale}
+                defaultPageSize={5}
               />
             </OsCard>
           </div>
