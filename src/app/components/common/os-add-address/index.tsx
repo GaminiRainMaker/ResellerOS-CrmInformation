@@ -125,7 +125,7 @@ const AddAddress: FC<OsAddAddressInterface> = ({
                       <SelectFormItem
                         label=""
                         valuePropName="checked"
-                        name="is_shipping_default_address"
+                        name="primary_shipping"
                       >
                         <Checkbox style={{paddingBottom: '10px'}} />
                       </SelectFormItem>
@@ -280,22 +280,20 @@ const AddAddress: FC<OsAddAddressInterface> = ({
                     </SelectFormItem>
                   </Col>
 
-                  {!sameAsShippingAddress && (
-                    <Col span={drawer ? 24 : 12}>
-                      <Space align="start">
-                        <SelectFormItem
-                          label=""
-                          valuePropName="checked"
-                          name="is_billing_default_address"
-                        >
-                          <Checkbox style={{paddingBottom: '10px'}} />
-                        </SelectFormItem>
-                        <Typography name="Body 3/Regular">
-                          Should this be your default billing address?
-                        </Typography>
-                      </Space>
-                    </Col>
-                  )}
+                  <Col span={drawer ? 24 : 12}>
+                    <Space align="start">
+                      <SelectFormItem
+                        label=""
+                        valuePropName="checked"
+                        name="primary_billing"
+                      >
+                        <Checkbox style={{paddingBottom: '10px'}} />
+                      </SelectFormItem>
+                      <Typography name="Body 3/Regular">
+                        Should this be your default billing address?
+                      </Typography>
+                    </Space>
+                  </Col>
                 </Row>
               ),
             },

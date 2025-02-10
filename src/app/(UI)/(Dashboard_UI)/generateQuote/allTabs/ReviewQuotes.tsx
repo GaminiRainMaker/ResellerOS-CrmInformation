@@ -802,6 +802,7 @@ const ReviewQuotes: FC<any> = ({
             {reviewQuotesData &&
               reviewQuotesData?.length > 0 &&
               reviewQuotesData?.map((finalDataItem: any, index: number) => {
+                console.log('23423432432', finalDataItem?.QuoteLineItem);
                 return (
                   <OsCollapse
                     key={index + 1}

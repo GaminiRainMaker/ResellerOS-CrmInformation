@@ -87,22 +87,53 @@ const EditAddress: FC<OsAddAddressInterface> = ({
             <OsInput placeholder="Enter here" />
           </SelectFormItem>
         </Col>
-        <Col span={24}>
-          <Space align="start">
-            <SelectFormItem
-              label=""
-              valuePropName="checked"
-              name="is_shipping_default_address"
-            >
-              <Checkbox style={{paddingBottom: '10px'}} />
-            </SelectFormItem>
-            <Typography name="Body 3/Regular">
-              {recordData?.address_type === 'Both'
-                ? 'Should this be your default shipping and billing address?'
-                : 'Should this be your default shipping address?'}
-            </Typography>
-          </Space>
-        </Col>
+        {recordData?.address_type !== 'Both' ? (
+          <Col span={24}>
+            <Space align="start">
+              <SelectFormItem
+                label=""
+                valuePropName="checked"
+                name="primary_shipping"
+              >
+                <Checkbox style={{paddingBottom: '10px'}} />
+              </SelectFormItem>
+              <Typography name="Body 3/Regular">
+                Should this be your default shipping address?
+              </Typography>
+            </Space>
+          </Col>
+        ) : (
+          <>
+            <Col span={24}>
+              <Space align="start">
+                <SelectFormItem
+                  label=""
+                  valuePropName="checked"
+                  name="primary_shipping"
+                >
+                  <Checkbox style={{paddingBottom: '10px'}} />
+                </SelectFormItem>
+                <Typography name="Body 3/Regular">
+                  Should this be your default shipping address?
+                </Typography>
+              </Space>
+            </Col>
+            <Col span={24}>
+              <Space align="start">
+                <SelectFormItem
+                  label=""
+                  valuePropName="checked"
+                  name="primary_billing"
+                >
+                  <Checkbox style={{paddingBottom: '10px'}} />
+                </SelectFormItem>
+                <Typography name="Body 3/Regular">
+                  Should this be your default billing address?
+                </Typography>
+              </Space>
+            </Col>
+          </>
+        )}
       </Row>
     );
   };
@@ -231,22 +262,20 @@ const EditAddress: FC<OsAddAddressInterface> = ({
           </SelectFormItem>
         </Col>
 
-        {!sameAsShippingAddress && (
-          <Col span={drawer ? 24 : 12}>
-            <Space align="start">
-              <SelectFormItem
-                label=""
-                valuePropName="checked"
-                name="is_billing_default_address"
-              >
-                <Checkbox style={{paddingBottom: '10px'}} />
-              </SelectFormItem>
-              <Typography name="Body 3/Regular">
-                Should this be your default billing address?
-              </Typography>
-            </Space>
-          </Col>
-        )}
+        <Col span={drawer ? 24 : 12}>
+          <Space align="start">
+            <SelectFormItem
+              label=""
+              valuePropName="checked"
+              name="primary_billing"
+            >
+              <Checkbox style={{paddingBottom: '10px'}} />
+            </SelectFormItem>
+            <Typography name="Body 3/Regular">
+              Should this be your default billing address?
+            </Typography>
+          </Space>
+        </Col>
       </Row>
     );
   };
