@@ -446,26 +446,30 @@ const AccountDetails = () => {
     },
   ];
 
-  const onFinish = () => {
-    const addressData = form.getFieldsValue();
-    if (activeKey < '2' && showAddressModal) {
-      setActiveKey((Number(activeKey) + 1)?.toString());
-      return;
-    }
+  const [loadingStart, setLoadingStart] = useState(false);
 
-    const isAllFieldsUndefined = Object.entries(addressData)
-      .filter(([key]) => !['is_same_shipping_address'].includes(key))
-      .every(([_, value]) => value === undefined || value === '');
+const onFinish = async () => {
+  const addressData = form.getFieldsValue();
+  if (activeKey < '2' && showAddressModal) {
+    setActiveKey((Number(activeKey) + 1)?.toString());
+    return;
+  }
 
-    if (isAllFieldsUndefined) {
-      message.error(
-        'Empty record: The address fields cannot be saved with undefined values.',
-      );
-      return;
-    }
+  const isAllFieldsUndefined = Object.entries(addressData)
+    .filter(([key]) => !['is_same_shipping_address'].includes(key))
+    .every(([_, value]) => value === undefined || value === '');
 
+  if (isAllFieldsUndefined) {
+    message.error(
+      'Empty record: The address fields cannot be saved with undefined values.',
+    );
+    return;
+  }
+
+  setLoadingStart(true); // Start loading
+
+  try {
     // Transform the data
-
     let formattedAddresses;
     if (recordData) {
       formattedAddresses = transformExistAddressData(addressData, recordData);
@@ -474,35 +478,41 @@ const AccountDetails = () => {
     }
 
     if (formattedAddresses) {
-      const addressPromises = formattedAddresses?.map(
-        async (addressObj: any) => {
-          const newAddressObj: any = {
-            ...addressObj,
-            customer_id: getCustomerID,
-            id: recordId,
-          };
-          return dispatch(insertAddAddress(newAddressObj));
-        },
-      );
+      const addressPromises = formattedAddresses?.map(async (addressObj: any) => {
+        const newAddressObj: any = {
+          ...addressObj,
+          customer_id: getCustomerID,
+          id: recordId,
+        };
+        return dispatch(insertAddAddress(newAddressObj));
+      });
 
       // Wait for all insert API calls to complete
-      Promise.all(addressPromises).then((results) => {
-        // Check if at least one insert was successful
-        if (results.some((res) => res?.payload)) {
-          dispatch(getCustomerBYId(getCustomerID));
+      const results = await Promise.all(addressPromises);
 
-          if (!isSaveAndCreate) {
-            setShowAddressModal(false);
-          }
+      // Check if at least one insert was successful
+      if (results.some((res) => res?.payload)) {
+        dispatch(getCustomerBYId(getCustomerID));
 
-          form.resetFields();
-          setActiveKey('1');
-          setShowDrawer(false);
-          setRecordId('');
+        if (!isSaveAndCreate) {
+          setShowAddressModal(false);
         }
-      });
+
+        form.resetFields();
+        setActiveKey('1');
+        setShowDrawer(false);
+        setRecordId('');
+        setLoadingStart(false); // Stop loading
+      }
     }
-  };
+  } catch (error) {
+    message.error('An error occurred while saving the address.');
+    setLoadingStart(false); // Stop loading
+  } finally {
+    setLoadingStart(false); // Stop loading
+  }
+};
+
 
   const deleteSelectedIds = async () => {
     dispatch(deleteAddress({id: deleteIds})).then((res) => {
@@ -589,7 +599,7 @@ const AccountDetails = () => {
       </Row>
 
       <OsModal
-        loading={loading}
+        loading={loadingStart}
         thirdLoading={loading}
         title="Create Address"
         destroyOnClose
