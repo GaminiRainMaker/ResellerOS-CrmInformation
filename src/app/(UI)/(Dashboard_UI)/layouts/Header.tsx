@@ -465,7 +465,9 @@ const CustomHeader = () => {
               }
             /> */}
 
-              <TrialBanner PrimaryTextTypography='Body 3/Regular' />
+              {userInformation?.Role === 'reseller' && (
+                <TrialBanner PrimaryTextTypography="Body 3/Regular" />
+              )}
 
               <AvatarStyled
                 background={token?.colorInfoBg}

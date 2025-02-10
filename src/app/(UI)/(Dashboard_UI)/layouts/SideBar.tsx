@@ -46,17 +46,12 @@ const SideBar = () => {
   const [selectedKey, setSelectedKey] = useState<number>(1);
   const [crmChildKey, setCrmChildKey] = useState<number>(0);
   const {userInformation} = useAppSelector((state) => state.user);
-  const {cacheAvailableSeats} = useAppSelector((state) => state.cacheFLow);
   const {isCanvas} = useAppSelector((state) => state.canvas);
   const searchParams = useSearchParams()!;
-  // const [canvasState, setCanvasState] = useState<boolean>(true);
   const salesForceUrl = searchParams.get('instance_url');
 
   type MenuItem = Required<MenuProps>['items'][number];
 
-  // useEffect(() => {
-  //   setCanvasState(isCanvas);
-  // }, [isCanvas]);
 
   useEffect(() => {
     if (!!userInformation && !isCanvas && !salesForceUrl) {
@@ -65,7 +60,7 @@ const SideBar = () => {
           QuoteAI: payload?.payload?.is_quote,
           DealReg: payload?.payload?.is_dealReg,
         };
-        if (payload) {
+        if (payload && userInformation?.Role === "reseller") {
           dispatch(checkQuoteAIAccess({user_id: payload?.payload?.id})).then(
             (data) => {
               if (data?.payload) {
