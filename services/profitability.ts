@@ -20,4 +20,6 @@ export const PROFITABILITY_API = {
     post(API.PROFITABALITY.RemoveBundleById, data) as Promise<AxiosResponse<any>>,
   updateProfitabilityValueForBulk: (data: any) =>
     post(API.PROFITABALITY.UpdateProfitabilityValueForBulk, data) as Promise<AxiosResponse<any>>,
+  updateProfitabilitySelectValues: (data: any) =>
+    post(API.PROFITABALITY.updateProfitabilitySelectValues, data) as Promise<AxiosResponse<any>>,
 };

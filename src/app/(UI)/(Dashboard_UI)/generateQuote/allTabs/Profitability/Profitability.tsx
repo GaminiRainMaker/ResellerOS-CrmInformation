@@ -15,6 +15,7 @@ import Typography from '@/app/components/common/typography';
 import {pricingMethod, selectDataForProduct} from '@/app/utils/CONSTANTS';
 import {
   calculateProfitabilityData,
+  convertToNumber,
   currencyFormatter,
   getContractStatus,
   useRemoveDollarAndCommahook,
@@ -40,6 +41,7 @@ import {
   removeBundleLineItems,
   updateProfitabilityById,
   updateProfitabilityValueForBulk,
+  updateProfitabilitySelectValues,
 } from '../../../../../../../redux/actions/profitability';
 import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
 import BundleSection from '../../BundleSection';
@@ -50,8 +52,15 @@ import GlobalLoader from '@/app/components/common/os-global-loader';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import {getContractProductByContractVehicle} from '../../../../../../../redux/actions/contractProduct';
 import {getAllContract} from '../../../../../../../redux/actions/contract';
+import {
+  countrupickList,
+  EnergyStarFlagpicklist,
+  TAAFlagPickList,
+  EPEATFlagPickList,
+} from '@/app/utils/CONSTANTS';
 import {getContractConfiguartion} from '../../../../../../../redux/actions/contractConfiguration';
 import React from 'react';
+('src/app/utils/CONSTANTS.ts');
 const Profitablity: FC<any> = ({
   tableColumnDataShow,
   selectedFilter,
@@ -301,6 +310,22 @@ const Profitablity: FC<any> = ({
     }
   };
 
+  const updatePickListValuesOnly = async (
+    keyToUpdate: string,
+    values: any,
+    keyId: number,
+  ) => {
+    await dispatch(
+      updateProfitabilitySelectValues({[keyToUpdate]: values, id: keyId}),
+    );
+    dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then(
+      (payload: any) => {
+        if (payload?.payload) {
+          setProfitibilityDataa(payload?.payload);
+        }
+      },
+    );
+  };
   // useEffect(() => {
   //   if (activeTab == '2' || activeTab == '4') {
   //     dispatch(getAllContract());
@@ -610,17 +635,249 @@ const Profitablity: FC<any> = ({
     width: 111,
   };
 
+  // const ProfitabilityQuoteLineItemcolumns = [
+  //   {
+  //     title: '#Line',
+  //     dataIndex: 'line_number',
+  //     key: 'line_number',
+  //     render: (text: string, record: any) => (
+  //       <OsInput
+  //         disabled={renderEditableInput('#Line')}
+  //         style={{
+  //           height: '36px',
+  //         }}
+  //         defaultValue={text}
+  //         onKeyDown={(e) => handleKeyDown(e, record)}
+  //         onBlur={(e) => handleBlur(record)}
+  //         onChange={(e) =>
+  //           handleFieldChange(
+  //             record,
+  //             'line_number',
+  //             e.target.value,
+  //             selectedFilter,
+  //             'input',
+  //           )
+  //         }
+  //       />
+  //     ),
+  //     width: 111,
+  //   },
+  //   {
+  //     title: 'SKU',
+  //     dataIndex: 'product_code',
+  //     key: 'product_code',
+  //     width: 120,
+  //   },
+  //   {
+  //     title: 'Quantity',
+  //     dataIndex: 'quantity',
+  //     key: 'quantity',
+  //     sorter: (a: any, b: any) => a.quantity - b.quantity,
+  //     render: (text: string, record: any) => (
+  //       <OsInputNumber
+  //         formatter={currencyFormatter}
+  //         parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+  //         defaultValue={text ?? 0.0}
+  //         disabled={renderEditableInput('Quantity')}
+  //         onKeyDown={(e) => handleKeyDown(e, record)}
+  //         onBlur={(e) => handleBlur(record)}
+  //         style={{
+  //           height: '36px',
+  //           textAlignLast: 'right',
+  //         }}
+  //         min={1}
+  //         onChange={(e) =>
+  //           handleFieldChange(record, 'quantity', e, selectedFilter, 'input')
+  //         }
+  //       />
+  //     ),
+  //     width: 120,
+  //   },
+  //   {
+  //     title: 'MSRP ($)',
+  //     dataIndex: 'list_price',
+  //     key: 'list_price',
+  //     sorter: (a: any, b: any) => a.list_price - b.list_price,
+  //     render: (text: string, record: any) => (
+  //       <OsInputNumber
+  //         min={0}
+  //         precision={2}
+  //         formatter={currencyFormatter}
+  //         parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+  //         disabled={renderEditableInput('MSRP ($)')}
+  //         style={{
+  //           height: '36px',
+  //           textAlignLast: 'right',
+  //           width: '100%',
+  //         }}
+  //         onKeyDown={(e) => handleKeyDown(e, record)}
+  //         onBlur={(e) => handleBlur(record)}
+  //         defaultValue={text ?? 0.0}
+  //         onChange={(e) =>
+  //           handleFieldChange(record, 'list_price', e, selectedFilter, 'input')
+  //         }
+  //       />
+  //     ),
+  //     width: 150,
+  //   },
+  //   {
+  //     title: 'Cost ($)',
+  //     dataIndex: 'adjusted_price',
+  //     key: 'adjusted_price ',
+  //     sorter: (a: any, b: any) => a.adjusted_price - b.adjusted_price,
+  //     render: (text: string, record: any) => (
+  //       <OsInputNumber
+  //         precision={2}
+  //         formatter={currencyFormatter}
+  //         parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+  //         min={0}
+  //         style={{
+  //           height: '36px',
+  //           textAlignLast: 'right',
+  //           width: '100%',
+  //         }}
+  //         onKeyDown={(e) => handleKeyDown(e, record)}
+  //         onBlur={(e) => handleBlur(record)}
+  //         disabled={renderEditableInput('Cost ($)')}
+  //         defaultValue={text ?? 0.0}
+  //         onChange={(e) =>
+  //           handleFieldChange(
+  //             record,
+  //             'adjusted_price',
+  //             e,
+  //             selectedFilter,
+  //             'input',
+  //           )
+  //         }
+  //       />
+  //     ),
+  //     width: 150,
+  //   },
+  //   {
+  //     title: 'Product Description',
+  //     dataIndex: 'description',
+  //     key: 'description',
+  //     width: 290,
+  //     render: (text: number) => (
+  //       <Typography name="Body 4/Medium" style={{color: '#0D0D0D'}}>
+  //         {text}
+  //       </Typography>
+  //     ),
+  //   },
+  //   {
+  //     title: 'Product Family',
+  //     dataIndex: 'product_family',
+  //     key: 'product_family',
+  //     width: 285,
+  //     render(text: any, record: any) {
+  //       return {
+  //         children: (
+  //           <CommonSelect
+  //             disabled={renderEditableInput('Product Family')}
+  //             allowClear
+  //             onClear={() => {
+  //               handleFieldChange(
+  //                 record,
+  //                 'product_family',
+  //                 '',
+  //                 selectedFilter,
+  //                 'select',
+  //               );
+  //             }}
+  //             style={{width: '200px', height: '36px'}}
+  //             placeholder="Select"
+  //             defaultValue={text ?? record?.Product?.product_family}
+  //             options={selectDataForProduct}
+  //             onChange={(value) => {
+  //               handleFieldChange(
+  //                 record,
+  //                 'product_family',
+  //                 value,
+  //                 selectedFilter,
+  //                 'select',
+  //               );
+  //             }}
+  //           />
+  //         ),
+  //       };
+  //     },
+  //   },
+  //   {
+  //     title: 'Amount',
+  //     dataIndex: 'line_amount',
+  //     key: 'line_amount',
+  //     sorter: (a: any, b: any) => a.line_amount - b.line_amount,
+  //     width: 150,
+  //     render: (text: string, record: any) => (
+  //       <OsInputNumber
+  //         min={0}
+  //         onKeyDown={(e) => handleKeyDown(e, record)}
+  //         onBlur={(e) => handleBlur(record)}
+  //         disabled={renderEditableInput('Amount')}
+  //         style={{
+  //           height: '36px',
+  //           textAlignLast: 'center',
+  //           width: '100%',
+  //         }}
+  //         precision={2}
+  //         formatter={currencyFormatter}
+  //         parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+  //         prefix={updateAmountValue(record?.pricing_method)}
+  //         defaultValue={text ?? 0.0}
+  //         onChange={(e) => {
+  //           handleFieldChange(
+  //             record,
+  //             'line_amount',
+  //             e,
+  //             selectedFilter,
+  //             'input',
+  //           );
+  //         }}
+  //       />
+  //     ),
+  //   },
+  //   {
+  //     title: 'Gross Profit ($)',
+  //     dataIndex: 'gross_profit',
+  //     key: 'gross_profit',
+  //     sorter: (a: any, b: any) => a.gross_profit - b.gross_profit,
+  //     width: 150,
+  //     render: (text: number, record: any) => (
+  //       <Typography
+  //         name="Body 4/Medium"
+  //         style={{display: 'flex', justifyContent: 'end'}}
+  //       >
+  //         {abbreviate(text) ?? 0}
+  //       </Typography>
+  //     ),
+  //   },
+  //   {
+  //     title: 'Gross Profit %',
+  //     dataIndex: 'gross_profit_percentage',
+  //     key: 'gross_profit_percentage',
+  //     sorter: (a: any, b: any) =>
+  //       a.gross_profit_percentage - b.gross_profit_percentage,
+  //     width: 150,
+  //     render: (text: number, record: any) => (
+  //       <Typography
+  //         name="Body 4/Medium"
+  //         style={{display: 'flex', justifyContent: 'end'}}
+  //       >
+  //         {abbreviate(text ?? 0)}
+  //       </Typography>
+  //     ),
+  //   },
+  // ];
+
   const ProfitabilityQuoteLineItemcolumns = [
     {
-      title: '#Line',
+      title: 'Line Number',
       dataIndex: 'line_number',
       key: 'line_number',
       render: (text: string, record: any) => (
         <OsInput
           disabled={renderEditableInput('#Line')}
-          style={{
-            height: '36px',
-          }}
+          style={{height: '36px'}}
           defaultValue={text}
           onKeyDown={(e) => handleKeyDown(e, record)}
           onBlur={(e) => handleBlur(record)}
@@ -638,7 +895,7 @@ const Profitablity: FC<any> = ({
       width: 111,
     },
     {
-      title: 'SKU',
+      title: 'Product Code',
       dataIndex: 'product_code',
       key: 'product_code',
       width: 120,
@@ -656,10 +913,7 @@ const Profitablity: FC<any> = ({
           disabled={renderEditableInput('Quantity')}
           onKeyDown={(e) => handleKeyDown(e, record)}
           onBlur={(e) => handleBlur(record)}
-          style={{
-            height: '36px',
-            textAlignLast: 'right',
-          }}
+          style={{height: '36px', textAlignLast: 'right'}}
           min={1}
           onChange={(e) =>
             handleFieldChange(record, 'quantity', e, selectedFilter, 'input')
@@ -680,11 +934,7 @@ const Profitablity: FC<any> = ({
           formatter={currencyFormatter}
           parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
           disabled={renderEditableInput('MSRP ($)')}
-          style={{
-            height: '36px',
-            textAlignLast: 'right',
-            width: '100%',
-          }}
+          style={{height: '36px', textAlignLast: 'right', width: '100%'}}
           onKeyDown={(e) => handleKeyDown(e, record)}
           onBlur={(e) => handleBlur(record)}
           defaultValue={text ?? 0.0}
@@ -698,7 +948,7 @@ const Profitablity: FC<any> = ({
     {
       title: 'Cost ($)',
       dataIndex: 'adjusted_price',
-      key: 'adjusted_price ',
+      key: 'adjusted_price',
       sorter: (a: any, b: any) => a.adjusted_price - b.adjusted_price,
       render: (text: string, record: any) => (
         <OsInputNumber
@@ -706,11 +956,7 @@ const Profitablity: FC<any> = ({
           formatter={currencyFormatter}
           parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
           min={0}
-          style={{
-            height: '36px',
-            textAlignLast: 'right',
-            width: '100%',
-          }}
+          style={{height: '36px', textAlignLast: 'right', width: '100%'}}
           onKeyDown={(e) => handleKeyDown(e, record)}
           onBlur={(e) => handleBlur(record)}
           disabled={renderEditableInput('Cost ($)')}
@@ -750,28 +996,28 @@ const Profitablity: FC<any> = ({
             <CommonSelect
               disabled={renderEditableInput('Product Family')}
               allowClear
-              onClear={() => {
+              onClear={() =>
                 handleFieldChange(
                   record,
                   'product_family',
                   '',
                   selectedFilter,
                   'select',
-                );
-              }}
+                )
+              }
               style={{width: '200px', height: '36px'}}
               placeholder="Select"
               defaultValue={text ?? record?.Product?.product_family}
               options={selectDataForProduct}
-              onChange={(value) => {
+              onChange={(value) =>
                 handleFieldChange(
                   record,
                   'product_family',
                   value,
                   selectedFilter,
                   'select',
-                );
-              }}
+                )
+              }
             />
           ),
         };
@@ -790,15 +1036,15 @@ const Profitablity: FC<any> = ({
           style={{width: '100%', height: '36px'}}
           placeholder="Select"
           defaultValue={text}
-          onChange={(value) => {
+          onChange={(value) =>
             handleFieldChange(
               record,
               'pricing_method',
               value,
               selectedFilter,
               'select',
-            );
-          }}
+            )
+          }
           options={pricingMethod}
         />
       ),
@@ -815,25 +1061,15 @@ const Profitablity: FC<any> = ({
           onKeyDown={(e) => handleKeyDown(e, record)}
           onBlur={(e) => handleBlur(record)}
           disabled={renderEditableInput('Amount')}
-          style={{
-            height: '36px',
-            textAlignLast: 'center',
-            width: '100%',
-          }}
+          style={{height: '36px', textAlignLast: 'center', width: '100%'}}
           precision={2}
           formatter={currencyFormatter}
           parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
           prefix={updateAmountValue(record?.pricing_method)}
           defaultValue={text ?? 0.0}
-          onChange={(e) => {
-            handleFieldChange(
-              record,
-              'line_amount',
-              e,
-              selectedFilter,
-              'input',
-            );
-          }}
+          onChange={(e) =>
+            handleFieldChange(record, 'line_amount', e, selectedFilter, 'input')
+          }
         />
       ),
     },
@@ -897,6 +1133,424 @@ const Profitablity: FC<any> = ({
           {abbreviate(text ?? 0)}
         </Typography>
       ),
+    },
+    {
+      title: 'Bundle Cost',
+      dataIndex: 'bundle_cost',
+      key: 'bundle_cost',
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+      width: 150,
+    },
+    {
+      title: 'Bundle Extended Price',
+      dataIndex: 'bundle_ext_price',
+      key: 'bundle_ext_price',
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+      width: 150,
+    },
+    {
+      title: 'Bundle Gross Profit',
+      dataIndex: 'bundle_gp',
+      key: 'bundle_gp',
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+      width: 150,
+    },
+    {
+      title: 'Bundle Gross Profit (%)',
+      dataIndex: 'bundle_gp_percentage',
+      key: 'bundle_gp_percentage',
+      render: (text: any) => {
+        const value = text || 0; // Default to 0 if no value
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+      width: 150,
+    },
+    {
+      title: 'Taa Flag',
+      dataIndex: 'taa_flag',
+      key: 'taa_flag',
+      width: 250,
+      render(text: any, record: any) {
+        return {
+          children: (
+            <CommonSelect
+              disabled={renderEditableInput('Taa Flag')}
+              allowClear
+              onClear={() =>
+                updatePickListValuesOnly('taa_flag', '', record?.id)
+              }
+              style={{width: '200px', height: '36px'}}
+              placeholder="Select"
+              defaultValue={text ?? record?.taa_flag}
+              options={TAAFlagPickList}
+              onChange={(value) =>
+                updatePickListValuesOnly('taa_flag', value, record?.id)
+              }
+            />
+          ),
+        };
+      },
+    },
+    {
+      title: 'Epeat Flag',
+      dataIndex: 'epeat_flag',
+      key: 'epeat_flag',
+      width: 250,
+      render(text: any, record: any) {
+        return {
+          children: (
+            <CommonSelect
+              disabled={renderEditableInput('Epeat Flag')}
+              allowClear
+              onClear={() =>
+                updatePickListValuesOnly('epeat_flag', '', record?.id)
+              }
+              style={{width: '200px', height: '36px'}}
+              placeholder="Select"
+              defaultValue={text ?? record?.epeat_flag}
+              options={EPEATFlagPickList}
+              onChange={
+                (value) =>
+                  updatePickListValuesOnly('epeat_flag', value, record?.id)
+                // handleFieldChange(
+                //   record,
+                //   'epeat_flag',
+                //   value,
+                //   selectedFilter,
+                //   'select',
+                // )
+              }
+            />
+          ),
+        };
+      },
+    },
+    {
+      title: 'Country Of Origin',
+      dataIndex: 'country_of_origin',
+      key: 'country_of_origin',
+      width: 250,
+      render(text: any, record: any) {
+        return {
+          children: (
+            <CommonSelect
+              disabled={renderEditableInput('Country Of Origin')}
+              allowClear
+              onClear={() =>
+                updatePickListValuesOnly('country_of_origin', '', record?.id)
+              }
+              style={{width: '200px', height: '36px'}}
+              placeholder="Select"
+              defaultValue={text ?? record?.country_of_origin}
+              options={countrupickList}
+              onChange={
+                (value) =>
+                  updatePickListValuesOnly(
+                    'country_of_origin',
+                    value,
+                    record?.id,
+                  )
+
+                // handleFieldChange(
+                //   record,
+                //   'country_of_origin',
+                //   value,
+                //   selectedFilter,
+                //   'select',
+                // )
+              }
+            />
+          ),
+        };
+      },
+    },
+    {
+      title: 'Energy Star Flag',
+      dataIndex: 'energy_star_flag',
+      key: 'energy_star_flag',
+      width: 250,
+      render(text: any, record: any) {
+        return {
+          children: (
+            <CommonSelect
+              disabled={renderEditableInput('Energy Star Flag')}
+              allowClear
+              onClear={
+                () =>
+                  updatePickListValuesOnly('energy_star_flag', '', record?.id)
+
+                // handleFieldChange(
+                //   record,
+                //   'energy_star_flag',
+                //   '',
+                //   selectedFilter,
+                //   'select',
+                // )
+              }
+              style={{width: '200px', height: '36px'}}
+              placeholder="Select"
+              defaultValue={text ?? record?.energy_star_flag}
+              options={EnergyStarFlagpicklist}
+              onChange={(value) =>
+                updatePickListValuesOnly('energy_star_flag', value, record?.id)
+              }
+            />
+          ),
+        };
+      },
+    },
+    {
+      title: 'Bundle MSRP',
+      dataIndex: 'bundle_msrp',
+      key: 'bundle_msrp',
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+      width: 150,
+    },
+    {
+      title: 'Bundle Name',
+      dataIndex: 'bundle_name',
+      key: 'bundle_name',
+      width: 150,
+    },
+    {
+      title: 'Bundle Rebate',
+      dataIndex: 'bundle_rebate',
+      key: 'bundle_rebate',
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+      width: 150,
+    },
+    {
+      title: 'Bundle Rebate Amount',
+      dataIndex: 'bundle_rebate_amount',
+      key: 'bundle_rebate_amount',
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+      width: 150,
+    },
+    {
+      title: 'Bundle Unit Price',
+      dataIndex: 'bundle_unit_price',
+      key: 'bundle_unit_price',
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+      width: 150,
+    },
+    {
+      title: 'Clin',
+      dataIndex: 'clin',
+      key: 'clin',
+      width: 150,
+    },
+    {
+      title: 'Contract Fee %',
+      dataIndex: 'contract_fee_percentage',
+      key: 'contract_fee_percentage',
+      width: 150,
+    },
+    {
+      title: 'Contract Fee Amount',
+      dataIndex: 'contract_fee_amount',
+      key: 'contract_fee_amount',
+      width: 150,
+    },
+
+    {
+      title: 'End Date',
+      dataIndex: 'end_date',
+      key: 'end_date',
+      width: 150,
+    },
+
+    {
+      title: 'EOL Date',
+      dataIndex: 'eol_date',
+      key: 'eol_date',
+      width: 150,
+    },
+    {
+      title: 'EPEAT Flag',
+      dataIndex: 'epeat_flag',
+      key: 'epeat_flag',
+      width: 150,
+    },
+    {
+      title: 'Equivalent Clin',
+      dataIndex: 'equivalent_clin',
+      key: 'equivalent_clin',
+      width: 150,
+    },
+    {
+      title: 'Excel Bundle Name',
+      dataIndex: 'excel_bundle_name',
+      key: 'excel_bundle_name',
+      width: 150,
+    },
+    {
+      title: 'File Name',
+      dataIndex: 'file_name',
+      key: 'file_name',
+      width: 150,
+    },
+    {
+      title: 'GSA Price',
+      dataIndex: 'gsa_price',
+      key: 'gsa_price',
+      width: 150,
+    },
+    {
+      title: 'Model Id',
+      dataIndex: 'model_id',
+      key: 'model_id',
+      width: 150,
+    },
+    {
+      title: 'MPN',
+      dataIndex: 'mpn',
+      key: 'mpn',
+      width: 150,
+    },
+    {
+      title: 'NDR Cost',
+      dataIndex: 'ndr_cost',
+      key: 'ndr_cost',
+      width: 150,
+    },
+    {
+      title: 'Notes',
+      dataIndex: 'notes',
+      key: 'notes',
+      width: 150,
+    },
+    {
+      title: 'OEM',
+      dataIndex: 'oem',
+      key: 'oem',
+      width: 150,
+    },
+    {
+      title: 'OEM Name',
+      dataIndex: 'oem_name',
+      key: 'oem_name',
+      width: 150,
+    },
+    {
+      title: 'Partner Fee %',
+      dataIndex: 'partner_fee_percentage',
+      key: 'partner_fee_percentage',
+      width: 150,
+    },
+    {
+      title: 'Partner Fee Amount',
+      dataIndex: 'partner_fee_amount',
+      key: 'partner_fee_amount',
+      width: 150,
+    },
+    {
+      title: 'Serial #',
+      dataIndex: 'serial_',
+      key: 'serial_',
+      width: 150,
+    },
+    {
+      title: 'Service Duration',
+      dataIndex: 'service_duration',
+      key: 'service_duration',
+      width: 150,
+    },
+    {
+      title: 'SS Part',
+      dataIndex: 'ss_part',
+      key: 'ss_part',
+      width: 150,
+    },
+    {
+      title: 'Start Date',
+      dataIndex: 'start_date',
+      key: 'start_date',
+      width: 150,
+    },
+    {
+      title: 'Subscription Term',
+      dataIndex: 'subscription_term',
+      key: 'subscription_term',
+      width: 150,
+    },
+    {
+      title: 'TAA Flag',
+      dataIndex: 'taa_flag',
+      key: 'taa_flag',
+      width: 150,
+    },
+    {
+      title: 'TD#',
+      dataIndex: 'td_number',
+      key: 'td_number',
+      width: 150,
+    },
+    {
+      title: 'UNSPSC',
+      dataIndex: 'unspsc',
+      key: 'unspsc',
+      width: 150,
+    },
+    {
+      title: 'Vendor Line Number',
+      dataIndex: 'vendor_line_number',
+      key: 'vendor_line_number',
+      width: 150,
+    },
+    {
+      title: 'Vendor Quote Line Item',
+      dataIndex: 'vendor_quote_line_item',
+      key: 'vendor_quote_line_item',
+      width: 150,
+    },
+    {
+      title: 'Vendor Disti',
+      dataIndex: 'vendor_disti',
+      key: 'vendor_disti',
+      width: 150,
+    },
+    {
+      title: 'Vendor Disti Name',
+      dataIndex: 'vendor_disti_name',
+      key: 'vendor_disti_name',
+      width: 150,
     },
   ];
 

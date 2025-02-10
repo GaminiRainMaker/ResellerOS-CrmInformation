@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable array-callback-return */
-import { Col, Row } from '@/app/components/common/antd/Grid';
+import {Col, Row} from '@/app/components/common/antd/Grid';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
@@ -13,22 +13,22 @@ import {
   TagIcon,
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
-import { FC, useEffect, useState } from 'react';
+import {FC, useEffect, useState} from 'react';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
-import { useAppSelector } from '../../../../../redux/hook';
+import {useAppSelector} from '../../../../../redux/hook';
 
-const GenerateQuoteAnalytics: FC<any> = () => {
+const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
   const [token] = useThemeToken();
-  const [totalValues, setTotalValues] = useState<any>();
+  // const [totalValues, setTotalValues] = useState<any>();
   const [totalRebateAmount, setTotalRebateAmount] = useState<any>();
-  const { data: profitabilityDataByQuoteId } = useAppSelector(
+  const {data: profitabilityDataByQuoteId} = useAppSelector(
     (state) => state.profitability,
   );
-  const { rebateQuoteLine } = useAppSelector(
+  const {rebateQuoteLine} = useAppSelector(
     (state) => state.rebateQuoteLineItem,
   );
-  const { abbreviate } = useAbbreviationHook(0);
+  const {abbreviate} = useAbbreviationHook(0);
 
   useEffect(() => {
     let rebateAmount: any = 0;
@@ -89,7 +89,8 @@ const GenerateQuoteAnalytics: FC<any> = () => {
             temp =
               Number(item?.adjusted_price) *
               (item?.quantity ? Number(item?.quantity) : 1);
-            BundleAdjustedPrice += Number(temp) ?? 1 * Number(item.Bundle.quantity) ?? 1;
+            BundleAdjustedPrice +=
+              Number(temp) ?? 1 * Number(item.Bundle.quantity) ?? 1;
           }
         }
       });
@@ -100,6 +101,8 @@ const GenerateQuoteAnalytics: FC<any> = () => {
     if (totalExitPrice > 0) {
       grossProfitPercentage = (totalGrossProfit / totalExitPrice) * 100;
     }
+
+
     setTotalValues({
       GrossProfit: totalGrossProfit,
       GrossProfitPercentage: grossProfitPercentage,
@@ -108,7 +111,7 @@ const GenerateQuoteAnalytics: FC<any> = () => {
     });
   }, [JSON.stringify(profitabilityDataByQuoteId), profitabilityDataByQuoteId]);
 
-  const [analyticsData, setAnalyticsData] = useState<any>()
+  const [analyticsData, setAnalyticsData] = useState<any>();
 
   useEffect(() => {
     const analyticsDataa = [
@@ -143,7 +146,7 @@ const GenerateQuoteAnalytics: FC<any> = () => {
           <Image
             src={MoneyRecive}
             alt="MoneyRecive"
-            style={{ cursor: 'pointer', height: '24px', width: '24px' }}
+            style={{cursor: 'pointer', height: '24px', width: '24px'}}
           />
         ),
         iconBg: token?.colorErrorBg,
@@ -163,16 +166,20 @@ const GenerateQuoteAnalytics: FC<any> = () => {
           <Image
             src={MoneySend}
             alt="MoneySend"
-            style={{ cursor: 'pointer', height: '24px', width: '24px' }}
+            style={{cursor: 'pointer', height: '24px', width: '24px'}}
           />
         ),
         iconBg: token?.colorInfoHover,
       },
     ];
-    setAnalyticsData(analyticsDataa)
-  }, [JSON.stringify(profitabilityDataByQuoteId), profitabilityDataByQuoteId, totalValues])
+    setAnalyticsData(analyticsDataa);
+  }, [
+    JSON.stringify(profitabilityDataByQuoteId),
+    profitabilityDataByQuoteId,
+    totalValues,
+  ]);
 
-  console.log("23423423432", totalValues)
+  console.log('23423423432', totalValues);
   return (
     <Row
       justify="space-between"

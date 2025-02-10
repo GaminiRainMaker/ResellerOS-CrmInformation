@@ -85,9 +85,12 @@ const GenerateQuote: React.FC = () => {
   const [activeTab, setActiveTab] = useState<any>('1');
 
   const [validationTab, setValidationTab] = useState<boolean>(false);
-  const {loading} = useAppSelector((state) => state.quoteLineItem);
+  const {loading, quoteLineItem} = useAppSelector(
+    (state) => state.quoteLineItem,
+  );
   const {quoteById} = useAppSelector((state) => state.quote);
   const [quoteByIdData, setQuoteByIdData] = useState<any>();
+  const [totalValues, setTotalValues] = useState<any>();
 
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [selectTedRowData, setSelectedRowData] = useState<any>([]);
@@ -153,6 +156,7 @@ const GenerateQuote: React.FC = () => {
     );
   };
 
+  // console.log('32423432432', totalValues);
   useEffect(() => {
     getAlllApisData();
   }, [getQuoteID]);
@@ -241,7 +245,7 @@ const GenerateQuote: React.FC = () => {
     setTableColumnDataShow(filterRequired);
   }, [activeTab, tableColumnData]);
 
-  const commonUpdateCompleteAndDraftMethod = (status: string) => {
+  const commonUpdateCompleteAndDraftMethod = async (status: string) => {
     try {
       // setStatusUpdateLoading(true);
       if (getQuoteID) {
@@ -252,11 +256,12 @@ const GenerateQuote: React.FC = () => {
           ids: getQuoteID,
           status,
         };
-        dispatch(updateQuoteStatusById(obj)).then((d) => {
+        await dispatch(updateQuoteStatusById(obj)).then((d) => {
           if (d?.payload) {
             setStatusUpdateLoading(false);
           }
         });
+        getAlllApisData();
       }
     } catch (err) {
       setStatusUpdateLoading(false);
@@ -573,7 +578,10 @@ const GenerateQuote: React.FC = () => {
     <>
       {contextHolder}
       <Space size={12} direction="vertical" style={{width: '100%'}}>
-        <GenerateQuoteAnalytics />
+        <GenerateQuoteAnalytics
+          totalValues={totalValues}
+          setTotalValues={setTotalValues}
+        />
 
         <Row justify="space-between" align="middle">
           <Col>
@@ -612,30 +620,32 @@ const GenerateQuote: React.FC = () => {
                     quoteDetails={objectForSyncingValues}
                     isGenerateQuotePage
                   />
-                  <OsButton
-                    loading={
-                      statusValue === 'Needs Review'
-                        ? statusUpdateLoading
-                        : false
-                    }
-                    text=" Mark as Complete"
-                    buttontype="PRIMARY"
-                    clickHandler={() => {
-                      if (
-                        quoteFileUnverifiedById &&
-                        quoteFileUnverifiedById?.length > 0
-                      ) {
-                        notification?.open({
-                          message:
-                            'Please verify all the files first to mark as Complete this Quote',
-                          type: 'info',
-                        });
-                        return;
+                  {/* {quoteByIdData?.status !== 'Needs Review' && (
+                    <OsButton
+                      loading={
+                        statusValue === 'Needs Review'
+                          ? statusUpdateLoading
+                          : false
                       }
-                      setStatusValue('Needs Review');
-                      commonUpdateCompleteAndDraftMethod('Needs Review');
-                    }}
-                  />
+                      text="Submit For Review"
+                      buttontype="PRIMARY"
+                      clickHandler={() => {
+                        if (
+                          quoteFileUnverifiedById &&
+                          quoteFileUnverifiedById?.length > 0
+                        ) {
+                          notification?.open({
+                            message:
+                              'Please verify all the files first to mark as Complete this Quote',
+                            type: 'info',
+                          });
+                          return;
+                        }
+                        setStatusValue('Needs Review');
+                        commonUpdateCompleteAndDraftMethod('Needs Review');
+                      }}
+                    />
+                  )} */}
                 </>
               )}
 
@@ -780,7 +790,11 @@ const GenerateQuote: React.FC = () => {
           </Row>
         }
       >
-        <DrawerContent form={form} onFinish={onFinish} />
+        <DrawerContent
+          form={form}
+          onFinish={onFinish}
+          totalValues={totalValues}
+        />
       </OsDrawer>
 
       <OsModal

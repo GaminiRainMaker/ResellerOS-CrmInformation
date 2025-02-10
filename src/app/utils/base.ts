@@ -113,10 +113,19 @@ export const useRemoveDollarAndCommahook = (value: any) => {
     value
       ?.replace(/\$|,/g, '')
       ?.toString()
-      ?.replace(/[^0-9]/g, '')
+      ?.replace(/[^0-9,\.]/g, '')
       .replace(/^0+/, '');
-  const numberD = parseFloat(cleanedD);
-  return numberD;
+  const cleanedValue =
+    value &&
+    value
+      ?.replace(/\$|,/g, '') // Remove `$` and commas
+      ?.toString()
+      ?.replace(/[^0-9\.]/g, '') // Remove anything that's not a digit or period
+      ?.replace(/^0+(?=\d)/, '') // Remove leading zeros, but keep a single zero for numbers like "0.00"
+      .replace(/(\.\d{1})$/, '$1' + '0'); // Ensure the decimal has two digits (e.g., .1 -> .10)
+
+  const numberD = parseFloat(cleanedValue);
+  return cleanedValue;
 };
 
 export const useRemoveDollarAndCommahookDataa = (value: any) => {
@@ -2065,7 +2074,7 @@ export const handleDate = (
 };
 
 export function convertToNumber(variable: any) {
-  const num = Number(variable);
+  const num = variable;
   return isNaN(num) ? 0 : num;
 }
 
@@ -2164,4 +2173,86 @@ export const convertToBoolean = function (value: any) {
     }
   }
   return false; // Default case if it's neither boolean nor string
+};
+
+export const transformAddressData = (addressData: any) => {
+  const addresses: any[] = [];
+
+  // Check if shipping address is filled (only check Address Line)
+  const isShippingFilled = Boolean(addressData.shiping_address_line?.trim());
+
+  // Check if billing address is filled (only check Address Line)
+  const isBillingFilled = Boolean(addressData.billing_address_line?.trim());
+
+  if (isShippingFilled && addressData.is_same_shipping_address) {
+    // If shipping is filled and same as billing, return one record with "Both"
+    addresses.push({
+      shiping_address_line: addressData.shiping_address_line,
+      shiping_city: addressData.shiping_city,
+      shiping_state: addressData.shiping_state,
+      shiping_pin_code: addressData.shiping_pin_code,
+      shiping_country: addressData.shiping_country,
+      primary_shipping: addressData.primary_shipping,
+      primary_billing: addressData.primary_billing,
+      address_type: 'Both',
+    });
+  } else {
+    // If shipping is filled, add shipping address
+    if (isShippingFilled) {
+      addresses.push({
+        shiping_address_line: addressData.shiping_address_line,
+        shiping_city: addressData.shiping_city,
+        shiping_state: addressData.shiping_state,
+        shiping_pin_code: addressData.shiping_pin_code,
+        shiping_country: addressData.shiping_country,
+        primary_shipping: addressData.primary_shipping,
+        address_type: 'Shipping',
+      });
+    }
+
+    // If billing is filled, add billing address
+    if (isBillingFilled) {
+      addresses.push({
+        shiping_address_line: addressData.billing_address_line,
+        shiping_city: addressData.billing_city,
+        shiping_state: addressData.billing_state,
+        shiping_pin_code: addressData.billing_pin_code,
+        shiping_country: addressData.billing_country,
+        primary_billing: addressData.primary_billing,
+        address_type: 'Billing',
+      });
+    }
+  }
+
+  return addresses;
+};
+
+export const transformExistAddressData = (
+  addressData: any,
+  recordData: any,
+) => {
+  const isBilling = recordData?.address_type === 'Billing';
+
+  return [
+    {
+      shiping_address_line: isBilling
+        ? addressData.billing_address_line
+        : addressData.shiping_address_line,
+      shiping_city: isBilling
+        ? addressData.billing_city
+        : addressData.shiping_city,
+      shiping_state: isBilling
+        ? addressData.billing_state
+        : addressData.shiping_state,
+      shiping_pin_code: isBilling
+        ? addressData.billing_pin_code
+        : addressData.shiping_pin_code,
+      shiping_country: isBilling
+        ? addressData.billing_country
+        : addressData.shiping_country,
+      primary_billing: addressData.primary_billing,
+      primary_shipping: addressData.primary_shipping,
+      address_type: recordData?.address_type,
+    },
+  ];
 };

@@ -19,15 +19,23 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline';
 
+import {Checkbox} from '@/app/components/common/antd/Checkbox';
 import {Space} from '@/app/components/common/antd/Space';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import AddAddress from '@/app/components/common/os-add-address';
 import OsButton from '@/app/components/common/os-button';
 import OsDrawer from '@/app/components/common/os-drawer';
+import EditAddress from '@/app/components/common/os-edit-address';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
-import {formatDate, getResultedValue} from '@/app/utils/base';
-import {Form, message} from 'antd';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
+import {
+  formatDate,
+  getResultedValue,
+  transformAddressData,
+  transformExistAddressData,
+} from '@/app/utils/base';
+import {Form, message, Radio} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {
@@ -38,7 +46,7 @@ import {getCustomerBYId} from '../../../../../redux/actions/customer';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setBillingContact} from '../../../../../redux/slices/billingAddress';
 import DetailCard from './DetailCard';
-import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
+import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 
 const AccountDetails = () => {
   const [token] = useThemeToken();
@@ -51,6 +59,7 @@ const AccountDetails = () => {
   const [deleteIds, setDeleteIds] = useState<any>();
   const [activeKey, setActiveKey] = useState<string>('1');
   const [recordId, setRecordId] = useState<any>();
+  const [recordData, setRecordData] = useState<any>();
   const [form] = Form.useForm();
   const {loading, customerDataById: customerData} = useAppSelector(
     (state) => state.customer,
@@ -264,7 +273,7 @@ const AccountDetails = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Shipping Address Line
+          Address Line
         </Typography>
       ),
       dataIndex: 'shiping_address_line',
@@ -277,7 +286,7 @@ const AccountDetails = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Shipping City
+          City
         </Typography>
       ),
       dataIndex: 'shiping_city',
@@ -290,7 +299,7 @@ const AccountDetails = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Shipping State
+          State
         </Typography>
       ),
       dataIndex: 'shiping_state',
@@ -303,7 +312,7 @@ const AccountDetails = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Shipping Zip Code
+          Zip Code
         </Typography>
       ),
       dataIndex: 'shiping_pin_code',
@@ -316,7 +325,7 @@ const AccountDetails = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Shipping Country
+          Country
         </Typography>
       ),
       dataIndex: 'shiping_country',
@@ -329,67 +338,66 @@ const AccountDetails = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Billing Address Line
+          Shipping
         </Typography>
       ),
-      dataIndex: 'billing_address_line',
-      key: 'billing_address_line',
-      width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
+      dataIndex: 'address_type',
+      key: 'address_type',
+      width: 90,
+      render: (text: string, record: any) => {
+        let AddressType =
+          record?.address_type === 'Both'
+            ? true
+            : record?.address_type === 'Shipping'
+              ? true
+              : false;
+        return <Checkbox checked={AddressType} disabled />;
+      },
     },
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Billing City
+          Billing
         </Typography>
       ),
-      dataIndex: 'billing_city',
-      key: 'billing_city',
-      width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
+      dataIndex: 'address_type',
+      key: 'address_type',
+      width: 80,
+      render: (text: string, record: any) => {
+        let AddressType =
+          record?.address_type === 'Both'
+            ? true
+            : record?.address_type === 'Billing'
+              ? true
+              : false;
+        return <Checkbox checked={AddressType} disabled />;
+      },
     },
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Billing State
+          Primary Shipping
         </Typography>
       ),
-      dataIndex: 'billing_state',
-      key: 'billing_state',
-      width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
+      dataIndex: 'primary_shipping',
+      key: 'primary_shipping',
+      width: 150,
+      render: (text: boolean) => {
+        return <Radio checked={text} disabled />;
+      },
     },
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Billing Zip Code
+          Primary Billing
         </Typography>
       ),
-      dataIndex: 'billing_pin_code',
-      key: 'billing_pin_code',
-      width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Billing Country
-        </Typography>
-      ),
-      dataIndex: 'billing_country',
-      key: 'billing_country',
-      width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
+      dataIndex: 'primary_billing',
+      key: 'primary_billing',
+      width: 150,
+      render: (text: boolean) => {
+        return <Radio checked={text} disabled />;
+      },
     },
     {
       title: 'Actions',
@@ -405,19 +413,21 @@ const AccountDetails = () => {
             style={{cursor: 'pointer'}}
             onClick={() => {
               setRecordId(record?.id);
+              setRecordData(record);
               form.setFieldsValue({
-                billing_address_line: record?.billing_address_line,
-                billing_city: record?.billing_city,
-                billing_state: record?.billing_state,
-                billing_pin_code: record?.billing_pin_code,
-                billing_country: record?.billing_country,
+                billing_address_line: record?.shiping_address_line,
+                billing_city: record?.shiping_city,
+                billing_state: record?.shiping_state,
+                billing_pin_code: record?.shiping_pin_code,
+                billing_country: record?.shiping_country,
                 shiping_address_line: record?.shiping_address_line,
                 shiping_city: record?.shiping_city,
                 shiping_state: record?.shiping_state,
                 shiping_pin_code: record?.shiping_pin_code,
                 shiping_country: record?.shiping_country,
                 shipping_id: record?.id,
-                is_default_address: record?.is_default_address,
+                primary_shipping: record?.primary_shipping,
+                primary_billing: record?.primary_billing,
               });
               setShowDrawer(true);
             }}
@@ -437,7 +447,9 @@ const AccountDetails = () => {
     },
   ];
 
-  const onFinish = () => {
+  const [loadingStart, setLoadingStart] = useState(false);
+
+  const onFinish = async () => {
     const addressData = form.getFieldsValue();
     if (activeKey < '2' && showAddressModal) {
       setActiveKey((Number(activeKey) + 1)?.toString());
@@ -445,10 +457,7 @@ const AccountDetails = () => {
     }
 
     const isAllFieldsUndefined = Object.entries(addressData)
-      .filter(
-        ([key]) =>
-          !['is_same_shipping_address', 'is_default_address'].includes(key),
-      )
+      .filter(([key]) => !['is_same_shipping_address'].includes(key))
       .every(([_, value]) => value === undefined || value === '');
 
     if (isAllFieldsUndefined) {
@@ -457,24 +466,53 @@ const AccountDetails = () => {
       );
       return;
     }
-    const newAddressObj: any = {
-      ...addressData,
-      customer_id: getCustomerID,
-      id: recordId,
-    };
-    if (newAddressObj) {
-      dispatch(insertAddAddress(newAddressObj)).then((res) => {
-        if (res?.payload) {
+
+    setLoadingStart(true); // Start loading
+
+    try {
+      // Transform the data
+      let formattedAddresses;
+      if (recordData) {
+        formattedAddresses = transformExistAddressData(addressData, recordData);
+      } else {
+        formattedAddresses = transformAddressData(addressData);
+      }
+
+      if (formattedAddresses) {
+        const addressPromises = formattedAddresses?.map(
+          async (addressObj: any) => {
+            const newAddressObj: any = {
+              ...addressObj,
+              customer_id: getCustomerID,
+              id: recordId,
+            };
+            return dispatch(insertAddAddress(newAddressObj));
+          },
+        );
+
+        // Wait for all insert API calls to complete
+        const results = await Promise.all(addressPromises);
+
+        // Check if at least one insert was successful
+        if (results.some((res) => res?.payload)) {
           dispatch(getCustomerBYId(getCustomerID));
+
           if (!isSaveAndCreate) {
             setShowAddressModal(false);
           }
+
           form.resetFields();
           setActiveKey('1');
           setShowDrawer(false);
           setRecordId('');
+          setLoadingStart(false); // Stop loading
         }
-      });
+      }
+    } catch (error) {
+      message.error('An error occurred while saving the address.');
+      setLoadingStart(false); // Stop loading
+    } finally {
+      setLoadingStart(false); // Stop loading
     }
   };
 
@@ -525,11 +563,12 @@ const AccountDetails = () => {
             </Row>
 
             <OsCard>
-              <OsTable
+              <OsTableWithOutDrag
                 loading={loading}
                 columns={Addresscolumns}
                 dataSource={customerData?.Addresses}
                 locale={locale}
+                defaultPageSize={5}
               />
             </OsCard>
             <Row justify="start">
@@ -537,11 +576,12 @@ const AccountDetails = () => {
             </Row>
 
             <OsCard>
-              <OsTable
+              <OsTableWithOutDrag
                 loading={loading}
                 columns={OpportunityColumns}
                 dataSource={customerData?.Opportunities}
                 locale={locale}
+                defaultPageSize={5}
               />
             </OsCard>
 
@@ -550,12 +590,13 @@ const AccountDetails = () => {
             </Row>
 
             <OsCard>
-              <OsTable
+              <OsTableWithOutDrag
                 loading={loading}
                 columns={Quotecolumns}
                 dataSource={quotes}
                 scroll
                 locale={locale}
+                defaultPageSize={5}
               />
             </OsCard>
           </div>
@@ -563,7 +604,7 @@ const AccountDetails = () => {
       </Row>
 
       <OsModal
-        loading={loading}
+        loading={loadingStart}
         thirdLoading={loading}
         title="Create Address"
         destroyOnClose
@@ -619,12 +660,13 @@ const AccountDetails = () => {
           />
         }
       >
-        <AddAddress
+        <EditAddress
           form={form}
           activeKey={activeKey}
           setActiveKey={setActiveKey}
           onFinish={onFinish}
           drawer
+          recordData={recordData}
         />
       </OsDrawer>
 

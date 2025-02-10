@@ -106,13 +106,11 @@ const QuoteMappings = () => {
         quoteHeadersCheck?.map((items: any) => {
           quoteHeadersValue?.push({
             label:
-              items === 'product_code'
-                ? 'SKU'
-                : items === 'adjusted_price'
-                  ? 'Cost'
-                  : items === 'list_price'
-                    ? 'MSRP'
-                    : formatStatus(items),
+              items === 'adjusted_price'
+                ? 'Cost'
+                : items === 'list_price'
+                  ? 'MSRP'
+                  : formatStatus(items),
             value: items,
           });
         });
