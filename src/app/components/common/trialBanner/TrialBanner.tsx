@@ -86,7 +86,7 @@ const TrialBanner: React.FC<{
           <Typography color={token?.colorError} name={PrimaryTextTypography}>
             {licenseMessage
               ? licenseMessage
-              : `Your ${remainingDays === 3 ? 'Trial' : ' extended Trial'} expires in 
+              : `Your ${currentQuoteLicense?.license_type === 'demo' ? 'Trial' : ' extended Trial'} expires in 
             ${remainingDays} Days!`}
           </Typography>
         }
