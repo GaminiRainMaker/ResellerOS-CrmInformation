@@ -162,7 +162,7 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
           }
         });
       }
-
+      console.log('2432424324', shipparry, billingArray, payload?.payload);
       setShippingOptions(shipparry);
       setBillingOptions(billingArray);
     });
@@ -293,7 +293,13 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
             <Form.Item label="Quote Name" name="file_name">
               <OsInput disabled={isView === 'true' ? true : false} />
             </Form.Item>
+            <Form.Item label="Quote #" name="quote_unique_in">
+              <OsInput placeholder="ID" disabled={true} />
+            </Form.Item>
 
+            <Form.Item label="Expiration Date" name="expiration_date">
+              <CommonDatePicker onBlur={undefined} />
+            </Form.Item>
             <OsCustomerSelect
               setCustomerValue={setCustomerValue}
               customerValue={customerValue}
@@ -324,24 +330,6 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
               />
             </Form.Item>
 
-            <Form.Item label="Quote #" name="quote_unique_in">
-              <OsInput placeholder="ID" disabled={true} />
-            </Form.Item>
-
-            <Form.Item label="Expiration Date" name="expiration_date">
-              <CommonDatePicker onBlur={undefined} />
-            </Form.Item>
-
-            <Form.Item label="Billing Address" name="billing_id">
-              <CommonSelect options={billingOptions} />
-            </Form.Item>
-            <Form.Item label="Shipping Address" name="shipping_id">
-              <CommonSelect options={shippingOptions} />
-            </Form.Item>
-
-            <Form.Item label="Expiration Date" name="expiration_date">
-              <CommonDatePicker onBlur={undefined} />
-            </Form.Item>
             <Form.Item label=" Quote Note" name="quote_notes">
               <OsInput
                 placeholder="Notes"
@@ -377,6 +365,12 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
                 }}
                 placeholder="Quote Shipping"
               />
+            </Form.Item>
+            <Form.Item label="Billing Address" name="billing_id">
+              <CommonSelect options={billingOptions} />
+            </Form.Item>
+            <Form.Item label="Shipping Address" name="shipping_id">
+              <CommonSelect options={shippingOptions} />
             </Form.Item>
           </Col>
         </Row>
