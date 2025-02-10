@@ -80,6 +80,7 @@ const TrialBanner: React.FC<{
           padding: '15px',
           borderRadius: '4px',
           border: `1px solid ${token?.colorError}`,
+          width: 'fit-content',
         }}
         message={
           <Typography color={token?.colorError} name={PrimaryTextTypography}>

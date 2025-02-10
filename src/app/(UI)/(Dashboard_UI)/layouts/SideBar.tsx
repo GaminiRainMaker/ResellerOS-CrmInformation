@@ -82,6 +82,8 @@ const SideBar = () => {
             DealReg: payload?.payload?.is_dealReg,
             OrderAI: payload?.payload?.is_order,
             username: payload?.payload?.user_name,
+            first_name: payload?.payload?.first_name,
+            last_name: payload?.payload?.last_name,
             email: payload?.payload?.email,
             MasterAdmin: payload?.payload?.master_admin,
             Role: payload?.payload?.role,

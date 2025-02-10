@@ -418,7 +418,7 @@ const CustomHeader = () => {
           background: 'white',
         }}
         align="middle"
-        gutter={[0, 16]}
+        gutter={[0, 8]}
       >
         <Col span={12}>
           <Row justify="space-between" gutter={[0, 16]}>
@@ -426,7 +426,7 @@ const CustomHeader = () => {
               <Image src={HeaderLogo} alt="HeaderLogo" />
             </Col>
             {!isCanvas && !salesForceUrl && (
-              <Col span={15}>
+              <Col span={12}>
                 <SearchSelect
                   onSearch={(e: any) => {
                     setQuery(e);
@@ -446,237 +446,263 @@ const CustomHeader = () => {
 
         <Col>
           {!isCanvas && !salesForceUrl && (
-            <Space
-              direction="horizontal"
-              size={24}
+            <div
               style={{
                 display: 'flex',
-                justifyContent: 'end',
                 alignItems: 'center',
               }}
             >
-              {/* <AvatarStyled
-              background={token?.colorInfoBg}
-              icon={
-                <WrenchScrewdriverIcon
-                  width={24}
-                  color={token?.colorInfoBorder}
-                />
-              }
-            /> */}
-
-              {userInformation?.Role === 'reseller' && (
-                <TrialBanner PrimaryTextTypography="Body 3/Regular" />
-              )}
-
-              <AvatarStyled
-                background={token?.colorInfoBg}
-                icon={
-                  <QuestionOutlined
-                    style={{color: 'grey'}}
-                    onClick={() => {
-                      setOpenSupportModel(true);
-                    }}
-                    width={24}
-                    color={token?.colorInfoBorder}
-                  />
-                }
-              />
-
-              <Dropdown
-                trigger={['click']}
-                overlayStyle={{
-                  marginLeft: 200,
-                  marginTop: 20,
-                }}
-                menu={{items}}
-                dropdownRender={() => (
-                  <div style={dropDownStyle}>
-                    {notificationCount?.length > 0 ? (
-                      <GlobalLoader loading={notificationLoading}>
-                        {notificationCount?.map((notificationDataItem: any) => {
-                          let fallBackIconsss;
-                          let fallBackBg;
-                          if (notificationDataItem?.type === 'quote') {
-                            fallBackIconsss = (
-                              <ExclamationCircleIcon
-                                color={token?.colorError}
-                                width={24}
-                              />
-                            );
-                            fallBackBg = token?.colorErrorBg;
-                          } else if (
-                            notificationDataItem?.type === 'subscription'
-                          ) {
-                            fallBackIconsss = (
-                              <Image
-                                src={creditCard}
-                                alt="creditCard"
-                                style={{
-                                  cursor: 'pointer',
-                                  width: '24px',
-                                  height: '24px',
-                                }}
-                              />
-                            );
-                            fallBackBg = ' #E6E7EE';
-                          } else if (notificationDataItem?.type === 'partner') {
-                            fallBackIconsss = (
-                              <UsersIcon color={token?.colorInfo} width={24} />
-                            );
-                            fallBackBg = token?.colorInfoBgHover;
-                          }
-                          return (
-                            <TableNameColumn
-                              key={notificationDataItem?.id}
-                              primaryText={notificationDataItem?.title}
-                              secondaryText={notificationDataItem?.description}
-                              primaryTextTypography="Body 1/Medium"
-                              logo={
-                                notificationDataItem?.type === 'subscription' ||
-                                notificationDataItem?.type === 'quote'
-                                  ? null
-                                  : notificationDataItem?.User?.profile_image
-                              }
-                              fallbackIcon={fallBackIconsss}
-                              iconBg={fallBackBg}
-                              cursor="pointer"
-                              secondaryEllipsis
-                              onClick={() => {
-                                router.push(
-                                  userInformation?.Admin
-                                    ? `/superAdminPartner?tab=2`
-                                    : '/partners?tab=2',
-                                );
-                              }}
-                              justifyContent="start"
-                              maxWidth={320}
-                              marginBottom={10}
-                              isNotification={true}
-                            />
-                          );
-                        })}
-                      </GlobalLoader>
-                    ) : (
-                      <Typography
-                        name="Body 3/Medium"
-                        style={{display: 'flex', justifyContent: 'center'}}
-                      >
-                        No New Notifications
-                      </Typography>
-                    )}
-                    <div
-                      style={{
-                        width: '100%',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        marginTop: '10px',
-                      }}
-                    >
-                      {' '}
-                      <OsButton
-                        text="See All"
-                        buttontype="PRIMARY"
-                        clickHandler={() => {
-                          router?.push('/notification');
-                        }}
-                      />
-                    </div>
-                  </div>
+              <Space direction="horizontal" size={24}>
+                {userInformation?.Role === 'reseller' && (
+                  <TrialBanner PrimaryTextTypography="Body 3/Regular" />
                 )}
-              >
-                <Badge count={notificationCounts}>
+                <Space
+                  direction="horizontal"
+                  size={24}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'end',
+                    alignItems: 'center',
+                  }}
+                >
                   <AvatarStyled
                     background={token?.colorInfoBg}
                     icon={
-                      <BellIcon width={24} color={token?.colorInfoBorder} />
+                      <QuestionOutlined
+                        style={{color: 'grey'}}
+                        onClick={() => {
+                          setOpenSupportModel(true);
+                        }}
+                        width={24}
+                        color={token?.colorInfoBorder}
+                      />
                     }
                   />
-                </Badge>
-              </Dropdown>
 
-              <Dropdown
-                menu={{items}}
-                dropdownRender={(menu: any) => (
-                  <div style={contentStyle}>
-                    <Space>
-                      <Avatar
-                        src={profileImg}
-                        icon={<UserCircleIcon />}
-                        shape="circle"
-                        size="large"
-                      />
-                      <Space direction="vertical" size={0}>
-                        <Typography name="Body 3/Regular">
-                          {userInformation?.username || 'Josh Walker'}
-                        </Typography>
-                        <Typography
-                          name="Body 4/Medium"
-                          color={token?.colorInfo}
+                  <Dropdown
+                    trigger={['click']}
+                    overlayStyle={{
+                      marginLeft: 200,
+                      marginTop: 20,
+                    }}
+                    menu={{items}}
+                    dropdownRender={() => (
+                      <div style={dropDownStyle}>
+                        {notificationCount?.length > 0 ? (
+                          <GlobalLoader loading={notificationLoading}>
+                            {notificationCount?.map(
+                              (notificationDataItem: any) => {
+                                let fallBackIconsss;
+                                let fallBackBg;
+                                if (notificationDataItem?.type === 'quote') {
+                                  fallBackIconsss = (
+                                    <ExclamationCircleIcon
+                                      color={token?.colorError}
+                                      width={24}
+                                    />
+                                  );
+                                  fallBackBg = token?.colorErrorBg;
+                                } else if (
+                                  notificationDataItem?.type === 'subscription'
+                                ) {
+                                  fallBackIconsss = (
+                                    <Image
+                                      src={creditCard}
+                                      alt="creditCard"
+                                      style={{
+                                        cursor: 'pointer',
+                                        width: '24px',
+                                        height: '24px',
+                                      }}
+                                    />
+                                  );
+                                  fallBackBg = ' #E6E7EE';
+                                } else if (
+                                  notificationDataItem?.type === 'partner'
+                                ) {
+                                  fallBackIconsss = (
+                                    <UsersIcon
+                                      color={token?.colorInfo}
+                                      width={24}
+                                    />
+                                  );
+                                  fallBackBg = token?.colorInfoBgHover;
+                                }
+                                return (
+                                  <TableNameColumn
+                                    key={notificationDataItem?.id}
+                                    primaryText={notificationDataItem?.title}
+                                    secondaryText={
+                                      notificationDataItem?.description
+                                    }
+                                    primaryTextTypography="Body 1/Medium"
+                                    logo={
+                                      notificationDataItem?.type ===
+                                        'subscription' ||
+                                      notificationDataItem?.type === 'quote'
+                                        ? null
+                                        : notificationDataItem?.User
+                                            ?.profile_image
+                                    }
+                                    fallbackIcon={fallBackIconsss}
+                                    iconBg={fallBackBg}
+                                    cursor="pointer"
+                                    secondaryEllipsis
+                                    onClick={() => {
+                                      router.push(
+                                        userInformation?.Admin
+                                          ? `/superAdminPartner?tab=2`
+                                          : '/partners?tab=2',
+                                      );
+                                    }}
+                                    justifyContent="start"
+                                    maxWidth={320}
+                                    marginBottom={10}
+                                    isNotification={true}
+                                  />
+                                );
+                              },
+                            )}
+                          </GlobalLoader>
+                        ) : (
+                          <Typography
+                            name="Body 3/Medium"
+                            style={{display: 'flex', justifyContent: 'center'}}
+                          >
+                            No New Notifications
+                          </Typography>
+                        )}
+                        <div
+                          style={{
+                            width: '100%',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            marginTop: '10px',
+                          }}
                         >
-                          {userInformation?.email || 'josh.walker@email.com'}
-                        </Typography>
-                      </Space>
-                    </Space>
-                    <Divider />
-                    <Typography name="Body 2/Medium">Account Info</Typography>
-                    {React.cloneElement(menu as React.ReactElement, {
-                      style: menuStyle,
-                    })}
-                    <Divider />
-                    <Space
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        cursor: 'pointer',
-                      }}
-                      onClick={() => {
-                        localStorage.removeItem('userInfo');
-                        Cookies.remove('token');
-                        Cookies.remove('id');
-                        router.push('/login');
-                      }}
-                    >
-                      <ArrowLeftStartOnRectangleIcon
-                        width={24}
-                        style={{marginTop: '5px'}}
-                        color={token?.colorError}
+                          {' '}
+                          <OsButton
+                            text="See All"
+                            buttontype="PRIMARY"
+                            clickHandler={() => {
+                              router?.push('/notification');
+                            }}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  >
+                    <Badge count={notificationCounts}>
+                      <AvatarStyled
+                        background={token?.colorInfoBg}
+                        icon={
+                          <BellIcon width={24} color={token?.colorInfoBorder} />
+                        }
                       />
-                      <Typography name="Body 3/Regular" cursor="pointer">
-                        Logout
-                      </Typography>
-                    </Space>
-                  </div>
-                )}
-              >
-                <a onClick={(e) => e.preventDefault()}>
-                  <Space>
-                    <Avatar
-                      src={profileImg}
-                      icon={<UserCircleIcon />}
-                      shape="circle"
-                      size="large"
-                    />
-                    <Space direction="vertical" size={0}>
-                      <Typography
-                        name="Body 3/Regular"
-                        color={token?.colorPrimaryText}
-                      >
-                        {userInformation?.username || '--'}
-                      </Typography>
-                      <Typography name="Body 3/Bold" color={token?.colorLink}>
-                        {userRole || '--'}
-                      </Typography>
-                    </Space>
-                    <Image
-                      src={DownArrow}
-                      alt="DownArrow"
-                      style={{cursor: 'pointer'}}
-                    />
-                  </Space>
-                </a>
-              </Dropdown>
-            </Space>
+                    </Badge>
+                  </Dropdown>
+
+                  <Dropdown
+                    menu={{items}}
+                    dropdownRender={(menu: any) => (
+                      <div style={contentStyle}>
+                        <Space>
+                          <Avatar
+                            src={profileImg}
+                            icon={<UserCircleIcon />}
+                            shape="circle"
+                            size="large"
+                          />
+                          <Space direction="vertical" size={0}>
+                            <Typography name="Body 3/Regular">
+                              {userInformation?.first_name &&
+                              userInformation?.last_name
+                                ? `${userInformation.first_name} ${userInformation.last_name}`
+                                : userInformation?.first_name
+                                  ? userInformation.first_name
+                                  : (userInformation?.username ?? '--')}
+                            </Typography>
+                            <Typography
+                              name="Body 4/Medium"
+                              color={token?.colorInfo}
+                            >
+                              {userInformation?.email || '--'}
+                            </Typography>
+                          </Space>
+                        </Space>
+                        <Divider />
+                        <Typography name="Body 2/Medium">
+                          Account Info
+                        </Typography>
+                        {React.cloneElement(menu as React.ReactElement, {
+                          style: menuStyle,
+                        })}
+                        <Divider />
+                        <Space
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            cursor: 'pointer',
+                          }}
+                          onClick={() => {
+                            localStorage.removeItem('userInfo');
+                            Cookies.remove('token');
+                            Cookies.remove('id');
+                            router.push('/login');
+                          }}
+                        >
+                          <ArrowLeftStartOnRectangleIcon
+                            width={24}
+                            style={{marginTop: '5px'}}
+                            color={token?.colorError}
+                          />
+                          <Typography name="Body 3/Regular" cursor="pointer">
+                            Logout
+                          </Typography>
+                        </Space>
+                      </div>
+                    )}
+                  >
+                    <a onClick={(e) => e.preventDefault()}>
+                      <Space>
+                        <Avatar
+                          src={profileImg}
+                          icon={<UserCircleIcon />}
+                          shape="circle"
+                          size="large"
+                        />
+                        <Space direction="vertical" size={0}>
+                          <Typography
+                            name="Body 3/Regular"
+                            color={token?.colorPrimaryText}
+                            ellipsis
+                            maxWidth={20}
+                          >
+                            {userInformation?.first_name &&
+                            userInformation?.last_name
+                              ? `${userInformation.first_name} ${userInformation.last_name}`
+                              : userInformation?.first_name
+                                ? userInformation.first_name
+                                : (userInformation?.username ?? '--')}
+                          </Typography>
+                          <Typography
+                            name="Body 3/Bold"
+                            color={token?.colorLink}
+                          >
+                            {userRole || '--'}
+                          </Typography>
+                        </Space>
+                        <Image
+                          src={DownArrow}
+                          alt="DownArrow"
+                          style={{cursor: 'pointer'}}
+                        />
+                      </Space>
+                    </a>
+                  </Dropdown>
+                </Space>
+              </Space>
+            </div>
           )}
         </Col>
       </Row>
