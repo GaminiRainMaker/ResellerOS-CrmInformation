@@ -1002,3 +1002,171 @@ export let processScript = (finalObj: {
 
   return updatedScript;
 };
+
+type Quote = {
+  Profitabilities: {adjusted_price: string; file_name: string}[];
+  QuoteFiles: {total_page_count: string; file_name: string}[];
+  customer_id?: string;
+  opportunity_id: string;
+  quote_amount?: number;
+};
+
+type Metrics = {
+  vendorQuotes: number;
+  totalPages: number;
+  totalLineItems: number;
+  totalCustomers: number;
+  totalRevenue: number;
+  grossProfit: number;
+  hoursOfTime: string;
+  averageRevenue: string;
+  averageGrossProfit: string;
+  averageProfitMargin: string;
+};
+
+export const calculateMetrics = (quoteData: Quote[]): Metrics => {
+  // Helper functions
+  const getVendorQuotesCount = (): number => quoteData.length;
+
+  const getTotalPages = (): number => {
+    const rowsPerPage = 50;
+
+    // Extract total pages from PDFs
+    const pdfPageCounts = quoteData
+      ?.flatMap((quote) => quote?.QuoteFiles || []) // Extract all QuoteFiles arrays and flatten them
+      ?.filter((file) => file?.file_name?.includes('pdf')) // Keep only PDFs
+      ?.reduce((sum, file) => sum + (Number(file?.total_page_count) || 0), 0); // Sum up total_page_count
+
+    // Extract total rows from XLSX files (count the number of XLSX files)
+    const xlsxFilesRows = quoteData
+      ?.flatMap((quote) => quote.Profitabilities || []) // Extract all Profitabilities arrays and flatten them
+      ?.filter((file) => file?.file_name?.includes('xlsx'))?.length; // Keep only XLSX files // Get the total count of XLSX files
+
+    // Calculate pages for XLSX files
+    const xlsxFilesPages = Math.ceil(xlsxFilesRows / rowsPerPage);
+
+    return pdfPageCounts + xlsxFilesPages;
+  };
+
+  const getTotalLineItems = (): number => {
+    let totalLineItems = 0;
+    quoteData.forEach((quote) => {
+      totalLineItems += quote.Profitabilities.length;
+    });
+    return totalLineItems;
+  };
+
+  const getTotalCustomers = (): number => {
+    const uniqueCustomers = new Set<string>();
+
+    quoteData.forEach((quote) => {
+      if (quote.opportunity_id) {
+        uniqueCustomers.add(quote.opportunity_id);
+      }
+    });
+    // quoteData.forEach((quote) => {
+    //   if (quote.customer_id) {
+    //     uniqueCustomers.add(quote.customer_id);
+    //   }
+    // });
+
+    return uniqueCustomers.size;
+  };
+
+  const getTotalRevenue = (): number => {
+    const opportunityTotals: Record<string, number> = {};
+
+    quoteData.forEach((quote) => {
+      const opportunityId = quote.opportunity_id;
+      const quoteTotal = quote.quote_amount || 0;
+
+      if (
+        !opportunityTotals[opportunityId] ||
+        quoteTotal > opportunityTotals[opportunityId]
+      ) {
+        opportunityTotals[opportunityId] = quoteTotal;
+      }
+    });
+
+    return Object.values(opportunityTotals).reduce(
+      (sum, total) => sum + total,
+      0,
+    );
+  };
+
+  const getGrossProfit = (): number => {
+    let totalGrossProfit = 0;
+
+    quoteData.forEach((quote) => {
+      const quoteTotal = quote.quote_amount || 0;
+      const totalCost = quote.Profitabilities.reduce(
+        (sum, item) => sum + (parseFloat(item.adjusted_price) || 0),
+        0,
+      );
+      totalGrossProfit += quoteTotal - totalCost;
+    });
+
+    return totalGrossProfit;
+  };
+
+  const getTotalHoursSpent = (): string => {
+    const minutesPerUniqueFile = 10;
+    const uniqueFileNames = new Set(
+      quoteData
+        ?.flatMap((quote) => quote?.Profitabilities || [])
+        .map((item) => item.file_name),
+    );
+
+    const uniqueCount = uniqueFileNames.size;
+
+    // Calculate total minutes
+    const totalMinutes = uniqueCount * minutesPerUniqueFile;
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    return `${hours} hr ${minutes} min`;
+  };
+
+  const getAverageRevenue = (): string => {
+    const totalRevenue = getTotalRevenue();
+    return (totalRevenue / quoteData.length).toFixed(2);
+  };
+
+  const getAverageGrossProfit = (): string => {
+    const totalGrossProfit = getGrossProfit();
+    return (totalGrossProfit / quoteData.length).toFixed(2);
+  };
+
+  const getAverageProfitMargin = (): string => {
+    const averageRevenue = parseFloat(getAverageRevenue());
+    const averageCost = parseFloat(getAverageGrossProfit()) - averageRevenue;
+
+    return (((averageRevenue - averageCost) / averageRevenue) * 100).toFixed(2);
+  };
+
+  // Calculate all metrics
+  const metrics: any = {
+    Converted: {
+      vendorQuotes: getVendorQuotesCount(),
+      totalPages: getTotalPages(),
+      totalLineItems: getTotalLineItems(),
+    },
+    Quoted: {
+      totalCustomers: getTotalCustomers(),
+      totalRevenue: getTotalRevenue(),
+      grossProfit: getGrossProfit(),
+    },
+    Earned: {
+      hoursOfTime: getTotalHoursSpent(),
+      grossProfit: getGrossProfit(),
+    },
+    AverageQuote: {
+      averageRevenue: getAverageRevenue(),
+      averageGrossProfit: getAverageGrossProfit(),
+      averageProfitMargin: getAverageProfitMargin(),
+    },
+  };
+
+  return metrics;
+};

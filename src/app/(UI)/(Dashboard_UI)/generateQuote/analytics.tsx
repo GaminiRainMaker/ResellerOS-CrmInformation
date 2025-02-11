@@ -16,10 +16,15 @@ import Image from 'next/image';
 import {FC, useEffect, useState} from 'react';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
-import {useAppSelector} from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {updateQuoteById} from '../../../../../redux/actions/quote';
+import {useSearchParams} from 'next/navigation';
 
 const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
   const [token] = useThemeToken();
+  const dispatch = useAppDispatch();
+  const searchParams = useSearchParams()!;
+  const getQuoteID = searchParams.get('id');
   // const [totalValues, setTotalValues] = useState<any>();
   const [totalRebateAmount, setTotalRebateAmount] = useState<any>();
   const {data: profitabilityDataByQuoteId} = useAppSelector(
@@ -29,7 +34,6 @@ const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
     (state) => state.rebateQuoteLineItem,
   );
   const {abbreviate} = useAbbreviationHook(0);
-
   useEffect(() => {
     let rebateAmount: any = 0;
     rebateQuoteLine?.map((item: any) => {
@@ -101,12 +105,6 @@ const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
     if (totalExitPrice > 0) {
       grossProfitPercentage = (totalGrossProfit / totalExitPrice) * 100;
     }
-    console.log(
-      'profitabilityDataByQuoteIdprofitabilityDataByQuoteId',
-      profitabilityDataByQuoteId,
-      grossProfitPercentage,
-    );
-
     setTotalValues({
       GrossProfit: totalGrossProfit,
       GrossProfitPercentage: grossProfitPercentage,
@@ -183,7 +181,20 @@ const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
     totalValues,
   ]);
 
-  console.log('23423423432', totalValues);
+  useEffect(() => {
+    if (totalValues && getQuoteID) {
+      dispatch(
+        updateQuoteById({
+          quote_total: totalValues?.ExitPrice,
+          total_cost: totalValues?.TotalCost,
+          gross_profit: totalValues?.GrossProfit,
+          gross_profit_percentage: totalValues?.GrossProfitPercentage,
+          id: Number(getQuoteID),
+        }),
+      );
+    }
+  }, [totalValues]);
+
   return (
     <Row
       justify="space-between"
