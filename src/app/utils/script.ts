@@ -1004,7 +1004,8 @@ export let processScript = (finalObj: {
 };
 
 type Quote = {
-  QuoteLineItems: {adjusted_price: string}[];
+  Profitabilities: {adjusted_price: string; file_name: string}[];
+  QuoteFiles: {total_page_count: string; file_name: string}[];
   customer_id?: string;
   opportunity_id: string;
   quote_amount?: number;
@@ -1029,22 +1030,29 @@ export const calculateMetrics = (quoteData: Quote[]): Metrics => {
 
   const getTotalPages = (): number => {
     const rowsPerPage = 50;
-    let totalRows = 0;
 
-    quoteData.forEach((quote) => {
-      totalRows += quote.QuoteLineItems.length;
-    });
+    // Extract total pages from PDFs
+    const pdfPageCounts = quoteData
+      ?.flatMap((quote) => quote?.QuoteFiles || []) // Extract all QuoteFiles arrays and flatten them
+      ?.filter((file) => file?.file_name?.includes('pdf')) // Keep only PDFs
+      ?.reduce((sum, file) => sum + (Number(file?.total_page_count) || 0), 0); // Sum up total_page_count
 
-    return Math.ceil(totalRows / rowsPerPage);
+    // Extract total rows from XLSX files (count the number of XLSX files)
+    const xlsxFilesRows = quoteData
+      ?.flatMap((quote) => quote.Profitabilities || []) // Extract all Profitabilities arrays and flatten them
+      ?.filter((file) => file?.file_name?.includes('xlsx'))?.length; // Keep only XLSX files // Get the total count of XLSX files
+
+    // Calculate pages for XLSX files
+    const xlsxFilesPages = Math.ceil(xlsxFilesRows / rowsPerPage);
+
+    return pdfPageCounts + xlsxFilesPages;
   };
 
   const getTotalLineItems = (): number => {
     let totalLineItems = 0;
-
     quoteData.forEach((quote) => {
-      totalLineItems += quote.QuoteLineItems.length;
+      totalLineItems += quote.Profitabilities.length;
     });
-
     return totalLineItems;
   };
 
@@ -1091,7 +1099,7 @@ export const calculateMetrics = (quoteData: Quote[]): Metrics => {
 
     quoteData.forEach((quote) => {
       const quoteTotal = quote.quote_amount || 0;
-      const totalCost = quote.QuoteLineItems.reduce(
+      const totalCost = quote.Profitabilities.reduce(
         (sum, item) => sum + (parseFloat(item.adjusted_price) || 0),
         0,
       );
@@ -1113,13 +1121,13 @@ export const calculateMetrics = (quoteData: Quote[]): Metrics => {
     const secondsPerLineItem = 56;
     const secondsInHour = 3600;
     const minutesInHour = 60;
-  
+
     const totalLineItems = getTotalLineItems();
     const totalSeconds = totalLineItems * secondsPerLineItem;
-  
+
     const hours = Math.floor(totalSeconds / secondsInHour);
     const minutes = Math.round((totalSeconds % secondsInHour) / 60);
-  
+
     return `${hours} hr ${minutes} min`;
   };
 
