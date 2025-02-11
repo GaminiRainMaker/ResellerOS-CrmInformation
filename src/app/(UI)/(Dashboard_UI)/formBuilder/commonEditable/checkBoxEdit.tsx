@@ -918,14 +918,16 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
                         <Typography name="Body 3/Regular">
                           {items?.[0]?.id}
                         </Typography>
-                        <TrashIcon
-                          color="#EB445A"
-                          width={25}
-                          onClick={() =>
-                            deleteTheInnerChildFiled(index, 'main')
-                          }
-                          style={{marginRight: '10px'}}
-                        />
+                        {activeIndexForDependent === index && (
+                          <TrashIcon
+                            color="#EB445A"
+                            width={25}
+                            onClick={() =>
+                              deleteTheInnerChildFiled(index, 'main')
+                            }
+                            style={{marginRight: '10px'}}
+                          />
+                        )}
                       </div>
                       {items &&
                         items?.length > 0 &&
@@ -958,13 +960,20 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
                                 }}
                               >
                                 {' '}
-                                <TrashIcon
-                                  color="#EB445A"
-                                  width={25}
-                                  onClick={() =>
-                                    deleteTheInnerChildFiled(indexInn, 'child')
-                                  }
-                                />
+                                {activeIndexForDependent === index &&
+                                  activeIndexForDependentInnerChild ===
+                                    indexInn && (
+                                    <TrashIcon
+                                      color="#EB445A"
+                                      width={25}
+                                      onClick={() =>
+                                        deleteTheInnerChildFiled(
+                                          indexInn,
+                                          'child',
+                                        )
+                                      }
+                                    />
+                                  )}
                               </div>{' '}
                               <div
                                 style={{
@@ -992,23 +1001,25 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
                                 {items?.length - 1 === indexInn && (
                                   <div style={{marginTop: '0px'}}>
                                     {' '}
-                                    <OsButton
-                                      text="+"
-                                      buttontype="PRIMARY"
-                                      clickHandler={() => {
-                                        if (itemInner?.type === 'text') {
-                                          addnewOptionTochildDependent(
-                                            'text',
-                                            items?.[0]?.id,
-                                          );
-                                        } else {
-                                          addnewOptionTochildDependent(
-                                            'tag',
-                                            items?.[0]?.id,
-                                          );
-                                        }
-                                      }}
-                                    />
+                                    {activeIndexForDependent === index && (
+                                      <OsButton
+                                        text="+"
+                                        buttontype="PRIMARY"
+                                        clickHandler={() => {
+                                          if (itemInner?.type === 'text') {
+                                            addnewOptionTochildDependent(
+                                              'text',
+                                              items?.[0]?.id,
+                                            );
+                                          } else {
+                                            addnewOptionTochildDependent(
+                                              'tag',
+                                              items?.[0]?.id,
+                                            );
+                                          }
+                                        }}
+                                      />
+                                    )}
                                   </div>
                                 )}
                               </div>
