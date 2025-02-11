@@ -1110,23 +1110,20 @@ export const calculateMetrics = (quoteData: Quote[]): Metrics => {
   };
 
   const getTotalHoursSpent = (): string => {
-    // const secondsPerLineItem = 56;
-    // const secondsInHour = 3600;
+    const minutesPerUniqueFile = 10;
+    const uniqueFileNames = new Set(
+      quoteData
+        ?.flatMap((quote) => quote?.Profitabilities || [])
+        .map((item) => item.file_name),
+    );
 
-    // const totalLineItems = getTotalLineItems();
-    // const totalSeconds = totalLineItems * secondsPerLineItem;
+    const uniqueCount = uniqueFileNames.size;
 
-    // return (totalSeconds / secondsInHour).toFixed(2);
+    // Calculate total minutes
+    const totalMinutes = uniqueCount * minutesPerUniqueFile;
 
-    const secondsPerLineItem = 56;
-    const secondsInHour = 3600;
-    const minutesInHour = 60;
-
-    const totalLineItems = getTotalLineItems();
-    const totalSeconds = totalLineItems * secondsPerLineItem;
-
-    const hours = Math.floor(totalSeconds / secondsInHour);
-    const minutes = Math.round((totalSeconds % secondsInHour) / 60);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
 
     return `${hours} hr ${minutes} min`;
   };
