@@ -410,7 +410,7 @@ const CustomHeader = () => {
 
     await dispatch(sendEmailForSuport(newObj))?.then((payload: any) => {
       notification?.open({
-        message: 'Your issue request submitted successfully',
+        message: 'Your request has been successfully submitted!',
         type: 'success',
       });
     });
