@@ -65,7 +65,6 @@ const Dashboard = () => {
         if (data?.payload) {
           const FinalData = calculateMetrics(data?.payload);
           if (FinalData) {
-            console.log('FinalData', FinalData);
             setCurrentData(FinalData);
           }
         }
