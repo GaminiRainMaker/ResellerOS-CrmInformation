@@ -16,6 +16,7 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const {isCanvas} = useAppSelector((state) => state.canvas);
 
+  console.log('Worked'!);
   return (
     <>
       <Layout style={{minHeight: '90vh'}}>
