@@ -1298,8 +1298,6 @@ export const getFormattedValuesForBundlesOnly = (
 export const getFormattedValuesForLineItems = (objectForSyncingValues: any) => {
   let finArrr: any = [];
 
-  console.log('4564353453', objectForSyncingValues);
-
   if (
     objectForSyncingValues &&
     objectForSyncingValues?.QuoteLineItems?.length > 0

@@ -128,7 +128,6 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
       (item: any) => item?.doc_key === data?.key,
     );
 
-    console.log('3453534', objectForSyncingValues);
     let resultValues: any = {};
     let lineItemsArray: any = [];
     if (
@@ -167,8 +166,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
       }
     });
 
-    console.log('342342432', lineItemsArray);
-    let sortedLineItems = lineItemsArray?.lineItemss?.sort((a: any, b: any) => {
+    let sortedLineItems = lineItemsArray?.sort((a: any, b: any) => {
       return a.Id - b.Id;
     });
 
