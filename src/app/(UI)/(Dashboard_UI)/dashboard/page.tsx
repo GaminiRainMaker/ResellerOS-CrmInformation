@@ -70,7 +70,6 @@ const Dashboard = () => {
         if (data?.payload) {
           const FinalData = calculateMetrics(data?.payload);
           if (FinalData) {
-            console.log('FinalData', FinalData);
             setCurrentData(FinalData);
           }
         }
@@ -360,17 +359,99 @@ const Dashboard = () => {
                 This {timeframe}'s Metrics
               </Typography>
             </Col>
-            <Col>
-              <Space direction="vertical" size={0}>
-                <Typography name="Body 4/Medium">Timeframe:</Typography>
-                <CommonSelect
-                  options={selectOption}
-                  style={{width: '200px'}}
-                  placeholder="Select Dealreg Forms"
-                  onChange={(value) => setTimeframe(value)}
-                  defaultValue={'Month'}
+
+            <Col span={12}>
+              <Card title="You've Quoted">
+                <Typography name="Body 4/Regular" as="div">
+                  Customers: {currentData.Quoted.totalCustomers}{' '}
+                </Typography>
+                <Typography name="Body 4/Regular" as="div">
+                  Revenue: ${currentData.Quoted.totalRevenue}{' '}
+                </Typography>
+                <Typography name="Body 4/Regular" as="div">
+                  Gross Profit: ${currentData.Quoted.grossProfit}{' '}
+                </Typography>
+                <br />
+                <ResponsiveContainer width="100%" height={200}>
+                  <BarChart
+                    data={Object?.entries(currentData.Quoted).map(
+                      ([key, value]) => ({
+                        name: key,
+                        value,
+                      }),
+                    )}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="value">
+                      {Object.entries(currentData).map(
+                        ([key, value], index) => (
+                          <Cell
+                            key={key}
+                            fill={COLORS[index % COLORS.length]}
+                          />
+                        ),
+                      )}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </Card>
+            </Col>
+          </Row>
+
+          <Row gutter={16} style={{marginBottom: '32px'}}>
+            <Col span={12}>
+              <Card title="You've Earned">
+                <Typography name="Body 4/Regular" as="div">
+                  Hours of Time: {currentData.Earned.hoursOfTime}{' '}
+                </Typography>
+                <Typography name="Body 4/Regular" as="div">
+                  Gross Profit: ${currentData.Earned.grossProfit}
+                </Typography>
+                <br />
+                <br />
+                <ResponsiveContainer width="100%" height={180}>
+                  <BarChart
+                    data={[
+                      {
+                        name: 'Gross Profit',
+                        value: currentData.Earned.grossProfit,
+                      },
+                    ]}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="value">
+                      <Cell fill={COLORS[3]} />{' '}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </Card>
+            </Col>
+            <Col span={12}>
+              <Card title="Average per Quote">
+                <Typography name="Body 4/Regular" as="div">
+                  Revenue: ${currentData.AverageQuote.averageRevenue}{' '}
+                </Typography>
+                <Typography name="Body 4/Regular" as="div">
+                  Gross Profit: ${currentData.AverageQuote.averageGrossProfit}{' '}
+                </Typography>
+                <Typography name="Body 4/Regular" as="div">
+                  Profit Margin:
+                  {currentData.AverageQuote.averageProfitMargin}%{' '}
+                </Typography>
+                <Progress
+                  percent={currentData.AverageQuote.averageProfitMargin}
+                  status="active"
+                  strokeColor={'#31576F'}
                 />
-              </Space>
+              </Card>
             </Col>
           </Row>
 

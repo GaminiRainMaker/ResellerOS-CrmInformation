@@ -558,7 +558,7 @@ export const quoteLineItemColumnForSyncFOrSalesFporceUpdatedOnce = [
     value: 'rosquoteai__Vendor_Disti_LR__c',
     label: 'Vendor/Disti',
   },
-  {value: 'subscription_term', label: 'Subscription Term'},
+  {value: 'rosquoteai__Subscription_Term__c', label: 'Subscription Term'},
 ];
 
 export const SaleForceQuoteLineItemColumnSync = [

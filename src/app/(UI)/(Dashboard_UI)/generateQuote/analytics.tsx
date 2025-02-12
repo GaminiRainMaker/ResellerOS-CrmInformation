@@ -25,6 +25,7 @@ const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
   const searchParams = useSearchParams()!;
   const getQuoteID = searchParams.get('id');
   const dispatch = useAppDispatch();
+  // const [totalValues, setTotalValues] = useState<any>();
   const [totalRebateAmount, setTotalRebateAmount] = useState<any>();
   const {data: profitabilityDataByQuoteId} = useAppSelector(
     (state) => state.profitability,
@@ -33,7 +34,6 @@ const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
     (state) => state.rebateQuoteLineItem,
   );
   const {abbreviate} = useAbbreviationHook(0);
-
   useEffect(() => {
     let rebateAmount: any = 0;
     rebateQuoteLine?.map((item: any) => {
@@ -105,8 +105,6 @@ const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
     if (totalExitPrice > 0) {
       grossProfitPercentage = (totalGrossProfit / totalExitPrice) * 100;
     }
-
-
     setTotalValues({
       GrossProfit: totalGrossProfit,
       GrossProfitPercentage: grossProfitPercentage,
@@ -189,6 +187,8 @@ const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
         updateQuoteById({
           quote_total: totalValues?.ExitPrice,
           total_cost: totalValues?.TotalCost,
+          gross_profit: totalValues?.GrossProfit,
+          gross_profit_percentage: totalValues?.GrossProfitPercentage,
           id: Number(getQuoteID),
         }),
       );

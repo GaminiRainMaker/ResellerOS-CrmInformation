@@ -142,27 +142,26 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
         payload?.payload?.map((itemsIn: any) => {
           if (itemsIn?.address_type == 'Billing') {
             billingArray?.push({
-              label: formatStatus(itemsIn?.shiping_city),
+              label: `${formatStatus(itemsIn?.shiping_address_line)}-${formatStatus(itemsIn?.shiping_city)}-${formatStatus(itemsIn?.shiping_state)}-${formatStatus(itemsIn?.shiping_country)}(${itemsIn?.shiping_pin_code})`,
               value: itemsIn?.id,
             });
           } else if (itemsIn?.address_type == 'Shipping') {
             shipparry?.push({
-              label: formatStatus(itemsIn?.shiping_city),
+              label: `${formatStatus(itemsIn?.shiping_address_line)}-${formatStatus(itemsIn?.shiping_city)}-${formatStatus(itemsIn?.shiping_state)}-${formatStatus(itemsIn?.shiping_country)}(${itemsIn?.shiping_pin_code})`,
               value: itemsIn?.id,
             });
           } else {
             billingArray?.push({
-              label: formatStatus(itemsIn?.shiping_city),
+              label: `${formatStatus(itemsIn?.shiping_address_line)}-${formatStatus(itemsIn?.shiping_city)}-${formatStatus(itemsIn?.shiping_state)}-${formatStatus(itemsIn?.shiping_country)}(${itemsIn?.shiping_pin_code})`,
               value: itemsIn?.id,
             });
             shipparry?.push({
-              label: formatStatus(itemsIn?.shiping_city),
+              label: `${formatStatus(itemsIn?.shiping_address_line)}-${formatStatus(itemsIn?.shiping_city)}-${formatStatus(itemsIn?.shiping_state)}-${formatStatus(itemsIn?.shiping_country)}(${itemsIn?.shiping_pin_code})`,
               value: itemsIn?.id,
             });
           }
         });
       }
-
       setShippingOptions(shipparry);
       setBillingOptions(billingArray);
     });
@@ -293,7 +292,13 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
             <Form.Item label="Quote Name" name="file_name">
               <OsInput disabled={isView === 'true' ? true : false} />
             </Form.Item>
+            <Form.Item label="Quote #" name="quote_unique_in">
+              <OsInput placeholder="ID" disabled={true} />
+            </Form.Item>
 
+            <Form.Item label="Expiration Date" name="expiration_date">
+              <CommonDatePicker onBlur={undefined} />
+            </Form.Item>
             <OsCustomerSelect
               setCustomerValue={setCustomerValue}
               customerValue={customerValue}
@@ -324,24 +329,6 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
               />
             </Form.Item>
 
-            <Form.Item label="Quote #" name="quote_unique_in">
-              <OsInput placeholder="ID" disabled={true} />
-            </Form.Item>
-
-            <Form.Item label="Expiration Date" name="expiration_date">
-              <CommonDatePicker onBlur={undefined} />
-            </Form.Item>
-
-            <Form.Item label="Billing Address" name="billing_id">
-              <CommonSelect options={billingOptions} />
-            </Form.Item>
-            <Form.Item label="Shipping Address" name="shipping_id">
-              <CommonSelect options={shippingOptions} />
-            </Form.Item>
-
-            <Form.Item label="Expiration Date" name="expiration_date">
-              <CommonDatePicker onBlur={undefined} />
-            </Form.Item>
             <Form.Item label=" Quote Note" name="quote_notes">
               <OsInput
                 placeholder="Notes"
@@ -377,6 +364,12 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
                 }}
                 placeholder="Quote Shipping"
               />
+            </Form.Item>
+            <Form.Item label="Billing Address" name="billing_id">
+              <CommonSelect options={billingOptions} />
+            </Form.Item>
+            <Form.Item label="Shipping Address" name="shipping_id">
+              <CommonSelect options={shippingOptions} />
             </Form.Item>
           </Col>
         </Row>
