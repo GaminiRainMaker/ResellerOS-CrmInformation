@@ -1096,16 +1096,13 @@ export const calculateMetrics = (quoteData: Quote[]): Metrics => {
 
   const getTotalHoursSpent = (): string => {
     const minutesPerUniqueFile = 10;
-    const uniqueFileNames = new Set(
-      quoteData
-        ?.flatMap((quote) => quote?.Profitabilities || [])
-        .map((item) => item.file_name),
-    );
-
-    const uniqueCount = uniqueFileNames.size;
+    // Flatten the QuoteFiles and count the total number of files
+    const totalFiles = quoteData.flatMap(
+      (quote) => quote?.QuoteFiles || [],
+    ).length; // Flatten QuoteFiles array // Get the total number of files
 
     // Calculate total minutes
-    const totalMinutes = uniqueCount * minutesPerUniqueFile;
+    const totalMinutes = totalFiles * minutesPerUniqueFile;
 
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
@@ -1119,7 +1116,7 @@ export const calculateMetrics = (quoteData: Quote[]): Metrics => {
     }
 
     const totalRevenue = syncQuotes.reduce(
-      (sum, quote) => sum + (quote?.quote_total || 0),
+      (sum, quote) => sum + (Number(quote?.quote_total) || 0),
       0,
     );
     const totalQuotes = syncQuotes.length;
@@ -1133,7 +1130,7 @@ export const calculateMetrics = (quoteData: Quote[]): Metrics => {
     }
 
     const totalGrossProfit = syncQuotes.reduce(
-      (sum, quote) => sum + (quote?.gross_profit || 0),
+      (sum, quote) => sum + (Number(quote?.gross_profit) || 0),
       0,
     );
     const averageGrossProfit = totalGrossProfit / syncQuotes.length;
