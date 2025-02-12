@@ -92,19 +92,19 @@ const Dashboard = () => {
   // Data for Pie Chart
   const pieData = currentData
     ? [
-        {name: 'Vendor Quotes', value: currentData.Converted.vendorQuotes},
-        {name: 'Pages', value: currentData.Converted.totalPages},
-        {name: 'Line Items', value: currentData.Converted.totalLineItems},
+        {name: 'Vendor Quotes', value: currentData?.Converted?.vendorQuotes},
+        {name: 'Pages', value: currentData?.Converted?.totalPages},
+        {name: 'Line Items', value: currentData?.Converted?.totalLineItems},
       ]
     : [];
 
   // Data for Bar Chart (Revenue and Gross Profit)
   const barData = currentData
     ? [
-        {name: 'Revenue', value: currentData.AverageQuote.averageRevenue},
+        {name: 'Revenue', value: currentData?.AverageQuote?.averageRevenue},
         {
           name: 'Gross Profit',
-          value: currentData.AverageQuote.averageGrossProfit,
+          value: currentData?.AverageQuote?.averageGrossProfit,
         },
       ]
     : [];
@@ -347,13 +347,13 @@ const Dashboard = () => {
             <Col span={12}>
               <Card title="You've Converted">
                 <Typography name="Body 4/Regular" as="div">
-                  Vendor Quotes: {currentData.Converted.vendorQuotes}
+                  Vendor Quotes: {currentData?.Converted?.vendorQuotes}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
-                  Pages: {currentData.Converted.totalPages}{' '}
+                  Pages: {currentData?.Converted?.totalPages}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
-                  Line Items: {currentData.Converted.totalLineItems}{' '}
+                  Line Items: {currentData?.Converted?.totalLineItems}{' '}
                 </Typography>
                 <br />
                 <ResponsiveContainer width="100%" height={200}>
@@ -385,23 +385,27 @@ const Dashboard = () => {
             <Col span={12}>
               <Card title="You've Quoted">
                 <Typography name="Body 4/Regular" as="div">
-                  Customers: {currentData.Quoted.totalCustomers}{' '}
+                  Customers: {currentData?.Quoted?.totalCustomers}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
-                  Revenue: ${currentData.Quoted.totalRevenue}{' '}
+                  Revenue: ${currentData?.Quoted?.totalRevenue}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
-                  Gross Profit: ${currentData.Quoted.grossProfit}{' '}
+                  Gross Profit: ${currentData?.Quoted?.grossProfit}{' '}
                 </Typography>
                 <br />
                 <ResponsiveContainer width="100%" height={200}>
                   <BarChart
-                    data={Object?.entries(currentData.Quoted).map(
-                      ([key, value]) => ({
-                        name: key,
-                        value,
-                      }),
-                    )}
+                    data={
+                      currentData?.Quoted
+                        ? Object?.entries(currentData?.Quoted).map(
+                            ([key, value]) => ({
+                              name: key,
+                              value,
+                            }),
+                          )
+                        : []
+                    }
                   >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
@@ -428,10 +432,10 @@ const Dashboard = () => {
             <Col span={12}>
               <Card title="You've Earned">
                 <Typography name="Body 4/Regular" as="div">
-                  Hours of Time: {currentData.Earned.hoursOfTime}{' '}
+                  Hours of Time: {currentData?.Earned?.hoursOfTime}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
-                  Gross Profit: ${currentData.Earned.grossProfit}
+                  Gross Profit: ${currentData?.Earned?.grossProfit}
                 </Typography>
                 <br />
                 <br />
@@ -440,7 +444,7 @@ const Dashboard = () => {
                     data={[
                       {
                         name: 'Gross Profit',
-                        value: currentData.Earned.grossProfit,
+                        value: currentData?.Earned?.grossProfit,
                       },
                     ]}
                   >
@@ -459,17 +463,17 @@ const Dashboard = () => {
             <Col span={12}>
               <Card title="Average per Quote">
                 <Typography name="Body 4/Regular" as="div">
-                  Revenue: ${currentData.AverageQuote.averageRevenue}{' '}
+                  Revenue: ${currentData?.AverageQuote?.averageRevenue}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
-                  Gross Profit: ${currentData.AverageQuote.averageGrossProfit}{' '}
+                  Gross Profit: ${currentData?.AverageQuote?.averageGrossProfit}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
                   Profit Margin:
-                  {currentData.AverageQuote.averageProfitMargin}%{' '}
+                  {currentData?.AverageQuote?.averageProfitMargin}%{' '}
                 </Typography>
                 <Progress
-                  percent={currentData.AverageQuote.averageProfitMargin}
+                  percent={currentData?.AverageQuote?.averageProfitMargin}
                   status="active"
                   strokeColor={'#31576F'}
                 />
@@ -483,12 +487,14 @@ const Dashboard = () => {
                     <Tooltip />
                     <Legend />
                     <Bar dataKey="value">
-                      {barData.map((entry: any, index: number) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                        />
-                      ))}
+                      {barData
+                        ? barData.map((entry: any, index: number) => (
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={COLORS[index % COLORS.length]}
+                            />
+                          ))
+                        : []}
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
@@ -532,6 +538,7 @@ const Dashboard = () => {
           />
         </Col>
       </Row>
+
       <br />
       <CustomCardStyle>
         <Space direction="vertical" size={24}>
