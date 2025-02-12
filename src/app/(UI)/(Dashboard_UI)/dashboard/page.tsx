@@ -80,19 +80,19 @@ const Dashboard = () => {
   // Data for Pie Chart
   const pieData = currentData
     ? [
-        {name: 'Vendor Quotes', value: currentData.Converted.vendorQuotes},
-        {name: 'Pages', value: currentData.Converted.totalPages},
-        {name: 'Line Items', value: currentData.Converted.totalLineItems},
+        {name: 'Vendor Quotes', value: currentData?.Converted?.vendorQuotes},
+        {name: 'Pages', value: currentData?.Converted?.totalPages},
+        {name: 'Line Items', value: currentData?.Converted?.totalLineItems},
       ]
     : [];
 
   // Data for Bar Chart (Revenue and Gross Profit)
   const barData = currentData
     ? [
-        {name: 'Revenue', value: currentData.AverageQuote.averageRevenue},
+        {name: 'Revenue', value: currentData?.AverageQuote?.averageRevenue},
         {
           name: 'Gross Profit',
-          value: currentData.AverageQuote.averageGrossProfit,
+          value: currentData?.AverageQuote?.averageGrossProfit,
         },
       ]
     : [];
@@ -350,36 +350,72 @@ const Dashboard = () => {
         </>
       )} */}
 
-      {userInformation?.Role && 'reseller' && (
-        <>
-          <Row justify={'space-between'} align={'middle'}>
-            <Col>
-              <Typography name="Heading 3/Bold">
-                {' '}
-                This {timeframe}'s Metrics
-              </Typography>
+      {currentData && (
+        <div style={{padding: '16px'}}>
+          {/* Metrics and Charts Grid */}
+          <Row gutter={16} style={{marginBottom: '32px'}}>
+            <Col span={12}>
+              <Card title="You've Converted">
+                <Typography name="Body 4/Regular" as="div">
+                  Vendor Quotes: {currentData?.Converted?.vendorQuotes}
+                </Typography>
+                <Typography name="Body 4/Regular" as="div">
+                  Pages: {currentData?.Converted?.totalPages}{' '}
+                </Typography>
+                <Typography name="Body 4/Regular" as="div">
+                  Line Items: {currentData?.Converted?.totalLineItems}{' '}
+                </Typography>
+                <br />
+                <ResponsiveContainer width="100%" height={200}>
+                  <PieChart>
+                    <Pie
+                      data={pieData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                      label
+                    >
+                      {pieData?.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </Card>
             </Col>
 
             <Col span={12}>
               <Card title="You've Quoted">
                 <Typography name="Body 4/Regular" as="div">
-                  Customers: {currentData.Quoted.totalCustomers}{' '}
+                  Customers: {currentData?.Quoted?.totalCustomers}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
-                  Revenue: ${currentData.Quoted.totalRevenue}{' '}
+                  Revenue: ${currentData?.Quoted?.totalRevenue}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
-                  Gross Profit: ${currentData.Quoted.grossProfit}{' '}
+                  Gross Profit: ${currentData?.Quoted?.grossProfit}{' '}
                 </Typography>
                 <br />
                 <ResponsiveContainer width="100%" height={200}>
                   <BarChart
-                    data={Object?.entries(currentData.Quoted).map(
-                      ([key, value]) => ({
-                        name: key,
-                        value,
-                      }),
-                    )}
+                    data={
+                      currentData?.Quoted
+                        ? Object?.entries(currentData?.Quoted).map(
+                            ([key, value]) => ({
+                              name: key,
+                              value,
+                            }),
+                          )
+                        : []
+                    }
                   >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
@@ -406,10 +442,10 @@ const Dashboard = () => {
             <Col span={12}>
               <Card title="You've Earned">
                 <Typography name="Body 4/Regular" as="div">
-                  Hours of Time: {currentData.Earned.hoursOfTime}{' '}
+                  Hours of Time: {currentData?.Earned?.hoursOfTime}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
-                  Gross Profit: ${currentData.Earned.grossProfit}
+                  Gross Profit: ${currentData?.Earned?.grossProfit}
                 </Typography>
                 <br />
                 <br />
@@ -418,7 +454,7 @@ const Dashboard = () => {
                     data={[
                       {
                         name: 'Gross Profit',
-                        value: currentData.Earned.grossProfit,
+                        value: currentData?.Earned?.grossProfit,
                       },
                     ]}
                   >
@@ -437,20 +473,41 @@ const Dashboard = () => {
             <Col span={12}>
               <Card title="Average per Quote">
                 <Typography name="Body 4/Regular" as="div">
-                  Revenue: ${currentData.AverageQuote.averageRevenue}{' '}
+                  Revenue: ${currentData?.AverageQuote?.averageRevenue}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
-                  Gross Profit: ${currentData.AverageQuote.averageGrossProfit}{' '}
+                  Gross Profit: ${currentData?.AverageQuote?.averageGrossProfit}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
                   Profit Margin:
-                  {currentData.AverageQuote.averageProfitMargin}%{' '}
+                  {currentData?.AverageQuote?.averageProfitMargin}%{' '}
                 </Typography>
                 <Progress
-                  percent={currentData.AverageQuote.averageProfitMargin}
+                  percent={currentData?.AverageQuote?.averageProfitMargin}
                   status="active"
                   strokeColor={'#31576F'}
                 />
+                <br />
+                <br />
+                <ResponsiveContainer width="100%" height={158}>
+                  <BarChart data={barData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="value">
+                      {barData
+                        ? barData.map((entry: any, index: number) => (
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={COLORS[index % COLORS.length]}
+                            />
+                          ))
+                        : []}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
               </Card>
             </Col>
           </Row>
@@ -671,6 +728,41 @@ const Dashboard = () => {
           </Row>
         </>
       )}
+
+      <Row justify="space-between">
+        <Col>
+          <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
+            Get In Touch
+          </Typography>
+        </Col>
+        <Col>
+          <OsButton
+            text="Testing Azure AI"
+            buttontype="PRIMARY"
+            clickHandler={() => {
+              window?.open('/azzureAi?excel=false');
+            }}
+          />
+        </Col>
+        <Col>
+          <OsButton
+            text="Testing Excel"
+            buttontype="PRIMARY"
+            clickHandler={() => {
+              window?.open('/azzureAi?excel=true');
+            }}
+          />
+        </Col>
+        <Col>
+          <OsButton
+            text="Contact Us"
+            buttontype="PRIMARY"
+            clickHandler={() => {
+              setShowModal(true);
+            }}
+          />
+        </Col>
+      </Row>
 
       <br />
       <CustomCardStyle>
