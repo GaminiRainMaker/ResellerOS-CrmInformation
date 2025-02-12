@@ -18,6 +18,7 @@ const ResizableTitle = (props: any) => {
     return <th {...restProps} />;
   }
 
+  
   return (
     <Resizable
       width={width}
