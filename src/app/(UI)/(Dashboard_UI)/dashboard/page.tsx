@@ -344,6 +344,7 @@ const Dashboard = () => {
         </Col>
       </Row>
 
+
       {currentData && (
         <div style={{padding: '16px'}}>
           {/* Metrics and Charts Grid */}
