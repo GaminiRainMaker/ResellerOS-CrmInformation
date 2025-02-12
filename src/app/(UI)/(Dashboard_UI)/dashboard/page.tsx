@@ -350,6 +350,29 @@ const Dashboard = () => {
         </>
       )} */}
 
+      <br />
+      <br />
+      <Row justify={'space-between'} align={'middle'}>
+        <Col>
+          <Typography name="Heading 3/Bold">
+            {' '}
+            This {timeframe}'s Metrics
+          </Typography>
+        </Col>
+        <Col>
+          <Space direction="vertical" size={0}>
+            <Typography name="Body 4/Medium">Timeframe:</Typography>
+            <CommonSelect
+              options={selectOption}
+              style={{width: '200px'}}
+              placeholder="Select Dealreg Forms"
+              onChange={(value) => setTimeframe(value)}
+              defaultValue={'Month'}
+            />
+          </Space>
+        </Col>
+      </Row>
+
       {currentData && (
         <div style={{padding: '16px'}}>
           {/* Metrics and Charts Grid */}
