@@ -1003,14 +1003,13 @@ export let processScript = (finalObj: {
   return updatedScript;
 };
 
+
 type Quote = {
   Profitabilities: {adjusted_price: string; file_name: string}[];
   QuoteFiles: {total_page_count: string; file_name: string}[];
   Opportunity: {synced_quote: string};
   customer_id?: string;
   opportunity_id: string;
-  quote_total: string;
-  total_cost: string;
   quote_amount?: number;
   gross_profit?: number;
   quote_total?: number;
@@ -1021,9 +1020,9 @@ type Metrics = {
   vendorQuotes: number;
   totalPages: number;
   totalLineItems: number;
-  Customers: number;
-  'Total Revenue': number;
-  'Gross Profit': number;
+  totalCustomers: number;
+  totalRevenue: number;
+  grossProfit: number;
   hoursOfTime: string;
   averageRevenue: string;
   averageGrossProfit: string;
@@ -1031,6 +1030,7 @@ type Metrics = {
 };
 
 export const calculateMetrics = (quoteData: Quote[]): Metrics => {
+  // Helper functions
   const getVendorQuotesCount = (): number => quoteData.length;
 
   const syncQuotes = quoteData
@@ -1165,13 +1165,13 @@ export const calculateMetrics = (quoteData: Quote[]): Metrics => {
       totalLineItems: getTotalLineItems(),
     },
     Quoted: {
-      Customers: getTotalCustomers(),
-      'Total Revenue': getTotalRevenue(),
-      'Gross Profit': getGrossProfit(),
+      totalCustomers: getTotalCustomers(),
+      totalRevenue: getTotalRevenue(),
+      grossProfit: getGrossProfit(),
     },
     Earned: {
       hoursOfTime: getTotalHoursSpent(),
-      'Gross Profit': getGrossProfit(),
+      grossProfit: getGrossProfit(),
     },
     AverageQuote: {
       averageRevenue: getAveragePerQuoteRevenue(),
