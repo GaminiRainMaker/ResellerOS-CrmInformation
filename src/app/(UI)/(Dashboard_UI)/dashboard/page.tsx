@@ -440,7 +440,7 @@ const Dashboard = () => {
                     data={[
                       {
                         name: 'Gross Profit',
-                        value: currentData.Earned.vendorQuotes,
+                        value: currentData.Earned.grossProfit,
                       },
                     ]}
                   >

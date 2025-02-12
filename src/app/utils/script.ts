@@ -1006,9 +1006,13 @@ export let processScript = (finalObj: {
 type Quote = {
   Profitabilities: {adjusted_price: string; file_name: string}[];
   QuoteFiles: {total_page_count: string; file_name: string}[];
+  Opportunity: {synced_quote: string};
   customer_id?: string;
   opportunity_id: string;
   quote_amount?: number;
+  gross_profit?: number;
+  quote_total?: number;
+  gross_profit_percentage?: number;
 };
 
 type Metrics = {
@@ -1027,6 +1031,10 @@ type Metrics = {
 export const calculateMetrics = (quoteData: Quote[]): Metrics => {
   // Helper functions
   const getVendorQuotesCount = (): number => quoteData.length;
+
+  const syncQuotes = quoteData
+    ?.map((item) => (item?.Opportunity?.synced_quote ? item : null))
+    ?.filter(Boolean);
 
   const getTotalPages = (): number => {
     const rowsPerPage = 50;
@@ -1060,67 +1068,41 @@ export const calculateMetrics = (quoteData: Quote[]): Metrics => {
     const uniqueCustomers = new Set<string>();
 
     quoteData.forEach((quote) => {
-      if (quote.opportunity_id) {
-        uniqueCustomers.add(quote.opportunity_id);
+      if (quote.customer_id) {
+        uniqueCustomers.add(quote.customer_id);
       }
     });
-    // quoteData.forEach((quote) => {
-    //   if (quote.customer_id) {
-    //     uniqueCustomers.add(quote.customer_id);
-    //   }
-    // });
-
     return uniqueCustomers.size;
   };
 
   const getTotalRevenue = (): number => {
-    const opportunityTotals: Record<string, number> = {};
-
-    quoteData.forEach((quote) => {
-      const opportunityId = quote.opportunity_id;
-      const quoteTotal = quote.quote_amount || 0;
-
-      if (
-        !opportunityTotals[opportunityId] ||
-        quoteTotal > opportunityTotals[opportunityId]
-      ) {
-        opportunityTotals[opportunityId] = quoteTotal;
-      }
-    });
-
-    return Object.values(opportunityTotals).reduce(
-      (sum, total) => sum + total,
+    if (!syncQuotes || syncQuotes.length === 0) {
+      return 0; // Return 0 if syncQuotes is undefined or empty
+    }
+    return syncQuotes.reduce(
+      (sum, quote) => sum + (Number(quote?.quote_total) || 0),
+      0,
+    );
+  };
+  const getGrossProfit = (): number => {
+    if (!syncQuotes || syncQuotes.length === 0) {
+      return 0; // Return 0 if syncQuotes is undefined or empty
+    }
+    return syncQuotes.reduce(
+      (sum, quote) => sum + (Number(quote?.gross_profit) || 0),
       0,
     );
   };
 
-  const getGrossProfit = (): number => {
-    let totalGrossProfit = 0;
-
-    quoteData.forEach((quote) => {
-      const quoteTotal = quote.quote_amount || 0;
-      const totalCost = quote.Profitabilities.reduce(
-        (sum, item) => sum + (parseFloat(item.adjusted_price) || 0),
-        0,
-      );
-      totalGrossProfit += quoteTotal - totalCost;
-    });
-
-    return totalGrossProfit;
-  };
-
   const getTotalHoursSpent = (): string => {
     const minutesPerUniqueFile = 10;
-    const uniqueFileNames = new Set(
-      quoteData
-        ?.flatMap((quote) => quote?.Profitabilities || [])
-        .map((item) => item.file_name),
-    );
-
-    const uniqueCount = uniqueFileNames.size;
+    // Flatten the QuoteFiles and count the total number of files
+    const totalFiles = quoteData.flatMap(
+      (quote) => quote?.QuoteFiles || [],
+    ).length; // Flatten QuoteFiles array // Get the total number of files
 
     // Calculate total minutes
-    const totalMinutes = uniqueCount * minutesPerUniqueFile;
+    const totalMinutes = totalFiles * minutesPerUniqueFile;
 
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
@@ -1128,24 +1110,53 @@ export const calculateMetrics = (quoteData: Quote[]): Metrics => {
     return `${hours} hr ${minutes} min`;
   };
 
-  const getAverageRevenue = (): string => {
-    const totalRevenue = getTotalRevenue();
-    return (totalRevenue / quoteData.length).toFixed(2);
+  const getAveragePerQuoteRevenue = (): number => {
+    if (!syncQuotes || syncQuotes.length === 0) {
+      return 0; // Return 0 if syncQuotes is undefined or empty
+    }
+
+    const totalRevenue = syncQuotes.reduce(
+      (sum, quote) => sum + (Number(quote?.quote_total) || 0),
+      0,
+    );
+    const totalQuotes = syncQuotes.length;
+
+    return totalRevenue / totalQuotes;
   };
 
   const getAverageGrossProfit = (): string => {
-    const totalGrossProfit = getGrossProfit();
-    return (totalGrossProfit / quoteData.length).toFixed(2);
+    if (!syncQuotes || syncQuotes.length === 0) {
+      return '0.00'; // Return "0.00" if there are no syncing quotes
+    }
+
+    const totalGrossProfit = syncQuotes.reduce(
+      (sum, quote) => sum + (Number(quote?.gross_profit) || 0),
+      0,
+    );
+    const averageGrossProfit = totalGrossProfit / syncQuotes.length;
+
+    return averageGrossProfit.toFixed(2);
   };
 
   const getAverageProfitMargin = (): string => {
-    const averageRevenue = parseFloat(getAverageRevenue());
-    const averageCost = parseFloat(getAverageGrossProfit()) - averageRevenue;
+    if (!syncQuotes || syncQuotes.length === 0) {
+      return '0.00'; // Return "0.00" if there are no syncing quotes
+    }
 
-    return (((averageRevenue - averageCost) / averageRevenue) * 100).toFixed(2);
+    // Calculate total Gross Profit Percentage
+    const totalGrossProfitPercentage = syncQuotes.reduce(
+      (sum, quote) => sum + (Number(quote?.gross_profit_percentage) || 0),
+      0,
+    );
+
+    // Calculate the average Gross Profit Percentage
+    const averageProfitMargin = totalGrossProfitPercentage / syncQuotes.length;
+
+    return averageProfitMargin.toFixed(2);
   };
 
   // Calculate all metrics
+
   const metrics: any = {
     Converted: {
       vendorQuotes: getVendorQuotesCount(),
@@ -1162,7 +1173,7 @@ export const calculateMetrics = (quoteData: Quote[]): Metrics => {
       grossProfit: getGrossProfit(),
     },
     AverageQuote: {
-      averageRevenue: getAverageRevenue(),
+      averageRevenue: getAveragePerQuoteRevenue(),
       averageGrossProfit: getAverageGrossProfit(),
       averageProfitMargin: getAverageProfitMargin(),
     },
