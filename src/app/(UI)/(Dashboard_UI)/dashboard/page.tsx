@@ -90,6 +90,10 @@ const Dashboard = () => {
   const barData = currentData
     ? [
         {name: 'Revenue', value: currentData?.AverageQuote?.averageRevenue},
+        // {
+        //   name: 'Revenue',
+        //   value: Number(abbreviate(currentData?.AverageQuote?.averageRevenue)),
+        // },
         {
           name: 'Gross Profit',
           value: currentData?.AverageQuote?.averageGrossProfit,
@@ -421,10 +425,11 @@ const Dashboard = () => {
                   Customers: {currentData?.Quoted?.totalCustomers}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
-                  Revenue: ${currentData?.Quoted?.totalRevenue}{' '}
+                  Revenue: ${abbreviate(currentData?.Quoted?.totalRevenue ?? 0)}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
-                  Gross Profit: ${currentData?.Quoted?.grossProfit}{' '}
+                  Gross Profit: $
+                  {abbreviate(currentData?.Quoted?.grossProfit ?? 0)}{' '}
                 </Typography>
                 <br />
                 <ResponsiveContainer width="100%" height={200}>
@@ -468,7 +473,8 @@ const Dashboard = () => {
                   Hours of Time: {currentData?.Earned?.hoursOfTime}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
-                  Gross Profit: ${currentData?.Earned?.grossProfit}
+                  Gross Profit: $
+                  {abbreviate(currentData?.Earned?.grossProfit ?? 0)}
                 </Typography>
                 <br />
                 <br />
@@ -496,10 +502,14 @@ const Dashboard = () => {
             <Col span={12}>
               <Card title="Average per Quote">
                 <Typography name="Body 4/Regular" as="div">
-                  Revenue: ${currentData?.AverageQuote?.averageRevenue}{' '}
+                  Revenue: $
+                  {abbreviate(currentData?.AverageQuote?.averageRevenue ?? 0)}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
-                  Gross Profit: ${currentData?.AverageQuote?.averageGrossProfit}{' '}
+                  Gross Profit: $
+                  {abbreviate(
+                    currentData?.AverageQuote?.averageGrossProfit ?? 0,
+                  )}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
                   Profit Margin:
