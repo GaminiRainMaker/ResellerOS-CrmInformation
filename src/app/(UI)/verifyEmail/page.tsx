@@ -17,7 +17,7 @@ const VerifyEmail = () => {
   return (
     <AuthLayout
       heading="Verify Your Email"
-      description="Please click the button below to verify your email and complete your account setup."
+      description="Please create your password and click the button below to verify your email and complete your account setup."
       buttonText="Verify Email"
       alreadyAmember
       inputFields={inputFields}
