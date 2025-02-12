@@ -39,14 +39,14 @@ import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import OsButton from '@/app/components/common/os-button';
 import {getQuotesByUserAndTimeframe} from '../../../../../redux/actions/quote';
 import {calculateMetrics} from '@/app/utils/script';
+import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 
 const Dashboard = () => {
   const [token] = useThemeToken();
+  const {abbreviate} = useAbbreviationHook(0);
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const {isSubscribed, loading: cacheFlowLoading} = useAppSelector(
-    (state) => state.cacheFLow,
-  );
+  const {isSubscribed} = useAppSelector((state) => state.cacheFLow);
   const {loading} = useAppSelector((state) => state.auth);
   const {loading: quoteLoading} = useAppSelector((state) => state.quote);
   const {userInformation} = useAppSelector((state) => state.user);
@@ -102,6 +102,10 @@ const Dashboard = () => {
   const barData = currentData
     ? [
         {name: 'Revenue', value: currentData?.AverageQuote?.averageRevenue},
+        // {
+        //   name: 'Revenue',
+        //   value: Number(abbreviate(currentData?.AverageQuote?.averageRevenue)),
+        // },
         {
           name: 'Gross Profit',
           value: currentData?.AverageQuote?.averageGrossProfit,
@@ -388,10 +392,11 @@ const Dashboard = () => {
                   Customers: {currentData?.Quoted?.totalCustomers}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
-                  Revenue: ${currentData?.Quoted?.totalRevenue}{' '}
+                  Revenue: ${abbreviate(currentData?.Quoted?.totalRevenue ?? 0)}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
-                  Gross Profit: ${currentData?.Quoted?.grossProfit}{' '}
+                  Gross Profit: $
+                  {abbreviate(currentData?.Quoted?.grossProfit ?? 0)}{' '}
                 </Typography>
                 <br />
                 <ResponsiveContainer width="100%" height={200}>
@@ -435,7 +440,8 @@ const Dashboard = () => {
                   Hours of Time: {currentData?.Earned?.hoursOfTime}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
-                  Gross Profit: ${currentData?.Earned?.grossProfit}
+                  Gross Profit: $
+                  {abbreviate(currentData?.Earned?.grossProfit ?? 0)}
                 </Typography>
                 <br />
                 <br />
@@ -463,10 +469,14 @@ const Dashboard = () => {
             <Col span={12}>
               <Card title="Average per Quote">
                 <Typography name="Body 4/Regular" as="div">
-                  Revenue: ${currentData?.AverageQuote?.averageRevenue}{' '}
+                  Revenue: $
+                  {abbreviate(currentData?.AverageQuote?.averageRevenue ?? 0)}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
-                  Gross Profit: ${currentData?.AverageQuote?.averageGrossProfit}{' '}
+                  Gross Profit: $
+                  {abbreviate(
+                    currentData?.AverageQuote?.averageGrossProfit ?? 0,
+                  )}{' '}
                 </Typography>
                 <Typography name="Body 4/Regular" as="div">
                   Profit Margin:
