@@ -9,13 +9,13 @@ import {
   getValuesOFLineItemsThoseNotAddedBefore,
   handleDate,
 } from '@/app/utils/base';
-import { PlusIcon } from '@heroicons/react/24/outline';
-import { Form, message } from 'antd';
-import { usePathname, useRouter } from 'next/navigation';
-// import * as pdfjsLib from 'pdfjs-dist';
-import { FC, useEffect, useState } from 'react';
-import { queryLineItemSyncingForSalesForce } from '../../../../../redux/actions/LineItemSyncing';
-import { insertOpportunityLineItem } from '../../../../../redux/actions/opportunityLineItem';
+import {PlusIcon} from '@heroicons/react/24/outline';
+import {Form, message} from 'antd';
+import {usePathname, useRouter} from 'next/navigation';
+import * as pdfjsLib from 'pdfjs-dist';
+import {FC, useEffect, useState} from 'react';
+import {queryLineItemSyncingForSalesForce} from '../../../../../redux/actions/LineItemSyncing';
+import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {
   getBulkProductIsExisting,
   insertProductsInBulk,
@@ -26,22 +26,22 @@ import {
   insertQuote,
   updateQuoteWithNewlineItemAddByID,
 } from '../../../../../redux/actions/quote';
-import { insertQuoteFile } from '../../../../../redux/actions/quoteFile';
-import { insertQuoteLineItem } from '../../../../../redux/actions/quotelineitem';
+import {insertQuoteFile} from '../../../../../redux/actions/quoteFile';
+import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
 import {
   uploadExcelFileToAws,
   uploadToAws,
 } from '../../../../../redux/actions/upload';
-import { getUserByTokenAccess } from '../../../../../redux/actions/user';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {getUserByTokenAccess} from '../../../../../redux/actions/user';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsButton from '../os-button';
 import OsUpload from '../os-upload';
-import { AddQuoteInterface, FormattedData } from './types';
+import {AddQuoteInterface, FormattedData} from './types';
 
-// pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-//   'pdfjs-dist/build/pdf.worker.min.mjs',
-//   import.meta.url,
-// ).toString();
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url,
+).toString();
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
@@ -118,36 +118,36 @@ const AddQuote: FC<AddQuoteInterface> = ({
         setLoading(true);
 
         // Handle PDF files separately for page count
-        // if (file?.type === 'application/pdf') {
-        //   const reader = new FileReader();
-        //   reader.onload = async () => {
-        //     try {
-        //       const loadingTask = pdfjsLib.getDocument(
-        //         reader.result as ArrayBuffer,
-        //       );
-        //       const pdfDoc = await loadingTask.promise;
-        //       const totalNumberPages = pdfDoc.numPages;
-        //       // Add the total pages to obj after loading the PDF
-        //       obj.totalPages = totalNumberPages;
+        if (file?.type === 'application/pdf') {
+          const reader = new FileReader();
+          reader.onload = async () => {
+            try {
+              const loadingTask = pdfjsLib.getDocument(
+                reader.result as ArrayBuffer,
+              );
+              const pdfDoc = await loadingTask.promise;
+              const totalNumberPages = pdfDoc.numPages;
+              // Add the total pages to obj after loading the PDF
+              obj.totalPages = totalNumberPages;
 
-        //       // Now we can proceed with uploading the file and setting the data
-        //       dispatch(pathUsedToUpload({document: base64String})).then(
-        //         (payload: any) => {
-        //           const pdfUrl = payload?.payload?.data?.Location;
-        //           obj.pdf_url = pdfUrl;
-        //           setLoading(false);
-        //         },
-        //       );
+              // Now we can proceed with uploading the file and setting the data
+              dispatch(pathUsedToUpload({document: base64String})).then(
+                (payload: any) => {
+                  const pdfUrl = payload?.payload?.data?.Location;
+                  obj.pdf_url = pdfUrl;
+                  setLoading(false);
+                },
+              );
 
-        //       // Add the file data (including totalPages) to the state
-        //       setUploadFileData((fileData: any) => [...fileData, obj]);
-        //     } catch (error) {
-        //       console.error('Error reading PDF:', error);
-        //       setLoading(false);
-        //     }
-        //   };
-        //   reader.readAsArrayBuffer(file);
-        // } else {
+              // Add the file data (including totalPages) to the state
+              setUploadFileData((fileData: any) => [...fileData, obj]);
+            } catch (error) {
+              console.error('Error reading PDF:', error);
+              setLoading(false);
+            }
+          };
+          reader.readAsArrayBuffer(file);
+        } else {
           // If it's not a PDF, just proceed with uploading
           dispatch(pathUsedToUpload({document: base64String})).then(
             (payload: any) => {
@@ -157,7 +157,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
             },
           );
           setUploadFileData((fileData: any) => [...fileData, obj]);
-        // }
+        }
       })
       .catch((error) => {
         message.error('Error converting file to base64', error);
