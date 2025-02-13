@@ -626,8 +626,11 @@ const CustomHeader = () => {
                     </Space>
                     <Divider />
                     <Typography name="Body 2/Medium">Account Info</Typography>
-                    {React.cloneElement(menu as React.ReactElement, {
-                      style: menuStyle,
+                    {React.cloneElement(menu as React.ReactElement<any>, {
+                      style: {
+                        ...(menu as React.ReactElement<any>).props.style,
+                        ...menuStyle,
+                      },
                     })}
                     <Divider />
                     <Space
