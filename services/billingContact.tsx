@@ -15,4 +15,8 @@ export const BILLINGADDRESS_API = {
     post(API.BILLINGADDRESS.SEARCH, data) as Promise<AxiosResponse<any>>,
   query: (data: any) =>
     post(API.BILLINGADDRESS.QUERYCONTACT, data) as Promise<AxiosResponse<[]>>,
+  getAllBillingContactByCustomerId: (id: any) =>
+    get(
+      `${API.BILLINGADDRESS.getAllBillingContactByCustomerId}/${id}`,
+    ) as Promise<AxiosResponse<any>>,
 };

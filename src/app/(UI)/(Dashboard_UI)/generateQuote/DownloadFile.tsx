@@ -199,6 +199,17 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
     let shippingAdress = objectForSyncingValues?.addressForAll?.find(
       (items: any) => items?.id === objectForSyncingValues?.shipping_id,
     );
+    let billingContactId =
+      objectForSyncingValues?.billing_phone?.split('_')?.[1];
+    let shippingContactId =
+      objectForSyncingValues?.shipping_phone?.split('_')?.[1];
+
+    let billingContact = objectForSyncingValues?.allContactDetails?.find(
+      (items: any) => items?.id == billingContactId,
+    );
+    let shippingContact = objectForSyncingValues?.allContactDetails?.find(
+      (items: any) => items?.id == shippingContactId,
+    );
 
     resultValues.quote_num = objectForSyncingValues?.quote_unique_in;
     resultValues.expiration_date = objectForSyncingValues?.expiration_date;
@@ -209,8 +220,8 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
     resultValues.sold_to_state = billingAdress?.shiping_state;
     resultValues.sold_to_zipcode = billingAdress?.shiping_pin_code;
     resultValues.sold_to_country = billingAdress?.shiping_country;
-    resultValues.phone = '(232)232-2322';
-    resultValues.email = 'useremail@gmail.com';
+    resultValues.sold_to_phone = shippingContact?.billing_phone;
+    resultValues.sold_to_email = shippingContact?.billing_email;
 
     resultValues.ship_to_name = objectForSyncingValues?.Customer?.name;
     resultValues.contact_name = objectForSyncingValues?.Customer?.name;
@@ -219,7 +230,8 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
     resultValues.ship_to_state = shippingAdress?.shiping_state;
     resultValues.ship_to_zipcode = shippingAdress?.shiping_pin_code;
     resultValues.ship_to_country = shippingAdress?.shiping_country;
-    resultValues.phone = '(232)232-2322';
+    resultValues.ship_to_phone = billingContact?.billing_phone;
+    resultValues.ship_to_email = billingContact?.billing_email;
 
     resultValues.owner_name = objectForSyncingValues?.Customer?.name;
     resultValues.description = 'description';
@@ -227,13 +239,14 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
 
     resultValues.CustomerAddress = `${billingAdress?.shiping_address_line}-${billingAdress?.shiping_state}-${billingAdress?.shiping_pin_code}-${billingAdress?.shiping_country}`;
     resultValues.CustomerCity = billingAdress?.shiping_city;
-    resultValues.Phone_SoldTo = '(333)333-3333';
-    resultValues.Email_SoldTo = 'email@gmail.com';
-    resultValues.Phone_shipTo = '(333)333-3333';
-    resultValues.email_shipTo = 'email@gmail.com';
+    // resultValues.Phone_SoldTo = '(333)333-3333';
+    // resultValues.Email_SoldTo = 'email@gmail.com';
+    // resultValues.Phone_shipTo = '(333)333-3333';
+    // resultValues.email_shipTo = 'email@gmail.com';
     resultValues.DistributorAddress = `${shippingAdress?.shiping_address_line}-${shippingAdress?.shiping_state}-${shippingAdress?.shiping_pin_code}-${shippingAdress?.shiping_country}`;
     resultValues.DistributorCity = shippingAdress?.shiping_city;
 
+    console.log('3454324324324', resultValues);
     Number(objectForSyncingValues?.quote_shipping);
 
     try {
