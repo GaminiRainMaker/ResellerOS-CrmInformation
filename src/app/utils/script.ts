@@ -1002,3 +1002,182 @@ export let processScript = (finalObj: {
 
   return updatedScript;
 };
+
+type Quote = {
+  Profitabilities: {adjusted_price: string; file_name: string}[];
+  QuoteFiles: {total_page_count: string; file_name: string}[];
+  Opportunity: {synced_quote: string};
+  customer_id?: string;
+  opportunity_id: string;
+  quote_amount?: number;
+  gross_profit?: number;
+  quote_total?: number;
+  gross_profit_percentage?: number;
+};
+
+type Metrics = {
+  vendorQuotes: number;
+  totalPages: number;
+  totalLineItems: number;
+  totalCustomers: number;
+  totalRevenue: number;
+  grossProfit: number;
+  hoursOfTime: string;
+  averageRevenue: string;
+  averageGrossProfit: string;
+  averageProfitMargin: string;
+};
+
+export const calculateMetrics = (quoteData: Quote[]): Metrics => {
+  // Helper functions
+  const getVendorQuotesCount = (): number => quoteData.length;
+
+  const syncQuotes = quoteData
+    ?.map((item) => (item?.Opportunity?.synced_quote ? item : null))
+    ?.filter(Boolean);
+
+  const getTotalPages = (): number => {
+    const rowsPerPage = 50;
+
+    // Extract total pages from PDFs
+    const pdfPageCounts = quoteData
+      ?.flatMap((quote) => quote?.QuoteFiles || []) // Extract all QuoteFiles arrays and flatten them
+      ?.filter((file) => file?.file_name?.includes('pdf')) // Keep only PDFs
+      ?.reduce((sum, file) => sum + (Number(file?.total_page_count) || 0), 0); // Sum up total_page_count
+
+    // Extract total rows from XLSX files (count the number of XLSX files)
+    const xlsxFilesRows = quoteData
+      ?.flatMap((quote) => quote.Profitabilities || []) // Extract all Profitabilities arrays and flatten them
+      ?.filter((file) => file?.file_name?.includes('xlsx'))?.length; // Keep only XLSX files // Get the total count of XLSX files
+
+    // Calculate pages for XLSX files
+    const xlsxFilesPages = Math.ceil(xlsxFilesRows / rowsPerPage);
+
+    return pdfPageCounts + xlsxFilesPages;
+  };
+
+  const getTotalLineItems = (): number => {
+    let totalLineItems = 0;
+    quoteData.forEach((quote) => {
+      totalLineItems += quote.Profitabilities.length;
+    });
+    return totalLineItems;
+  };
+
+  const getTotalCustomers = (): number => {
+    const uniqueCustomers = new Set<string>();
+
+    quoteData.forEach((quote) => {
+      if (quote.customer_id) {
+        uniqueCustomers.add(quote.customer_id);
+      }
+    });
+    return uniqueCustomers.size;
+  };
+
+  const getTotalRevenue = (): number => {
+    if (!syncQuotes || syncQuotes.length === 0) {
+      return 0; // Return 0 if syncQuotes is undefined or empty
+    }
+    return syncQuotes.reduce(
+      (sum, quote) => sum + (Number(quote?.quote_total) || 0),
+      0,
+    );
+  };
+  const getGrossProfit = (): number => {
+    if (!syncQuotes || syncQuotes.length === 0) {
+      return 0; // Return 0 if syncQuotes is undefined or empty
+    }
+    return syncQuotes.reduce(
+      (sum, quote) => sum + (Number(quote?.gross_profit) || 0),
+      0,
+    );
+  };
+
+  const getTotalHoursSpent = (): string => {
+    const minutesPerUniqueFile = 10;
+    // Flatten the QuoteFiles and count the total number of files
+    const totalFiles = quoteData.flatMap(
+      (quote) => quote?.QuoteFiles || [],
+    ).length; // Flatten QuoteFiles array // Get the total number of files
+
+    // Calculate total minutes
+    const totalMinutes = totalFiles * minutesPerUniqueFile;
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    return `${hours} hr ${minutes} min`;
+  };
+
+  const getAveragePerQuoteRevenue = (): number => {
+    if (!syncQuotes || syncQuotes.length === 0) {
+      return 0; // Return 0 if syncQuotes is undefined or empty
+    }
+
+    const totalRevenue = syncQuotes.reduce(
+      (sum, quote) => sum + (Number(quote?.quote_total) || 0),
+      0,
+    );
+    const totalQuotes = syncQuotes.length;
+
+    return totalRevenue / totalQuotes;
+  };
+
+  const getAverageGrossProfit = (): string => {
+    if (!syncQuotes || syncQuotes.length === 0) {
+      return '0.00'; // Return "0.00" if there are no syncing quotes
+    }
+
+    const totalGrossProfit = syncQuotes.reduce(
+      (sum, quote) => sum + (Number(quote?.gross_profit) || 0),
+      0,
+    );
+    const averageGrossProfit = totalGrossProfit / syncQuotes.length;
+
+    return averageGrossProfit.toFixed(2);
+  };
+
+  const getAverageProfitMargin = (): string => {
+    if (!syncQuotes || syncQuotes.length === 0) {
+      return '0.00'; // Return "0.00" if there are no syncing quotes
+    }
+
+    // Calculate total Gross Profit Percentage
+    const totalGrossProfitPercentage = syncQuotes.reduce(
+      (sum, quote) => sum + (Number(quote?.gross_profit_percentage) || 0),
+      0,
+    );
+
+    // Calculate the average Gross Profit Percentage
+    const averageProfitMargin = totalGrossProfitPercentage / syncQuotes.length;
+
+    return averageProfitMargin.toFixed(2);
+  };
+
+  // Calculate all metrics
+
+  const metrics: any = {
+    Converted: {
+      vendorQuotes: getVendorQuotesCount(),
+      totalPages: getTotalPages(),
+      totalLineItems: getTotalLineItems(),
+    },
+    Quoted: {
+      totalCustomers: getTotalCustomers(),
+      totalRevenue: getTotalRevenue(),
+      grossProfit: getGrossProfit(),
+    },
+    Earned: {
+      hoursOfTime: getTotalHoursSpent(),
+      grossProfit: getGrossProfit(),
+    },
+    AverageQuote: {
+      averageRevenue: getAveragePerQuoteRevenue(),
+      averageGrossProfit: getAverageGrossProfit(),
+      averageProfitMargin: getAverageProfitMargin(),
+    },
+  };
+
+  return metrics;
+};

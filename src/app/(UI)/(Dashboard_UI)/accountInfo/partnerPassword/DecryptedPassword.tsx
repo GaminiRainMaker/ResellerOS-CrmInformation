@@ -13,7 +13,11 @@ const DecryptedPassword: React.FC<{password: any}> = ({password}) => {
     const decryptPassword = async () => {
       try {
         const [iv, encryptedData] = password?.split(':');
-        const decrypted = await decrypt(encryptedData, SECRET_KEY as string, iv);
+        const decrypted = await decrypt(
+          encryptedData,
+          SECRET_KEY as string,
+          iv,
+        );
         setDecrypted(decrypted);
       } catch (error) {
         console.error('Decryption error:', error);
@@ -27,7 +31,7 @@ const DecryptedPassword: React.FC<{password: any}> = ({password}) => {
   return (
     <Typography name="Body 4/Regular">
       {Array(10).fill('*').join('')}
-      <CopyToClipboard text={decrypted}>
+      {/* <CopyToClipboard text={decrypted}>
         <CopyOutlined
           style={{
             marginLeft: '10px',
@@ -40,7 +44,7 @@ const DecryptedPassword: React.FC<{password: any}> = ({password}) => {
             });
           }}
         />
-      </CopyToClipboard>
+      </CopyToClipboard> */}
     </Typography>
   );
 };

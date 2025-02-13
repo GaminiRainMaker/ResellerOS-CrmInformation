@@ -16,6 +16,7 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const {isCanvas} = useAppSelector((state) => state.canvas);
 
+  console.log('Worked'!);
   return (
     <>
       <Layout style={{minHeight: '90vh'}}>
@@ -23,7 +24,10 @@ export default function DashboardLayout({
         <Layout>
           {!isCanvas && <SideBar />}
           <Content
-            style={{padding: pathname === '/formBuilder' ? '0px' : '12px'}}
+            style={{
+              padding: pathname === '/formBuilder' ? '0px' : '12px',
+              background: '#f5f5f5',
+            }}
           >
             {children}
           </Content>

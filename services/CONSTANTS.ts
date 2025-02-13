@@ -30,6 +30,7 @@ export const API = {
     GetQuotesByDateFilter: '/quote/getQuotesByDateFilter',
     GetQuoteByID: '/quote/getQuoteById',
     getQuoteByIdForEditQuoteHeader: '/quote/getQuoteByIdForEditQuoteHeader',
+    GetQuotesByUserAndTimeframe: '/quote/getQuotesByUserAndTimeframe',
 
     getQuoteByIdForFormStack: '/quote/getQuoteByIdForFormStack',
     GetQuoteByManual: '/quote/getAllManualQuotes',

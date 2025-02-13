@@ -19,22 +19,23 @@ const ResizableTitle = (props: any) => {
   }
 
   return (
-    <Resizable
-      width={width}
-      height={0}
-      handle={
-        <span
-          className="react-resizable-handle"
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        />
-      }
-      onResize={onResize}
-      draggableOpts={{enableUserSelectHack: false}}
-    >
-      <th {...restProps} />
-    </Resizable>
+    <></>
+    // <Resizable
+    //   width={width}
+    //   height={0}
+    //   handle={
+    //     <span
+    //       className="react-resizable-handle"
+    //       onClick={(e) => {
+    //         e.stopPropagation();
+    //       }}
+    //     />
+    //   }
+    //   onResize={onResize}
+    //   draggableOpts={{enableUserSelectHack: false}}
+    // >
+    //   <th {...restProps} />
+    // </Resizable>
   );
 };
 
@@ -123,7 +124,7 @@ const OsTable: FC<any> = ({
   return (
     <ReactDragListView.DragColumn {...dragProps}>
       <CustomTable
-        components={components}
+        // components={components}
         bordered
         {...rest}
         columns={updatedColumns}

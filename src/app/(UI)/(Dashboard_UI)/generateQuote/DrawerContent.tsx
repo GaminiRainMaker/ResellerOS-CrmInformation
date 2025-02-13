@@ -142,27 +142,26 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
         payload?.payload?.map((itemsIn: any) => {
           if (itemsIn?.address_type == 'Billing') {
             billingArray?.push({
-              label: formatStatus(itemsIn?.shiping_city),
+              label: `${formatStatus(itemsIn?.shiping_address_line)}-${formatStatus(itemsIn?.shiping_city)}-${formatStatus(itemsIn?.shiping_state)}-${formatStatus(itemsIn?.shiping_country)}(${itemsIn?.shiping_pin_code})`,
               value: itemsIn?.id,
             });
           } else if (itemsIn?.address_type == 'Shipping') {
             shipparry?.push({
-              label: formatStatus(itemsIn?.shiping_city),
+              label: `${formatStatus(itemsIn?.shiping_address_line)}-${formatStatus(itemsIn?.shiping_city)}-${formatStatus(itemsIn?.shiping_state)}-${formatStatus(itemsIn?.shiping_country)}(${itemsIn?.shiping_pin_code})`,
               value: itemsIn?.id,
             });
           } else {
             billingArray?.push({
-              label: formatStatus(itemsIn?.shiping_city),
+              label: `${formatStatus(itemsIn?.shiping_address_line)}-${formatStatus(itemsIn?.shiping_city)}-${formatStatus(itemsIn?.shiping_state)}-${formatStatus(itemsIn?.shiping_country)}(${itemsIn?.shiping_pin_code})`,
               value: itemsIn?.id,
             });
             shipparry?.push({
-              label: formatStatus(itemsIn?.shiping_city),
+              label: `${formatStatus(itemsIn?.shiping_address_line)}-${formatStatus(itemsIn?.shiping_city)}-${formatStatus(itemsIn?.shiping_state)}-${formatStatus(itemsIn?.shiping_country)}(${itemsIn?.shiping_pin_code})`,
               value: itemsIn?.id,
             });
           }
         });
       }
-      console.log('2432424324', shipparry, billingArray, payload?.payload);
       setShippingOptions(shipparry);
       setBillingOptions(billingArray);
     });

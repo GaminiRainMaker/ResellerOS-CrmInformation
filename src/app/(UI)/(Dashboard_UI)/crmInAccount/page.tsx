@@ -377,6 +377,7 @@ const CrmInformation: React.FC = () => {
       }
 
       const formData = form.getFieldsValue();
+
       const formattedAddresses = transformAddressData(formData);
 
       // Insert Customer & Get response
@@ -397,6 +398,7 @@ const CrmInformation: React.FC = () => {
             billing_role: formData?.billing_role,
             billing_last_name: formData?.billing_last_name,
             billing_state: formData?.billing_state,
+            billing_phone: formData?.billing_phone,
           }
         : null;
 
