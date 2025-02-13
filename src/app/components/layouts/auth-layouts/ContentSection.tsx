@@ -97,12 +97,16 @@ const ContentSection: FC<AuthLayoutInterface> = ({
 
   const onSubmitForm = (formValues: any, type: any) => {
     if (type === 'Verify Email') {
-      dispatch(verifyEmail({token: Verifytoken})).then((d) => {
+      let obj = {
+        password: formValues?.password,
+        token: Verifytoken,
+      };
+      dispatch(verifyEmail(obj)).then((d) => {
         if (d?.payload) {
           router.push('/login');
+          return;
         }
       });
-      return;
     }
 
     const validateEmail = (email: any) =>
@@ -277,16 +281,16 @@ const ContentSection: FC<AuthLayoutInterface> = ({
         }
       });
     } else if (
-      formValues?.username &&
-      formValues?.password &&
+      // formValues?.username &&
+      // formValues?.password &&
       formValues?.email &&
       type === 'Create Account'
     ) {
       dispatch(
         signUpAuth({
-          user_name: formValues?.username,
+          user_name: formValues?.email?.toLowerCase(),
           email: formValues?.email?.toLowerCase(),
-          password: formValues?.password,
+          // password: formValues?.password,
           organization: organizationValue,
         }),
       ).then((payload: any) => {
