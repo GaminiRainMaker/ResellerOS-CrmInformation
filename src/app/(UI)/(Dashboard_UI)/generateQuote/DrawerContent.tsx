@@ -35,6 +35,7 @@ import moment from 'moment';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
 import dayjs from 'dayjs';
 import {getAddressByCustomerId} from '../../../../../redux/actions/address';
+import {getAllBillingContactByCustomerId} from '../../../../../redux/actions/billingContact';
 
 const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
   const dispatch = useAppDispatch();
@@ -51,6 +52,7 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
 
   const [billingOptions, setBillingOptions] = useState<any>();
   const [shippingOptions, setShippingOptions] = useState<any>();
+  const [contactDetails, setContactDetails] = useState<any>();
 
   const [stageNewValue, setStageNewValue] = useState<string>(
     quoteByIdData?.status,
@@ -126,6 +128,8 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
             : null,
           billing_id: payload?.payload?.billing_id,
           shipping_id: payload?.payload?.shipping_id,
+          shipping_phone: payload?.payload?.shipping_phone?.split('_')?.[0],
+          billing_phone: payload?.payload?.billing_phone?.split('_')?.[0],
         });
         customerId = payload?.payload?.customer_id;
         opportuntityId = payload?.payload?.opportunity_id;
@@ -165,6 +169,21 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
       setShippingOptions(shipparry);
       setBillingOptions(billingArray);
     });
+    await dispatch(getAllBillingContactByCustomerId(customerId))?.then(
+      (payload: any) => {
+        let shipparry: any = [];
+        let allContactArrr: any = [];
+        if (payload?.payload && payload?.payload?.length > 0) {
+          payload?.payload?.map((itemsIn: any) => {
+            allContactArrr?.push({
+              label: itemsIn?.billing_phone,
+              value: `${itemsIn?.billing_phone}_${itemsIn?.id}`,
+            });
+          });
+        }
+        setContactDetails(allContactArrr);
+      },
+    );
 
     await dispatch(getAllCustomer({}))?.then((payload: any) => {});
     await dispatch(getAllOpportunity())?.then((payload: any) => {
@@ -302,13 +321,13 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
             <OsCustomerSelect
               setCustomerValue={setCustomerValue}
               customerValue={customerValue}
-              isDisable={isView === 'true' ? true : false}
+              isDisable={true}
             />
 
             <OsOpportunitySelect
               form={form}
               customerValue={customerValue}
-              isDisable={isView === 'true' ? true : false}
+              isDisable={true}
             />
             {/* <Typography name="Body 4/Regular">Sync Opportunity</Typography>
 
@@ -370,6 +389,13 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
             </Form.Item>
             <Form.Item label="Shipping Address" name="shipping_id">
               <CommonSelect options={shippingOptions} />
+            </Form.Item>
+
+            <Form.Item label="Billing Phone" name="billing_phone">
+              <CommonSelect value={56} options={contactDetails} />
+            </Form.Item>
+            <Form.Item label="Shipping Phone" name="shipping_phone">
+              <CommonSelect options={contactDetails} />
             </Form.Item>
           </Col>
         </Row>

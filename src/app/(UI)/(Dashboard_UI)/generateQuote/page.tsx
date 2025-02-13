@@ -64,6 +64,7 @@ import dynamic from 'next/dynamic';
 import {getRebateQuoteLineItemByQuoteId} from '../../../../../redux/actions/rebateQuoteLineitem';
 import {getAllValidationByQuoteId} from '../../../../../redux/actions/validation';
 import {getAddressByCustomerId} from '../../../../../redux/actions/address';
+import {getAllBillingContactByCustomerId} from '../../../../../redux/actions/billingContact';
 const DrawerContent = dynamic(() => import('./DrawerContent'), {
   ssr: false,
 });
@@ -194,13 +195,26 @@ const GenerateQuote: React.FC = () => {
               // delete newObj?.Customer;
               delete newObj?.Opportunity;
               delete newObj?.Profitabilities;
-              let addressAlll: any;
+              let addressAlll: any = [];
               await dispatch(
                 getAddressByCustomerId(payload?.payload?.customer_id),
               )?.then((payload: any) => {
                 addressAlll = payload?.payload;
               });
+              let allContactDetails: any = [];
+              await dispatch(
+                getAllBillingContactByCustomerId(payload?.payload?.customer_id),
+              )?.then((payload: any) => {
+                if (payload?.payload && payload?.payload?.length > 0) {
+                  payload?.payload?.map((itemsIn: any) => {
+                    allContactDetails?.push(itemsIn);
+                  });
+                }
+              });
+
+              newObj.allContactDetails = allContactDetails;
               newObj.addressForAll = addressAlll;
+
               setObjectForSyncingValues(newObj);
               setObjectForSyncingValues(newObj);
             } else {
@@ -216,6 +230,18 @@ const GenerateQuote: React.FC = () => {
               };
               // delete newObj?.Customer;
               delete newObj?.Opportunity, delete newObj?.Profitabilities;
+              let allContactDetails: any = [];
+              await dispatch(
+                getAllBillingContactByCustomerId(payload?.payload?.customer_id),
+              )?.then((payload: any) => {
+                if (payload?.payload && payload?.payload?.length > 0) {
+                  payload?.payload?.map((itemsIn: any) => {
+                    allContactDetails?.push(itemsIn);
+                  });
+                }
+              });
+
+              newObj.allContactDetails = allContactDetails;
               let addressAlll: any;
               await dispatch(
                 getAddressByCustomerId(payload?.payload?.customer_id),
