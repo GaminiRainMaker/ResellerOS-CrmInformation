@@ -364,7 +364,7 @@ const Dashboard = () => {
                 </Typography>
                 <br />
                 <ResponsiveContainer width="100%" height={200}>
-                  <PieChart>
+                  <PieChart key="pieChart">
                     <Pie
                       data={pieData}
                       cx="50%"
