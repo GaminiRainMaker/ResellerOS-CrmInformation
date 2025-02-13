@@ -102,6 +102,14 @@ const ContentSection: FC<AuthLayoutInterface> = ({
         token: Verifytoken,
       };
       dispatch(verifyEmail(obj)).then((d) => {
+        if (d?.payload === undefined || !d?.payload) {
+          notification?.open({
+            message: 'Your email has already been verified. Please log in',
+            type: 'info',
+          });
+          router.push('/login');
+          return;
+        }
         if (d?.payload) {
           router.push('/login');
           return;
@@ -310,6 +318,10 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           });
         } else {
           router.push('/login');
+          notification?.open({
+            message: 'Please check your Email for login instructions.',
+            type: 'info',
+          });
         }
       });
     }
