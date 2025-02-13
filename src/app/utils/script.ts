@@ -1004,9 +1004,10 @@ export let processScript = (finalObj: {
 };
 
 type Quote = {
+  id: number;
   Profitabilities: {adjusted_price: string; file_name: string}[];
   QuoteFiles: {total_page_count: string; file_name: string}[];
-  Opportunity: {synced_quote: string};
+  Opportunity: {synced_quote: number};
   customer_id?: string;
   opportunity_id: string;
   quote_amount?: number;
@@ -1032,9 +1033,10 @@ export const calculateMetrics = (quoteData: Quote[]): Metrics => {
   // Helper functions
   const getVendorQuotesCount = (): number => quoteData.length;
 
-  const syncQuotes = quoteData
-    ?.map((item) => (item?.Opportunity?.synced_quote ? item : null))
-    ?.filter(Boolean);
+  const syncQuotes = quoteData?.filter(
+    (item) => item?.Opportunity?.synced_quote === item?.id,
+  );
+
 
   const getTotalPages = (): number => {
     const rowsPerPage = 50;
