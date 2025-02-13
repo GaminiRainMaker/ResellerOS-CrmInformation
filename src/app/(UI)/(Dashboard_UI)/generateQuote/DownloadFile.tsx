@@ -200,9 +200,9 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
       (items: any) => items?.id === objectForSyncingValues?.shipping_id,
     );
     let billingContactId =
-      objectForSyncingValues?.billing_phone?.split('_')?.[1];
+      objectForSyncingValues?.billing_phone?.split('#')?.[1];
     let shippingContactId =
-      objectForSyncingValues?.shipping_phone?.split('_')?.[1];
+      objectForSyncingValues?.shipping_phone?.split('#')?.[1];
 
     let billingContact = objectForSyncingValues?.allContactDetails?.find(
       (items: any) => items?.id == billingContactId,
