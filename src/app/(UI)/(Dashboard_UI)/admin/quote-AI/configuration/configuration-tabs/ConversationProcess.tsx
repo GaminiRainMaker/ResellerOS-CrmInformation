@@ -49,15 +49,16 @@ const ConverSationProcess = () => {
   }, []);
   useEffect(() => {
     dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
-      setAdvancedSetting(payload?.payload?.advanced_excel);
+      // setAdvancedSetting(payload?.payload?.advanced_excel);
+      setAdvancedSetting(true)
     });
   }, []);
-  const updateAdvancedSettingdd = async (value: boolean) => {
-    await dispatch(updateAdvancedSetting({advanced_excel: value}));
-    dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
-      setAdvancedSetting(payload?.payload?.advanced_excel);
-    });
-  };
+  // const updateAdvancedSettingdd = async (value: boolean) => {
+  //   await dispatch(updateAdvancedSetting({advanced_excel: value}));
+  //   dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
+  //     setAdvancedSetting(payload?.payload?.advanced_excel);
+  //   });
+  // };
   return (
     <TabContainerStyle>
       <Row>
@@ -73,7 +74,7 @@ const ConverSationProcess = () => {
                 borderRadius: '12px',
               }}
             >
-              <Switch
+              {/* <Switch
                 checked={AdvancedSetting}
                 onChange={(e) => {
                   setAdvancedSetting(e);
@@ -83,7 +84,7 @@ const ConverSationProcess = () => {
               />
               <Typography name="Body 2/Medium">
                 Advanced Excel/Pdf Files Processing
-              </Typography>
+              </Typography> */}
             </Space>
           )}
           <Space
