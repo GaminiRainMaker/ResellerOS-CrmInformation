@@ -239,10 +239,10 @@ const CrmAccount: React.FC = () => {
                 billing_last_name: record?.billing_last_name,
                 billing_role: record?.billing_role,
                 billing_email: record?.billing_email,
+                billing_phone: record?.billing_phone,
               });
             }}
           />
-
           <TrashIcon
             height={24}
             width={24}
@@ -305,7 +305,8 @@ const CrmAccount: React.FC = () => {
 
   const onFinish = () => {
     const FormData = form?.getFieldsValue();
-    dispatch(insertbillingContact(FormData)).then((d: any) => {
+
+  dispatch(insertbillingContact(FormData)).then((d: any) => {
       if (d?.payload) {
         dispatch(queryContact(searchQuery));
         dispatch(getAllbillingContact(''));

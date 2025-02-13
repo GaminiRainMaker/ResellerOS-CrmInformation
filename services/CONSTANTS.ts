@@ -30,6 +30,7 @@ export const API = {
     GetQuotesByDateFilter: '/quote/getQuotesByDateFilter',
     GetQuoteByID: '/quote/getQuoteById',
     getQuoteByIdForEditQuoteHeader: '/quote/getQuoteByIdForEditQuoteHeader',
+    GetQuotesByUserAndTimeframe: '/quote/getQuotesByUserAndTimeframe',
 
     getQuoteByIdForFormStack: '/quote/getQuoteByIdForFormStack',
     GetQuoteByManual: '/quote/getAllManualQuotes',
@@ -97,7 +98,7 @@ export const API = {
     count: '/profitability/getAllProfitabilityCount',
     UpdateProfitabilityValueForBulk:
       '/profitability/updateProfitabilityValueForBulk',
-      updateProfitabilitySelectValues:
+    updateProfitabilitySelectValues:
       '/profitability/updateProfitabilitySelectValues',
   },
   BUNDLE: {
@@ -167,6 +168,8 @@ export const API = {
     QUERY: '/billingContact/deleteBillingContact',
     SEARCH: '/billingContact/getBillingContactBySearch',
     QUERYCONTACT: '/billingContact/query',
+    getAllBillingContactByCustomerId:
+      '/billingContact/getAllBillingContactByCustomerId',
   },
   OPPORTUNITY: {
     INDEX: '/opportunity',

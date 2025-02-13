@@ -1,4 +1,4 @@
-import {FC, memo} from 'react';
+import {FC, JSX} from 'react';
 import useTypographyMappingHook from '../hooks/useTypographyMappingHook';
 import {TypographyInterface} from './typography.interface';
 import {DynamicDiv} from './styled-components';

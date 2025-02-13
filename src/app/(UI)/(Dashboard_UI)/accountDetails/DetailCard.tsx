@@ -169,6 +169,7 @@ const DetailCard = () => {
 
   const updateCustomerDetails = async () => {
     const FormData = form.getFieldsValue();
+
     await dispatch(
       updateAddress({...FormData, shipping_id: shipppingAddress?.id}),
     );

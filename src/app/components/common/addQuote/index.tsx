@@ -13,6 +13,7 @@ import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form, message} from 'antd';
 import {usePathname, useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
+import {queryLineItemSyncingForSalesForce} from '../../../../../redux/actions/LineItemSyncing';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {
   getBulkProductIsExisting,
@@ -30,14 +31,15 @@ import {
   uploadExcelFileToAws,
   uploadToAws,
 } from '../../../../../redux/actions/upload';
+import {getUserByTokenAccess} from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsButton from '../os-button';
 import OsUpload from '../os-upload';
 import {AddQuoteInterface, FormattedData} from './types';
-import {queryLineItemSyncingForSalesForce} from '../../../../../redux/actions/LineItemSyncing';
-import {getUserByTokenAccess} from '../../../../../redux/actions/user';
-import ConverSationProcess from '@/app/(UI)/(Dashboard_UI)/admin/quote-AI/configuration/configuration-tabs/ConversationProcess';
-import {Rethink_Sans} from 'next/font/google';
+import * as pdfjsLib from 'pdfjs-dist';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
@@ -112,20 +114,53 @@ const AddQuote: FC<AddQuoteInterface> = ({
         obj.base64 = base64String;
         obj.file = file;
         setLoading(true);
-        dispatch(pathUsedToUpload({document: base64String})).then(
-          (payload: any) => {
-            const pdfUrl = payload?.payload?.data?.Location;
-            obj.pdf_url = pdfUrl;
-            setLoading(false);
-          },
-        );
-        setUploadFileData((fileData: any) => [...fileData, obj]);
+
+        // Handle PDF files separately for page count
+        if (file?.type === 'application/pdf') {
+          const reader = new FileReader();
+          reader.onload = async () => {
+            try {
+              const loadingTask = pdfjsLib.getDocument(
+                reader.result as ArrayBuffer,
+              );
+              const pdfDoc = await loadingTask.promise;
+              const totalNumberPages = pdfDoc.numPages;
+              // Add the total pages to obj after loading the PDF
+              obj.totalPages = totalNumberPages;
+
+              // Now we can proceed with uploading the file and setting the data
+              dispatch(pathUsedToUpload({document: base64String})).then(
+                (payload: any) => {
+                  const pdfUrl = payload?.payload?.data?.Location;
+                  obj.pdf_url = pdfUrl;
+                  setLoading(false);
+                },
+              );
+
+              // Add the file data (including totalPages) to the state
+              setUploadFileData((fileData: any) => [...fileData, obj]);
+            } catch (error) {
+              console.error('Error reading PDF:', error);
+              setLoading(false);
+            }
+          };
+          reader.readAsArrayBuffer(file);
+        } else {
+          // If it's not a PDF, just proceed with uploading
+          dispatch(pathUsedToUpload({document: base64String})).then(
+            (payload: any) => {
+              const pdfUrl = payload?.payload?.data?.Location;
+              obj.pdf_url = pdfUrl;
+              setLoading(false);
+            },
+          );
+          setUploadFileData((fileData: any) => [...fileData, obj]);
+        }
       })
       .catch((error) => {
         message.error('Error converting file to base64', error);
       });
   };
-
   const addQuoteLineItem = async (
     customerId: string,
     opportunityId: string,
@@ -160,6 +195,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           let newObj = {
             ...items,
             file_name: items?.file?.name,
+            total_page_count: items?.totalPages,
             type_of_file: items?.manualquote ? 'manual' : 'export',
           };
           newArrWithManual?.push(newObj);
@@ -235,6 +271,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           quoteFileObj: [
             {
               file_name: newArrWithoutManual[i]?.file?.name,
+              total_page_count: newArrWithoutManual[i]?.totalPages,
               pdf_url: newArrWithoutManual[i]?.pdf_url,
               quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
               nanonets_id: result?.id,
@@ -448,6 +485,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           distributor_name: newArrWithManual?.[0]?.distributor_name,
           oem_name: newArrWithManual?.[0]?.oem_name,
           file_name: newArrWithManual?.[0]?.file_name,
+          total_page_count: newArrWithManual[0]?.totalPages,
           user_id: userInformation.id,
           customer_id: customerId,
           opportunity_id: opportunityId,
@@ -464,6 +502,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
 
         const quoteFile = {
           file_name: itemss?.file_name,
+          total_page_count: itemss?.totalPages,
           quote_id: quoteId
             ? quoteId
             : singleAddOnQuoteId
@@ -528,6 +567,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
               distributor_name: itemss?.distributor_name,
               oem_name: itemss?.oem_name,
               type_of_file: itemss?.type_of_file,
+              total_page_count: itemss?.totalPages,
             };
             const insertedQuoteFile = await dispatch(
               insertQuoteFile(quoteFile),
@@ -592,6 +632,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           let newObj = {
             ...items,
             file_name: items?.file?.name,
+            total_page_count: items?.totalPages,
             type_of_file: items?.manualquote ? 'manual' : 'export',
             model_id: model,
           };
@@ -669,6 +710,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           quoteFileObj: [
             {
               file_name: newArrWithoutManual[i]?.file?.name,
+              total_page_count: newArrWithoutManual[i]?.totalPages,
               pdf_url: newArrWithoutManual[i]?.pdf_url,
               quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
               nanonets_id: result?.id,
@@ -889,6 +931,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           distributor_name: newArrWithManual?.[0]?.distributor_name,
           oem_name: newArrWithManual?.[0]?.oem_name,
           file_name: newArrWithManual?.[0]?.file_name,
+          total_page_count: newArrWithManual?.[0]?.totalPages,
           user_id: userInformation.id,
           customer_id: customerId,
           opportunity_id: opportunityId,
@@ -902,7 +945,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
 
       for (let i = 0; i < newArrWithManual.length; i++) {
         let itemss = newArrWithManual[i];
-
         const quoteFile = {
           file_name: itemss?.file_name,
           quote_id: quoteId
@@ -917,6 +959,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           distributor_name: itemss?.distributor_name,
           oem_name: itemss?.oem_name,
           type_of_file: itemss?.type_of_file,
+          total_page_count: itemss?.totalPages,
         };
         const insertedQuoteFile = await dispatch(
           insertQuoteFile(quoteFile),
@@ -969,6 +1012,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
               distributor_name: itemss?.distributor_name,
               oem_name: itemss?.oem_name,
               type_of_file: itemss?.type_of_file,
+              total_page_count: itemss?.totalPages,
             };
             const insertedQuoteFile = await dispatch(
               insertQuoteFile(quoteFile),

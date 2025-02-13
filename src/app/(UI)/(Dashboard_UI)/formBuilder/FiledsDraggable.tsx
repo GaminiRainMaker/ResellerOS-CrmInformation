@@ -1,7 +1,7 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable import/no-extraneous-dependencies */
 import {useDraggable} from '@dnd-kit/core';
-import {FC} from 'react';
+import {FC, JSX} from 'react';
 import {CSS} from '@dnd-kit/utilities';
 
 interface Draggable {
