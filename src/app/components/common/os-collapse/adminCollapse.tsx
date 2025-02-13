@@ -5,7 +5,7 @@ import {CollapseProps} from '../antd/Collapse';
 import {OsCollapseStyleForAdmin} from './styled-components';
 import useThemeToken from '../hooks/useThemeToken';
 
-const OsCollapseAdmin: FC<CollapseProps> = ({items}, props) => {
+const OsCollapseAdmin: FC<CollapseProps> = ({items, ...props}) => {
   const [token] = useThemeToken();
   return (
     <OsCollapseStyleForAdmin

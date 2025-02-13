@@ -40,6 +40,7 @@ import OsButton from '@/app/components/common/os-button';
 import {getQuotesByUserAndTimeframe} from '../../../../../redux/actions/quote';
 import {calculateMetrics} from '@/app/utils/script';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
+import TrialFiles from './TrialFiles';
 
 const Dashboard = () => {
   const [token] = useThemeToken();
@@ -51,6 +52,8 @@ const Dashboard = () => {
   const {loading: quoteLoading} = useAppSelector((state) => state.quote);
   const {userInformation} = useAppSelector((state) => state.user);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [showDownloadFileModal, setShowDownloadFileModal] =
+    useState<boolean>(false);
   const [timeframe, setTimeframe] = useState('Month');
   const [currentData, setCurrentData] = useState<any>();
 
@@ -344,7 +347,6 @@ const Dashboard = () => {
         </Col>
       </Row>
 
-
       {currentData && (
         <div style={{padding: '16px'}}>
           {/* Metrics and Charts Grid */}
@@ -523,6 +525,15 @@ const Dashboard = () => {
         </Col>
         <Col>
           <OsButton
+            text="Download Trial Quotes Files"
+            buttontype="PRIMARY"
+            clickHandler={() => {
+              setShowDownloadFileModal(true);
+            }}
+          />
+        </Col>
+        <Col>
+          <OsButton
             text="Testing Azure AI"
             buttontype="PRIMARY"
             clickHandler={() => {
@@ -647,6 +658,18 @@ const Dashboard = () => {
         onOk={form.submit}
         primaryButtonText="Send Query"
         footerPadding={30}
+      />
+
+      <OsModal
+        loading={false}
+        title="Trial Quotes Files"
+        bodyPadding={22}
+        body={<TrialFiles />}
+        width={583}
+        open={showDownloadFileModal}
+        onCancel={() => {
+          setShowDownloadFileModal(false);
+        }}
       />
     </GlobalLoader>
   );
