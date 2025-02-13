@@ -12,7 +12,6 @@ import {
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form, message} from 'antd';
 import {usePathname, useRouter} from 'next/navigation';
-import * as pdfjsLib from 'pdfjs-dist';
 import {FC, useEffect, useState} from 'react';
 import {queryLineItemSyncingForSalesForce} from '../../../../../redux/actions/LineItemSyncing';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
@@ -37,11 +36,10 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsButton from '../os-button';
 import OsUpload from '../os-upload';
 import {AddQuoteInterface, FormattedData} from './types';
+import * as pdfjsLib from 'pdfjs-dist';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.mjs',
-  import.meta.url,
-).toString();
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
