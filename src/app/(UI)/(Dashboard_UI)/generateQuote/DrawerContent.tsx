@@ -254,7 +254,7 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
 
   useEffect(() => {
     getAlllApisData();
-  }, [getAlllApisData, getQuoteId]);
+  }, [getQuoteId]);
 
   useEffect(() => {
     const newRequiredArray: any = [];
