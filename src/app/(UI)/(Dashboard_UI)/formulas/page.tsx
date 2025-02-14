@@ -33,6 +33,7 @@ import {
   getAllFormulas,
 } from '../../../../../redux/actions/formulas';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {getAllApprovedPartnerFoFormulas} from '../../../../../redux/actions/partner';
 
 const FormulaMain: React.FC = () => {
   const [token] = useThemeToken();
@@ -45,14 +46,18 @@ const FormulaMain: React.FC = () => {
   const [deleteId, setDeleteId] = useState<any>();
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [recordId, setRecordId] = useState<any>();
+  const [optionsForPartner, setOptionsFOrPartner] = useState<any>();
+
   const [selectValue, setSelectValue] = useState<{
     oem_id: number | null;
     distributor_id: number | null;
     is_active: boolean | null;
+    partner_id: number | null;
   }>({
     oem_id: null,
     distributor_id: null,
     is_active: false,
+    partner_id: null,
   });
 
   useEffect(() => {
@@ -70,6 +75,27 @@ const FormulaMain: React.FC = () => {
     ),
   };
 
+  const getPartnerListData = async () => {
+    await dispatch(
+      getAllApprovedPartnerFoFormulas({newArrCheckTONotExist: []}),
+    )?.then((payload: any) => {
+      let arrOfPartnerss: any = [];
+      if (payload?.payload) {
+        payload?.payload?.map((items: any) => {
+          arrOfPartnerss?.push({
+            label: formatStatus(items?.partner),
+            value: items?.id,
+          });
+        });
+      }
+
+      setOptionsFOrPartner(arrOfPartnerss);
+    });
+  };
+
+  useEffect(() => {
+    getPartnerListData();
+  }, []);
   const FormulaColumn = [
     {
       title: 'Title',
@@ -114,11 +140,7 @@ const FormulaMain: React.FC = () => {
 
       render: (text: string, record: any, index: number) => (
         <Space size={18}>
-          {record?.Oem
-            ? formatStatus(record?.Oem?.oem)
-            : record?.Distributor
-              ? formatStatus(record?.Distributor?.distributor)
-              : '----'}
+          {record?.Partner ? formatStatus(record?.Partner?.partner) : '----'}
         </Space>
       ),
     },
@@ -144,7 +166,9 @@ const FormulaMain: React.FC = () => {
                 is_active: record?.is_active,
                 oem_id: record?.oem_id,
                 distributor_id: record?.distributor_id,
+                partner_id: record?.partner_id,
               });
+
               setOpenDrawer(true);
             }}
             color={token.colorInfoBorder}
@@ -179,9 +203,11 @@ const FormulaMain: React.FC = () => {
     }
     if (selectValue?.oem_id) {
       newObj.oem_id = selectValue?.oem_id;
+      newObj.partner_id = selectValue?.partner_id;
     }
     if (selectValue?.distributor_id) {
       newObj.distributor_id = selectValue?.distributor_id;
+      newObj.partner_id = selectValue?.partner_id;
     }
     setLoadingContract(true);
     const result = changeTheALpabetsFromFormula(newObj?.formula);
@@ -196,6 +222,7 @@ const FormulaMain: React.FC = () => {
       is_active: false,
       oem_id: null,
       distributor_id: null,
+      partner_id: null,
     });
   };
 
@@ -242,6 +269,7 @@ const FormulaMain: React.FC = () => {
             drawer={false}
             setSelectValue={setSelectValue}
             selectValue={selectValue}
+            optionsForPartner={optionsForPartner}
           />
         }
         width={800}
@@ -252,6 +280,7 @@ const FormulaMain: React.FC = () => {
             is_active: false,
             oem_id: null,
             distributor_id: null,
+            partner_id: null,
           });
           form?.resetFields();
         }}
@@ -281,6 +310,7 @@ const FormulaMain: React.FC = () => {
             is_active: false,
             oem_id: null,
             distributor_id: null,
+            partner_id: null,
           });
         }}
         open={openDrawer}
@@ -306,6 +336,7 @@ const FormulaMain: React.FC = () => {
           drawer
           setSelectValue={setSelectValue}
           selectValue={selectValue}
+          optionsForPartner={optionsForPartner}
         />
       </OsDrawer>
 

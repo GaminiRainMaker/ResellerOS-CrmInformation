@@ -239,6 +239,7 @@ export const API = {
       'partner/getAllPartnerandProgramApprovedDataSalesForce',
     getAllApprovedPartnerForQuoteConfiq:
       'partner/getAllApprovedPartnerForQuoteConfiq',
+    getAllApprovedPartnerFoFormulas: 'partner/getAllApprovedPartnerFoFormulas',
   },
   PARTNER_PROGRAM: {
     INDEX: '/partnerProgram',

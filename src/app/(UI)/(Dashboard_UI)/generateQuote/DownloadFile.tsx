@@ -51,6 +51,8 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
     dispatch(getAllFormStack(''));
     dispatch(getAllGeneralSetting(''));
   }, []);
+  const [objectAfterFOrMappedFunc, setObjectAfterFOrMappedFunc] =
+    useState<any>();
   const [formStackOptions, setFormStackOptions] = useState<any>();
 
   useEffect(() => {
@@ -132,6 +134,67 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
       ),
     }));
 
+  useEffect(() => {
+    let newObjForAddValues: any = {};
+    if (objectForSyncingValues) {
+      let billingAdress = objectForSyncingValues?.addressForAll?.find(
+        (items: any) => items?.id === objectForSyncingValues?.billing_id,
+      );
+      let shippingAdress = objectForSyncingValues?.addressForAll?.find(
+        (items: any) => items?.id === objectForSyncingValues?.shipping_id,
+      );
+      let billingContactId =
+        objectForSyncingValues?.billing_phone?.split('_')?.[1];
+      let shippingContactId =
+        objectForSyncingValues?.shipping_phone?.split('_')?.[1];
+
+      let billingContact = objectForSyncingValues?.allContactDetails?.find(
+        (items: any) => items?.id == billingContactId,
+      );
+      let shippingContact = objectForSyncingValues?.allContactDetails?.find(
+        (items: any) => items?.id == shippingContactId,
+      );
+
+      newObjForAddValues.quote_unique_in =
+        objectForSyncingValues?.quote_unique_in;
+      newObjForAddValues.quote_expiration =
+        objectForSyncingValues?.expiration_date;
+      newObjForAddValues.billing_to__name =
+        objectForSyncingValues?.Customer?.name;
+      newObjForAddValues.contact_name = objectForSyncingValues?.Customer?.name;
+      newObjForAddValues.billing_adrress = billingAdress?.shiping_address_line;
+      newObjForAddValues.billing_city = billingAdress?.shiping_city;
+      newObjForAddValues.billing_state = billingAdress?.shiping_state;
+      newObjForAddValues.billing_zip = billingAdress?.shiping_pin_code;
+      newObjForAddValues.billing_country = billingAdress?.shiping_country;
+      newObjForAddValues.billing_phone = shippingContact?.billing_phone;
+      newObjForAddValues.billing_email = shippingContact?.billing_email;
+
+      newObjForAddValues.shipping_to_name =
+        objectForSyncingValues?.Customer?.name;
+      newObjForAddValues.contact_name = objectForSyncingValues?.Customer?.name;
+      newObjForAddValues.shipping_adrress =
+        shippingAdress?.shiping_address_line;
+      newObjForAddValues.shipping_city = shippingAdress?.shiping_city;
+      newObjForAddValues.shipping_state = shippingAdress?.shiping_state;
+      newObjForAddValues.shipping_zip = shippingAdress?.shiping_pin_code;
+      newObjForAddValues.shipping_country = shippingAdress?.shiping_country;
+      newObjForAddValues.shipping_phone = billingContact?.billing_phone;
+      newObjForAddValues.shipping_email = billingContact?.billing_email;
+
+      newObjForAddValues.owner_name = objectForSyncingValues?.Customer?.name;
+      newObjForAddValues.description = 'description';
+      newObjForAddValues.term = 'new terms';
+
+      newObjForAddValues.CustomerAddress = `${billingAdress?.shiping_address_line}-${billingAdress?.shiping_state}-${billingAdress?.shiping_pin_code}-${billingAdress?.shiping_country}`;
+      newObjForAddValues.CustomerCity = billingAdress?.shiping_city;
+
+      newObjForAddValues.DistributorAddress = `${shippingAdress?.shiping_address_line}-${shippingAdress?.shiping_state}-${shippingAdress?.shiping_pin_code}-${shippingAdress?.shiping_country}`;
+      newObjForAddValues.DistributorCity = shippingAdress?.shiping_city;
+    }
+    setObjectAfterFOrMappedFunc(newObjForAddValues);
+  }, [objectForSyncingValues]);
+
   const dowloadFunction = async (data: any, type: string) => {
     const findTheItem = formStackSyncData?.find(
       (item: any) => item?.doc_key === data?.key,
@@ -185,7 +248,6 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
         resultValues[key] = objectForSyncingValues[formattedData[key]];
       }
     }
-    resultValues.quotelineitem = sortedLineItems;
 
     if (findTheItem?.type_of_file === 'Line Items Only') {
       let totalExtendedPrice: any = 0;
@@ -217,42 +279,9 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
       (items: any) => items?.id == shippingContactId,
     );
 
-    resultValues.quote_num = objectForSyncingValues?.quote_unique_in;
-    resultValues.expiration_date = objectForSyncingValues?.expiration_date;
-    resultValues.sold_to_name = objectForSyncingValues?.Customer?.name;
-    resultValues.contact_name = objectForSyncingValues?.Customer?.name;
-    resultValues.sold_to_street = billingAdress?.shiping_address_line;
-    resultValues.sold_to_city = billingAdress?.shiping_city;
-    resultValues.sold_to_state = billingAdress?.shiping_state;
-    resultValues.sold_to_zipcode = billingAdress?.shiping_pin_code;
-    resultValues.sold_to_country = billingAdress?.shiping_country;
-    resultValues.sold_to_phone = shippingContact?.billing_phone;
-    resultValues.sold_to_email = shippingContact?.billing_email;
+    delete resultValues.quotelineitem;
+    resultValues.quotelineitem = sortedLineItems;
 
-    resultValues.ship_to_name = objectForSyncingValues?.Customer?.name;
-    resultValues.contact_name = objectForSyncingValues?.Customer?.name;
-    resultValues.ship_to_street = shippingAdress?.shiping_address_line;
-    resultValues.ship_to_city = shippingAdress?.shiping_city;
-    resultValues.ship_to_state = shippingAdress?.shiping_state;
-    resultValues.ship_to_zipcode = shippingAdress?.shiping_pin_code;
-    resultValues.ship_to_country = shippingAdress?.shiping_country;
-    resultValues.ship_to_phone = billingContact?.billing_phone;
-    resultValues.ship_to_email = billingContact?.billing_email;
-
-    resultValues.owner_name = objectForSyncingValues?.Customer?.name;
-    resultValues.description = 'description';
-    resultValues.term = 'new terms';
-
-    resultValues.CustomerAddress = `${billingAdress?.shiping_address_line}-${billingAdress?.shiping_state}-${billingAdress?.shiping_pin_code}-${billingAdress?.shiping_country}`;
-    resultValues.CustomerCity = billingAdress?.shiping_city;
-    // resultValues.Phone_SoldTo = '(333)333-3333';
-    // resultValues.Email_SoldTo = 'email@gmail.com';
-    // resultValues.Phone_shipTo = '(333)333-3333';
-    // resultValues.email_shipTo = 'email@gmail.com';
-    resultValues.DistributorAddress = `${shippingAdress?.shiping_address_line}-${shippingAdress?.shiping_state}-${shippingAdress?.shiping_pin_code}-${shippingAdress?.shiping_country}`;
-    resultValues.DistributorCity = shippingAdress?.shiping_city;
-
-    console.log('3454324324324', resultValues);
     Number(objectForSyncingValues?.quote_shipping);
 
     try {
