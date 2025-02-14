@@ -1,16 +1,18 @@
+/* eslint-disable no-nested-ternary */
 // Add this at the top of the file
+
 'use client';
 
 import ConfigProvider from 'antd/es/config-provider';
 import {Plus_Jakarta_Sans} from 'next/font/google';
 import './globals.css';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import Providers from './Provider';
-import theme from './style/theme';
 import NextScript from 'next/script';
-import CanvasRedirectWrapper from './CanvasRedirect';
 import {useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import Providers from './Provider';
+import theme from './style/theme';
+import CanvasRedirectWrapper from './CanvasRedirect';
 
 const jakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],

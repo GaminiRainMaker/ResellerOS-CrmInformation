@@ -1,4 +1,5 @@
 'use client';
+
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
@@ -171,15 +172,13 @@ const AttachmentDocument: FC<any> = ({
   ];
 
   const addNewAttachment = async () => {
-    const updatedData = uploadFileData?.map((item: any) => {
-      return {
-        quote_id: getQuoteID,
-        type: item?.type,
-        doc_url: item?.doc_url,
-        name: item?.name,
-        organization: userInformation?.organization,
-      };
-    });
+    const updatedData = uploadFileData?.map((item: any) => ({
+      quote_id: getQuoteID,
+      type: item?.type,
+      doc_url: item?.doc_url,
+      name: item?.name,
+      organization: userInformation?.organization,
+    }));
     if (updatedData) {
       await dispatch(insertAttachmentDocument(updatedData)).then((d) => {
         if (d?.payload) {
@@ -262,7 +261,7 @@ const AttachmentDocument: FC<any> = ({
         }}
         bodyPadding={20}
         title="Add Customer Attachments"
-        primaryButtonText={'Save'}
+        primaryButtonText="Save"
         onOk={attachmentForm.submit}
         body={
           <Attachments

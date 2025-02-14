@@ -1,6 +1,9 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-nested-ternary */
+
+'use client';
+
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import OsCustomerSelect from '@/app/components/common/os-customer-select';
 import GlobalLoader from '@/app/components/common/os-global-loader';
@@ -17,23 +20,23 @@ import {currencyFormatter, formatDate} from '@/app/utils/base';
 import {Checkbox, DatePicker, Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
-import {getAllCustomer} from '../../../../../redux/actions/customer';
-import {
-  getAllOpportunity,
-  updateOpportunity,
-} from '../../../../../redux/actions/opportunity';
-import {
-  getQuoteById,
-  getQuoteByIdForEditQuoteHeader,
-} from '../../../../../redux/actions/quote';
-import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 import CommonStageSelect from '@/app/components/common/os-stage-select';
 import OsButton from '@/app/components/common/os-button';
 import moment from 'moment';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
 import dayjs from 'dayjs';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
+import {
+  getQuoteById,
+  getQuoteByIdForEditQuoteHeader,
+} from '../../../../../redux/actions/quote';
+import {
+  getAllOpportunity,
+  updateOpportunity,
+} from '../../../../../redux/actions/opportunity';
+import {getAllCustomer} from '../../../../../redux/actions/customer';
 import {getAddressByCustomerId} from '../../../../../redux/actions/address';
 import {getAllBillingContactByCustomerId} from '../../../../../redux/actions/billingContact';
 
@@ -62,7 +65,7 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
   const [opportunitySynced, setOpportunitySynced] = useState<boolean>(false);
 
   const syncTheOppWithQuote = async () => {
-    let data = {
+    const data = {
       id: quoteByIdData?.opportunity_id,
       amount: totalValues?.ExitPrice,
       synced_quote: getQuoteId,
@@ -145,10 +148,9 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
         values !== null &&
         values !== undefined
       ) {
-        return values + '-';
-      } else {
-        return '';
+        return `${values}-`;
       }
+      return '';
     };
     const formatValuesLast = (values: any) => {
       // Check if values is a string and not null or undefined
@@ -157,15 +159,14 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
         values !== null &&
         values !== undefined
       ) {
-        return '(' + values + ')';
-      } else {
-        return '';
+        return `(${values})`;
       }
+      return '';
     };
 
     await dispatch(getAddressByCustomerId(customerId))?.then((payload: any) => {
-      let shipparry: any = [];
-      let billingArray: any = [];
+      const shipparry: any = [];
+      const billingArray: any = [];
       if (payload?.payload && payload?.payload?.length > 0) {
         payload?.payload?.map((itemsIn: any) => {
           if (
@@ -215,9 +216,9 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
     });
     await dispatch(getAllBillingContactByCustomerId(customerId))?.then(
       (payload: any) => {
-        let shipparry: any = [];
+        const shipparry: any = [];
 
-        let allContactArrr: any = [];
+        const allContactArrr: any = [];
         if (payload?.payload && payload?.payload?.length > 0) {
           payload?.payload?.map((itemsIn: any) => {
             if (
@@ -239,7 +240,7 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
 
     await dispatch(getAllCustomer({}))?.then((payload: any) => {});
     await dispatch(getAllOpportunity())?.then((payload: any) => {
-      let oppAdddetails = payload?.payload?.find(
+      const oppAdddetails = payload?.payload?.find(
         (itemsIn: any) => itemsIn?.id == opportuntityId,
       );
       if (oppAdddetails?.synced_quote == getQuoteId) {
@@ -361,10 +362,10 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
 
           <Col span={24}>
             <Form.Item label="Quote Name" name="file_name">
-              <OsInput disabled={isView === 'true' ? true : false} />
+              <OsInput disabled={isView === 'true'} />
             </Form.Item>
             <Form.Item label="Quote #" name="quote_unique_in">
-              <OsInput placeholder="ID" disabled={true} />
+              <OsInput placeholder="ID" disabled />
             </Form.Item>
 
             <Form.Item label="Expiration Date" name="expiration_date">
@@ -373,13 +374,13 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
             <OsCustomerSelect
               setCustomerValue={setCustomerValue}
               customerValue={customerValue}
-              isDisable={true}
+              isDisable
             />
 
             <OsOpportunitySelect
               form={form}
               customerValue={customerValue}
-              isDisable={true}
+              isDisable
             />
             {/* <Typography name="Body 4/Regular">Sync Opportunity</Typography>
 
@@ -396,25 +397,22 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
                 style={{width: '100%'}}
                 placeholder="Contacts"
                 options={billingOptionsData}
-                disabled={isView === 'true' ? true : false}
+                disabled={isView === 'true'}
               />
             </Form.Item>
 
             <Form.Item label=" Quote Note" name="quote_notes">
-              <OsInput
-                placeholder="Notes"
-                disabled={isView === 'true' ? true : false}
-              />
+              <OsInput placeholder="Notes" disabled={isView === 'true'} />
             </Form.Item>
 
             <Form.Item label="Quote Tax" name="quote_tax">
               <OsInputNumber
                 min={0}
                 precision={2}
-                prefix={'$'}
+                prefix="$"
                 formatter={currencyFormatter}
                 parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
-                disabled={isView === 'true' ? true : false}
+                disabled={isView === 'true'}
                 style={{
                   width: '100%',
                 }}
@@ -426,10 +424,10 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
               <OsInputNumber
                 min={0}
                 precision={2}
-                prefix={'$'}
+                prefix="$"
                 formatter={currencyFormatter}
                 parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
-                disabled={isView === 'true' ? true : false}
+                disabled={isView === 'true'}
                 style={{
                   width: '100%',
                 }}

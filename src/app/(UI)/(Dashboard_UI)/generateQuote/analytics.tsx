@@ -2,6 +2,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable array-callback-return */
+
+'use client';
+
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -14,11 +17,11 @@ import {
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import {FC, useEffect, useState} from 'react';
+import {useSearchParams} from 'next/navigation';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {updateQuoteById} from '../../../../../redux/actions/quote';
-import {useSearchParams} from 'next/navigation';
 
 const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
   const [token] = useThemeToken();
@@ -99,8 +102,8 @@ const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
         }
       });
     }
-    let totalGrossProfit = grossProfit + bundleGrossProfit;
-    let totalExitPrice = exitPrice + bundleExitPrice;
+    const totalGrossProfit = grossProfit + bundleGrossProfit;
+    const totalExitPrice = exitPrice + bundleExitPrice;
 
     if (totalExitPrice > 0) {
       grossProfitPercentage = (totalGrossProfit / totalExitPrice) * 100;

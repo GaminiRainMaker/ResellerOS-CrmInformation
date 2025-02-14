@@ -12,9 +12,6 @@
 'use client';
 
 import '@handsontable/pikaday/css/pikaday.css';
-const HotTable = dynamic(() => import('@handsontable/react'), {
-  ssr: false,
-});
 import {HyperFormula} from 'hyperformula';
 
 // import {HotTable} from '@handsontable/react';
@@ -94,6 +91,10 @@ import {
 } from '../../../../../redux/actions/product';
 import React from 'react';
 import {getUserByTokenAccess} from '../../../../../redux/actions/user';
+
+const HotTable = dynamic(() => import('@handsontable/react'), {
+  ssr: false,
+});
 
 registerAllModules();
 
@@ -186,8 +187,8 @@ const EditorFile = () => {
   }>({
     searchValue: '',
     asserType: false,
-    salesforce: salesForceinstanceUrl ? true : false,
-    lifeboatsalesforce: salesForceinstanceUrl ? true : false,
+    salesforce: !!salesForceinstanceUrl,
+    lifeboatsalesforce: !!salesForceinstanceUrl,
   });
 
   const getQuoteFileByIdForFormulads = async () => {
@@ -199,12 +200,12 @@ const EditorFile = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllFormulasByDistributorAndOem(fileData ? fileData : {}))?.then(
+    dispatch(getAllFormulasByDistributorAndOem(fileData || {}))?.then(
       (payload: any) => {
-        let newArr: any = [];
+        const newArr: any = [];
         payload?.payload?.map((items: any) => {
           if (items?.is_active) {
-            let newObj = {
+            const newObj = {
               label: items?.title,
               value: items?.formula,
             };
@@ -227,7 +228,7 @@ const EditorFile = () => {
 
     if (EditSalesLineItems === 'true' || EditSalesLineItems === true) {
       // Work In Case of Edit Data As It Is
-      let newdata = {
+      const newdata = {
         token: salesForceToken,
         // documentId: salesForceFiledId,
         urls: salesForceinstanceUrl,
@@ -237,8 +238,8 @@ const EditorFile = () => {
       dispatch(getSalesForceDataaForEditAsItIs(newdata))?.then(
         (payload: any) => {
           if (payload?.payload?.qliFields) {
-            let keysss = Object.keys(payload?.payload?.qliFields);
-            let arrOfOptions: any = [];
+            const keysss = Object.keys(payload?.payload?.qliFields);
+            const arrOfOptions: any = [];
             if (keysss) {
               keysss?.map((items: any) => {
                 arrOfOptions?.push({
@@ -250,7 +251,7 @@ const EditorFile = () => {
 
             setAccoutSyncOptions(arrOfOptions);
           }
-          let newSortedArr: any = [];
+          const newSortedArr: any = [];
           if (payload?.payload) {
             //   payload?.payload?.map((items: any) => {
             //     let sortedKeys = Object.keys(items).sort();
@@ -264,21 +265,20 @@ const EditorFile = () => {
           }
           setUpdateLineItemsValue(payload?.payload);
           setNanonetsLoading(false);
-          return;
         },
       );
       return;
     }
 
     // Work in case of export to tables
-    let dataSingle = {
+    const dataSingle = {
       token: salesForceToken,
       FileId: salesForceFiledId,
       urls: salesForceinstanceUrl,
       quoteId: null,
       file_type: null,
     };
-    let data = {
+    const data = {
       token: salesForceToken,
       FileId: null,
       urls: salesForceinstanceUrl,
@@ -286,7 +286,7 @@ const EditorFile = () => {
       file_type: 'ExportFileToTable',
     };
 
-    let pathTOGo = data;
+    const pathTOGo = data;
     salesFOrceManual === true || salesFOrceManual === 'true'
       ? data
       : dataSingle;
@@ -300,7 +300,7 @@ const EditorFile = () => {
           return;
         }
 
-        let newObj = {
+        const newObj = {
           token: salesForceToken,
           FileId: null,
           urls: salesForceinstanceUrl,
@@ -330,9 +330,9 @@ const EditorFile = () => {
       }
 
       if (payload?.payload) {
-        let newObjFromSalesFOrce = JSON.parse(payload?.payload?.qliFields);
-        let keysss = Object.keys(newObjFromSalesFOrce);
-        let arrOfOptions: any = [];
+        const newObjFromSalesFOrce = JSON.parse(payload?.payload?.qliFields);
+        const keysss = Object.keys(newObjFromSalesFOrce);
+        const arrOfOptions: any = [];
 
         if (keysss) {
           keysss?.map((items: any) => {
@@ -354,28 +354,28 @@ const EditorFile = () => {
       dispatch(
         getPDFFileDataByAzureForSales({base64Pdf: payload?.payload?.body}),
       )?.then((payload: any) => {
-        let newArrCheck: any = [];
+        const newArrCheck: any = [];
 
         if (lineItemSyncingData && lineItemSyncingData?.length > 0) {
           lineItemSyncingData?.map((items: any) => {
-            let resultString = items?.pdf_header?.replace(/\s+/g, '');
+            const resultString = items?.pdf_header?.replace(/\s+/g, '');
             newArrCheck?.push(resultString);
           });
         }
 
-        let mainItem = payload?.payload?.analyzeResult?.tables;
-        let globalArr: any = [];
+        const mainItem = payload?.payload?.analyzeResult?.tables;
+        const globalArr: any = [];
         // console.log('35435324234', mainItem);
 
-        let resultTantArrr: any = [];
+        const resultTantArrr: any = [];
 
         for (let i = 0; i < mainItem?.length; i++) {
-          let innerIntems = mainItem[i];
+          const innerIntems = mainItem[i];
           if (innerIntems?.cells?.[0]?.kind === 'columnHeader') {
-            let result: any = [];
+            const result: any = [];
 
             // Step 1: Extract headers from column headers
-            let headers: any = {};
+            const headers: any = {};
             innerIntems?.cells.forEach((item: any) => {
               if (item.kind === 'columnHeader') {
                 headers[item.columnIndex] = item.content; // Store headers by their column index
@@ -415,7 +415,7 @@ const EditorFile = () => {
       getQuoteFileByIdForFormulads();
       if (ExistingQuoteItemss === 'true') {
         setNanonetsLoading(true);
-        let newObj = {
+        const newObj = {
           id: Number(getQUoteId),
           fileId: Number(getQuoteFileId),
         };
@@ -437,28 +437,28 @@ const EditorFile = () => {
           if (payload?.payload?.advanced_excel || true) {
             dispatch(getPDFFileData({pdfUrl: quoteFileById?.pdf_url}))?.then(
               (payload: any) => {
-                let newArrCheck: any = [];
+                const newArrCheck: any = [];
 
                 if (lineItemSyncingData && lineItemSyncingData?.length > 0) {
                   lineItemSyncingData?.map((items: any) => {
-                    let resultString = items?.pdf_header?.replace(/\s+/g, '');
+                    const resultString = items?.pdf_header?.replace(/\s+/g, '');
                     newArrCheck?.push(resultString);
                   });
                 }
 
-                let mainItem = payload?.payload?.analyzeResult?.tables;
-                let globalArr: any = [];
+                const mainItem = payload?.payload?.analyzeResult?.tables;
+                const globalArr: any = [];
                 // console.log('35435324234', mainItem);
 
-                let resultTantArrr: any = [];
+                const resultTantArrr: any = [];
 
                 for (let i = 0; i < mainItem?.length; i++) {
-                  let innerIntems = mainItem[i];
+                  const innerIntems = mainItem[i];
                   if (innerIntems?.cells?.[0]?.kind === 'columnHeader') {
-                    let result: any = [];
+                    const result: any = [];
 
                     // Step 1: Extract headers from column headers
-                    let headers: any = {};
+                    const headers: any = {};
                     innerIntems?.cells.forEach((item: any) => {
                       if (item.kind === 'columnHeader') {
                         headers[item.columnIndex] = item.content; // Store headers by their column index
@@ -560,7 +560,7 @@ const EditorFile = () => {
                   }
                 }
                 if (newArrrrAll) {
-                  let newUpdatedArr: any = [];
+                  const newUpdatedArr: any = [];
                   newArrrrAll?.map((items: any, index: number) => {
                     const replaceKeyInObject = (
                       obj: any,
@@ -575,7 +575,7 @@ const EditorFile = () => {
                     };
 
                     // Transform the array
-                    let newArrssr = items.map((item: any) =>
+                    const newArrssr = items.map((item: any) =>
                       replaceKeyInObject(item, '', `emptyHeader${index + 1}`),
                     );
                     newUpdatedArr?.push(newArrssr);
@@ -590,7 +590,7 @@ const EditorFile = () => {
     }
   }, [ExistingQuoteItemss, quoteFileById, salesForceinstanceUrl]);
 
-  let newArrForAlpa = [
+  const newArrForAlpa = [
     'A :',
     'B :',
     'C :',
@@ -618,7 +618,7 @@ const EditorFile = () => {
     'Y :',
     'Z :',
   ];
-  let newArrForAlpaForFormulas = [
+  const newArrForAlpaForFormulas = [
     'A',
     'B',
     'C',
@@ -709,7 +709,7 @@ const EditorFile = () => {
   useEffect(() => {
     if (!salesForceinstanceUrl) {
       if (fullStackManul === 'true') {
-        let data = {
+        const data = {
           id: getQUoteId,
           type_of_file: 'export',
         };
@@ -796,7 +796,7 @@ const EditorFile = () => {
     };
 
     // Apply transformation
-    let result = transformObjects(resultArray);
+    const result = transformObjects(resultArray);
     function cleanKeys(obj: any) {
       const cleanedObj: any = {};
       // Iterate over each key-value pair in the object
@@ -820,7 +820,7 @@ const EditorFile = () => {
     }
 
     // Clean the array
-    let cleanedArr = cleanArray(result);
+    const cleanedArr = cleanArray(result);
 
     setMergedVaalues(cleanedArr);
     setFinalArrayForMerged(cleanedArr);
@@ -845,7 +845,7 @@ const EditorFile = () => {
         };
 
         // Apply transformation
-        let result = transformObjects(newTableData?.[0]);
+        const result = transformObjects(newTableData?.[0]);
         mergeTableData(result);
       }
     }, 100);
@@ -858,8 +858,8 @@ const EditorFile = () => {
     changedValue: any,
   ) => {
     if (changedValue?.includes('=')) {
-      let result = changeTheALpabetsFromFormula(changedValue);
-      let newObj: any = {formula: result};
+      const result = changeTheALpabetsFromFormula(changedValue);
+      const newObj: any = {formula: result};
       if (fileData?.distributor_id) {
         newObj.distributor_id = fileData?.distributor_id;
       } else if (fileData?.oem_id) {
@@ -867,7 +867,7 @@ const EditorFile = () => {
       }
       dispatch(getFormulaByFormulaAndOemDist(newObj))?.then((payload: any) => {
         if (payload?.payload === null) {
-          let isExist = checkFunctionInArray(decliendFormulas, changedValue);
+          const isExist = checkFunctionInArray(decliendFormulas, changedValue);
           if (!isExist) {
             setValueOfNewFormula(changedValue);
             setOpenAddNewFormulaModal(true);
@@ -924,8 +924,8 @@ const EditorFile = () => {
             updateLineItemColumnData?.push(dataObj);
           }
           if (salesForceinstanceUrl) {
-            let cleanedString = item.replace(/^rosquoteai__|__c$/g, '');
-            let finalResult = cleanedString.replace(/_/g, ' ');
+            const cleanedString = item.replace(/^rosquoteai__|__c$/g, '');
+            const finalResult = cleanedString.replace(/_/g, ' ');
             updateLineItemColumnArr?.push(formatStatus(finalResult));
           } else {
             updateLineItemColumnArr?.push(formatStatus(item));
@@ -950,11 +950,11 @@ const EditorFile = () => {
       });
     }
 
-    let minLength = Math.min(mergeedColumnArr.length, newArrForAlpa.length);
+    const minLength = Math.min(mergeedColumnArr.length, newArrForAlpa.length);
 
-    let result = new Array(minLength).fill(null).map((_, index) => {
-      return `${newArrForAlpa[index]} ${mergeedColumnArr[index]}`;
-    });
+    const result = new Array(minLength)
+      .fill(null)
+      .map((_, index) => `${newArrForAlpa[index]} ${mergeedColumnArr[index]}`);
     setMergeedColumn(result);
   }, [ExistingQuoteItemss, quoteItems, mergedValue]);
 
@@ -1005,14 +1005,14 @@ const EditorFile = () => {
       type: 'info',
     });
 
-    let finalLineItems: any = [];
-    let newArrFOrUpdation: any = [];
-    let newArrForAddition: any = [];
+    const finalLineItems: any = [];
+    const newArrFOrUpdation: any = [];
+    const newArrForAddition: any = [];
 
     if (EditSalesLineItems === 'true' || EditSalesLineItems === true) {
-      let newArrWithFileId: any = [];
+      const newArrWithFileId: any = [];
       updateLineItemsValue?.map((itemss: any) => {
-        let newObj = {
+        const newObj = {
           ...itemss,
           rosquoteai__SF_File_Id__c: salesForceFiledId,
         };
@@ -1025,7 +1025,7 @@ const EditorFile = () => {
         'CghhpgRahZKN0P8SaquPX/k30H+v2QWcKpcH42H9q0w=',
       );
 
-      let newdata = {
+      const newdata = {
         token: salesForceToken,
         // documentId: salesForceFiledId,
         urls: salesForceinstanceUrl,
@@ -1049,7 +1049,7 @@ const EditorFile = () => {
     if (updateLineItemsValue && updateLineItemsValue?.length > 0) {
       updateLineItemsValue?.map((items: any) => {
         if (items?.id === null) {
-          let newObj = {
+          const newObj = {
             ...items,
           };
           newObj.adjusted_price = items?.cost;
@@ -1066,7 +1066,7 @@ const EditorFile = () => {
 
     if (newArrForAddition && newArrForAddition?.length > 0) {
       const lineItem = newArrForAddition;
-      let allProductCodes: any = [];
+      const allProductCodes: any = [];
       let allProductCodeDataa: any = [];
       lineItem?.map((itemsPro: any) => {
         allProductCodes?.push(
@@ -1075,17 +1075,17 @@ const EditorFile = () => {
             : 'NEWCODE0123',
         );
       });
-      let valuessOfAlreayExist = await dispatch(
+      const valuessOfAlreayExist = await dispatch(
         getBulkProductIsExisting(allProductCodes),
       );
       if (valuessOfAlreayExist?.payload?.length > 0) {
         allProductCodeDataa = valuessOfAlreayExist?.payload;
       }
-      let newArrValues = getLineItemsWithNonRepitive(newArrForAddition);
+      const newArrValues = getLineItemsWithNonRepitive(newArrForAddition);
 
       if (valuessOfAlreayExist?.payload?.length > 0) {
         // ======To get items that are  non added Values==============
-        let newInsertionData = getValuesOFLineItemsThoseNotAddedBefore(
+        const newInsertionData = getValuesOFLineItemsThoseNotAddedBefore(
           lineItem,
           allProductCodeDataa,
         );
@@ -1111,10 +1111,10 @@ const EditorFile = () => {
 
       if (lineItem) {
         lineItem?.map((itemssProduct: any) => {
-          let productCode = itemssProduct?.product_code
+          const productCode = itemssProduct?.product_code
             ? itemssProduct?.product_code?.replace(/\s/g, '')
             : 'NEWCODE0123';
-          let itemsToAdd = allProductCodeDataa?.find(
+          const itemsToAdd = allProductCodeDataa?.find(
             (productItemFind: any) =>
               productItemFind?.product_code?.replace(/\s/g, '') === productCode,
           );
@@ -1139,7 +1139,7 @@ const EditorFile = () => {
         (payload: any) => {
           if (payload?.payload && payload?.payload?.length > 0) {
             payload?.payload?.map((items: any) => {
-              let newObj = {
+              const newObj = {
                 ...items,
               };
               newObj.cost = items?.adjusted_price;
@@ -1204,10 +1204,8 @@ const EditorFile = () => {
         type: 'info',
       });
       setNanonetsLoading(false);
-
-      return;
     } else {
-      let data = {
+      const data = {
         token: salesForceToken,
         FileId: null,
         urls: salesForceinstanceUrl,
@@ -1217,7 +1215,7 @@ const EditorFile = () => {
 
       dispatch(getSalesForceFileData(data))?.then(async (payload: any) => {
         if (!payload?.payload?.body) {
-          let newObj = {
+          const newObj = {
             token: salesForceToken,
             FileId: null,
             urls: salesForceinstanceUrl,
@@ -1243,25 +1241,21 @@ const EditorFile = () => {
               // location?.reload();
             }
           });
+        } else if (payload?.payload?.body) {
+          setShowApplyFormula(false);
+          setShowAddColumnModal(false);
+          setShowModal(false);
+          setShowUpdateColumnModal(false);
+          setOpenAddNewFormulaModal(false);
+          setAccoutSyncOptions(false);
+          setMergedVaalues('');
+          setMergeedColumn([]);
+          setQuoteItems([]);
 
-          return;
-        } else {
-          if (payload?.payload?.body) {
-            setShowApplyFormula(false);
-            setShowAddColumnModal(false);
-            setShowModal(false);
-            setShowUpdateColumnModal(false);
-            setOpenAddNewFormulaModal(false);
-            setAccoutSyncOptions(false);
-            setMergedVaalues('');
-            setMergeedColumn([]);
-            setQuoteItems([]);
-
-            fetchSaleForceDataa();
-            // router.replace(
-            //   `/fileEditor?quote_Id=${SaleQuoteId}&key=${salesForceToken}&instance_url=${salesForceinstanceUrl}&file_Id=${null}&editLine=false&manual=true`,
-            // );
-          }
+          fetchSaleForceDataa();
+          // router.replace(
+          //   `/fileEditor?quote_Id=${SaleQuoteId}&key=${salesForceToken}&instance_url=${salesForceinstanceUrl}&file_Id=${null}&editLine=false&manual=true`,
+          // );
         }
       });
     }
@@ -1276,7 +1270,7 @@ const EditorFile = () => {
       );
       location?.reload();
     } else {
-      let data = {
+      const data = {
         id: getQUoteId,
         type_of_file: 'export',
       };
@@ -1286,7 +1280,7 @@ const EditorFile = () => {
             location?.reload();
           }
           if (payload?.payload === null) {
-            let dataNew = {
+            const dataNew = {
               id: getQUoteId,
               type_of_file: 'manual',
             };
@@ -1318,8 +1312,8 @@ const EditorFile = () => {
   };
 
   const AddNewCloumnToMergedTable = async (value: any) => {
-    let newArr: any = [...mergedValue];
-    let resultantArr: any = [];
+    const newArr: any = [...mergedValue];
+    const resultantArr: any = [];
 
     newArr?.map((items: any) => {
       resultantArr?.push({...items, [value]: ''});
@@ -1330,12 +1324,12 @@ const EditorFile = () => {
   };
 
   const UpdateTheColumnName = async (type: any, old: string, newVal: any) => {
-    let newArr: any = [...mergedValue];
-    const renameKey = (arr: any, oldKey: any, newKey: any) => {
-      return arr.map((obj: any) => {
+    const newArr: any = [...mergedValue];
+    const renameKey = (arr: any, oldKey: any, newKey: any) =>
+      arr.map((obj: any) => {
         // Create a new object preserving the order of keys
-        let newObj: any = {};
-        for (let key of Object.keys(obj)) {
+        const newObj: any = {};
+        for (const key of Object.keys(obj)) {
           if (key === oldKey) {
             // Rename the old key to new key
             newObj[newKey] = obj[key];
@@ -1346,10 +1340,9 @@ const EditorFile = () => {
         }
         return newObj;
       });
-    };
 
-    let result = concatenateAfterFirstWithSpace(old);
-    let updatedArr = renameKey(newArr, result, newVal);
+    const result = concatenateAfterFirstWithSpace(old);
+    const updatedArr = renameKey(newArr, result, newVal);
 
     setMergedVaalues(updatedArr);
     notification.open({
@@ -1365,7 +1358,7 @@ const EditorFile = () => {
   };
   const [existingColumnOptions, setExistingColumnName] = useState<any>();
   useEffect(() => {
-    let newArr: any = [];
+    const newArr: any = [];
     mergeedColumn?.map((items: any) => {
       newArr?.push({label: items, value: items});
     });
@@ -1376,12 +1369,12 @@ const EditorFile = () => {
     const keys = Object.keys(mergedValue?.[0]);
     const newArrrUpadted = mergedValue?.length > 0 ? [...mergedValue] : [];
 
-    let resulsst = concatenateAfterFirstWithSpace(oldName);
+    const resulsst = concatenateAfterFirstWithSpace(oldName);
     // Find the index of the key 'ap'
     const index = keys.indexOf(resulsst);
-    let indexToApply = index;
+    const indexToApply = index;
     // Alpabet extration
-    let columnLetter = newArrForAlpaForFormulas[indexToApply];
+    const columnLetter = newArrForAlpaForFormulas[indexToApply];
 
     // Generate the new array with the computed property
 
@@ -1431,15 +1424,15 @@ const EditorFile = () => {
     const keys = Object.keys(mergedValue?.[0]);
     // =====================for from map
     const index = keys.indexOf(FromMap);
-    let indexToApply = index;
+    const indexToApply = index;
     // Alpabet extration
-    let column1 = newArrForAlpaForFormulas[indexToApply];
+    const column1 = newArrForAlpaForFormulas[indexToApply];
     // ====================for toMap========
 
     const indexNew = keys.indexOf(MapTo);
-    let indexToApplynew = indexNew;
+    const indexToApplynew = indexNew;
     // Alpabet extration
-    let column2 = newArrForAlpaForFormulas[indexToApplynew];
+    const column2 = newArrForAlpaForFormulas[indexToApplynew];
 
     // Function to extract function name from the formula
     function extractFunctionName(formula: any) {
@@ -1465,8 +1458,8 @@ const EditorFile = () => {
     // Update array with new column and formula
     newArrr = newArrr.map((item, index) => {
       // Formula is based on the index (1-based)
-      let rowIndex = index + 1;
-      let formula = generateFormula(functionName, rowIndex, column1, column2);
+      const rowIndex = index + 1;
+      const formula = generateFormula(functionName, rowIndex, column1, column2);
       // Return the updated object
       return {
         ...item,
@@ -1519,8 +1512,8 @@ const EditorFile = () => {
   };
 
   const addFormulaTOStoredFormulas = async (value: any) => {
-    let result = changeTheALpabetsFromFormula(value);
-    let newObj: any = {formula: result};
+    const result = changeTheALpabetsFromFormula(value);
+    const newObj: any = {formula: result};
     if (fileData?.distributor_id) {
       newObj.distributor_id = fileData?.distributor_id;
     } else if (fileData?.oem_id) {
@@ -1569,11 +1562,11 @@ const EditorFile = () => {
                 indicators: true,
                 columns: salesForceinstanceUrl ? [0, 1] : [0, 1],
               }}
-              contextMenu={true}
+              contextMenu
               multiColumnSorting
               filters
               rowHeaders
-              allowInsertRow={true}
+              allowInsertRow
               allowInsertColumn
               afterGetColHeader={alignHeaders}
               beforeRenderer={() => {
@@ -1691,7 +1684,7 @@ const EditorFile = () => {
                       minSpareRows={0}
                       autoWrapRow
                       formulas={{
-                        engine: HyperFormula,
+                        engine: HyperFormula as unknown as any,
                       }}
                       afterFormulasValuesUpdate={afterFormulasValuesUpdate}
                       stretchH="all"
@@ -1700,7 +1693,7 @@ const EditorFile = () => {
                       hiddenColumns={{
                         indicators: true,
                       }}
-                      contextMenu={true}
+                      contextMenu
                       multiColumnSorting
                       filters
                       rowHeaders
@@ -1815,18 +1808,18 @@ const EditorFile = () => {
                                 width="auto"
                                 minSpareRows={0}
                                 formulas={{
-                                  engine: HyperFormula,
+                                  engine: HyperFormula as unknown as any,
                                 }}
                                 stretchH="all"
                                 autoWrapRow
                                 autoWrapCol
                                 licenseKey="non-commercial-and-evaluation"
                                 fillHandle
-                                dropdownMenu={true}
+                                dropdownMenu
                                 hiddenColumns={{
                                   indicators: true,
                                 }}
-                                contextMenu={true}
+                                contextMenu
                                 multiColumnSorting
                                 filters
                                 rowHeaders
@@ -1948,9 +1941,8 @@ const EditorFile = () => {
                     name="Body 3/Regular"
                     style={{fontSize: '20px', textAlign: 'center'}}
                   >
-                    {
-                      'This file is already updated. Please review the other file on Review Quotes'
-                    }
+                    This file is already updated. Please review the other file
+                    on Review Quotes
                   </Typography>
                 </Space>
 
@@ -2022,9 +2014,7 @@ const EditorFile = () => {
                 <OsButton
                   // style={{marginRight: '100px'}}
                   disabled={
-                    newHeaderName?.length > 0 && oldColumnName?.length > 0
-                      ? false
-                      : true
+                    !(newHeaderName?.length > 0 && oldColumnName?.length > 0)
                   }
                   text="Update"
                   buttontype="SECONDARY"
@@ -2035,9 +2025,7 @@ const EditorFile = () => {
               </div>
               <OsButton
                 disabled={
-                  newHeaderName?.length > 0 && oldColumnName?.length > 0
-                    ? false
-                    : true
+                  !(newHeaderName?.length > 0 && oldColumnName?.length > 0)
                 }
                 text="Update & Close"
                 buttontype="PRIMARY"
@@ -2071,7 +2059,7 @@ const EditorFile = () => {
               />
             </Col>
             <OsButton
-              disabled={newHeaderName?.length > 0 ? false : true}
+              disabled={!(newHeaderName?.length > 0)}
               text="Add"
               buttontype="PRIMARY"
               clickHandler={() => {
@@ -2099,22 +2087,18 @@ const EditorFile = () => {
               align="center"
             >
               <Space direction="vertical" align="center" size={1}>
-                <Typography name="Body 2/Regular">
-                  {'Store New Formula'}
-                </Typography>
+                <Typography name="Body 2/Regular">Store New Formula</Typography>
                 <Typography name="Body 3/Regular">
-                  {
-                    'Would you like to save this formula to our stored collection?'
-                  }
+                  Would you like to save this formula to our stored collection?
                 </Typography>
               </Space>
 
               <Space size={12}>
                 <OsButton
-                  text={`No`}
+                  text="No"
                   buttontype="SECONDARY"
                   clickHandler={() => {
-                    let newArrr: any =
+                    const newArrr: any =
                       decliendFormulas?.length > 0 ? [...decliendFormulas] : [];
 
                     newArrr?.push(valueOfNewFormula);
@@ -2244,9 +2228,7 @@ const EditorFile = () => {
                 <OsButton
                   // style={{marginRight: '100px'}}
                   disabled={
-                    newHeaderName?.length > 0 && oldColumnName?.length > 0
-                      ? false
-                      : true
+                    !(newHeaderName?.length > 0 && oldColumnName?.length > 0)
                   }
                   text="Apply"
                   buttontype="PRIMARY"

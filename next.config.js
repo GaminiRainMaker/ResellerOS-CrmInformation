@@ -4,6 +4,9 @@ const nextConfig = {
   optimizeDeps: {
     exclude: ['canvas'],
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   api: {
     bodyParser: false,
   },

@@ -1,4 +1,7 @@
 /* eslint-disable eqeqeq */
+
+'use client';
+
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -135,7 +138,7 @@ const BundleSection: FC<any> = ({
             />
           </SelectFormItem>
         ) : (
-          <Row justify={'space-between'} gutter={[16, 16]}>
+          <Row justify="space-between" gutter={[16, 16]}>
             <Col span={12}>
               <SelectFormItem
                 label={

@@ -2,20 +2,24 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable arrow-body-style */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+
+'use client';
+
 import Col from 'antd/es/grid/col';
 import Row from 'antd/es/grid/row';
 import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
+import TextArea from 'antd/es/input/TextArea';
+import {Divider, message, notification} from 'antd';
+import {convertFileToBase64} from '@/app/utils/base';
+import {Color} from 'antd/es/color-picker';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
 import {CustomTabStyle} from './styled-components';
 import OsButton from '../os-button';
 import {OSDraggerStyleForSupport} from '../os-upload/styled-components';
-import TextArea from 'antd/es/input/TextArea';
 import GlobalLoader from '../os-global-loader';
-import {Divider, message, notification} from 'antd';
-import {convertFileToBase64} from '@/app/utils/base';
 import {
   uploadDocumentOnAzure,
   uploadToAws,
@@ -23,7 +27,6 @@ import {
 } from '../../../../../redux/actions/upload';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {sendEmailForSuport} from '../../../../../redux/actions/auth';
-import {Color} from 'antd/es/color-picker';
 
 const AdminCustomTabs: FC<any> = (tabs) => {
   const searchParams = useSearchParams()!;
@@ -142,7 +145,7 @@ const AdminCustomTabs: FC<any> = (tabs) => {
   const beforeUpload = async (file: File) => {
     const obj: any = {...file};
     setLoadingSpin(true);
-    let pathUsedToUpload = file?.type?.split('.')?.includes('document')
+    const pathUsedToUpload = file?.type?.split('.')?.includes('document')
       ? uploadDocumentOnAzure
       : file?.type?.split('.')?.includes('image/jpeg') ||
           file?.type?.split('/')?.includes('image')
@@ -180,7 +183,7 @@ const AdminCustomTabs: FC<any> = (tabs) => {
     }
 
     setLoadingSpin(true);
-    let newArrForUploadded: any = [];
+    const newArrForUploadded: any = [];
 
     if (uploadedData && uploadedData?.length > 0) {
       uploadedData?.map((items: any) => {
@@ -188,7 +191,7 @@ const AdminCustomTabs: FC<any> = (tabs) => {
       });
     }
 
-    let newObj = {
+    const newObj = {
       issue: addIssueToSupport,
       attach: newArrForUploadded,
       // organizationName: userInformation?.organization,

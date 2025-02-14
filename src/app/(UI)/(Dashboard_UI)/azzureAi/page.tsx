@@ -12,12 +12,9 @@
 'use client';
 
 import '@handsontable/pikaday/css/pikaday.css';
-const HotTable = dynamic(() => import('@handsontable/react'), {
-  ssr: false,
-});
 
 // import {HotTable} from '@handsontable/react';
-import {HyperFormula} from 'hyperformula';
+import HyperFormula from 'hyperformula';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -48,6 +45,10 @@ import {addClassesToRows, alignHeaders} from '../fileEditor/hooksCallbacks';
 import './styles.css';
 import {queryLineItemSyncingForSalesForce} from '../../../../../redux/actions/LineItemSyncing';
 
+const HotTable = dynamic(() => import('@handsontable/react'), {
+  ssr: false,
+});
+
 registerAllModules();
 
 const EditorFile = () => {
@@ -75,7 +76,7 @@ const EditorFile = () => {
   });
   useEffect(() => {
     dispatch(queryLineItemSyncingForSalesForce(query))?.then((payload: any) => {
-      let approvedOne = payload?.payload?.filter(
+      const approvedOne = payload?.payload?.filter(
         (items: any) => items?.status === 'Approved',
       );
       setLineItemSyncingData(approvedOne);
@@ -96,7 +97,7 @@ const EditorFile = () => {
   }, [UploadedFileData]);
 
   const mapNewArrMappedValues = (newArr: any, newMapped: any) => {
-    let result: any = [];
+    const result: any = [];
 
     // Iterate over each mapping in newMapped
     newMapped.forEach((mapping: any) => {
@@ -109,7 +110,7 @@ const EditorFile = () => {
           for (let i = index + 1; i < arr.length; i++) {
             if (arr[i] !== null) {
               // Add the new key-value pair to the result
-              let obj: any = {};
+              const obj: any = {};
               obj[mapping.newVal] = arr[i];
               result.push(obj);
               break; // Exit the loop after finding the first non-null value
@@ -124,7 +125,7 @@ const EditorFile = () => {
 
   const beforeUpload = async (file: File) => {
     const obj: any = {...file};
-    let pathUsedToUpload = file?.type?.split('.')?.includes('spreadsheetml')
+    const pathUsedToUpload = file?.type?.split('.')?.includes('spreadsheetml')
       ? uploadExcelFileToAws
       : uploadToAws;
 
@@ -136,15 +137,15 @@ const EditorFile = () => {
           (payload: any) => {
             // const doc_url = payload?.payload?.data?.Location;
             const doc_url = payload?.payload?.data;
-            let pathToGo =
+            const pathToGo =
               excelFile === 'true' ? fetchAndParseExcel : getPDFFileData;
-            let objName = excelFile === 'true' ? 'Url' : 'pdfUrl';
+            const objName = excelFile === 'true' ? 'Url' : 'pdfUrl';
             if (doc_url) {
               dispatch(pathToGo({[objName]: doc_url}))?.then((payload: any) => {
                 console.log('payloadpayload', payload?.payload);
                 if (excelFile === 'true') {
                   // this is  a check arrr
-                  let newArrCheck = [
+                  const newArrCheck = [
                     'line #',
                     'partnumber',
                     'manufacturer',
@@ -158,26 +159,26 @@ const EditorFile = () => {
                     'productcode',
                     'listprice',
                   ];
-                  const normalize = (str: any) => {
-                    return str
+                  const normalize = (str: any) =>
+                    str
                       ?.toString()
                       ?.toLowerCase()
                       .replace(/[\s_]+/g, ' ')
                       .trim();
-                  };
 
                   // Normalize the newArrCheck values
-                  let normalizedCheckArr = newArrCheck.map(normalize);
+                  const normalizedCheckArr = newArrCheck.map(normalize);
                   // check for best matching row
                   let maxMatches = 0;
                   let bestRowIndex = -1;
 
                   for (let i = 0; i < payload?.payload.length; i++) {
-                    let currentRow = payload?.payload[i];
+                    const currentRow = payload?.payload[i];
                     let matchCount = 0;
 
-                    for (let item of currentRow) {
-                      let normalizedItem = normalize(item);
+                    // eslint-disable-next-line no-restricted-syntax
+                    for (const item of currentRow) {
+                      const normalizedItem = normalize(item);
                       // Check if normalizedItem matches any normalized check item
                       if (
                         normalizedCheckArr.some(
@@ -197,11 +198,8 @@ const EditorFile = () => {
 
                   // trim the arrr for valid lineItems
 
-                  const isNullOrEmptyRow = (row: any) => {
-                    return row.every(
-                      (item: any) => item === null || item === '',
-                    );
-                  };
+                  const isNullOrEmptyRow = (row: any) =>
+                    row.every((item: any) => item === null || item === '');
 
                   let indexFrom = -1;
 
@@ -217,11 +215,11 @@ const EditorFile = () => {
                   }
 
                   // Slice the array from the found index
-                  let quoteHeaderChecks = payload?.payload?.slice(
+                  const quoteHeaderChecks = payload?.payload?.slice(
                     0,
-                    bestRowIndex ? bestRowIndex : 20,
+                    bestRowIndex || 20,
                   );
-                  let newMapped = [
+                  const newMapped = [
                     {preVal: 'Quote #', newVal: 'Quote #'},
                     {preVal: 'Quote Date', newVal: 'Quote Date'},
                     {preVal: 'Expiration Date', newVal: 'Expiration Date'},
@@ -234,12 +232,12 @@ const EditorFile = () => {
                     {preVal: 'TOTAL PRICE:', newVal: 'TOTAL PRICE:'},
                   ];
 
-                  let mappedQuoteHeaders = mapNewArrMappedValues(
+                  const mappedQuoteHeaders = mapNewArrMappedValues(
                     quoteHeaderChecks,
                     newMapped,
                   );
 
-                  let result =
+                  const result =
                     indexFrom > 0
                       ? payload?.payload?.slice(bestRowIndex + 1, indexFrom - 1)
                       : payload?.payload?.slice(
@@ -247,21 +245,21 @@ const EditorFile = () => {
                           payload?.payload?.length - 1,
                         );
 
-                  let requiredOutput = result
+                  const requiredOutput = result
                     ?.map((subArray: any) =>
                       subArray.filter((item: any) => item !== null),
                     )
                     .filter((subArray: any) => subArray.length > 0);
 
-                  let headerKeys = payload?.payload[bestRowIndex]?.filter(
+                  const headerKeys = payload?.payload[bestRowIndex]?.filter(
                     (items: any) => items !== null,
                   );
-                  let modifiedArr = headerKeys?.map((item: any) =>
+                  const modifiedArr = headerKeys?.map((item: any) =>
                     item.replace(/\s+/g, '').replace(/[.]/g, ''),
                   );
                   // replace the syncing valueesss ========================
 
-                  let syncedHeaderValue = modifiedArr
+                  const syncedHeaderValue = modifiedArr
                     .map((item: any) => {
                       // Clean up the item by removing spaces and special characters
                       const cleanedItem = item
@@ -272,6 +270,7 @@ const EditorFile = () => {
 
                       // Find the matching quoteHeader
                       const match = lineItemSyncingData?.find(
+                        // eslint-disable-next-line @typescript-eslint/no-shadow
                         (obj: any) =>
                           obj.pdf_header.toLowerCase().substring(0, 4) ===
                           cleanedItem,
@@ -284,8 +283,9 @@ const EditorFile = () => {
 
                   // end of above
                   // Transform newArr into an array of objects
-                  let resultantValues = requiredOutput.map((row: any) => {
-                    let obj: any = {};
+                  const resultantValues = requiredOutput.map((row: any) => {
+                    // eslint-disable-next-line @typescript-eslint/no-shadow
+                    const obj: any = {};
                     syncedHeaderValue.forEach((header: any, index: any) => {
                       obj[header] = row[index] === '' ? null : row[index]; // Convert empty strings to null
                     });
@@ -293,105 +293,101 @@ const EditorFile = () => {
                   });
 
                   setUploadedFileData(resultantValues);
-                } else {
-                  if (payload?.payload?.analyzeResult?.tables?.length > 0) {
-                    // if (fileDataa2?.[0]?.analyzeResult?.tables?.length > 0) {
+                } else if (
+                  payload?.payload?.analyzeResult?.tables?.length > 0
+                ) {
+                  // if (fileDataa2?.[0]?.analyzeResult?.tables?.length > 0) {
 
-                    let mainItem = payload?.payload?.analyzeResult?.tables;
-                    let globalArr: any = [];
+                  const mainItem = payload?.payload?.analyzeResult?.tables;
+                  const globalArr: any = [];
 
-                    for (let i = 0; i < mainItem?.length; i++) {
-                      let innerIntems = mainItem[i];
-                      if (innerIntems?.cells?.[0]?.kind === 'columnHeader') {
-                        let result: any = [];
+                  for (let i = 0; i < mainItem?.length; i++) {
+                    const innerIntems = mainItem[i];
+                    if (innerIntems?.cells?.[0]?.kind === 'columnHeader') {
+                      const result: any = [];
 
-                        // Step 1: Extract headers from column headers
-                        let headers: any = {};
-                        innerIntems?.cells.forEach((item: any) => {
-                          if (item.kind === 'columnHeader') {
-                            headers[item.columnIndex] = item.content; // Store headers by their column index
-                          }
-                        });
-
-                        // Step 2: Create the output based on the headers and rows
-                        innerIntems?.cells.forEach((row: any) => {
-                          if (row.rowIndex > 0) {
-                            // Skip the header row
-                            // Check if we need to push a new object
-                            if (!result[row.rowIndex - 1]) {
-                              result[row.rowIndex - 1] = {}; // Initialize a new object for this row
-                            }
-
-                            // Assign content to the respective header using columnIndex
-                            if (row.columnIndex in headers) {
-                              result[row.rowIndex - 1][
-                                headers[row.columnIndex]
-                              ] = row.content; // Assign content for the matching column
-                            }
-                          }
-                        });
-                        globalArr?.push(result);
-                      }
-                    }
-
-                    if (globalArr && globalArr?.length > 1) {
-                      const flattenedArray = globalArr?.flat();
-
-                      const uniqueKeys = Array.from(
-                        new Set(
-                          flattenedArray.flatMap((obj: any) =>
-                            Object.keys(obj),
-                          ),
-                        ),
-                      );
-                      const resultArray = flattenedArray.map((obj: any) => {
-                        const newObj: any = {};
-                        uniqueKeys.forEach((key: any) => {
-                          newObj[key] = obj[key] !== undefined ? obj[key] : '';
-                        });
-
-                        return newObj;
-                      });
-                      const transformObjects = (arr: any) => {
-                        const transformedArray = arr.map(
-                          (obj: any, index: number) => {
-                            if (obj[''] !== undefined) {
-                              obj[`emptyHeader ${index}`] = obj[''];
-                              delete obj[''];
-                            }
-                            return obj;
-                          },
-                        );
-                        return transformedArray;
-                      };
-
-                      // Apply transformation
-                      let result = transformObjects(resultArray);
-                      const cleanKeys = (obj: any) => {
-                        const cleanedObj: any = {};
-                        // Iterate over each key-value pair in the object
-                        for (const [key, value] of Object.entries(obj)) {
-                          // Remove special characters (e.g., periods, spaces) from the key
-                          const cleanedKey: any = key.replace(/[^\w]/g, '');
-                          cleanedObj[cleanedKey] = value;
+                      // Step 1: Extract headers from column headers
+                      const headers: any = {};
+                      innerIntems?.cells.forEach((item: any) => {
+                        if (item.kind === 'columnHeader') {
+                          headers[item.columnIndex] = item.content; // Store headers by their column index
                         }
-                        return cleanedObj;
-                      };
+                      });
 
-                      const cleanArray = (arr: any) => {
-                        // Apply the cleanKeys function to each object in the array
-                        return arr.map(cleanKeys);
-                      };
+                      // Step 2: Create the output based on the headers and rows
+                      innerIntems?.cells.forEach((row: any) => {
+                        if (row.rowIndex > 0) {
+                          // Skip the header row
+                          // Check if we need to push a new object
+                          if (!result[row.rowIndex - 1]) {
+                            result[row.rowIndex - 1] = {}; // Initialize a new object for this row
+                          }
 
-                      // Clean the array
-                      let cleanedArr = cleanArray(result);
-
-                      // setMergedVaalues(cleanedArr);
-                      // setFinalArrayForMerged(cleanedArr);
-                      setUploadedFileData(cleanedArr);
-                    } else {
-                      setUploadedFileData(globalArr?.[0]);
+                          // Assign content to the respective header using columnIndex
+                          if (row.columnIndex in headers) {
+                            result[row.rowIndex - 1][headers[row.columnIndex]] =
+                              row.content; // Assign content for the matching column
+                          }
+                        }
+                      });
+                      globalArr?.push(result);
                     }
+                  }
+
+                  if (globalArr && globalArr?.length > 1) {
+                    const flattenedArray = globalArr?.flat();
+
+                    const uniqueKeys = Array.from(
+                      new Set(
+                        flattenedArray.flatMap((obj: any) => Object.keys(obj)),
+                      ),
+                    );
+                    const resultArray = flattenedArray.map((obj: any) => {
+                      const newObj: any = {};
+                      uniqueKeys.forEach((key: any) => {
+                        newObj[key] = obj[key] !== undefined ? obj[key] : '';
+                      });
+
+                      return newObj;
+                    });
+                    const transformObjects = (arr: any) => {
+                      const transformedArray = arr.map(
+                        (obj: any, index: number) => {
+                          if (obj[''] !== undefined) {
+                            obj[`emptyHeader ${index}`] = obj[''];
+                            delete obj[''];
+                          }
+                          return obj;
+                        },
+                      );
+                      return transformedArray;
+                    };
+
+                    // Apply transformation
+                    const result = transformObjects(resultArray);
+                    const cleanKeys = (obj: any) => {
+                      const cleanedObj: any = {};
+                      // Iterate over each key-value pair in the object
+                      // eslint-disable-next-line no-restricted-syntax
+                      for (const [key, value] of Object.entries(obj)) {
+                        // Remove special characters (e.g., periods, spaces) from the key
+                        const cleanedKey: any = key.replace(/[^\w]/g, '');
+                        cleanedObj[cleanedKey] = value;
+                      }
+                      return cleanedObj;
+                    };
+
+                    const cleanArray = (arr: any) =>
+                      // Apply the cleanKeys function to each object in the array
+                      arr.map(cleanKeys);
+                    // Clean the array
+                    const cleanedArr = cleanArray(result);
+
+                    // setMergedVaalues(cleanedArr);
+                    // setFinalArrayForMerged(cleanedArr);
+                    setUploadedFileData(cleanedArr);
+                  } else {
+                    setUploadedFileData(globalArr?.[0]);
                   }
                 }
                 setShowModalForAI(false);
@@ -406,7 +402,7 @@ const EditorFile = () => {
       });
   };
 
-  let newArrColumn = [
+  const newArrColumn = [
     'a',
     'b',
     'c',
@@ -447,7 +443,7 @@ const EditorFile = () => {
           ]}
           height="auto"
           formulas={{
-            engine: HyperFormula,
+            engine: HyperFormula as unknown as any,
           }}
           stretchH="all"
           colHeaders={UploadedFileDataColumn}

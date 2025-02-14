@@ -1,3 +1,5 @@
+'use client';
+
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
@@ -9,6 +11,13 @@ import {Form, Space} from 'antd';
 import axios from 'axios';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
+import {parentpqli, salesForceWithArrrr} from '@/app/utils/saleforce';
+import {
+  getFormattedValuesForBundlesOnly,
+  getFormattedValuesForLineItems,
+  getFormattedValuesForWithAndWithoutBundles,
+  getFormattedValuesForWithAndWithoutBundlesForExcelFile,
+} from '@/app/utils/base';
 import {insertAttachmentDocument} from '../../../../../redux/actions/attachmentDocument';
 import {getAllFormStack} from '../../../../../redux/actions/formStackSync';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
@@ -17,13 +26,7 @@ import {
   uploadToAws,
 } from '../../../../../redux/actions/upload';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {parentpqli, salesForceWithArrrr} from '@/app/utils/saleforce';
-import {
-  getFormattedValuesForBundlesOnly,
-  getFormattedValuesForLineItems,
-  getFormattedValuesForWithAndWithoutBundles,
-  getFormattedValuesForWithAndWithoutBundlesForExcelFile,
-} from '@/app/utils/base';
+
 const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
   const [token] = useThemeToken();
   const router = useRouter();
@@ -46,7 +49,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
 
   console.log('243242231', objectForSyncingValues);
   useEffect(() => {
-    let newArrOfOption: any = [];
+    const newArrOfOption: any = [];
     formStackSyncData &&
       formStackSyncData?.length > 0 &&
       formStackSyncData?.map((FormstackDataItem: any) => {
@@ -55,7 +58,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
           FormstackDataItem?.type_of_file === 'With and without bundle' &&
           objectForSyncingValues?.QuoteLineItems?.length > 0
         ) {
-          let newObj = {
+          const newObj = {
             value: FormstackDataItem.doc_id,
             key: FormstackDataItem.doc_key,
             data: FormstackDataItem.syncJson,
@@ -72,7 +75,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
           FormstackDataItem?.type_of_file === 'Bundle Only' &&
           objectForSyncingValues?.QuoteLineItems?.length === 0
         ) {
-          let newObj = {
+          const newObj = {
             value: FormstackDataItem.doc_id,
             key: FormstackDataItem.doc_key,
             data: FormstackDataItem.syncJson,
@@ -90,7 +93,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
           FormstackDataItem?.type_of_file === 'Line Items Only' &&
           objectForSyncingValues?.QuoteLineItems?.length > 0
         ) {
-          let newObj = {
+          const newObj = {
             value: FormstackDataItem.doc_id,
             key: FormstackDataItem.doc_key,
             data: FormstackDataItem.syncJson,
@@ -125,11 +128,11 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
     }));
 
   const dowloadFunction = async (data: any, type: string) => {
-    let findTheItem = formStackSyncData?.find(
+    const findTheItem = formStackSyncData?.find(
       (item: any) => item?.doc_key === data?.key,
     );
 
-    let resultValues: any = {};
+    const resultValues: any = {};
     let lineItemsArray: any = [];
     if (
       findTheItem?.type_of_file === 'With and without bundle' &&
@@ -167,14 +170,12 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
       }
     });
 
-    let sottedFOr = lineItemsArray?.lineItemss
+    const sottedFOr = lineItemsArray?.lineItemss
       ? lineItemsArray?.lineItemss
       : lineItemsArray;
-    let sortedLineItems = sottedFOr?.sort((a: any, b: any) => {
-      return a.Id - b.Id;
-    });
+    const sortedLineItems = sottedFOr?.sort((a: any, b: any) => a.Id - b.Id);
 
-    for (let key in formattedData) {
+    for (const key in formattedData) {
       if (objectForSyncingValues[formattedData[key]]) {
         resultValues[key] = objectForSyncingValues[formattedData[key]];
       }
@@ -193,21 +194,21 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
         Number(objectForSyncingValues?.quote_shipping);
     }
 
-    let billingAdress = objectForSyncingValues?.addressForAll?.find(
+    const billingAdress = objectForSyncingValues?.addressForAll?.find(
       (items: any) => items?.id === objectForSyncingValues?.billing_id,
     );
-    let shippingAdress = objectForSyncingValues?.addressForAll?.find(
+    const shippingAdress = objectForSyncingValues?.addressForAll?.find(
       (items: any) => items?.id === objectForSyncingValues?.shipping_id,
     );
-    let billingContactId =
+    const billingContactId =
       objectForSyncingValues?.billing_phone?.split('#')?.[1];
-    let shippingContactId =
+    const shippingContactId =
       objectForSyncingValues?.shipping_phone?.split('#')?.[1];
 
-    let billingContact = objectForSyncingValues?.allContactDetails?.find(
+    const billingContact = objectForSyncingValues?.allContactDetails?.find(
       (items: any) => items?.id == billingContactId,
     );
-    let shippingContact = objectForSyncingValues?.allContactDetails?.find(
+    const shippingContact = objectForSyncingValues?.allContactDetails?.find(
       (items: any) => items?.id == shippingContactId,
     );
 
@@ -251,7 +252,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
 
     try {
       setLoading(true);
-      let pathName =
+      const pathName =
         type === 'download'
           ? `https://www.webmerge.me/merge/${data?.value}/${data?.key}?downoad=1`
           : `https://www.webmerge.me/merge/${data?.value}/${data?.key}`;
@@ -279,8 +280,8 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
             type: 'application/octet-stream',
           });
 
-          const blobToBase64 = (blobs: any) => {
-            return new Promise((resolve, reject) => {
+          const blobToBase64 = (blobs: any) =>
+            new Promise((resolve, reject) => {
               const reader = new FileReader();
               reader.onloadend = () => resolve(reader.result);
               reader.onerror = (error) => {
@@ -288,9 +289,8 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
               };
               reader.readAsDataURL(blobs);
             });
-          };
           console.log('blob?.type', blob?.type);
-          let pathUsedToUpload =
+          const pathUsedToUpload =
             blob?.type === 'application/octet-stream'
               ? uploadExcelFileToAws
               : uploadToAws;
@@ -299,7 +299,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
             (payload: any) => {
               const pdfUrl = payload?.payload?.data?.Location;
               if (pdfUrl) {
-                let newObjForAttach: any = {
+                const newObjForAttach: any = {
                   doc_url: pdfUrl,
                   quote_id: getQuoteID,
                   type: 'Customer Quote',
@@ -374,14 +374,14 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
                 style={{width: '100%', display: 'flex', justifyContent: 'end'}}
               >
                 {' '}
-                <Row justify={'end'}>
+                <Row justify="end">
                   <OsButton
                     text="Preview"
                     buttontype="SECONDARY"
                     clickHandler={() => dowloadFunction(selectedDoc, 'preview')}
                   />
                 </Row>
-                <Row justify={'end'}>
+                <Row justify="end">
                   <OsButton
                     text="Download"
                     buttontype="PRIMARY"

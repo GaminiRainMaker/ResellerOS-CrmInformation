@@ -1,4 +1,5 @@
 'use client';
+
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -13,8 +14,8 @@ import {pricingMethod} from '@/app/utils/CONSTANTS';
 import {currencyFormatter} from '@/app/utils/base';
 import {Badge} from 'antd';
 import {FC, useEffect, useState} from 'react';
-import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {useSearchParams} from 'next/navigation';
+import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {getRebateQuoteLineItemByQuoteId} from '../../../../../../redux/actions/rebateQuoteLineitem';
 
 const Rebates: FC<any> = ({
@@ -60,7 +61,7 @@ const Rebates: FC<any> = ({
 
     data.forEach((item) => {
       let name: string | undefined;
-      let description = '';
+      const description = '';
       const type = 'groups';
 
       if (filterValue) {
@@ -332,143 +333,140 @@ const Rebates: FC<any> = ({
           <>
             {selectedFilter && rebateFinalData?.length > 0 ? (
               <>
-                {rebateFinalData?.map((finalDataItem: any, index: number) => {
-                  return (
-                    <OsCollapse
-                      key={index}
-                      activeKey={collapseActiveKeys}
-                      onChange={(key: string | string[]) => {
-                        setCollapseActiveKeys(key);
-                      }}
-                      items={[
-                        {
-                          key: index,
-                          label: (
-                            <Row
-                              justify="space-between"
-                              align="middle"
-                              gutter={[8, 8]}
-                            >
-                              <Col xs={24} sm={12} md={12} lg={5} xl={5}>
-                                <Badge
-                                  count={finalDataItem?.QuoteLineItem?.length}
+                {rebateFinalData?.map((finalDataItem: any, index: number) => (
+                  <OsCollapse
+                    key={index}
+                    activeKey={collapseActiveKeys}
+                    onChange={(key: string | string[]) => {
+                      setCollapseActiveKeys(key);
+                    }}
+                    items={[
+                      {
+                        key: index,
+                        label: (
+                          <Row
+                            justify="space-between"
+                            align="middle"
+                            gutter={[8, 8]}
+                          >
+                            <Col xs={24} sm={12} md={12} lg={5} xl={5}>
+                              <Badge
+                                count={finalDataItem?.QuoteLineItem?.length}
+                              >
+                                <Typography
+                                  style={{padding: '5px 8px 0px 0px'}}
+                                  name="Body 4/Medium"
+                                  color={token?.colorBgContainer}
+                                  ellipsis
+                                  tooltip
+                                  as="div"
+                                  maxWidth={240}
                                 >
-                                  <Typography
-                                    style={{padding: '5px 8px 0px 0px'}}
-                                    name="Body 4/Medium"
-                                    color={token?.colorBgContainer}
-                                    ellipsis
-                                    tooltip
-                                    as="div"
-                                    maxWidth={240}
-                                  >
-                                    {finalDataItem?.name}
-                                  </Typography>
-                                </Badge>
-                              </Col>
-                              <Col xs={24} sm={12} md={12} lg={6} xl={6}>
-                                <span
-                                  style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                  }}
+                                  {finalDataItem?.name}
+                                </Typography>
+                              </Badge>
+                            </Col>
+                            <Col xs={24} sm={12} md={12} lg={6} xl={6}>
+                              <span
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                }}
+                              >
+                                Ext Price:{' '}
+                                <Typography
+                                  name="Body 4/Medium"
+                                  color={token?.colorBgContainer}
+                                  ellipsis
+                                  tooltip
+                                  as="div"
+                                  style={{marginLeft: '2px'}}
                                 >
-                                  Ext Price:{' '}
-                                  <Typography
-                                    name="Body 4/Medium"
-                                    color={token?.colorBgContainer}
-                                    ellipsis
-                                    tooltip
-                                    as="div"
-                                    style={{marginLeft: '2px'}}
-                                  >
-                                    $
-                                    {abbreviate(
-                                      Number(
-                                        finalDataItem?.totalExtendedPrice ??
-                                          0.0,
-                                      ),
-                                    )}
-                                  </Typography>
-                                </span>
-                              </Col>
-                              <Col xs={24} sm={12} md={12} lg={4} xl={4}>
-                                <span
-                                  style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                  }}
+                                  $
+                                  {abbreviate(
+                                    Number(
+                                      finalDataItem?.totalExtendedPrice ?? 0.0,
+                                    ),
+                                  )}
+                                </Typography>
+                              </span>
+                            </Col>
+                            <Col xs={24} sm={12} md={12} lg={4} xl={4}>
+                              <span
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                }}
+                              >
+                                Rbt Amt:{' '}
+                                <Typography
+                                  name="Body 4/Medium"
+                                  color={token?.colorBgContainer}
+                                  ellipsis
+                                  tooltip
+                                  as="div"
+                                  style={{marginLeft: '2px'}}
                                 >
-                                  Rbt Amt:{' '}
-                                  <Typography
-                                    name="Body 4/Medium"
-                                    color={token?.colorBgContainer}
-                                    ellipsis
-                                    tooltip
-                                    as="div"
-                                    style={{marginLeft: '2px'}}
-                                  >
-                                    $
-                                    {abbreviate(
-                                      Number(
-                                        finalDataItem?.totalGrossProfit ?? 0.0,
-                                      ),
-                                    )}
-                                  </Typography>
-                                </span>
-                              </Col>
-                              <Col xs={24} sm={10} md={12} lg={4} xl={4}>
-                                <span
-                                  style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                  }}
+                                  $
+                                  {abbreviate(
+                                    Number(
+                                      finalDataItem?.totalGrossProfit ?? 0.0,
+                                    ),
+                                  )}
+                                </Typography>
+                              </span>
+                            </Col>
+                            <Col xs={24} sm={10} md={12} lg={4} xl={4}>
+                              <span
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                }}
+                              >
+                                Rebate%:{' '}
+                                <Typography
+                                  name="Body 4/Medium"
+                                  color={token?.colorBgContainer}
+                                  ellipsis
+                                  tooltip
+                                  as="div"
+                                  style={{marginLeft: '2px'}}
                                 >
-                                  Rebate%:{' '}
-                                  <Typography
-                                    name="Body 4/Medium"
-                                    color={token?.colorBgContainer}
-                                    ellipsis
-                                    tooltip
-                                    as="div"
-                                    style={{marginLeft: '2px'}}
-                                  >
-                                    {' '}
-                                    {abbreviate(
-                                      Number(
-                                        finalDataItem?.totalGrossProfitPercentage ??
-                                          0.0,
-                                      ),
-                                    )}
-                                    %
-                                  </Typography>
-                                </span>
-                              </Col>
-                            </Row>
-                          ),
-                          children: (
-                            <div
-                              key={JSON.stringify(finalDataItem?.QuoteLineItem)}
-                            >
-                              <OsTableWithOutDrag
-                                loading={loading}
-                                columns={finaRebateTableCol}
-                                dataSource={finalDataItem?.QuoteLineItem}
-                                scroll
-                                locale={locale}
-                                rowSelection={rowSelection}
-                                selectedRowsKeys={selectTedRowIds}
-                                defaultPageSize={
-                                  finalDataItem?.QuoteLineItem?.length
-                                }
-                              />
-                            </div>
-                          ),
-                        },
-                      ]}
-                    />
-                  );
-                })}
+                                  {' '}
+                                  {abbreviate(
+                                    Number(
+                                      finalDataItem?.totalGrossProfitPercentage ??
+                                        0.0,
+                                    ),
+                                  )}
+                                  %
+                                </Typography>
+                              </span>
+                            </Col>
+                          </Row>
+                        ),
+                        children: (
+                          <div
+                            key={JSON.stringify(finalDataItem?.QuoteLineItem)}
+                          >
+                            <OsTableWithOutDrag
+                              loading={loading}
+                              columns={finaRebateTableCol}
+                              dataSource={finalDataItem?.QuoteLineItem}
+                              scroll
+                              locale={locale}
+                              rowSelection={rowSelection}
+                              selectedRowsKeys={selectTedRowIds}
+                              defaultPageSize={
+                                finalDataItem?.QuoteLineItem?.length
+                              }
+                            />
+                          </div>
+                        ),
+                      },
+                    ]}
+                  />
+                ))}
               </>
             ) : (
               <EmptyContainer

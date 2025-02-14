@@ -1,3 +1,5 @@
+'use client';
+
 import {CustomUpload} from '@/app/(UI)/(Dashboard_UI)/layouts/Header';
 import {getBase64} from '@/app/utils/upload';
 import {
@@ -220,47 +222,42 @@ const MyProfileCard: FC<any> = ({data}) => {
           </Space>
         </Col>
 
-        {proileDetailData?.map((proileDetailDataItem) => {
-          return (
-            <Col
-              xs={24}
-              sm={24}
-              md={24}
-              lg={12}
-              xl={5}
-              xxl={5}
-              key={proileDetailDataItem?.key}
-            >
-              <Space direction="vertical" size={4}>
+        {proileDetailData?.map((proileDetailDataItem) => (
+          <Col
+            xs={24}
+            sm={24}
+            md={24}
+            lg={12}
+            xl={5}
+            xxl={5}
+            key={proileDetailDataItem?.key}
+          >
+            <Space direction="vertical" size={4}>
+              <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
+                {proileDetailDataItem?.title}
+              </Typography>
+              <Space align="center">
+                <AvatarStyled
+                  icon={proileDetailDataItem?.icon}
+                  background={token?.colorInfoHover}
+                  size={36}
+                />
+
                 <Typography
+                  key={proileDetailDataItem?.key}
                   name="Body 4/Medium"
                   color={token?.colorPrimaryText}
+                  ellipsis
+                  maxWidth={190}
+                  as="div"
+                  tooltip
                 >
-                  {proileDetailDataItem?.title}
+                  {proileDetailDataItem?.data}
                 </Typography>
-                <Space align="center">
-                  <AvatarStyled
-                    icon={proileDetailDataItem?.icon}
-                    background={token?.colorInfoHover}
-                    size={36}
-                  />
-
-                  <Typography
-                    key={proileDetailDataItem?.key}
-                    name="Body 4/Medium"
-                    color={token?.colorPrimaryText}
-                    ellipsis
-                    maxWidth={190}
-                    as="div"
-                    tooltip
-                  >
-                    {proileDetailDataItem?.data}
-                  </Typography>
-                </Space>
               </Space>
-            </Col>
-          );
-        })}
+            </Space>
+          </Col>
+        ))}
       </MyProfileCardStyle>
     </>
   );
