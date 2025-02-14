@@ -1,3 +1,7 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-unsafe-optional-chaining */
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable import/order */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-nested-ternary */
@@ -142,7 +146,6 @@ const EditorFile = () => {
             const objName = excelFile === 'true' ? 'Url' : 'pdfUrl';
             if (doc_url) {
               dispatch(pathToGo({[objName]: doc_url}))?.then((payload: any) => {
-                console.log('payloadpayload', payload?.payload);
                 if (excelFile === 'true') {
                   // this is  a check arrr
                   const newArrCheck = [

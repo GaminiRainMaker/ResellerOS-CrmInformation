@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable array-callback-return */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-nested-ternary */
@@ -17,7 +20,7 @@ import {
   formatStatus,
 } from '@/app/utils/CONSTANTS';
 import {currencyFormatter, formatDate} from '@/app/utils/base';
-import {Checkbox, DatePicker, Form} from 'antd';
+import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import OsInputNumber from '@/app/components/common/os-input/InputNumber';
@@ -25,13 +28,9 @@ import CommonStageSelect from '@/app/components/common/os-stage-select';
 import OsButton from '@/app/components/common/os-button';
 import moment from 'moment';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
-import dayjs from 'dayjs';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
-import {
-  getQuoteById,
-  getQuoteByIdForEditQuoteHeader,
-} from '../../../../../redux/actions/quote';
+import {getQuoteByIdForEditQuoteHeader} from '../../../../../redux/actions/quote';
 import {
   getAllOpportunity,
   updateOpportunity,
@@ -71,6 +70,7 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
       synced_quote: getQuoteId,
     };
     await dispatch(updateOpportunity(data));
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     getAlllApisData();
   };
   useEffect(() => {
@@ -170,7 +170,7 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
       if (payload?.payload && payload?.payload?.length > 0) {
         payload?.payload?.map((itemsIn: any) => {
           if (
-            itemsIn?.address_type == 'Billing' &&
+            itemsIn?.address_type === 'Billing' &&
             (itemsIn?.shiping_address_line ||
               itemsIn?.shiping_city ||
               itemsIn?.shiping_state ||
@@ -182,7 +182,7 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
               value: itemsIn?.id,
             });
           } else if (
-            itemsIn?.address_type == 'Shipping' &&
+            itemsIn?.address_type === 'Shipping' &&
             (itemsIn?.shiping_address_line ||
               itemsIn?.shiping_city ||
               itemsIn?.shiping_state ||
@@ -216,8 +216,6 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
     });
     await dispatch(getAllBillingContactByCustomerId(customerId))?.then(
       (payload: any) => {
-        const shipparry: any = [];
-
         const allContactArrr: any = [];
         if (payload?.payload && payload?.payload?.length > 0) {
           payload?.payload?.map((itemsIn: any) => {
@@ -241,9 +239,9 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
     await dispatch(getAllCustomer({}))?.then((payload: any) => {});
     await dispatch(getAllOpportunity())?.then((payload: any) => {
       const oppAdddetails = payload?.payload?.find(
-        (itemsIn: any) => itemsIn?.id == opportuntityId,
+        (itemsIn: any) => itemsIn?.id === opportuntityId,
       );
-      if (oppAdddetails?.synced_quote == getQuoteId) {
+      if (oppAdddetails?.synced_quote === getQuoteId) {
         setOpportunitySynced(true);
       } else {
         setOpportunitySynced(false);
@@ -256,7 +254,7 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
 
   useEffect(() => {
     getAlllApisData();
-  }, [getQuoteId]);
+  }, [getAlllApisData, getQuoteId]);
 
   useEffect(() => {
     const newRequiredArray: any = [];

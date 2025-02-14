@@ -73,7 +73,7 @@ const FormBuilderMain: React.FC<any> = ({
   // dealRegDetail
   const [formLoading, setFormLoading] = useState<boolean>(false);
   const {TextArea} = Input;
-  let pathnameForFlow = pathname === '/dealRegDetail';
+  const pathnameForFlow = pathname === '/dealRegDetail';
   const getPartnerProgramID = searchParams.get('id');
   const isLoginTemplate = searchParams.get('loginTemplate');
   const [holdelSelectedValue, setHoldSelectedValue] = useState<any>();
@@ -94,7 +94,7 @@ const FormBuilderMain: React.FC<any> = ({
   };
 
   useEffect(() => {
-    let allTHeIndexAndSection: any = [];
+    const allTHeIndexAndSection: any = [];
     if (cartItems) {
       cartItems?.map((items: any, indexOut: number) => {
         items?.content?.map((itemsin: any, indexIn: number) => {
@@ -130,13 +130,11 @@ const FormBuilderMain: React.FC<any> = ({
               );
               setCartItems(formData);
             }
-          } else {
-            if (payload?.payload?.form_data?.[0]?.[0]) {
-              const formData: any = JSON?.parse(
-                payload?.payload?.form_data?.[0]?.[0],
-              );
-              setCartItems(formData);
-            }
+          } else if (payload?.payload?.form_data?.[0]?.[0]) {
+            const formData: any = JSON?.parse(
+              payload?.payload?.form_data?.[0]?.[0],
+            );
+            setCartItems(formData);
           }
         },
       );
@@ -674,16 +672,16 @@ const FormBuilderMain: React.FC<any> = ({
                             });
                           }
                         });
-                        let findIndexx =
+                        const findIndexx =
                           selectIndexFOrAllDependentField?.findIndex(
                             (items: any) =>
                               items?.indexOfItems === ItemConindex &&
                               items?.section === Sectidx,
                           );
-                        let PropertSelected =
+                        const PropertSelected =
                           selectIndexFOrAllDependentField?.[findIndexx]
                             ?.selectedIndexForDepend;
-                        let dependentDataaForIndex =
+                        const dependentDataaForIndex =
                           itemCon?.dependentFiledArr?.find(
                             (items: any) => items[0]?.id === PropertSelected,
                           );
@@ -770,81 +768,72 @@ const FormBuilderMain: React.FC<any> = ({
                                 })}
                               >
                                 {dependentDataaForIndex?.map(
-                                  (itemsChil: any, indexChild: number) => {
-                                    return (
-                                      <div>
-                                        {!previewFile && (
-                                          <ItemName
-                                            itemName={
-                                              itemsChil?.type === 'text' &&
-                                              itemCon?.dependentFiled
-                                                ? 'Text Filed-Dependent-Select'
-                                                : `${itemCon?.name}-Dependent-Select`
+                                  (itemsChil: any, indexChild: number) => (
+                                    <div>
+                                      {!previewFile && (
+                                        <ItemName
+                                          itemName={
+                                            itemsChil?.type === 'text' &&
+                                            itemCon?.dependentFiled
+                                              ? 'Text Filed-Dependent-Select'
+                                              : `${itemCon?.name}-Dependent-Select`
+                                          }
+                                          cartItems={cartItems}
+                                          ItemConindex={ItemConindex}
+                                          Sectidx={Sectidx}
+                                          setCartItems={setCartItems}
+                                          isPreview
+                                          setCollapsed={setCollapsed}
+                                          onClick={(e: any) => {
+                                            if (itemCon?.dependentFiled) {
+                                              return;
                                             }
-                                            cartItems={cartItems}
-                                            ItemConindex={ItemConindex}
-                                            Sectidx={Sectidx}
-                                            setCartItems={setCartItems}
-                                            isPreview={true}
-                                            setCollapsed={setCollapsed}
-                                            onClick={(e: any) => {
-                                              if (itemCon?.dependentFiled) {
-                                                return;
+                                            e?.preventDefault();
+                                            setCollapsed(true);
+                                            setActiveContentIndex(ItemConindex);
+                                            setActiveSectionIndex(Sectidx);
+                                            form.resetFields();
+                                          }}
+                                        />
+                                      )}
+                                      <Typography name="Body 4/Medium">
+                                        {itemsChil?.requiredLabel &&
+                                          itemsChil?.label}{' '}
+                                        {itemsChil?.required && (
+                                          <span style={{color: 'red'}}>*</span>
+                                        )}
+                                      </Typography>
+                                      <SectionDivStyled1>
+                                        {itemsChil?.type === 'text' &&
+                                        itemsChil ? (
+                                          <OsInput />
+                                        ) : (
+                                          <CommonSelect
+                                            disabled={PropertSelected === null}
+                                            options={itemsChil?.options?.map(
+                                              (items: any) => ({
+                                                label: items,
+                                                value: items,
+                                              }),
+                                            )}
+                                            style={{
+                                              width: '100%',
+                                            }}
+                                            mode={itemsChil?.type}
+                                            defaultValue={itemCon?.value}
+                                            onChange={(e: any) => {
+                                              if (pathnameForFlow) {
+                                                updateTheValues(
+                                                  e,
+                                                  Sectidx,
+                                                  ItemConindex,
+                                                );
                                               }
-                                              e?.preventDefault();
-                                              setCollapsed(true);
-                                              setActiveContentIndex(
-                                                ItemConindex,
-                                              );
-                                              setActiveSectionIndex(Sectidx);
-                                              form.resetFields();
                                             }}
                                           />
                                         )}
-                                        <Typography name="Body 4/Medium">
-                                          {itemsChil?.requiredLabel &&
-                                            itemsChil?.label}{' '}
-                                          {itemsChil?.required && (
-                                            <span style={{color: 'red'}}>
-                                              *
-                                            </span>
-                                          )}
-                                        </Typography>
-                                        <SectionDivStyled1>
-                                          {itemsChil?.type === 'text' &&
-                                          itemsChil ? (
-                                            <OsInput />
-                                          ) : (
-                                            <CommonSelect
-                                              disabled={
-                                                PropertSelected === null
-                                              }
-                                              options={itemsChil?.options?.map(
-                                                (items: any) => {
-                                                  return {
-                                                    label: items,
-                                                    value: items,
-                                                  };
-                                                },
-                                              )}
-                                              style={{
-                                                width: '100%',
-                                              }}
-                                              mode={itemsChil?.type}
-                                              defaultValue={itemCon?.value}
-                                              onChange={(e: any) => {
-                                                if (pathnameForFlow) {
-                                                  updateTheValues(
-                                                    e,
-                                                    Sectidx,
-                                                    ItemConindex,
-                                                  );
-                                                }
-                                              }}
-                                            />
-                                          )}
 
-                                          {/* {item?.content?.length - 1 ===
+                                        {/* {item?.content?.length - 1 ===
                                             ItemConindex &&
                                             !previewFile && (
                                               <OsButton
@@ -859,13 +848,12 @@ const FormBuilderMain: React.FC<any> = ({
                                                 }}
                                               />
                                             )} */}
-                                        </SectionDivStyled1>
-                                        {itemCon?.hintext && (
-                                          <div>{itemCon?.hintTextValue}</div>
-                                        )}
-                                      </div>
-                                    );
-                                  },
+                                      </SectionDivStyled1>
+                                      {itemCon?.hintext && (
+                                        <div>{itemCon?.hintTextValue}</div>
+                                      )}
+                                    </div>
+                                  ),
                                 )}
                               </Col>
                             )}
@@ -955,7 +943,7 @@ const FormBuilderMain: React.FC<any> = ({
                         //   setHoldSelectedValue(itemCon?.value);
                         // }
 
-                        let findIndexx =
+                        const findIndexx =
                           selectIndexFOrAllDependentField?.findIndex(
                             (items: any) =>
                               items?.indexOfItems === ItemConindex &&
@@ -966,10 +954,10 @@ const FormBuilderMain: React.FC<any> = ({
                           'selectIndexFOrAllDependentFieldselectIndexFOrAllDependentField',
                           selectIndexFOrAllDependentField,
                         );
-                        let PropertSelected =
+                        const PropertSelected =
                           selectIndexFOrAllDependentField?.[findIndexx]
                             ?.selectedIndexForDepend;
-                        let dependentDataaForIndex =
+                        const dependentDataaForIndex =
                           itemCon?.dependentFiledArr?.[PropertSelected];
                         // let dependentDataaForIndex =
                         //   itemCon?.dependentFiledArr?.[0];
@@ -1157,9 +1145,10 @@ const FormBuilderMain: React.FC<any> = ({
                                   <CommonSelect
                                     disabled={PropertSelected === null}
                                     options={dependentDataaForIndex?.options?.map(
-                                      (items: any) => {
-                                        return {label: items, value: items};
-                                      },
+                                      (items: any) => ({
+                                        label: items,
+                                        value: items,
+                                      }),
                                     )}
                                     style={{
                                       width: '100%',

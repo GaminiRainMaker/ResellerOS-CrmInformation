@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable no-nested-ternary */
+/* eslint-disable no-unsafe-optional-chaining */
+/* eslint-disable operator-assignment */
 /* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/exhaustive-deps */
 
@@ -87,25 +92,25 @@ const Partners: React.FC = () => {
           countForActivePartnerProgram + items?.PartnerPrograms?.length;
       });
     }
-    let newObj = {
+    const newObj = {
       requested: allPartnerObj?.requested?.length,
       allPartner: allPartnerObj?.AllPartner?.length,
       activePartner: allPartnerObj?.approved?.length,
       ActivePartnerProgram: countForActivePartnerProgram,
     };
 
-    let newArrOfPartner: any = [];
-    let newArrOfPartnerProgram: any = [];
+    const newArrOfPartner: any = [];
+    const newArrOfPartnerProgram: any = [];
 
     allPartnerObj?.AllPartner?.map((items: any) => {
-      let newObjPatner = {
+      const newObjPatner = {
         label: formatStatus(items?.partner),
         value: items?.partner,
       };
       newArrOfPartner?.push(newObjPatner);
       if (items?.PartnerPrograms?.length) {
         items?.PartnerPrograms?.map((itemPro: any) => {
-          let newObjPatnerPfro = {
+          const newObjPatnerPfro = {
             label: formatStatus(itemPro?.partner_program),
             value: itemPro?.partner_program,
           };
@@ -127,24 +132,24 @@ const Partners: React.FC = () => {
     getPartnerData();
   }, []);
 
-  let organizationNameForRequest = userData?.organization;
+  const organizationNameForRequest = userData?.organization;
   const searchQuery = useDebounceHook(queryDataa, 500);
 
   useEffect(() => {
     dispatch(getAllPartnerandProgramFilterData(searchQuery))?.then(
       (payload: any) => {
-        let newArrOfPartner: any = [];
-        let newArrOfPartnerProgram: any = [];
+        const newArrOfPartner: any = [];
+        const newArrOfPartnerProgram: any = [];
 
         payload?.payload?.AllPartner?.map((items: any) => {
-          let newObjPatner = {
+          const newObjPatner = {
             label: formatStatus(items?.partner),
             value: items?.partner,
           };
           newArrOfPartner?.push(newObjPatner);
           if (items?.PartnerPrograms?.length) {
             items?.PartnerPrograms?.map((itemPro: any) => {
-              let newObjPatnerPfro = {
+              const newObjPatnerPfro = {
                 label: formatStatus(itemPro?.partner_program),
                 value: itemPro?.partner_program,
               };
@@ -406,10 +411,7 @@ const Partners: React.FC = () => {
       dataIndex: 'description',
       key: 'description',
       render: (text: any, record: any) => (
-        <Checkbox
-          checked={!record?.AssignPartnerProgram ? true : false}
-          disabled
-        />
+        <Checkbox checked={!record?.AssignPartnerProgram} disabled />
       ),
     },
     {
@@ -458,7 +460,7 @@ const Partners: React.FC = () => {
   ];
 
   const updateTheResellerequest = async (record: any, typeOn: any) => {
-    let obj = {
+    const obj = {
       type: typeOn,
       id: record?.AssignPartnerProgram?.id,
     };
@@ -471,7 +473,7 @@ const Partners: React.FC = () => {
     record: any,
     typeOn: any,
   ) => {
-    let obj = {
+    const obj = {
       type: typeOn,
       partner_id: record?.Partner?.id,
       partner_program_id: record?.id,
@@ -593,7 +595,7 @@ const Partners: React.FC = () => {
     programName: any,
   ) => {
     // setLoadingForRequest(true);
-    let newrr = disableRequest?.length > 0 ? [...disableRequest] : [];
+    const newrr = disableRequest?.length > 0 ? [...disableRequest] : [];
     newrr?.push(id);
 
     setDisableRequest(newrr);
@@ -605,7 +607,7 @@ const Partners: React.FC = () => {
       new_request: false,
       partner_program_id: id,
       userResquest: true,
-      admin_request: userData?.is_admin ? true : false,
+      admin_request: !!userData?.is_admin,
     };
 
     await dispatch(insertAssignPartnerProgram(partnerObj));
@@ -638,12 +640,10 @@ const Partners: React.FC = () => {
                 buttontype="PRIMARY"
                 text="Request"
                 disabled={
-                  disableButton || disableRequest?.includes(record?.id)
-                    ? true
-                    : false
+                  !!(disableButton || disableRequest?.includes(record?.id))
                 }
                 clickHandler={() => {
-                  let allIds = [...disableRequest];
+                  const allIds = [...disableRequest];
                   allIds?.push(record?.id);
                   // setDisableButton(true);
                   // setDisableRequest(allIds);
@@ -1076,7 +1076,7 @@ const Partners: React.FC = () => {
                     <Typography
                       cursor="pointer"
                       name="Button 1"
-                      color={'#C6CDD5'}
+                      color="#C6CDD5"
                       onClick={() => {
                         setQueryData({
                           partnerQuery: '',

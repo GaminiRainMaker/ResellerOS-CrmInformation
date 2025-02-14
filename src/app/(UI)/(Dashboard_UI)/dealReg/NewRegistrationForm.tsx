@@ -1,3 +1,14 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable no-restricted-globals */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-unsafe-optional-chaining */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable array-callback-return */
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable @typescript-eslint/naming-convention */
+
 'use client';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
@@ -50,7 +61,7 @@ const NewRegistrationForm: FC<any> = ({
   const getContactId = Number(searchParams.get('contactId'));
   const getCustomerId = Number(searchParams.get('customerId'));
 
-  let pathname = usePathname();
+  const pathname = usePathname();
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
@@ -169,8 +180,8 @@ const NewRegistrationForm: FC<any> = ({
   const dataForTheObjects = form.getFieldsValue();
 
   useEffect(() => {
-    let partnerOptions: any = [];
-    let selfPartnerOptions: any = [];
+    const partnerOptions: any = [];
+    const selfPartnerOptions: any = [];
     let finalPartnerData: any = [];
     if (
       salesForceSelfRegisteredPartner &&
@@ -192,7 +203,7 @@ const NewRegistrationForm: FC<any> = ({
     finalPartnerData &&
       finalPartnerData?.length > 0 &&
       finalPartnerData?.map((partner: any) => {
-        let newCheckArrForHaveProgrmIds: any = [];
+        const newCheckArrForHaveProgrmIds: any = [];
         partner?.PartnerPrograms?.map((items: any) => {
           if (!allAddedPartnerProgramIDs?.includes(items?.id)) {
             newCheckArrForHaveProgrmIds?.push(items?.id);
@@ -206,7 +217,7 @@ const NewRegistrationForm: FC<any> = ({
         }
       });
     allPartnerFilterData?.AllPartnerForSelf?.map((partner: any) => {
-      let newCheckArrForHaveProgrmIds: any = [];
+      const newCheckArrForHaveProgrmIds: any = [];
       partner?.PartnerPrograms?.map((items: any) => {
         if (!allAddedPartnerProgramIDs?.includes(items?.id)) {
           newCheckArrForHaveProgrmIds?.push(items?.id);
@@ -229,7 +240,7 @@ const NewRegistrationForm: FC<any> = ({
 
   useEffect(() => {
     if (salesForceSelfRegisteredPartner) {
-      let selfPartnerOptions: any = [];
+      const selfPartnerOptions: any = [];
       salesForceSelfRegisteredPartner?.map((partner: any) => {
         selfPartnerOptions?.push({
           label: <CustomTextCapitalization text={partner?.Partner_Name} />,
@@ -242,7 +253,7 @@ const NewRegistrationForm: FC<any> = ({
 
   const deleteAddedRow = (index: number, typeOfReges: string) => {
     // selfRegesteriedPartner, setSelfRegesteriedPartner
-    let newArr =
+    const newArr =
       typeOfReges === 'self'
         ? [...selfRegesteriedPartner]
         : [...regesteriedPartner];
@@ -255,10 +266,10 @@ const NewRegistrationForm: FC<any> = ({
   };
 
   const addNewPartnerFOrReg = (typeOfWorkFor: string) => {
-    let checkIn =
+    const checkIn =
       typeOfWorkFor === 'self' ? selfRegesteriedPartner : regesteriedPartner;
-    let newArr = checkIn?.length > 0 ? [...checkIn] : [];
-    let newObj = {
+    const newArr = checkIn?.length > 0 ? [...checkIn] : [];
+    const newObj = {
       partner_id: '',
       partner_program_id: '',
       partner_name: '',
@@ -283,10 +294,11 @@ const NewRegistrationForm: FC<any> = ({
     typeOfWorkFor: string,
     name: string,
   ) => {
-    let valueType = type === 'partner' ? partner_id : partner_program_id;
-    let typePort = type === 'partner' ? 'partner_id' : 'partner_program_id';
-    let nameType = type === 'partner' ? 'partner_name' : 'partner_program_name';
-    let checkIn =
+    const valueType = type === 'partner' ? partner_id : partner_program_id;
+    const typePort = type === 'partner' ? 'partner_id' : 'partner_program_id';
+    const nameType =
+      type === 'partner' ? 'partner_name' : 'partner_program_name';
+    const checkIn =
       typeOfWorkFor === 'self' ? selfRegesteriedPartner : regesteriedPartner;
     // reges
     const newTempArr = checkIn.map((sectItem: any, sectioIndex: number) => {
@@ -308,7 +320,7 @@ const NewRegistrationForm: FC<any> = ({
         (item: any) => item?.id === newTempArr[index]?.partner_id,
       );
 
-      let partnerPrograms: any = [];
+      const partnerPrograms: any = [];
 
       if (filteredData) {
         filteredData?.[0]?.PartnerPrograms?.map((program: any) => {
@@ -349,7 +361,7 @@ const NewRegistrationForm: FC<any> = ({
       }
 
       if (filteredData) {
-        let partnerPrograms: any = [];
+        const partnerPrograms: any = [];
         filteredData?.[0]?.PartnerPrograms?.map((program: any) => {
           if (!allAddedPartnerProgramIDs?.includes(program?.id) && !isCanvas) {
             partnerPrograms?.push({
@@ -412,9 +424,8 @@ const NewRegistrationForm: FC<any> = ({
     if (countForNonAdded > 0) {
       setErrorForAll(true);
       return;
-    } else {
-      setErrorForAll(false);
     }
+    setErrorForAll(false);
 
     if (
       regesteriedPartner?.length <= 0 &&
@@ -456,7 +467,7 @@ const NewRegistrationForm: FC<any> = ({
       ];
     }
 
-    let data = {
+    const data = {
       selfRegisteredPartners: selfRegesteriedPartner,
       registeredPartners: regesteriedPartner,
     };
@@ -604,13 +615,10 @@ const NewRegistrationForm: FC<any> = ({
         const dealRegArray = newData?.map((item: any) => {
           // Find matching data in createPartnerAndProgramOnFS
           const matchedFSData = createPartnerAndProgramOnFS?.find(
-            (fsItem: any) => {
-              return (
-                fsItem?.Partner?.partner === item?.partner_name &&
-                fsItem?.Partner_Program?.partner_program ===
-                  item?.partner_program_name
-              );
-            },
+            (fsItem: any) =>
+              fsItem?.Partner?.partner === item?.partner_name &&
+              fsItem?.Partner_Program?.partner_program ===
+                item?.partner_program_name,
           );
 
           // Extract source data, defaulting to item if no match is found
@@ -755,133 +763,129 @@ const NewRegistrationForm: FC<any> = ({
                       <>
                         <>
                           {regesteriedPartner?.map(
-                            (items: any, index: number) => {
-                              return (
-                                <Row
-                                  justify="space-between"
-                                  align="middle"
-                                  gutter={[16, 16]}
-                                  key={index}
-                                  style={{
-                                    marginBottom: '8px',
-                                  }}
-                                >
-                                  <Col span={10}>
-                                    <Typography name="Body 4/Medium">
-                                      Partner
-                                    </Typography>
-                                    <CommonSelect
-                                      dropdownStyle={{marginBottom: '3px'}}
-                                      value={items.partner_id}
-                                      placeholder="Select"
-                                      style={{
-                                        width: '100%',
-                                        height: '36px',
-                                        marginBottom:
-                                          !items?.partner_id && errorForAll
-                                            ? ''
-                                            : '24px',
-                                      }}
-                                      options={partnerOptions}
-                                      onChange={(e, record: any) => {
-                                        AddThePartnerAndPaartnerProgram(
-                                          index,
-                                          e,
-                                          '',
-                                          'partner',
-                                          'reges',
-                                          record?.label?.props?.text,
-                                        );
-                                      }}
-                                    />
-                                    {!items?.partner_id && errorForAll && (
-                                      <div style={{color: '#ff4d4f'}}>
-                                        Partner is required!
-                                      </div>
-                                    )}
-                                  </Col>
-                                  <Col span={10}>
-                                    <Typography name="Body 4/Medium">
-                                      Partner Program
-                                    </Typography>
-
-                                    <CommonSelect
-                                      // dropdownStyle={{ marginBottom: "3px" }}
-                                      placeholder="Select"
-                                      value={items?.partner_program_id}
-                                      options={items?.optionsForProgram}
-                                      onChange={(e: any, record: any) => {
-                                        AddThePartnerAndPaartnerProgram(
-                                          index,
-                                          '',
-                                          e,
-                                          'partnerprogram',
-                                          'reges',
-                                          record?.label?.props?.text,
-                                        );
-
-                                        let AllIds: any =
-                                          allAddedPartnerProgramIDs?.length > 0
-                                            ? [...allAddedPartnerProgramIDs]
-                                            : [];
-                                        AllIds?.push(e);
-                                        setAllAddedPartnerProgramIDs(AllIds);
-                                      }}
-                                      style={{
-                                        width: '100%',
-                                        height: '36px',
-                                        marginBottom:
-                                          !items?.partner_program_id &&
-                                          errorForAll
-                                            ? ''
-                                            : '24px',
-                                      }}
-                                    />
-                                    {!items?.partner_program_id &&
-                                      errorForAll && (
-                                        <div style={{color: '#ff4d4f'}}>
-                                          Partner Program is required!
-                                        </div>
-                                      )}
-                                  </Col>
-                                  <Col
-                                    span={4}
+                            (items: any, index: number) => (
+                              <Row
+                                justify="space-between"
+                                align="middle"
+                                gutter={[16, 16]}
+                                key={index}
+                                style={{
+                                  marginBottom: '8px',
+                                }}
+                              >
+                                <Col span={10}>
+                                  <Typography name="Body 4/Medium">
+                                    Partner
+                                  </Typography>
+                                  <CommonSelect
+                                    dropdownStyle={{marginBottom: '3px'}}
+                                    value={items.partner_id}
+                                    placeholder="Select"
                                     style={{
-                                      paddingTop: '25px',
+                                      width: '100%',
+                                      height: '36px',
+                                      marginBottom:
+                                        !items?.partner_id && errorForAll
+                                          ? ''
+                                          : '24px',
+                                    }}
+                                    options={partnerOptions}
+                                    onChange={(e, record: any) => {
+                                      AddThePartnerAndPaartnerProgram(
+                                        index,
+                                        e,
+                                        '',
+                                        'partner',
+                                        'reges',
+                                        record?.label?.props?.text,
+                                      );
+                                    }}
+                                  />
+                                  {!items?.partner_id && errorForAll && (
+                                    <div style={{color: '#ff4d4f'}}>
+                                      Partner is required!
+                                    </div>
+                                  )}
+                                </Col>
+                                <Col span={10}>
+                                  <Typography name="Body 4/Medium">
+                                    Partner Program
+                                  </Typography>
+
+                                  <CommonSelect
+                                    // dropdownStyle={{ marginBottom: "3px" }}
+                                    placeholder="Select"
+                                    value={items?.partner_program_id}
+                                    options={items?.optionsForProgram}
+                                    onChange={(e: any, record: any) => {
+                                      AddThePartnerAndPaartnerProgram(
+                                        index,
+                                        '',
+                                        e,
+                                        'partnerprogram',
+                                        'reges',
+                                        record?.label?.props?.text,
+                                      );
+
+                                      const AllIds: any =
+                                        allAddedPartnerProgramIDs?.length > 0
+                                          ? [...allAddedPartnerProgramIDs]
+                                          : [];
+                                      AllIds?.push(e);
+                                      setAllAddedPartnerProgramIDs(AllIds);
+                                    }}
+                                    style={{
+                                      width: '100%',
+                                      height: '36px',
                                       marginBottom:
                                         !items?.partner_program_id &&
                                         errorForAll
-                                          ? '24px'
+                                          ? ''
                                           : '24px',
                                     }}
-                                  >
-                                    <TrashIcon
-                                      width={25}
-                                      color={token?.colorError}
-                                      onClick={() => {
-                                        let AllIds: any =
-                                          allAddedPartnerProgramIDs?.length > 0
-                                            ? [...allAddedPartnerProgramIDs]
-                                            : [];
-                                        let FindIndex = AllIds?.findIndex(
-                                          (idIndex: any) =>
-                                            idIndex ===
-                                            items?.partner_program_id,
-                                        );
+                                  />
+                                  {!items?.partner_program_id &&
+                                    errorForAll && (
+                                      <div style={{color: '#ff4d4f'}}>
+                                        Partner Program is required!
+                                      </div>
+                                    )}
+                                </Col>
+                                <Col
+                                  span={4}
+                                  style={{
+                                    paddingTop: '25px',
+                                    marginBottom:
+                                      !items?.partner_program_id && errorForAll
+                                        ? '24px'
+                                        : '24px',
+                                  }}
+                                >
+                                  <TrashIcon
+                                    width={25}
+                                    color={token?.colorError}
+                                    onClick={() => {
+                                      const AllIds: any =
+                                        allAddedPartnerProgramIDs?.length > 0
+                                          ? [...allAddedPartnerProgramIDs]
+                                          : [];
+                                      const FindIndex = AllIds?.findIndex(
+                                        (idIndex: any) =>
+                                          idIndex === items?.partner_program_id,
+                                      );
 
-                                        if (FindIndex >= 0) {
-                                          AllIds?.splice(FindIndex, 1);
-                                        }
-                                        // AllIds?.push(e);
-                                        setAllAddedPartnerProgramIDs(AllIds);
-                                        deleteAddedRow(index, 'reges');
-                                      }}
-                                      cursor="pointer"
-                                    />
-                                  </Col>
-                                </Row>
-                              );
-                            },
+                                      if (FindIndex >= 0) {
+                                        AllIds?.splice(FindIndex, 1);
+                                      }
+                                      // AllIds?.push(e);
+                                      setAllAddedPartnerProgramIDs(AllIds);
+                                      deleteAddedRow(index, 'reges');
+                                    }}
+                                    cursor="pointer"
+                                  />
+                                </Col>
+                              </Row>
+                            ),
                           )}
                           <Form.Item>
                             <Space
@@ -931,138 +935,134 @@ const NewRegistrationForm: FC<any> = ({
                       <>
                         <>
                           {selfRegesteriedPartner?.map(
-                            (items: any, index: number) => {
-                              return (
-                                <Row
-                                  justify="space-between"
-                                  align="middle"
-                                  gutter={[16, 16]}
-                                  key={index}
-                                  style={{
-                                    marginBottom: '8px',
-                                  }}
-                                >
-                                  <Col span={10}>
-                                    <Typography name="Body 4/Medium">
-                                      Partner
-                                    </Typography>
-                                    <CommonSelect
-                                      dropdownStyle={{marginBottom: '3px'}}
-                                      value={items.partner_id}
-                                      placeholder="Select"
-                                      style={{
-                                        width: '100%',
-                                        height: '36px',
-                                        marginBottom:
-                                          !items?.partner_id && errorForAll
-                                            ? ''
-                                            : '24px',
-                                      }}
-                                      options={
-                                        isCanvas
-                                          ? salesForceSelfRegisteredPartnerOption
-                                          : selefPartnerOptions
-                                      }
-                                      onChange={(e, record: any) => {
-                                        // findPartnerProgramsById(value);
-                                        // setChoosedIdProgram(value);
-                                        AddThePartnerAndPaartnerProgram(
-                                          index,
-                                          e,
-                                          '',
-                                          'partner',
-                                          'self',
-                                          record?.label?.props?.text,
-                                        );
-                                      }}
-                                    />
-                                    {!items?.partner_id && errorForAll && (
-                                      <div style={{color: '#ff4d4f'}}>
-                                        Partner is required!
-                                      </div>
-                                    )}
-                                  </Col>
-                                  <Col span={10}>
-                                    <Typography name="Body 4/Medium">
-                                      Partner Program
-                                    </Typography>
-
-                                    <CommonSelect
-                                      dropdownStyle={{marginBottom: '3px'}}
-                                      placeholder="Select"
-                                      value={items?.partner_program_id}
-                                      options={items?.optionsForProgram}
-                                      onChange={(e: any, record: any) => {
-                                        AddThePartnerAndPaartnerProgram(
-                                          index,
-                                          '',
-                                          e,
-                                          'partnerprogram',
-                                          'self',
-                                          record?.label?.props?.text,
-                                        );
-
-                                        let AllIds: any =
-                                          allAddedPartnerProgramIDs?.length > 0
-                                            ? [...allAddedPartnerProgramIDs]
-                                            : [];
-                                        AllIds?.push(e);
-                                        setAllAddedPartnerProgramIDs(AllIds);
-                                      }}
-                                      style={{
-                                        width: '100%',
-                                        height: '36px',
-                                        marginBottom:
-                                          !items?.partner_program_id &&
-                                          errorForAll
-                                            ? ''
-                                            : '24px',
-                                      }}
-                                    />
-                                    {!items?.partner_program_id &&
-                                      errorForAll && (
-                                        <div style={{color: '#ff4d4f'}}>
-                                          Partner Program is required!
-                                        </div>
-                                      )}
-                                  </Col>
-                                  <Col
-                                    span={4}
+                            (items: any, index: number) => (
+                              <Row
+                                justify="space-between"
+                                align="middle"
+                                gutter={[16, 16]}
+                                key={index}
+                                style={{
+                                  marginBottom: '8px',
+                                }}
+                              >
+                                <Col span={10}>
+                                  <Typography name="Body 4/Medium">
+                                    Partner
+                                  </Typography>
+                                  <CommonSelect
+                                    dropdownStyle={{marginBottom: '3px'}}
+                                    value={items.partner_id}
+                                    placeholder="Select"
                                     style={{
-                                      paddingTop: '25px',
+                                      width: '100%',
+                                      height: '36px',
+                                      marginBottom:
+                                        !items?.partner_id && errorForAll
+                                          ? ''
+                                          : '24px',
+                                    }}
+                                    options={
+                                      isCanvas
+                                        ? salesForceSelfRegisteredPartnerOption
+                                        : selefPartnerOptions
+                                    }
+                                    onChange={(e, record: any) => {
+                                      // findPartnerProgramsById(value);
+                                      // setChoosedIdProgram(value);
+                                      AddThePartnerAndPaartnerProgram(
+                                        index,
+                                        e,
+                                        '',
+                                        'partner',
+                                        'self',
+                                        record?.label?.props?.text,
+                                      );
+                                    }}
+                                  />
+                                  {!items?.partner_id && errorForAll && (
+                                    <div style={{color: '#ff4d4f'}}>
+                                      Partner is required!
+                                    </div>
+                                  )}
+                                </Col>
+                                <Col span={10}>
+                                  <Typography name="Body 4/Medium">
+                                    Partner Program
+                                  </Typography>
+
+                                  <CommonSelect
+                                    dropdownStyle={{marginBottom: '3px'}}
+                                    placeholder="Select"
+                                    value={items?.partner_program_id}
+                                    options={items?.optionsForProgram}
+                                    onChange={(e: any, record: any) => {
+                                      AddThePartnerAndPaartnerProgram(
+                                        index,
+                                        '',
+                                        e,
+                                        'partnerprogram',
+                                        'self',
+                                        record?.label?.props?.text,
+                                      );
+
+                                      const AllIds: any =
+                                        allAddedPartnerProgramIDs?.length > 0
+                                          ? [...allAddedPartnerProgramIDs]
+                                          : [];
+                                      AllIds?.push(e);
+                                      setAllAddedPartnerProgramIDs(AllIds);
+                                    }}
+                                    style={{
+                                      width: '100%',
+                                      height: '36px',
                                       marginBottom:
                                         !items?.partner_program_id &&
                                         errorForAll
-                                          ? '24px'
+                                          ? ''
                                           : '24px',
                                     }}
-                                  >
-                                    <TrashIcon
-                                      width={25}
-                                      color={token?.colorError}
-                                      onClick={() => {
-                                        let AllIds: any =
-                                          allAddedPartnerProgramIDs?.length > 0
-                                            ? [...allAddedPartnerProgramIDs]
-                                            : [];
-                                        let FindIndex = AllIds?.findIndex(
-                                          (idIndex: any) =>
-                                            idIndex ===
-                                            items?.partner_program_id,
-                                        );
-                                        if (FindIndex >= 0) {
-                                          AllIds?.splice(FindIndex, 1);
-                                        }
-                                        // AllIds?.push(e);
-                                        setAllAddedPartnerProgramIDs(AllIds);
-                                        deleteAddedRow(index, 'self');
-                                      }}
-                                      cursor="pointer"
-                                    />
-                                  </Col>
-                                </Row>
-                              );
-                            },
+                                  />
+                                  {!items?.partner_program_id &&
+                                    errorForAll && (
+                                      <div style={{color: '#ff4d4f'}}>
+                                        Partner Program is required!
+                                      </div>
+                                    )}
+                                </Col>
+                                <Col
+                                  span={4}
+                                  style={{
+                                    paddingTop: '25px',
+                                    marginBottom:
+                                      !items?.partner_program_id && errorForAll
+                                        ? '24px'
+                                        : '24px',
+                                  }}
+                                >
+                                  <TrashIcon
+                                    width={25}
+                                    color={token?.colorError}
+                                    onClick={() => {
+                                      const AllIds: any =
+                                        allAddedPartnerProgramIDs?.length > 0
+                                          ? [...allAddedPartnerProgramIDs]
+                                          : [];
+                                      const FindIndex = AllIds?.findIndex(
+                                        (idIndex: any) =>
+                                          idIndex === items?.partner_program_id,
+                                      );
+                                      if (FindIndex >= 0) {
+                                        AllIds?.splice(FindIndex, 1);
+                                      }
+                                      // AllIds?.push(e);
+                                      setAllAddedPartnerProgramIDs(AllIds);
+                                      deleteAddedRow(index, 'self');
+                                    }}
+                                    cursor="pointer"
+                                  />
+                                </Col>
+                              </Row>
+                            ),
                           )}
                           <Form.Item>
                             <Space
@@ -1158,7 +1158,7 @@ const NewRegistrationForm: FC<any> = ({
           />
           {isCanvas && (
             <OsButton
-              text={'Request Partner'}
+              text="Request Partner"
               buttontype="SECONDARY"
               clickHandler={() => {
                 setOpenReponseModal(true);

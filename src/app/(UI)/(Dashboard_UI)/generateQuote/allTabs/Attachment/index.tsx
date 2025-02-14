@@ -1,3 +1,5 @@
+/* eslint-disable no-case-declarations */
+
 'use client';
 
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';

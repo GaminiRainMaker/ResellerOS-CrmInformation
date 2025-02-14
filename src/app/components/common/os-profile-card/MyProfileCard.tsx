@@ -1,3 +1,6 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable import/no-extraneous-dependencies */
+
 'use client';
 
 import {CustomUpload} from '@/app/(UI)/(Dashboard_UI)/layouts/Header';

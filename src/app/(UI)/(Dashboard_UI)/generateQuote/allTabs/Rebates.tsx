@@ -1,3 +1,7 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable no-nested-ternary */
+/* eslint-disable react/no-array-index-key */
+
 'use client';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
@@ -21,9 +25,6 @@ import {getRebateQuoteLineItemByQuoteId} from '../../../../../../redux/actions/r
 const Rebates: FC<any> = ({
   tableColumnDataShow,
   selectedFilter,
-  selectTedRowData,
-  setSelectedRowData,
-  setSelectedRowIds,
   selectTedRowIds,
   collapseActiveKeys,
   setCollapseActiveKeys,

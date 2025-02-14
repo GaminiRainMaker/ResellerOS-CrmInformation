@@ -1,3 +1,10 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable jsx-a11y/iframe-has-title */
+/* eslint-disable eqeqeq */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable array-callback-return */
+
 'use client';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
@@ -11,7 +18,6 @@ import {Form, Space} from 'antd';
 import axios from 'axios';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
-import {parentpqli, salesForceWithArrrr} from '@/app/utils/saleforce';
 import {
   getFormattedValuesForBundlesOnly,
   getFormattedValuesForLineItems,
@@ -47,7 +53,6 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
   }, []);
   const [formStackOptions, setFormStackOptions] = useState<any>();
 
-  console.log('243242231', objectForSyncingValues);
   useEffect(() => {
     const newArrOfOption: any = [];
     formStackSyncData &&
@@ -276,6 +281,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
           const url123 = URL.createObjectURL(blob);
           setPdfUrl(url123);
         } else {
+          // eslint-disable-next-line @typescript-eslint/no-shadow
           const blob = new Blob([response.data], {
             type: 'application/octet-stream',
           });
@@ -297,6 +303,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
           const base64String = await blobToBase64(blob);
           dispatch(pathUsedToUpload({document: base64String})).then(
             (payload: any) => {
+              // eslint-disable-next-line @typescript-eslint/no-shadow
               const pdfUrl = payload?.payload?.data?.Location;
               if (pdfUrl) {
                 const newObjForAttach: any = {
@@ -328,8 +335,6 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
       console.error('Error downloading file:', error);
     }
   };
-
-  console.log('34543534534', formStackOptions, objectForSyncingValues);
 
   return (
     <>

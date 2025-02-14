@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable eqeqeq */
 
 'use client';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
-import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
@@ -80,7 +80,7 @@ const BundleSection: FC<any> = ({
 
   useEffect(() => {
     dispatch(getAllBundle(getQuoteId));
-  }, []);
+  }, [dispatch, getQuoteId]);
 
   useEffect(() => {
     const bundleArray: any = [];

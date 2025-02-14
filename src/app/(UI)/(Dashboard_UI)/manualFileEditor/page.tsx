@@ -1,3 +1,7 @@
+/* eslint-disable no-restricted-globals */
+/* eslint-disable guard-for-in */
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable import/order */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-nested-ternary */
@@ -44,12 +48,7 @@ import CommonSelect from '@/app/components/common/os-select';
 import {getResultedValue} from '@/app/utils/base';
 import {registerAllModules} from 'handsontable/registry';
 import dynamic from 'next/dynamic';
-import {getAllFormulas} from '../../../../../redux/actions/formulas';
-import {
-  queryLineItemSyncing,
-  queryLineItemSyncingForSalesForce,
-} from '../../../../../redux/actions/LineItemSyncing';
-import ConverSationProcess from '../admin/quote-AI/configuration/configuration-tabs/ConversationProcess';
+import {queryLineItemSyncingForSalesForce} from '../../../../../redux/actions/LineItemSyncing';
 
 const HotTable = dynamic(() => import('@handsontable/react'), {
   ssr: false,

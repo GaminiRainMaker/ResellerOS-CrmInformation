@@ -1,3 +1,10 @@
+/* eslint-disable consistent-return */
+/* eslint-disable array-callback-return */
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable no-unsafe-optional-chaining */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-nested-ternary */
+
 'use client';
 
 import {Row} from '@/app/components/common/antd/Grid';
@@ -18,6 +25,8 @@ import {
 } from '@/app/utils/base';
 import {useSearchParams} from 'next/navigation';
 import {forwardRef, useEffect, useImperativeHandle, useState} from 'react';
+import dayjs from 'dayjs';
+import {Badge} from 'antd';
 import {queryAttributeFieldForForm} from '../../../../../redux/actions/attributeField';
 import {
   getDealRegById,
@@ -32,8 +41,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setFinalUpdatedDealRegData} from '../../../../../redux/slices/dealReg';
 import DealRegDetailForm from './DealRegDetailForm';
-import dayjs from 'dayjs';
-import {Badge} from 'antd';
+
 const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
 
 // Define the prop types for DealRegCustomTabs
@@ -205,7 +213,7 @@ const DealRegCustomTabs = forwardRef<
         dispatch(getDealRegById(activeKey));
       } else if (activeKey && salesForceinstanceUrl) {
         // call salesforce API get dealreg By id
-        let obj = {
+        const obj = {
           baseURL: salesForceinstanceUrl,
           token: salesForceToken,
           dealRegId: activeKey,
@@ -219,8 +227,8 @@ const DealRegCustomTabs = forwardRef<
         (salesForceDealregById?.length > 0 && salesForceDealregById?.[0]) ||
         getDealRegForNew;
       if (selectedDealRegData && Object.keys(selectedDealRegData).length > 0) {
-        let finalDealReg = selectedDealRegData;
-        let commonFormData =
+        const finalDealReg = selectedDealRegData;
+        const commonFormData =
           typeof finalDealReg?.common_form_data === 'string' &&
           finalDealReg?.common_form_data !== ''
             ? JSON.parse(finalDealReg?.common_form_data)
@@ -229,7 +237,7 @@ const DealRegCustomTabs = forwardRef<
               ? []
               : finalDealReg?.common_form_data;
 
-        let uniqueFormData =
+        const uniqueFormData =
           typeof finalDealReg?.unique_form_data === 'string' &&
           finalDealReg?.unique_form_data !== ''
             ? JSON.parse(finalDealReg?.unique_form_data)
@@ -314,7 +322,7 @@ const DealRegCustomTabs = forwardRef<
         ) {
           finalDealReg = selectedDealRegData;
 
-          let commonFormData =
+          const commonFormData =
             typeof finalDealReg?.common_form_data === 'string' &&
             finalDealReg?.common_form_data !== ''
               ? JSON.parse(finalDealReg?.common_form_data)
@@ -323,7 +331,7 @@ const DealRegCustomTabs = forwardRef<
                 ? []
                 : finalDealReg?.common_form_data;
 
-          let uniqueFormData =
+          const uniqueFormData =
             typeof finalDealReg?.unique_form_data === 'string' &&
             finalDealReg?.unique_form_data !== ''
               ? JSON.parse(finalDealReg?.unique_form_data)

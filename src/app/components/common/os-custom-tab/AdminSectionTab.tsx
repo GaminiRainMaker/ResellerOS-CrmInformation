@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable arrow-body-style */
@@ -10,9 +11,8 @@ import Row from 'antd/es/grid/row';
 import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import TextArea from 'antd/es/input/TextArea';
-import {Divider, message, notification} from 'antd';
+import {message, notification} from 'antd';
 import {convertFileToBase64} from '@/app/utils/base';
-import {Color} from 'antd/es/color-picker';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
@@ -32,9 +32,7 @@ const AdminCustomTabs: FC<any> = (tabs) => {
   const searchParams = useSearchParams()!;
   const getTab = searchParams.get('tab');
   const pathname = usePathname();
-  const {userInformation, searchDataa, loginUserInformation} = useAppSelector(
-    (state) => state.user,
-  );
+  const {userInformation} = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
 
   const [activekeysall, setActivekeysall] = useState<number>(1);
@@ -47,7 +45,6 @@ const AdminCustomTabs: FC<any> = (tabs) => {
   const [loadingSpin, setLoadingSpin] = useState<boolean>(false);
   const router = useRouter();
 
-  console.log('23432432432', tabs);
   useEffect(() => {
     if (tabs?.tabs?.length > 0) {
       let tabIndex;

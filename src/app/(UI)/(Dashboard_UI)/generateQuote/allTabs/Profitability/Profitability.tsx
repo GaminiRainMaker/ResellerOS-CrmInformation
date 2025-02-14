@@ -1,3 +1,16 @@
+/* eslint-disable eqeqeq */
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-unsafe-optional-chaining */
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable @typescript-eslint/no-use-before-define */
+/* eslint-disable no-await-in-loop */
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable no-nested-ternary */
+/* eslint-disable array-callback-return */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+
 'use client';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
@@ -12,7 +25,14 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
-import {pricingMethod, selectDataForProduct} from '@/app/utils/CONSTANTS';
+import {
+  pricingMethod,
+  selectDataForProduct,
+  countrupickList,
+  EnergyStarFlagpicklist,
+  TAAFlagPickList,
+  EPEATFlagPickList,
+} from '@/app/utils/CONSTANTS';
 import {
   calculateProfitabilityData,
   convertToNumber,
@@ -29,7 +49,11 @@ import {
 } from '@heroicons/react/24/outline';
 import {Badge, Form, notification} from 'antd';
 import {useSearchParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
+import OsDrawer from '@/app/components/common/os-drawer';
+import OsButton from '@/app/components/common/os-button';
+import GlobalLoader from '@/app/components/common/os-global-loader';
+import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import {
   updateBundleBulk,
   updateBundleQuantity,
@@ -46,21 +70,10 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
 import BundleSection from '../../BundleSection';
 import UpdatingLineItems from '../../UpdatingLineItems';
-import OsDrawer from '@/app/components/common/os-drawer';
-import OsButton from '@/app/components/common/os-button';
-import GlobalLoader from '@/app/components/common/os-global-loader';
-import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import {getContractProductByContractVehicle} from '../../../../../../../redux/actions/contractProduct';
 import {getAllContract} from '../../../../../../../redux/actions/contract';
-import {
-  countrupickList,
-  EnergyStarFlagpicklist,
-  TAAFlagPickList,
-  EPEATFlagPickList,
-} from '@/app/utils/CONSTANTS';
 import {getContractConfiguartion} from '../../../../../../../redux/actions/contractConfiguration';
-import React from 'react';
-('src/app/utils/CONSTANTS.ts');
+
 const Profitablity: FC<any> = ({
   tableColumnDataShow,
   selectedFilter,
@@ -134,7 +147,11 @@ const Profitablity: FC<any> = ({
     data &&
       data.length > 0 &&
       data?.forEach((item: any) => {
-        let name, description, type, quantity, bundleId;
+        let name;
+        let description;
+        let type;
+        let quantity;
+        let bundleId;
         if (item?.bundle_id || filterValue) {
           if (item?.bundle_id) {
             bundleId = item?.bundle_id;
@@ -188,7 +205,7 @@ const Profitablity: FC<any> = ({
               name: name === 'Gp' ? 'GP' : name,
               description: description || '',
               quantity: quantity || '',
-              type: type,
+              type,
               QuoteLineItem: [],
               totalExtendedPrice: 0,
               totalGrossProfit: 0,
@@ -266,7 +283,7 @@ const Profitablity: FC<any> = ({
     setFinalData(finalData);
     setProfitibilityLoading(false);
 
-    let newArrForPaggination: any = [];
+    const newArrForPaggination: any = [];
 
     finalData?.map((items: any) => {
       newArrForPaggination?.push({
@@ -385,12 +402,11 @@ const Profitablity: FC<any> = ({
   const renderEditableInput = (field: string) => {
     if (isView === 'true') {
       return true;
-    } else {
-      const editableField = tableColumnDataShow.find(
-        (item: any) => item.field_name === field,
-      );
-      return !editableField?.is_editable;
     }
+    const editableField = tableColumnDataShow.find(
+      (item: any) => item.field_name === field,
+    );
+    return !editableField?.is_editable;
   };
   useEffect(() => {
     if (
@@ -496,14 +512,14 @@ const Profitablity: FC<any> = ({
 
   useEffect(() => {
     if (tableColumnDataShow && tableColumnDataShow.length > 0) {
-      let validationArr: any = [
+      const validationArr: any = [
         {
           title: 'Contract Vehicle',
           dataIndex: 'contract_vehicle',
           key: 'contract_vehicle',
           width: 200,
           render: (text: string, record: any) => {
-            let valueForVeh = text ? Number(text) : null;
+            const valueForVeh = text ? Number(text) : null;
             return (
               <CommonSelect
                 allowClear
@@ -530,13 +546,11 @@ const Profitablity: FC<any> = ({
           dataIndex: 'contract_price',
           key: 'contract_price',
           width: 150,
-          render: (text: number, record: any) => {
-            return (
-              <Typography name="Body 4/Medium">
-                {text ? `$ ${abbreviate(text ?? 0)}` : 0}
-              </Typography>
-            );
-          },
+          render: (text: number, record: any) => (
+            <Typography name="Body 4/Medium">
+              {text ? `$ ${abbreviate(text ?? 0)}` : 0}
+            </Typography>
+          ),
         },
         {
           title: 'Contract Status',
@@ -576,7 +590,7 @@ const Profitablity: FC<any> = ({
       ];
 
       const newArr: any = [];
-      let newArrForComparision = [...ProfitabilityQuoteLineItemcolumns];
+      const newArrForComparision = [...ProfitabilityQuoteLineItemcolumns];
       if (validationTab) {
         validationArr?.map((item: any) => {
           newArrForComparision.push(item);
@@ -611,27 +625,25 @@ const Profitablity: FC<any> = ({
 
   const ActionColumn = {
     title: 'Action',
-    render: (text: string, record: any) => {
-      return (
-        <TrashIcon
-          height={24}
-          width={24}
-          color={token.colorError}
-          style={{cursor: 'pointer'}}
-          onClick={() => {
-            if (isView === 'true') {
-              notification.open({
-                message: "You can't delete bundle in view mode.",
-                type: 'info',
-              });
-            } else {
-              setSelectedRowData([record]);
-              setShowRemoveBundleLineItemModal(true);
-            }
-          }}
-        />
-      );
-    },
+    render: (text: string, record: any) => (
+      <TrashIcon
+        height={24}
+        width={24}
+        color={token.colorError}
+        style={{cursor: 'pointer'}}
+        onClick={() => {
+          if (isView === 'true') {
+            notification.open({
+              message: "You can't delete bundle in view mode.",
+              type: 'info',
+            });
+          } else {
+            setSelectedRowData([record]);
+            setShowRemoveBundleLineItemModal(true);
+          }
+        }}
+      />
+    ),
     width: 111,
   };
 
@@ -1578,12 +1590,12 @@ const Profitablity: FC<any> = ({
       delete newObj?.profitabilityCalculationData;
       finalArr?.push(newObj);
     });
-    let UpdatedArr: any = [];
+    const UpdatedArr: any = [];
     if (finalArr?.length > 0) {
       for (let i = 0; i < finalArr?.length; i++) {
-        let itemss = finalArr[i];
+        const itemss = finalArr[i];
         const response: any = await contractVehicleStatus(itemss);
-        let newObjConObj = {...itemss};
+        const newObjConObj = {...itemss};
         delete newObjConObj.contract_price;
         delete newObjConObj.contract_status;
         delete newObjConObj.contract_vehicle;
@@ -1600,7 +1612,7 @@ const Profitablity: FC<any> = ({
     if (UpdatedArr?.length > 0) {
       if (ProductFamily) {
         const ids = UpdatedArr?.map((item: any) => item?.product_id);
-        let obj = {
+        const obj = {
           id: ids,
           product_family: ProductFamily,
         };
@@ -1643,18 +1655,18 @@ const Profitablity: FC<any> = ({
   };
 
   const handleBundleSave = async (e: any, record: any) => {
-    let quantity = parseInt(e.target.value, 10);
-    let extendedPriceUnit = record?.totalExtendedPrice / record?.quantity;
-    let grossProfitUnit = record?.totalGrossProfit / record?.quantity;
-    let updatedExtendedPrice = extendedPriceUnit * quantity;
-    let updatedGrossProfit = grossProfitUnit * quantity;
+    const quantity = parseInt(e.target.value, 10);
+    const extendedPriceUnit = record?.totalExtendedPrice / record?.quantity;
+    const grossProfitUnit = record?.totalGrossProfit / record?.quantity;
+    const updatedExtendedPrice = extendedPriceUnit * quantity;
+    const updatedGrossProfit = grossProfitUnit * quantity;
     let grossProfitPer = 0;
     if (updatedGrossProfit !== 0 && updatedExtendedPrice !== 0) {
       grossProfitPer = (updatedGrossProfit / updatedExtendedPrice) * 100;
     }
-    let obj = {
+    const obj = {
       id: record?.bundleId,
-      quantity: quantity,
+      quantity,
       extended_price: updatedExtendedPrice,
       gross_profit: updatedGrossProfit,
       gross_profit_percentage: grossProfitPer,
@@ -1673,7 +1685,7 @@ const Profitablity: FC<any> = ({
 
   const deleteProfitabityData = () => {
     const Ids: any = selectTedRowData?.map((item: any) => item?.id);
-    dispatch(deleteProfitabilityById({Ids: Ids})).then((d) => {
+    dispatch(deleteProfitabilityById({Ids})).then((d) => {
       if (d?.payload) {
         dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then(
           (payload: any) => {
@@ -1692,7 +1704,7 @@ const Profitablity: FC<any> = ({
   const removeBundleLineItemsFunction = () => {
     const Ids: any = selectTedRowData?.map((item: any) => item?.id);
     if (Ids) {
-      dispatch(removeBundleLineItems({Ids: Ids})).then((d) => {
+      dispatch(removeBundleLineItems({Ids})).then((d) => {
         if (d?.payload) {
           dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then(
             (payload: any) => {
@@ -1843,7 +1855,7 @@ const Profitablity: FC<any> = ({
                             >
                               Qty:
                               <OsInputNumber
-                                disabled={isView === 'true' ? true : false}
+                                disabled={isView === 'true'}
                                 defaultValue={finalDataItem?.quantity}
                                 style={{
                                   width: '60px',
@@ -2017,7 +2029,7 @@ const Profitablity: FC<any> = ({
     let status = '';
     const statuses = ['green', 'yellow'];
 
-    for (let statusCheck of statuses) {
+    for (const statusCheck of statuses) {
       const matchingObjects =
         contractConfigurationData?.filter(
           (item: any) => item?.contract_status === statusCheck,
@@ -2026,12 +2038,12 @@ const Profitablity: FC<any> = ({
       if (matchingObjects.length > 0) {
         const finalData =
           matchingObjects?.[0]?.json && JSON?.parse(matchingObjects?.[0]?.json);
-        fieldName = finalData?.[0]?.['fieldName'];
-        operator = finalData?.[0]?.['operator'];
+        fieldName = finalData?.[0]?.fieldName;
+        operator = finalData?.[0]?.operator;
 
         // Handle formula valueType
-        if (finalData?.[0]?.['valueType'] === 'formula') {
-          finalSecondValue = finalData?.[0]?.['value']?.reduce(
+        if (finalData?.[0]?.valueType === 'formula') {
+          finalSecondValue = finalData?.[0]?.value?.reduce(
             (acc: any, fieldName: any) => {
               const value1 =
                 fieldName === 'contract_price'
@@ -2039,15 +2051,16 @@ const Profitablity: FC<any> = ({
                   : record?.[fieldName];
               if (typeof value1 === 'number') {
                 return acc + value1; // Add if it's a number
-              } else if (typeof value1 === 'string') {
+              }
+              if (typeof value1 === 'string') {
                 return acc + value1; // Concatenate if it's a string
               }
               return acc; // Skip if it's neither number nor string
             },
-            typeof record?.[finalData?.[0]['value']?.[0]] === 'number' ? 0 : '',
+            typeof record?.[finalData?.[0].value?.[0]] === 'number' ? 0 : '',
           );
         } else {
-          finalSecondValue = finalData?.[0]?.['value'];
+          finalSecondValue = finalData?.[0]?.value;
         }
 
         // Check if we can calculate status
@@ -2063,7 +2076,8 @@ const Profitablity: FC<any> = ({
         if (status === 'Correct') {
           if (statusCheck === 'green') {
             return 'success'; // Return "success" if contract_status is green
-          } else if (statusCheck === 'yellow') {
+          }
+          if (statusCheck === 'yellow') {
             return 'warning'; // Return "warning" if contract_status is yellow
           }
         }
@@ -2229,9 +2243,7 @@ const Profitablity: FC<any> = ({
                                     >
                                       Qty:
                                       <OsInputNumber
-                                        disabled={
-                                          isView === 'true' ? true : false
-                                        }
+                                        disabled={isView === 'true'}
                                         defaultValue={finalDataItem?.quantity}
                                         style={{
                                           width: '60px',
@@ -2339,7 +2351,7 @@ const Profitablity: FC<any> = ({
       )}
 
       <OsModal
-        title={'Update Line Items'}
+        title="Update Line Items"
         loading={loading}
         body={
           <UpdatingLineItems
@@ -2365,7 +2377,7 @@ const Profitablity: FC<any> = ({
           setShowUpdateLineItemModal(false);
         }}
         bodyPadding={20}
-        primaryButtonText={'Save'}
+        primaryButtonText="Save"
       />
 
       <OsModal
@@ -2386,7 +2398,7 @@ const Profitablity: FC<any> = ({
           setShowBundleModal((p: boolean) => !p);
           BundleForm?.resetFields();
         }}
-        primaryButtonText={'Save'}
+        primaryButtonText="Save"
         onOk={BundleForm.submit}
         footerPadding={20}
       />

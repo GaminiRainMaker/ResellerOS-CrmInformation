@@ -1,3 +1,5 @@
+/* eslint-disable no-nested-ternary */
+
 'use client';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
@@ -12,9 +14,9 @@ import Typography from '@/app/components/common/typography';
 import {EyeIcon} from '@heroicons/react/24/outline';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import {Option} from 'antd/es/mentions';
 import {queryAllUsers} from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {Option} from 'antd/es/mentions';
 
 const OrganizationUsers = () => {
   const dispatch = useAppDispatch();
@@ -165,7 +167,7 @@ const OrganizationUsers = () => {
           gap: 12,
         }}
       >
-        <Row justify={'space-between'}>
+        <Row justify="space-between">
           <Col />
           <Col>
             {' '}

@@ -79,8 +79,7 @@ const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
             item?.adjusted_price !== undefined &&
             item?.quantity !== undefined
           ) {
-            let temp: any;
-            temp =
+            const temp =
               Number(item?.adjusted_price) *
               (item?.quantity ? Number(item?.quantity) : 1);
             adjustedPrice += temp;
@@ -92,8 +91,7 @@ const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
             item?.adjusted_price !== undefined &&
             item?.quantity !== undefined
           ) {
-            let temp: any;
-            temp =
+            const temp =
               Number(item?.adjusted_price) *
               (item?.quantity ? Number(item?.quantity) : 1);
             BundleAdjustedPrice +=

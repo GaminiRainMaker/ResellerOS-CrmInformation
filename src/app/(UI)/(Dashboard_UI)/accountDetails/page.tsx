@@ -38,6 +38,7 @@ import {
 import {Form, message, Radio} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {
   deleteAddress,
   insertAddAddress,
@@ -46,7 +47,6 @@ import {getCustomerBYId} from '../../../../../redux/actions/customer';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setBillingContact} from '../../../../../redux/slices/billingAddress';
 import DetailCard from './DetailCard';
-import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 
 const AccountDetails = () => {
   const [token] = useThemeToken();
@@ -345,12 +345,10 @@ const AccountDetails = () => {
       key: 'address_type',
       width: 90,
       render: (text: string, record: any) => {
-        let AddressType =
+        const AddressType =
           record?.address_type === 'Both'
             ? true
-            : record?.address_type === 'Shipping'
-              ? true
-              : false;
+            : record?.address_type === 'Shipping';
         return <Checkbox checked={AddressType} disabled />;
       },
     },
@@ -364,12 +362,10 @@ const AccountDetails = () => {
       key: 'address_type',
       width: 80,
       render: (text: string, record: any) => {
-        let AddressType =
+        const AddressType =
           record?.address_type === 'Both'
             ? true
-            : record?.address_type === 'Billing'
-              ? true
-              : false;
+            : record?.address_type === 'Billing';
         return <Checkbox checked={AddressType} disabled />;
       },
     },
@@ -382,9 +378,7 @@ const AccountDetails = () => {
       dataIndex: 'primary_shipping',
       key: 'primary_shipping',
       width: 150,
-      render: (text: boolean) => {
-        return <Radio checked={text} disabled />;
-      },
+      render: (text: boolean) => <Radio checked={text} disabled />,
     },
     {
       title: (
@@ -395,9 +389,7 @@ const AccountDetails = () => {
       dataIndex: 'primary_billing',
       key: 'primary_billing',
       width: 150,
-      render: (text: boolean) => {
-        return <Radio checked={text} disabled />;
-      },
+      render: (text: boolean) => <Radio checked={text} disabled />,
     },
     {
       title: 'Actions',
@@ -677,7 +669,7 @@ const AccountDetails = () => {
         showModalDelete={showModalDelete}
         deleteSelectedIds={deleteSelectedIds}
         heading="Delete Address?"
-        description={'Are you sure you want to delete this address?'}
+        description="Are you sure you want to delete this address?"
       />
     </>
   );

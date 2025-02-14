@@ -1,3 +1,7 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable no-nested-ternary */
+
 'use client';
 
 import {Checkbox} from '@/app/components/common/antd/Checkbox';
@@ -49,7 +53,7 @@ const ShareCredential: FC<any> = ({
         }
       },
     );
-  }, []);
+  }, [dispatch, getOrganization, partnerPasswordId]);
 
   useEffect(() => {
     setTimeout(() => {

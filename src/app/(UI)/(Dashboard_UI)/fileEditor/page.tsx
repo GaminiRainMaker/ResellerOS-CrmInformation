@@ -1,3 +1,9 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-param-reassign */
+/* eslint-disable @typescript-eslint/no-use-before-define */
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable no-restricted-globals */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable import/order */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-nested-ternary */
@@ -78,18 +84,15 @@ import dynamic from 'next/dynamic';
 
 import {registerAllModules} from 'handsontable/registry';
 import {
-  getAllFormulas,
   getAllFormulasByDistributorAndOem,
   getFormulaByFormulaAndOemDist,
   insertFormula,
 } from '../../../../../redux/actions/formulas';
-import {identity} from 'lodash';
 import Typography from '@/app/components/common/typography';
 import {
   getBulkProductIsExisting,
   insertProductsInBulk,
 } from '../../../../../redux/actions/product';
-import React from 'react';
 import {getUserByTokenAccess} from '../../../../../redux/actions/user';
 
 const HotTable = dynamic(() => import('@handsontable/react'), {
@@ -800,6 +803,7 @@ const EditorFile = () => {
     function cleanKeys(obj: any) {
       const cleanedObj: any = {};
       // Iterate over each key-value pair in the object
+      // eslint-disable-next-line no-restricted-syntax
       for (const [key, value] of Object.entries(obj)) {
         // Remove special characters (e.g., periods, spaces) from the key
         // Issue with inconsistent row with data value solution

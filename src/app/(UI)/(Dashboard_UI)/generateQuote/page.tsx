@@ -1,3 +1,9 @@
+/* eslint-disable no-restricted-globals */
+/* eslint-disable no-sequences */
+/* eslint-disable array-callback-return */
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable eqeqeq */
+
 'use client';
 
 import AddQuote from '@/app/components/common/addQuote';
@@ -13,12 +19,13 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {AttachmentOptions, selectData} from '@/app/utils/CONSTANTS';
-import {formatDate, handleDate} from '@/app/utils/base';
+import {handleDate} from '@/app/utils/base';
 import {ArrowDownTrayIcon} from '@heroicons/react/24/outline';
 import {Badge, Form, MenuProps, notification} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {act, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
+import dynamic from 'next/dynamic';
 import {getAllBundle} from '../../../../../redux/actions/bundle';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
 import {
@@ -34,6 +41,12 @@ import {
 } from '../../../../../redux/actions/quoteFile';
 import {getAllTableColumn} from '../../../../../redux/actions/tableColumn';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+
+import {getRebateQuoteLineItemByQuoteId} from '../../../../../redux/actions/rebateQuoteLineitem';
+import {getAllValidationByQuoteId} from '../../../../../redux/actions/validation';
+import {getAddressByCustomerId} from '../../../../../redux/actions/address';
+import {getAllBillingContactByCustomerId} from '../../../../../redux/actions/billingContact';
+
 const DownloadFile = dynamic(() => import('./DownloadFile'), {
   ssr: false,
 });
@@ -47,12 +60,7 @@ const ProfitabilityMain = dynamic(
     ssr: false,
   },
 );
-const Rebates = dynamic(() => import('./allTabs/Rebates'), {
-  ssr: false,
-});
-const Validation = dynamic(() => import('./allTabs/Validation'), {
-  ssr: false,
-});
+
 const AttachmentDocument = dynamic(() => import('./allTabs/Attachment/index'), {
   ssr: false,
 });
@@ -60,11 +68,6 @@ const ReviewQuotes = dynamic(() => import('./allTabs/ReviewQuotes'), {
   ssr: false,
 });
 
-import dynamic from 'next/dynamic';
-import {getRebateQuoteLineItemByQuoteId} from '../../../../../redux/actions/rebateQuoteLineitem';
-import {getAllValidationByQuoteId} from '../../../../../redux/actions/validation';
-import {getAddressByCustomerId} from '../../../../../redux/actions/address';
-import {getAllBillingContactByCustomerId} from '../../../../../redux/actions/billingContact';
 const DrawerContent = dynamic(() => import('./DrawerContent'), {
   ssr: false,
 });
@@ -181,7 +184,7 @@ const GenerateQuote: React.FC = () => {
                   newBundleData?.push(items);
                 }
               });
-              let newObj = {
+              const newObj = {
                 bundleData: newBundleData,
                 QuoteLineItems: payload?.payload?.Profitabilities,
                 ...payload?.payload?.Customer,
@@ -201,7 +204,7 @@ const GenerateQuote: React.FC = () => {
               )?.then((payload: any) => {
                 addressAlll = payload?.payload;
               });
-              let allContactDetails: any = [];
+              const allContactDetails: any = [];
               await dispatch(
                 getAllBillingContactByCustomerId(payload?.payload?.customer_id),
               )?.then((payload: any) => {
@@ -218,7 +221,7 @@ const GenerateQuote: React.FC = () => {
               setObjectForSyncingValues(newObj);
               setObjectForSyncingValues(newObj);
             } else {
-              let newObj = {
+              const newObj = {
                 ...payload?.payload?.Customer,
                 ...payload?.payload?.Opportunity,
                 ...payload?.payload,
@@ -229,8 +232,9 @@ const GenerateQuote: React.FC = () => {
                 QuoteLineItems: payload?.payload?.Profitabilities,
               };
               // delete newObj?.Customer;
-              delete newObj?.Opportunity, delete newObj?.Profitabilities;
-              let allContactDetails: any = [];
+              delete newObj?.Opportunity;
+              delete newObj?.Profitabilities;
+              const allContactDetails: any = [];
               await dispatch(
                 getAllBillingContactByCustomerId(payload?.payload?.customer_id),
               )?.then((payload: any) => {
@@ -392,7 +396,7 @@ const GenerateQuote: React.FC = () => {
                 type: 'info',
               });
             } else if (selectTedRowData?.length > 0) {
-              let bundleCount = selectTedRowData.filter(
+              const bundleCount = selectTedRowData.filter(
                 (item: any) => item?.bundle_id,
               ).length;
               if (bundleCount > 0) {
@@ -746,7 +750,7 @@ const GenerateQuote: React.FC = () => {
                           setTypeForAttachmentFilter(e);
                         }}
                         allowClear
-                        defaultValue={'all'}
+                        defaultValue="all"
                       />
                     ) : (
                       <CommonSelect

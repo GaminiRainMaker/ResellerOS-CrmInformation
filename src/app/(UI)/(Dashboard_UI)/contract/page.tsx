@@ -12,29 +12,27 @@ import OsModal from '@/app/components/common/os-modal';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
-import {useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import AddContract from './addContract';
 import OsButton from '@/app/components/common/os-button';
 import {
   PencilSquareIcon,
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
+import OsDrawer from '@/app/components/common/os-drawer';
 import {
   deleteContract,
   getAllContract,
   insertContract,
 } from '../../../../../redux/actions/contract';
-import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
-import OsDrawer from '@/app/components/common/os-drawer';
+import AddContract from './addContract';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 const ContractMain: React.FC = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams()!;
   const [showModal, setShowModal] = useState<boolean>(false);
   const [contractObject, setContractObject] = useState<any>();
   const {data: contactData, loading} = useAppSelector(
@@ -55,7 +53,7 @@ const ContractMain: React.FC = () => {
     emptyText: (
       <EmptyContainer
         title="No Files"
-        actionButton={'Add New Contract'}
+        actionButton="Add New Contract"
         onClick={() => setShowModal((p) => !p)}
       />
     ),
@@ -130,7 +128,7 @@ const ContractMain: React.FC = () => {
   const AddNewContract = async () => {
     setOpenDrawer(false);
     const FormData = form?.getFieldsValue();
-    let newObj: any = {
+    const newObj: any = {
       ...FormData,
       organization:
         userInformation?.Role !== 'superAdmin'
@@ -232,7 +230,7 @@ const ContractMain: React.FC = () => {
           </Row>
         }
       >
-        <AddContract onFinish={AddNewContract} form={form} drawer={true} />
+        <AddContract onFinish={AddNewContract} form={form} drawer />
       </OsDrawer>
 
       <DeleteModal
