@@ -8,7 +8,7 @@
 
 import {Form, notification} from 'antd';
 import Image from 'next/image';
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect, useState, Suspense} from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {CheckCircleIcon} from '@heroicons/react/24/outline';
 import Cookies from 'js-cookie';
@@ -337,7 +337,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   };
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <ContentSectionWrapper direction="vertical" size={72}>
         <Image src={OSResellerLogo} alt="OSResellerLogo" />
         <Space direction="vertical" size={72}>
@@ -554,7 +554,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           router.push('/');
         }}
       />
-    </>
+    </Suspense>
   );
 };
 
