@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/exhaustive-deps */
 
@@ -11,40 +12,33 @@ import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {Checkbox, Descriptions, Form} from 'antd';
-import {useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {Checkbox, Form} from 'antd';
+import React, {useEffect, useState} from 'react';
 import OsButton from '@/app/components/common/os-button';
 import {
   PencilSquareIcon,
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
+import OsDrawer from '@/app/components/common/os-drawer';
+import {
+  changeTheALpabetsFromFormula,
+  formatStatus,
+} from '@/app/utils/CONSTANTS';
+import AddFormula from './addFormula';
 import {
   insertFormula,
   deleteFormula,
   getAllFormulas,
 } from '../../../../../redux/actions/formulas';
-import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
-import OsDrawer from '@/app/components/common/os-drawer';
-import AddFormula from './addFormula';
-import {
-  changeTheALpabetsFromFormula,
-  formatStatus,
-  partnerOptions,
-} from '@/app/utils/CONSTANTS';
-import React from 'react';
-import {
-  getAllApprovedPartnerFoFormulas,
-  getAllApprovedPartnerForQuoteConfiq,
-} from '../../../../../redux/actions/partner';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {getAllApprovedPartnerFoFormulas} from '../../../../../redux/actions/partner';
 
 const FormulaMain: React.FC = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams()!;
   const [showModal, setShowModal] = useState<boolean>(false);
   const [loadingContract, setLoadingContract] = useState<boolean>(false);
   const {data: formulaData} = useAppSelector((state) => state.formulas);
@@ -75,7 +69,7 @@ const FormulaMain: React.FC = () => {
     emptyText: (
       <EmptyContainer
         title="No Files"
-        actionButton={'Add New Formula'}
+        actionButton="Add New Formula"
         onClick={() => setShowModal((p) => !p)}
       />
     ),
@@ -198,7 +192,7 @@ const FormulaMain: React.FC = () => {
   const AddNewFormula = async () => {
     setOpenDrawer(false);
     const FormData = form?.getFieldsValue();
-    let newObj: any = {
+    const newObj: any = {
       ...FormData,
     };
     if (recordId) {
@@ -216,7 +210,7 @@ const FormulaMain: React.FC = () => {
       newObj.partner_id = selectValue?.partner_id;
     }
     setLoadingContract(true);
-    let result = changeTheALpabetsFromFormula(newObj?.formula);
+    const result = changeTheALpabetsFromFormula(newObj?.formula);
     delete newObj.formula;
     newObj.formula = result;
     await dispatch(insertFormula(newObj));
@@ -339,7 +333,7 @@ const FormulaMain: React.FC = () => {
         <AddFormula
           onFinish={AddNewFormula}
           form={form}
-          drawer={true}
+          drawer
           setSelectValue={setSelectValue}
           selectValue={selectValue}
           optionsForPartner={optionsForPartner}

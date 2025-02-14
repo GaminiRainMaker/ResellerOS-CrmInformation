@@ -12,27 +12,25 @@ import OsModal from '@/app/components/common/os-modal';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-
-import OsButton from '@/app/components/common/os-button';
+import {useRouter} from 'next/navigation';
+import React, {useEffect, useState} from 'react';
 import OsDrawer from '@/app/components/common/os-drawer';
+import OsButton from '@/app/components/common/os-button';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import {
   PencilSquareIcon,
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+
 import {getAllContract} from '../../../../../redux/actions/contract';
 import {
   deleteContractProduct,
   getAllContractProduct,
   insertContractProduct,
 } from '../../../../../redux/actions/contractProduct';
-import {getAllProductForContract} from '../../../../../redux/actions/product';
 import AddContractProduct from './AddContractProduct';
-import React from 'react';
 
 const ContractProductMain: React.FC = () => {
   const [token] = useThemeToken();
@@ -40,7 +38,6 @@ const ContractProductMain: React.FC = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const searchParams = useSearchParams()!;
   const [showModal, setShowModal] = useState<boolean>(false);
   const [contractObject, setContractObject] = useState<any>();
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
@@ -78,7 +75,7 @@ const ContractProductMain: React.FC = () => {
     emptyText: (
       <EmptyContainer
         title="No Files"
-        actionButton={'Add New Contract Product'}
+        actionButton="Add New Contract Product"
         onClick={() => setShowModal((p) => !p)}
       />
     ),
@@ -192,10 +189,10 @@ const ContractProductMain: React.FC = () => {
 
   const updatebillDetails = async () => {
     const FormData = form?.getFieldsValue();
-    let newArr: any = [];
+    const newArr: any = [];
     if (!openDrawer) {
       FormData?.product_id?.map((items: any) => {
-        let newObj: any = {
+        const newObj: any = {
           ...FormData,
         };
         delete FormData?.product_id;
@@ -210,7 +207,7 @@ const ContractProductMain: React.FC = () => {
         newArr?.push(newObj);
       });
     }
-    let newObj: any = {
+    const newObj: any = {
       ...FormData,
     };
     newObj.organization =
@@ -361,7 +358,7 @@ const ContractProductMain: React.FC = () => {
           optionsForContract={finalOptionsForContract}
           onFinish={updatebillDetails}
           form={form}
-          drawer={true}
+          drawer
         />
       </OsDrawer>
       <DeleteModal

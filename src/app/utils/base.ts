@@ -37,9 +37,11 @@ export const getResultedValue = () => {
         const {QuoteAI, DealReg} = permissions;
         if (QuoteAI && DealReg) {
           return false;
-        } else if (QuoteAI) {
+        }
+        if (QuoteAI) {
           return false;
-        } else if (!QuoteAI && DealReg) {
+        }
+        if (!QuoteAI && DealReg) {
           return true;
         }
 
@@ -487,11 +489,11 @@ export const updateTables1 = async (
 
       // getRebatesInBulkByProductCode
       // getContractInBulkByProductCode
-      let findRebateIndex = allReabatesWithProductCodeData?.findIndex(
+      const findRebateIndex = allReabatesWithProductCodeData?.findIndex(
         (itemReb: any) => item.product_code === itemReb?.PID,
       );
       if (findRebateIndex !== -1) {
-        let newObj = {
+        const newObj = {
           ...obj1,
           quoteline_item_id: item?.id,
           rebate_id: allReabatesWithProductCodeData?.[findRebateIndex]?.id,
@@ -501,11 +503,11 @@ export const updateTables1 = async (
         };
         rebateDataArray.push(newObj);
       }
-      let findContractIndex = allContractWithProductCodeData?.findIndex(
+      const findContractIndex = allContractWithProductCodeData?.findIndex(
         (itemReb: any) => item.product_code === itemReb.contract_product_name,
       );
       if (findContractIndex !== -1) {
-        let newObj = {
+        const newObj = {
           ...obj1,
           quoteline_item_id: item?.id,
           contract_product_id:
@@ -658,11 +660,11 @@ export const updateTables = async (
 
       // getRebatesInBulkByProductCode
       // getContractInBulkByProductCode
-      let findRebateIndex = allReabatesWithProductCodeData?.findIndex(
+      const findRebateIndex = allReabatesWithProductCodeData?.findIndex(
         (itemReb: any) => item.product_code === itemReb?.PID,
       );
       if (findRebateIndex !== -1) {
-        let newObj = {
+        const newObj = {
           ...obj1,
           quoteline_item_id: item?.id,
           rebate_id: allReabatesWithProductCodeData?.[findRebateIndex]?.id,
@@ -672,11 +674,11 @@ export const updateTables = async (
         };
         rebateDataArray.push(newObj);
       }
-      let findContractIndex = allContractWithProductCodeData?.findIndex(
+      const findContractIndex = allContractWithProductCodeData?.findIndex(
         (itemReb: any) => item.product_code === itemReb.contract_product_name,
       );
       if (findContractIndex >= 0) {
-        let newObj1 = {
+        const newObj1 = {
           ...obj1,
           quoteline_item_id: item?.id,
           contract_product_id:
@@ -993,12 +995,12 @@ export const formatStatus = (str: string) => {
 };
 
 export const getLineItemsWithNonRepitive = (arrayValue: any) => {
-  let newArrValues: any = [];
+  const newArrValues: any = [];
   arrayValue.forEach((itemsPro: any) => {
-    let checkAlreadyExist: any =
+    const checkAlreadyExist: any =
       newArrValues?.length > 0 ? [...newArrValues] : [];
 
-    let finIndexForAlreadyPushed = checkAlreadyExist?.findIndex(
+    const finIndexForAlreadyPushed = checkAlreadyExist?.findIndex(
       (checkExistItem: any) =>
         itemsPro?.product_code &&
         itemsPro?.product_code !== null &&
@@ -1024,10 +1026,10 @@ export const getLineItemsWithNonRepitive = (arrayValue: any) => {
     }
   });
 
-  let finalArrr: any = [];
+  const finalArrr: any = [];
 
   newArrValues?.map((itemss: any) => {
-    let findIndexValues = finalArrr?.findIndex(
+    const findIndexValues = finalArrr?.findIndex(
       (itemsInner: any) => itemsInner?.product_code === itemss?.product_code,
     );
     if (findIndexValues === -1 && itemss?.product_code) {
@@ -1042,16 +1044,16 @@ export const getValuesOFLineItemsThoseNotAddedBefore = (
   lineItem: any,
   allProductCodeDataa: any,
 ) => {
-  let newInsertionData: any = [];
+  const newInsertionData: any = [];
   for (let i = 0; i < lineItem?.length; i++) {
-    let allLineItems = lineItem[i];
-    let productCode = allLineItems?.product_code
+    const allLineItems = lineItem[i];
+    const productCode = allLineItems?.product_code
       ? allLineItems?.product_code &&
         allLineItems?.product_code !== null &&
         allLineItems?.product_code !== undefined &&
         allLineItems?.product_code?.toString()?.replace(/\s/g, '')
       : 'NEWCODE0123';
-    let finIndexOfItem = allProductCodeDataa?.findIndex(
+    const finIndexOfItem = allProductCodeDataa?.findIndex(
       (itemIndex: any) =>
         itemIndex?.product_code &&
         itemIndex?.product_code !== null &&
@@ -1062,10 +1064,10 @@ export const getValuesOFLineItemsThoseNotAddedBefore = (
       newInsertionData?.push(allLineItems);
     }
   }
-  let finalArrr: any = [];
+  const finalArrr: any = [];
 
   newInsertionData?.map((itemss: any) => {
-    let findIndexValues = finalArrr?.findIndex(
+    const findIndexValues = finalArrr?.findIndex(
       (itemsInner: any) => itemsInner?.product_code === itemss?.product_code,
     );
     if (findIndexValues === -1 && itemss?.product_code) {
@@ -1106,7 +1108,8 @@ const getKey = (key: string): Uint8Array => {
       ...keyBytes,
       ...new Uint8Array(16 - keyBytes.length),
     ]); // Pad to 16 bytes
-  } else if (keyBytes.length < 32) {
+  }
+  if (keyBytes.length < 32) {
     return new Uint8Array([
       ...keyBytes,
       ...new Uint8Array(32 - keyBytes.length),
@@ -1235,7 +1238,7 @@ export const currencyAmountFormatter: InputNumberProps['formatter'] = (
 export const getFormattedValuesForBundlesOnly = (
   objectForSyncingValues: any,
 ) => {
-  let finArrr: any = [];
+  const finArrr: any = [];
 
   if (
     objectForSyncingValues &&
@@ -1244,9 +1247,9 @@ export const getFormattedValuesForBundlesOnly = (
     objectForSyncingValues?.bundleData?.map(
       (itemBun: any, indexBun: number) => {
         console.log('itemBun', itemBun);
-        let innerLineArr: any = [];
+        const innerLineArr: any = [];
         itemBun?.Profitabilities?.map((items: any, index: number) => {
-          let newObj = {
+          const newObj = {
             attributes: {
               type: 'QuoteLineItem',
             },
@@ -1269,12 +1272,13 @@ export const getFormattedValuesForBundlesOnly = (
         innerLineArr?.forEach((items: any) => {
           totalExtendedPrice += Number(items?.list_price);
         });
-        let extendedPriceFinal = totalExtendedPrice * Number(itemBun?.quantity);
-        let grand_totalFinal =
+        const extendedPriceFinal =
+          totalExtendedPrice * Number(itemBun?.quantity);
+        const grand_totalFinal =
           extendedPriceFinal +
           Number(objectForSyncingValues?.quote_tax) +
           Number(objectForSyncingValues?.quote_shipping);
-        let finalObj = {
+        const finalObj = {
           attributes: {
             type: 'QuoteLineItem',
           },
@@ -1302,9 +1306,9 @@ export const getFormattedValuesForLineItems = (objectForSyncingValues: any) => {
     objectForSyncingValues &&
     objectForSyncingValues?.QuoteLineItems?.length > 0
   ) {
-    let newArrOfOject: any = [];
+    const newArrOfOject: any = [];
     objectForSyncingValues?.QuoteLineItems?.map((items: any, index: number) => {
-      let newObj = {
+      const newObj = {
         attributes: {
           type: 'QuoteLineItem',
         },
@@ -1333,7 +1337,7 @@ export const getFormattedValuesForLineItems = (objectForSyncingValues: any) => {
 export const getFormattedValuesForWithAndWithoutBundles = (
   objectForSyncingValues: any,
 ) => {
-  let finArrr: any = [];
+  const finArrr: any = [];
 
   if (
     objectForSyncingValues &&
@@ -1342,9 +1346,9 @@ export const getFormattedValuesForWithAndWithoutBundles = (
     objectForSyncingValues?.bundleData?.map(
       (itemBun: any, indexBun: number) => {
         console.log('itemBun', itemBun);
-        let innerLineArr: any = [];
+        const innerLineArr: any = [];
         itemBun?.Profitabilities?.map((items: any, index: number) => {
-          let newObj = {
+          const newObj = {
             attributes: {
               type: 'QuoteLineItem',
             },
@@ -1367,13 +1371,14 @@ export const getFormattedValuesForWithAndWithoutBundles = (
         innerLineArr?.forEach((items: any) => {
           totalExtendedPrice += Number(items?.list_price);
         });
-        let extendedPriceFinal = totalExtendedPrice * Number(itemBun?.quantity);
-        let grand_totalFinal =
+        const extendedPriceFinal =
+          totalExtendedPrice * Number(itemBun?.quantity);
+        const grand_totalFinal =
           extendedPriceFinal +
           Number(objectForSyncingValues?.quote_tax) +
           Number(objectForSyncingValues?.quote_shipping);
 
-        let finalObj = {
+        const finalObj = {
           attributes: {
             type: 'QuoteLineItem',
           },
@@ -1399,13 +1404,13 @@ export const getFormattedValuesForWithAndWithoutBundles = (
     objectForSyncingValues?.QuoteLineItems?.forEach((items: any) => {
       totalExtendedPrice += Number(items?.list_price);
     });
-    let extendedPriceFinal = totalExtendedPrice;
-    let grand_totalFinal =
+    const extendedPriceFinal = totalExtendedPrice;
+    const grand_totalFinal =
       extendedPriceFinal +
       Number(objectForSyncingValues?.quote_tax) +
       Number(objectForSyncingValues?.quote_shipping);
     objectForSyncingValues?.QuoteLineItems?.map((items: any, index: number) => {
-      let newObj = {
+      const newObj = {
         attributes: {
           type: 'QuoteLineItem',
         },
@@ -1433,8 +1438,8 @@ export const getFormattedValuesForWithAndWithoutBundles = (
 export const getFormattedValuesForWithAndWithoutBundlesForExcelFile = (
   objectForSyncingValues: any,
 ) => {
-  let bundleArrOfObject: any = [];
-  let lineItemsArr: any = [];
+  const bundleArrOfObject: any = [];
+  const lineItemsArr: any = [];
 
   // ====================== For LineItems ==================================
 
@@ -1446,13 +1451,13 @@ export const getFormattedValuesForWithAndWithoutBundlesForExcelFile = (
     objectForSyncingValues?.QuoteLineItems?.forEach((items: any) => {
       totalExtendedPrice += Number(items?.list_price);
     });
-    let extendedPriceFinal = totalExtendedPrice;
-    let grand_totalFinal =
+    const extendedPriceFinal = totalExtendedPrice;
+    const grand_totalFinal =
       extendedPriceFinal +
       Number(objectForSyncingValues?.quote_tax) +
       Number(objectForSyncingValues?.quote_shipping);
     objectForSyncingValues?.QuoteLineItems?.map((items: any, index: number) => {
-      let newObj = {
+      const newObj = {
         attributes: {
           type: 'QuoteLineItem',
         },
@@ -1463,6 +1468,7 @@ export const getFormattedValuesForWithAndWithoutBundlesForExcelFile = (
         description: items?.description,
         line_amount: items?.unit_price,
         list_price: items?.list_price,
+        // eslint-disable-next-line no-nested-ternary
         organization: objectForSyncingValues?.distributor_name
           ? objectForSyncingValues?.distributor_name
           : objectForSyncingValues?.oem_name
@@ -1490,7 +1496,7 @@ export const getFormattedValuesForWithAndWithoutBundlesForExcelFile = (
           });
         }
         itemBun?.Profitabilities?.map((items: any, index: number) => {
-          let newObj = {
+          const newObj = {
             Id: items?.id,
             line_number: items?.line_number ? items?.line_number : index + 1,
             quantity: items?.quantity,
@@ -1649,11 +1655,10 @@ export const processFormData = (template: any[], finalUniqueData: any) => {
           .map((part, index) => {
             if (index === 0) {
               return part.replace(/_/g, ' ').toUpperCase();
-            } else {
-              return part
-                .replace(/_/g, ' ')
-                .replace(/\b\w/g, (char) => char.toUpperCase());
             }
+            return part
+              .replace(/_/g, ' ')
+              .replace(/\b\w/g, (char) => char.toUpperCase());
           })
           .join('/');
       } else {
@@ -1802,17 +1807,16 @@ export function checkFunctionInArray(arr: any, formulaToCheck: any) {
   );
 }
 export function concatenateAfterFirstWithSpace(inputString: any) {
-  let colonIndex = inputString.indexOf(':');
+  const colonIndex = inputString.indexOf(':');
 
   // Check if colon exists in the string
   if (colonIndex !== -1) {
     // Extract the part after the colon and trim any extra spaces
-    let result = inputString.substring(colonIndex + 1).trim();
+    const result = inputString.substring(colonIndex + 1).trim();
     return result;
-  } else {
-    // Return the original string if no colon is found
-    return inputString;
   }
+  // Return the original string if no colon is found
+  return inputString;
 }
 
 export const convertToSnakeCase = (input: string): string => {
@@ -1995,8 +1999,8 @@ export const updateSalesForceData = async (
   const partnerArray = res?.map((item: any) => item?.partner_id);
   const partnerProgramArray = res?.map((item: any) => item?.partner_program_id);
   // Dispatch actions to get all partners and partner programs by id
-  let partnerData: any = [];
-  let partnerProgramData: any = [];
+  const partnerData: any = [];
+  const partnerProgramData: any = [];
 
   await dispatch(getAllPartnerById(partnerArray))?.then((payload: any) => {
     if (payload?.payload && payload?.payload?.length > 0) {
@@ -2063,12 +2067,11 @@ export const handleDate = (
   if (toUserTimezone) {
     // Convert stored UTC date to user's timezone with specified format
     return dayjs.utc(date).tz(userTimeZone).format(format);
-  } else {
-    // Save the current date or provided date in UTC with specified format
-    return dayjs(date || new Date())
-      .utc()
-      .format();
   }
+  // Save the current date or provided date in UTC with specified format
+  return dayjs(date || new Date())
+    .utc()
+    .format();
 };
 
 export function convertToNumber(variable: any) {
@@ -2162,7 +2165,8 @@ export const convertToBoolean = function (value: any) {
   }
   if (value && typeof value === 'boolean') {
     return value; // If it's already a boolean, return as is
-  } else if (value && typeof value === 'string') {
+  }
+  if (value && typeof value === 'string') {
     // Convert string "true" (case insensitive) to boolean true
     if (value && value.trim().toLowerCase() === 'true') {
       return true;

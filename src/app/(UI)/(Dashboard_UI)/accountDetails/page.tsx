@@ -9,7 +9,6 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import {OsCard} from '@/app/components/common/os-card';
 import OsStatusWrapper from '@/app/components/common/os-status';
-import OsTable from '@/app/components/common/os-table';
 import DetailAnalyticCard from '@/app/components/common/os-table/DetailAnalyticCard';
 import Typography from '@/app/components/common/typography';
 import {
@@ -37,7 +36,8 @@ import {
 } from '@/app/utils/base';
 import {Form, message, Radio} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
+import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {
   deleteAddress,
   insertAddAddress,
@@ -46,7 +46,6 @@ import {getCustomerBYId} from '../../../../../redux/actions/customer';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setBillingContact} from '../../../../../redux/slices/billingAddress';
 import DetailCard from './DetailCard';
-import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 
 const AccountDetails = () => {
   const [token] = useThemeToken();
@@ -65,7 +64,7 @@ const AccountDetails = () => {
     (state) => state.customer,
   );
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getCustomerID = searchParams && searchParams.get('id');
 
   const quotes =
@@ -345,12 +344,10 @@ const AccountDetails = () => {
       key: 'address_type',
       width: 90,
       render: (text: string, record: any) => {
-        let AddressType =
+        const AddressType =
           record?.address_type === 'Both'
             ? true
-            : record?.address_type === 'Shipping'
-              ? true
-              : false;
+            : record?.address_type === 'Shipping';
         return <Checkbox checked={AddressType} disabled />;
       },
     },
@@ -364,12 +361,10 @@ const AccountDetails = () => {
       key: 'address_type',
       width: 80,
       render: (text: string, record: any) => {
-        let AddressType =
+        const AddressType =
           record?.address_type === 'Both'
             ? true
-            : record?.address_type === 'Billing'
-              ? true
-              : false;
+            : record?.address_type === 'Billing';
         return <Checkbox checked={AddressType} disabled />;
       },
     },
@@ -382,9 +377,7 @@ const AccountDetails = () => {
       dataIndex: 'primary_shipping',
       key: 'primary_shipping',
       width: 150,
-      render: (text: boolean) => {
-        return <Radio checked={text} disabled />;
-      },
+      render: (text: boolean) => <Radio checked={text} disabled />,
     },
     {
       title: (
@@ -395,9 +388,7 @@ const AccountDetails = () => {
       dataIndex: 'primary_billing',
       key: 'primary_billing',
       width: 150,
-      render: (text: boolean) => {
-        return <Radio checked={text} disabled />;
-      },
+      render: (text: boolean) => <Radio checked={text} disabled />,
     },
     {
       title: 'Actions',
@@ -527,7 +518,7 @@ const AccountDetails = () => {
   };
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <OsBreadCrumb items={menuItems} />
 
       <Row justify="space-between" gutter={[16, 16]}>
@@ -677,9 +668,9 @@ const AccountDetails = () => {
         showModalDelete={showModalDelete}
         deleteSelectedIds={deleteSelectedIds}
         heading="Delete Address?"
-        description={'Are you sure you want to delete this address?'}
+        description="Are you sure you want to delete this address?"
       />
-    </>
+    </Suspense>
   );
 };
 export default AccountDetails;

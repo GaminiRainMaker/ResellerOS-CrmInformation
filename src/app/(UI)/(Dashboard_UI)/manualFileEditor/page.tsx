@@ -1,3 +1,7 @@
+/* eslint-disable no-restricted-globals */
+/* eslint-disable guard-for-in */
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable import/order */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-nested-ternary */
@@ -12,15 +16,11 @@
 'use client';
 
 import '@handsontable/pikaday/css/pikaday.css';
-import '@handsontable/pikaday/css/pikaday.css';
-const HotTable = dynamic(() => import('@handsontable/react'), {
-  ssr: false,
-});
 
 // import {HotTable} from '@handsontable/react';
 import {HyperFormula} from 'hyperformula';
 
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import './styles.css';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {addClassesToRows, alignHeaders} from '../fileEditor/hooksCallbacks';
@@ -48,19 +48,18 @@ import CommonSelect from '@/app/components/common/os-select';
 import {getResultedValue} from '@/app/utils/base';
 import {registerAllModules} from 'handsontable/registry';
 import dynamic from 'next/dynamic';
-import {getAllFormulas} from '../../../../../redux/actions/formulas';
-import {
-  queryLineItemSyncing,
-  queryLineItemSyncingForSalesForce,
-} from '../../../../../redux/actions/LineItemSyncing';
-import ConverSationProcess from '../admin/quote-AI/configuration/configuration-tabs/ConversationProcess';
+import {queryLineItemSyncingForSalesForce} from '../../../../../redux/actions/LineItemSyncing';
+
+const HotTable = dynamic(() => import('@handsontable/react'), {
+  ssr: false,
+});
 
 registerAllModules();
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const router = useRouter();
   const getQuoteID = searchParams.get('id');
   const getQuoteFileId = searchParams.get('fileId');
@@ -122,16 +121,15 @@ const EditorFile = () => {
     salesforce: boolean;
   }>({
     searchValue: '',
-    asserType:
-      salesFOrceAccoutFlow === 'true' || salesFOrceManual ? true : false,
-    salesforce: salesForceinstanceUrl ? true : false,
-    lifeboatsalesforce: salesForceinstanceUrl ? true : false,
+    asserType: !!(salesFOrceAccoutFlow === 'true' || salesFOrceManual),
+    salesforce: !!salesForceinstanceUrl,
+    lifeboatsalesforce: !!salesForceinstanceUrl,
   });
 
   const getDataForSalesforce = () => {
     if (!salesFOrceAccoutId) {
       if (SaleQuoteId) {
-        let data = {
+        const data = {
           token: salesForceToken,
           FileId: salesForceFiledId,
           urls: salesForceinstanceUrl,
@@ -139,7 +137,7 @@ const EditorFile = () => {
           file_type: null,
         };
 
-        let newObj = {
+        const newObj = {
           file_type: 'Manual',
           token: salesForceToken,
           FileId: null,
@@ -147,7 +145,7 @@ const EditorFile = () => {
           quoteId: SaleQuoteId,
         };
 
-        let pathTOGo =
+        const pathTOGo =
           salesFOrceManual === 'true' || salesFOrceManual === true
             ? newObj
             : data;
@@ -156,7 +154,7 @@ const EditorFile = () => {
             if (salesFOrceManual === 'false' || salesFOrceManual === false) {
               return;
             }
-            let data = {
+            const data = {
               token: salesForceToken,
               FileId: null,
               urls: salesForceinstanceUrl,
@@ -176,14 +174,16 @@ const EditorFile = () => {
                   `/fileEditor?quote_Id=${SaleQuoteId}&key=${salesForceToken}&instance_url=${salesForceinstanceUrl}&file_Id=${null}&editLine=false&manual=true`,
                 );
               }
-              return;
             });
 
             return;
-          } else if (payload?.payload?.qliFields) {
-            let newObjFromSalesFOrce = JSON?.parse(payload?.payload?.qliFields);
-            let keysss = Object.keys(newObjFromSalesFOrce);
-            let arrOfOptions: any = [];
+          }
+          if (payload?.payload?.qliFields) {
+            const newObjFromSalesFOrce = JSON?.parse(
+              payload?.payload?.qliFields,
+            );
+            const keysss = Object.keys(newObjFromSalesFOrce);
+            const arrOfOptions: any = [];
 
             if (keysss) {
               keysss?.map((items: any) => {
@@ -196,33 +196,31 @@ const EditorFile = () => {
 
             setAccoutSyncOptions(arrOfOptions);
           }
-          let newObj = {
+          const newObj = {
             file_name: payload?.payload?.title,
             FileId: payload?.payload?.fileId,
           };
           setCurrentFileData(newObj);
         });
+      } else if (fullStackManul === 'true') {
+        const data = {
+          id: getQuoteID,
+          type_of_file: 'manual',
+        };
+        dispatch(getfileByQuoteIdWithManual(data))?.then((payload: any) => {
+          setCurrentFileData(payload?.payload);
+        });
       } else {
-        if (fullStackManul === 'true') {
-          let data = {
-            id: getQuoteID,
-            type_of_file: 'manual',
-          };
-          dispatch(getfileByQuoteIdWithManual(data))?.then((payload: any) => {
+        dispatch(getQuoteFileById(Number(getQuoteFileId)))?.then(
+          (payload: any) => {
             setCurrentFileData(payload?.payload);
-          });
-        } else {
-          dispatch(getQuoteFileById(Number(getQuoteFileId)))?.then(
-            (payload: any) => {
-              setCurrentFileData(payload?.payload);
-            },
-          );
-        }
+          },
+        );
       }
     }
   };
   const addNewLine = () => {
-    let newArr = [
+    const newArr = [
       {
         a: '',
         b: '',
@@ -265,7 +263,7 @@ const EditorFile = () => {
   }, []);
   useEffect(() => {
     if (salesFOrceAccoutId) {
-      let newObj = {
+      const newObj = {
         token: salesForceToken,
 
         urls: salesForceinstanceUrl,
@@ -273,8 +271,8 @@ const EditorFile = () => {
 
       dispatch(getSalesForceFields(newObj))?.then((payload: any) => {
         if (payload?.payload) {
-          let keysss = Object.keys(payload?.payload);
-          let arrOfOptions: any = [];
+          const keysss = Object.keys(payload?.payload);
+          const arrOfOptions: any = [];
           if (keysss) {
             keysss?.map((items: any) => {
               arrOfOptions?.push({
@@ -384,7 +382,7 @@ const EditorFile = () => {
 
   const checkForNewFileForSalesForce = async () => {
     if (salesFOrceManual === 'true' || salesFOrceManual === true) {
-      let newObj = {
+      const newObj = {
         file_type: 'Manual',
         token: salesForceToken,
         FileId: null,
@@ -407,7 +405,7 @@ const EditorFile = () => {
           //   `/manualFileEditor?quote_Id=${SaleQuoteId}&key=${salesForceToken}&instance_url=${salesForceinstanceUrl}&file_Id=${null}&editLine=false&manual=true`,
           // );
         } else {
-          let data = {
+          const data = {
             token: salesForceToken,
             FileId: null,
             urls: salesForceinstanceUrl,
@@ -428,7 +426,6 @@ const EditorFile = () => {
               );
               // location?.reload();
             }
-            return;
           });
 
           // notification?.open({
@@ -452,7 +449,7 @@ const EditorFile = () => {
       );
       location?.reload();
     } else {
-      let data = {
+      const data = {
         id: getQuoteID,
         type_of_file: 'manual',
       };
@@ -474,12 +471,12 @@ const EditorFile = () => {
     }
   };
   const UpdateTheColumnName = async (type: any, old: string, newVal: any) => {
-    let newArr: any = [...arrayOflineItem];
-    const renameKey = (arr: any, oldKey: any, newKey: any) => {
-      return arr.map((obj: any) => {
+    const newArr: any = [...arrayOflineItem];
+    const renameKey = (arr: any, oldKey: any, newKey: any) =>
+      arr.map((obj: any) => {
         // Create a new object preserving the order of keys
-        let newObj: any = {};
-        for (let key of Object.keys(obj)) {
+        const newObj: any = {};
+        for (const key of Object.keys(obj)) {
           if (key === oldKey) {
             // Rename the old key to new key
             newObj[newKey] = obj[key];
@@ -490,8 +487,7 @@ const EditorFile = () => {
         }
         return newObj;
       });
-    };
-    let updatedArr = renameKey(newArr, old, newVal);
+    const updatedArr = renameKey(newArr, old, newVal);
     setArrayOflineItem(updatedArr);
     notification.open({
       message: `Column header ${old} successfully changed to ${newVal}.`,
@@ -505,8 +501,8 @@ const EditorFile = () => {
     }
   };
   const AddNewCloumnToMergedTable = async (value: any) => {
-    let newArr: any = [...arrayOflineItem];
-    let resultantArr: any = [];
+    const newArr: any = [...arrayOflineItem];
+    const resultantArr: any = [];
 
     newArr?.map((items: any) => {
       resultantArr?.push({...items, [value]: ''});
@@ -517,7 +513,7 @@ const EditorFile = () => {
   };
   useEffect(() => {
     if (mergeedColumnHeader && mergeedColumnHeader?.length > 0) {
-      let newArr: any = [];
+      const newArr: any = [];
       mergeedColumnHeader?.map((items: any) => {
         newArr?.push({label: items, value: items});
       });
@@ -526,16 +522,7 @@ const EditorFile = () => {
   }, [mergeedColumnHeader]);
 
   return (
-    <div
-      style={
-        {
-          // background: 'red',
-          // overflow: salesForceinstanceUrl ? 'auto' : '',
-          // maxHeight: salesForceinstanceUrl ? '105vh' : '',
-        }
-      }
-    >
-      {' '}
+    <Suspense fallback={<div>Loading...</div>}>
       <GlobalLoader loading={nanonetsLoading}>
         {currentFileData && (
           <Typography
@@ -665,7 +652,7 @@ const EditorFile = () => {
             ]}
             height="auto"
             formulas={{
-              engine: HyperFormula,
+              engine: HyperFormula as unknown as any,
             }}
             stretchH="all"
             colHeaders={mergeedColumnHeader}
@@ -813,7 +800,7 @@ const EditorFile = () => {
                 routingConditions={checkForNewFile}
                 currentFileId={currentFileData?.FileId}
                 currentFileName={currentFileData?.file_name}
-                manualFlow={true}
+                manualFlow
                 checkForNewFileForSalesForce={checkForNewFileForSalesForce}
                 currentFileData={currentFileData}
                 accoutSyncOptions={accoutSyncOptions}
@@ -842,7 +829,7 @@ const EditorFile = () => {
                 />
               </Col>
               <OsButton
-                disabled={newHeaderName?.length > 0 ? false : true}
+                disabled={!(newHeaderName?.length > 0)}
                 text="Add"
                 buttontype="PRIMARY"
                 clickHandler={() => {
@@ -900,9 +887,7 @@ const EditorFile = () => {
                   <OsButton
                     // style={{marginRight: '100px'}}
                     disabled={
-                      newHeaderName?.length > 0 && oldColumnName?.length > 0
-                        ? false
-                        : true
+                      !(newHeaderName?.length > 0 && oldColumnName?.length > 0)
                     }
                     text="Update"
                     buttontype="SECONDARY"
@@ -913,9 +898,7 @@ const EditorFile = () => {
                 </div>
                 <OsButton
                   disabled={
-                    newHeaderName?.length > 0 && oldColumnName?.length > 0
-                      ? false
-                      : true
+                    !(newHeaderName?.length > 0 && oldColumnName?.length > 0)
                   }
                   text="Update & Close"
                   buttontype="PRIMARY"
@@ -935,7 +918,7 @@ const EditorFile = () => {
           }}
         />
       </GlobalLoader>
-    </div>
+    </Suspense>
   );
 };
 export default EditorFile;

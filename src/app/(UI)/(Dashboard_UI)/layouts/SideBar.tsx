@@ -46,7 +46,7 @@ const SideBar = () => {
   const {userInformation} = useAppSelector((state) => state.user);
   const {cacheAvailableSeats} = useAppSelector((state) => state.cacheFLow);
   const {isCanvas} = useAppSelector((state) => state.canvas);
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   // const [canvasState, setCanvasState] = useState<boolean>(true);
   const salesForceUrl = searchParams.get('instance_url');
 
@@ -1022,7 +1022,7 @@ const SideBar = () => {
         ],
       ),
     // isOrderAI &&
-    
+
     //   getItem(
     //     <Typography
     //       cursor="pointer"
