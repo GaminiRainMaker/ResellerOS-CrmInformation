@@ -1,7 +1,7 @@
 'use client';
 
 import {Layout} from 'antd';
-import React from 'react';
+import React, {Suspense} from 'react';
 import {usePathname} from 'next/navigation';
 import CustomHeader from './layouts/Header';
 import SideBar from './layouts/SideBar';
@@ -16,9 +16,8 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const {isCanvas} = useAppSelector((state) => state.canvas);
 
-  console.log('Worked'!);
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <Layout style={{minHeight: '90vh'}}>
         {!isCanvas && <CustomHeader />}
         <Layout>
@@ -33,6 +32,6 @@ export default function DashboardLayout({
           </Content>
         </Layout>
       </Layout>
-    </>
+    </Suspense>
   );
 }

@@ -27,8 +27,6 @@ const UploadCard: FC<any> = ({
     );
   };
 
-  console.log('uploadFileData', uploadFileData);
-
   const handleAttachmentType = (index: number, value: number) => {
     const arr = [...uploadFileData];
     const obj = {...arr[index]};

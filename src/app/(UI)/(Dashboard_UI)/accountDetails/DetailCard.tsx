@@ -38,7 +38,7 @@ interface CustomerData {
 const DetailCard = () => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getCustomerID = searchParams && searchParams.get('id');
   const [form] = Form.useForm();
   const {customerDataById: customerData} = useAppSelector(

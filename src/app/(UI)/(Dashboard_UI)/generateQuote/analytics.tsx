@@ -2,6 +2,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable array-callback-return */
+
+'use client';
+
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -13,19 +16,18 @@ import {
   TagIcon,
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
-import {FC, useEffect, useState} from 'react';
+import {FC, Suspense, useEffect, useState} from 'react';
+import {useSearchParams} from 'next/navigation';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {updateQuoteById} from '../../../../../redux/actions/quote';
-import {useSearchParams} from 'next/navigation';
 
 const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
-  // const [totalValues, setTotalValues] = useState<any>();
   const [totalRebateAmount, setTotalRebateAmount] = useState<any>();
   const {data: profitabilityDataByQuoteId} = useAppSelector(
     (state) => state.profitability,
@@ -76,8 +78,7 @@ const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
             item?.adjusted_price !== undefined &&
             item?.quantity !== undefined
           ) {
-            let temp: any;
-            temp =
+            const temp =
               Number(item?.adjusted_price) *
               (item?.quantity ? Number(item?.quantity) : 1);
             adjustedPrice += temp;
@@ -89,8 +90,7 @@ const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
             item?.adjusted_price !== undefined &&
             item?.quantity !== undefined
           ) {
-            let temp: any;
-            temp =
+            const temp =
               Number(item?.adjusted_price) *
               (item?.quantity ? Number(item?.quantity) : 1);
             BundleAdjustedPrice +=
@@ -99,8 +99,8 @@ const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
         }
       });
     }
-    let totalGrossProfit = grossProfit + bundleGrossProfit;
-    let totalExitPrice = exitPrice + bundleExitPrice;
+    const totalGrossProfit = grossProfit + bundleGrossProfit;
+    const totalExitPrice = exitPrice + bundleExitPrice;
 
     if (totalExitPrice > 0) {
       grossProfitPercentage = (totalGrossProfit / totalExitPrice) * 100;
@@ -196,27 +196,29 @@ const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
   }, [totalValues]);
 
   return (
-    <Row
-      justify="space-between"
-      style={{
-        padding: '36px 24px',
-        background: token?.colorBgContainer,
-        borderRadius: '12px',
-      }}
-      gutter={[0, 16]}
-    >
-      {analyticsData?.map((item: any) => (
-        <Col>
-          <TableNameColumn
-            primaryText={item?.primary}
-            secondaryText={item?.secondry}
-            fallbackIcon={item?.icon}
-            iconBg={item?.iconBg}
-            isNotification={false}
-          />
-        </Col>
-      ))}
-    </Row>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Row
+        justify="space-between"
+        style={{
+          padding: '36px 24px',
+          background: token?.colorBgContainer,
+          borderRadius: '12px',
+        }}
+        gutter={[0, 16]}
+      >
+        {analyticsData?.map((item: any) => (
+          <Col>
+            <TableNameColumn
+              primaryText={item?.primary}
+              secondaryText={item?.secondry}
+              fallbackIcon={item?.icon}
+              iconBg={item?.iconBg}
+              isNotification={false}
+            />
+          </Col>
+        ))}
+      </Row>
+    </Suspense>
   );
 };
 

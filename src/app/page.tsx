@@ -5,9 +5,10 @@ import {useEffect} from 'react';
 
 export default function Home() {
   const router = useRouter();
-  useEffect(() => {
-    router?.push('/login');
-  }, []);
 
-  return <></>;
+  useEffect(() => {
+    router.push('/login');
+  }, [router]);
+
+  return null;
 }

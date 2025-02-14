@@ -10,7 +10,7 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import {SiderDivStyled} from '@/app/components/common/os-div-row-col/styled-component';
 import {formbuildernewObject} from '@/app/utils/base';
 import {Form, Layout, Modal} from 'antd';
-import React, {useState} from 'react';
+import React, {Suspense, useState} from 'react';
 import {XMarkIcon} from '@heroicons/react/24/solid';
 import EditFiledDetails from './detailsFieldEdit';
 
@@ -71,96 +71,98 @@ const FormBuilder = () => {
     borderRadius: 12,
   };
   return (
-    <Layout style={layoutStyle}>
-      <DndContext onDragEnd={addItemsToCart}>
-        <Sider width="350px" theme="light" style={siderStyle}>
-          <FieldCard />
-        </Sider>
-        <Layout>
-          <Content style={contentStyle}>
-            <FormBuilderMain
-              setCartItems={setCartItems}
-              cartItems={cartItems}
-              form={form}
-              setSectionIndexActive={setSectionIndexActive}
-              setOpenPreviewModal={setOpenPreviewModal}
-              openPreviewModal={openPreviewModal}
-              setCollapsed={setCollapsed}
-              collapsed={collapsed}
-              setActiveContentIndex={setActiveContentIndex}
-              setActiveSectionIndex={setActiveSectionIndex}
-              setSelectedColumnIndex={setSelectedColumnIndex}
-              setContentActiveIndex={setContentActiveIndex}
-              setIsOpenDrawer={setIsOpenDrawer}
-              previewFile={false}
-            />
-          </Content>
-        </Layout>
-      </DndContext>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Layout style={layoutStyle}>
+        <DndContext onDragEnd={addItemsToCart}>
+          <Sider width="350px" theme="light" style={siderStyle}>
+            <FieldCard />
+          </Sider>
+          <Layout>
+            <Content style={contentStyle}>
+              <FormBuilderMain
+                setCartItems={setCartItems}
+                cartItems={cartItems}
+                form={form}
+                setSectionIndexActive={setSectionIndexActive}
+                setOpenPreviewModal={setOpenPreviewModal}
+                openPreviewModal={openPreviewModal}
+                setCollapsed={setCollapsed}
+                collapsed={collapsed}
+                setActiveContentIndex={setActiveContentIndex}
+                setActiveSectionIndex={setActiveSectionIndex}
+                setSelectedColumnIndex={setSelectedColumnIndex}
+                setContentActiveIndex={setContentActiveIndex}
+                setIsOpenDrawer={setIsOpenDrawer}
+                previewFile={false}
+              />
+            </Content>
+          </Layout>
+        </DndContext>
 
-      {collapsed && (
-        <SiderDivStyled>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'end',
-              padding: '10px',
-              // overflow: 'auto',
-            }}
-          >
-            <XMarkIcon
-              onClick={() => {
-                setCollapsed(false);
+        {collapsed && (
+          <SiderDivStyled>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'end',
+                padding: '10px',
+                // overflow: 'auto',
               }}
-              width={24}
-              color={token?.colorError}
-              cursor="pointer"
-            />
-          </div>
-          <EditFiledDetails
-            setIsOpenDrawer={openEditDrawer}
-            isOpenDrawer={isOpenDrawer}
-            contentIndex={activeContentIndex}
-            sectionIndex={activeSetionIndex}
-            setCartItems={setCartItems}
-            cartItems={cartItems}
-            form={form}
-            selectedColumnIndex={selectedColumnIndex}
-          />
-        </SiderDivStyled>
-      )}
-      {openPreviewModal && (
-        <>
-          <Modal
-            open={openPreviewModal}
-            width={1400}
-            footer={false}
-            onCancel={() => {
-              setOpenPreviewModal(false);
-            }}
-          >
-            <FormBuilderMain
+            >
+              <XMarkIcon
+                onClick={() => {
+                  setCollapsed(false);
+                }}
+                width={24}
+                color={token?.colorError}
+                cursor="pointer"
+              />
+            </div>
+            <EditFiledDetails
+              setIsOpenDrawer={openEditDrawer}
+              isOpenDrawer={isOpenDrawer}
+              contentIndex={activeContentIndex}
+              sectionIndex={activeSetionIndex}
               setCartItems={setCartItems}
               cartItems={cartItems}
               form={form}
-              setSectionIndexActive={setSectionIndexActive}
-              setOpenPreviewModal={setOpenPreviewModal}
-              openPreviewModal={openPreviewModal}
-              setCollapsed={setCollapsed}
-              collapsed={collapsed}
-              setActiveContentIndex={setActiveContentIndex}
-              setActiveSectionIndex={setActiveSectionIndex}
-              setSelectedColumnIndex={setSelectedColumnIndex}
-              setContentActiveIndex={setContentActiveIndex}
-              setIsOpenDrawer={setIsOpenDrawer}
-              // eslint-disable-next-line react/jsx-boolean-value
-              previewFile
-              // previewFile={true}
+              selectedColumnIndex={selectedColumnIndex}
             />
-          </Modal>
-        </>
-      )}
-    </Layout>
+          </SiderDivStyled>
+        )}
+        {openPreviewModal && (
+          <>
+            <Modal
+              open={openPreviewModal}
+              width={1400}
+              footer={false}
+              onCancel={() => {
+                setOpenPreviewModal(false);
+              }}
+            >
+              <FormBuilderMain
+                setCartItems={setCartItems}
+                cartItems={cartItems}
+                form={form}
+                setSectionIndexActive={setSectionIndexActive}
+                setOpenPreviewModal={setOpenPreviewModal}
+                openPreviewModal={openPreviewModal}
+                setCollapsed={setCollapsed}
+                collapsed={collapsed}
+                setActiveContentIndex={setActiveContentIndex}
+                setActiveSectionIndex={setActiveSectionIndex}
+                setSelectedColumnIndex={setSelectedColumnIndex}
+                setContentActiveIndex={setContentActiveIndex}
+                setIsOpenDrawer={setIsOpenDrawer}
+                // eslint-disable-next-line react/jsx-boolean-value
+                previewFile
+                // previewFile={true}
+              />
+            </Modal>
+          </>
+        )}
+      </Layout>
+    </Suspense>
   );
 };
 

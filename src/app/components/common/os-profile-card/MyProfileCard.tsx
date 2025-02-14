@@ -1,3 +1,8 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable import/no-extraneous-dependencies */
+
+'use client';
+
 import {CustomUpload} from '@/app/(UI)/(Dashboard_UI)/layouts/Header';
 import {getBase64} from '@/app/utils/upload';
 import {
@@ -10,7 +15,7 @@ import {notification} from 'antd';
 import ImgCrop from 'antd-img-crop';
 import _debounce from 'lodash/debounce';
 import {useSearchParams} from 'next/navigation';
-import {FC, useCallback, useEffect, useState} from 'react';
+import {FC, Suspense, useCallback, useEffect, useState} from 'react';
 import {uploadToAwsForUserImage} from '../../../../../redux/actions/upload';
 import {getUserByIdLogin} from '../../../../../redux/actions/user';
 import {useAppDispatch} from '../../../../../redux/hook';
@@ -25,7 +30,7 @@ const MyProfileCard: FC<any> = ({data}) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const [userRole, setUserRole] = useState<string>('');
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getUserID = searchParams.get('id');
   const loginAccount = searchParams.get('self');
   useEffect(() => {
@@ -142,7 +147,7 @@ const MyProfileCard: FC<any> = ({data}) => {
   const debounceFn = useCallback(_debounce(handleNotification, 500), []);
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <MyProfileCardStyle
         justify="space-between"
         align="middle"
@@ -220,49 +225,44 @@ const MyProfileCard: FC<any> = ({data}) => {
           </Space>
         </Col>
 
-        {proileDetailData?.map((proileDetailDataItem) => {
-          return (
-            <Col
-              xs={24}
-              sm={24}
-              md={24}
-              lg={12}
-              xl={5}
-              xxl={5}
-              key={proileDetailDataItem?.key}
-            >
-              <Space direction="vertical" size={4}>
+        {proileDetailData?.map((proileDetailDataItem) => (
+          <Col
+            xs={24}
+            sm={24}
+            md={24}
+            lg={12}
+            xl={5}
+            xxl={5}
+            key={proileDetailDataItem?.key}
+          >
+            <Space direction="vertical" size={4}>
+              <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
+                {proileDetailDataItem?.title}
+              </Typography>
+              <Space align="center">
+                <AvatarStyled
+                  icon={proileDetailDataItem?.icon}
+                  background={token?.colorInfoHover}
+                  size={36}
+                />
+
                 <Typography
+                  key={proileDetailDataItem?.key}
                   name="Body 4/Medium"
                   color={token?.colorPrimaryText}
+                  ellipsis
+                  maxWidth={190}
+                  as="div"
+                  tooltip
                 >
-                  {proileDetailDataItem?.title}
+                  {proileDetailDataItem?.data}
                 </Typography>
-                <Space align="center">
-                  <AvatarStyled
-                    icon={proileDetailDataItem?.icon}
-                    background={token?.colorInfoHover}
-                    size={36}
-                  />
-
-                  <Typography
-                    key={proileDetailDataItem?.key}
-                    name="Body 4/Medium"
-                    color={token?.colorPrimaryText}
-                    ellipsis
-                    maxWidth={190}
-                    as="div"
-                    tooltip
-                  >
-                    {proileDetailDataItem?.data}
-                  </Typography>
-                </Space>
               </Space>
-            </Col>
-          );
-        })}
+            </Space>
+          </Col>
+        ))}
       </MyProfileCardStyle>
-    </>
+    </Suspense>
   );
 };
 

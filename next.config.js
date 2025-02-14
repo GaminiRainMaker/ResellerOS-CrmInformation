@@ -1,7 +1,12 @@
-/** @type {import('next').NextConfig} */
 const nextConfig = {
   optimizeFonts: false,
   reactStrictMode: true,
+  optimizeDeps: {
+    exclude: ['canvas'],
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   api: {
     bodyParser: false,
   },

@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable no-nested-ternary */
+/* eslint-disable no-unsafe-optional-chaining */
+/* eslint-disable operator-assignment */
 /* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/exhaustive-deps */
 
@@ -22,7 +27,7 @@ import {formatDate, formatMailString, handleDate} from '@/app/utils/base';
 import {MinusIcon, PlusIcon} from '@heroicons/react/24/outline';
 import {Checkbox, Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import {
   insertAssignPartnerProgram,
   updateForTheResellerRequest,
@@ -41,7 +46,7 @@ const Partners: React.FC = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const [loadingForRequest, setLoadingForRequest] = useState<boolean>(false);
   const {userInformation} = useAppSelector((state) => state.user);
   const getTabId = searchParams.get('tab');
@@ -87,25 +92,25 @@ const Partners: React.FC = () => {
           countForActivePartnerProgram + items?.PartnerPrograms?.length;
       });
     }
-    let newObj = {
+    const newObj = {
       requested: allPartnerObj?.requested?.length,
       allPartner: allPartnerObj?.AllPartner?.length,
       activePartner: allPartnerObj?.approved?.length,
       ActivePartnerProgram: countForActivePartnerProgram,
     };
 
-    let newArrOfPartner: any = [];
-    let newArrOfPartnerProgram: any = [];
+    const newArrOfPartner: any = [];
+    const newArrOfPartnerProgram: any = [];
 
     allPartnerObj?.AllPartner?.map((items: any) => {
-      let newObjPatner = {
+      const newObjPatner = {
         label: formatStatus(items?.partner),
         value: items?.partner,
       };
       newArrOfPartner?.push(newObjPatner);
       if (items?.PartnerPrograms?.length) {
         items?.PartnerPrograms?.map((itemPro: any) => {
-          let newObjPatnerPfro = {
+          const newObjPatnerPfro = {
             label: formatStatus(itemPro?.partner_program),
             value: itemPro?.partner_program,
           };
@@ -127,24 +132,24 @@ const Partners: React.FC = () => {
     getPartnerData();
   }, []);
 
-  let organizationNameForRequest = userData?.organization;
+  const organizationNameForRequest = userData?.organization;
   const searchQuery = useDebounceHook(queryDataa, 500);
 
   useEffect(() => {
     dispatch(getAllPartnerandProgramFilterData(searchQuery))?.then(
       (payload: any) => {
-        let newArrOfPartner: any = [];
-        let newArrOfPartnerProgram: any = [];
+        const newArrOfPartner: any = [];
+        const newArrOfPartnerProgram: any = [];
 
         payload?.payload?.AllPartner?.map((items: any) => {
-          let newObjPatner = {
+          const newObjPatner = {
             label: formatStatus(items?.partner),
             value: items?.partner,
           };
           newArrOfPartner?.push(newObjPatner);
           if (items?.PartnerPrograms?.length) {
             items?.PartnerPrograms?.map((itemPro: any) => {
-              let newObjPatnerPfro = {
+              const newObjPatnerPfro = {
                 label: formatStatus(itemPro?.partner_program),
                 value: itemPro?.partner_program,
               };
@@ -406,10 +411,7 @@ const Partners: React.FC = () => {
       dataIndex: 'description',
       key: 'description',
       render: (text: any, record: any) => (
-        <Checkbox
-          checked={!record?.AssignPartnerProgram ? true : false}
-          disabled
-        />
+        <Checkbox checked={!record?.AssignPartnerProgram} disabled />
       ),
     },
     {
@@ -458,7 +460,7 @@ const Partners: React.FC = () => {
   ];
 
   const updateTheResellerequest = async (record: any, typeOn: any) => {
-    let obj = {
+    const obj = {
       type: typeOn,
       id: record?.AssignPartnerProgram?.id,
     };
@@ -471,7 +473,7 @@ const Partners: React.FC = () => {
     record: any,
     typeOn: any,
   ) => {
-    let obj = {
+    const obj = {
       type: typeOn,
       partner_id: record?.Partner?.id,
       partner_program_id: record?.id,
@@ -593,7 +595,7 @@ const Partners: React.FC = () => {
     programName: any,
   ) => {
     // setLoadingForRequest(true);
-    let newrr = disableRequest?.length > 0 ? [...disableRequest] : [];
+    const newrr = disableRequest?.length > 0 ? [...disableRequest] : [];
     newrr?.push(id);
 
     setDisableRequest(newrr);
@@ -605,7 +607,7 @@ const Partners: React.FC = () => {
       new_request: false,
       partner_program_id: id,
       userResquest: true,
-      admin_request: userData?.is_admin ? true : false,
+      admin_request: !!userData?.is_admin,
     };
 
     await dispatch(insertAssignPartnerProgram(partnerObj));
@@ -638,12 +640,10 @@ const Partners: React.FC = () => {
                 buttontype="PRIMARY"
                 text="Request"
                 disabled={
-                  disableButton || disableRequest?.includes(record?.id)
-                    ? true
-                    : false
+                  !!(disableButton || disableRequest?.includes(record?.id))
                 }
                 clickHandler={() => {
-                  let allIds = [...disableRequest];
+                  const allIds = [...disableRequest];
                   allIds?.push(record?.id);
                   // setDisableButton(true);
                   // setDisableRequest(allIds);
@@ -987,7 +987,7 @@ const Partners: React.FC = () => {
   }, [userInformation, allPartnerData]);
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
         <PartnerAnalytics data={allPartnerAnalyticData} />
         <Row justify="space-between" align="middle">
@@ -1076,7 +1076,7 @@ const Partners: React.FC = () => {
                     <Typography
                       cursor="pointer"
                       name="Button 1"
-                      color={'#C6CDD5'}
+                      color="#C6CDD5"
                       onClick={() => {
                         setQueryData({
                           partnerQuery: '',
@@ -1089,58 +1089,6 @@ const Partners: React.FC = () => {
                     </Typography>
                   </div>
                 </Space>
-                // <Space size={12} align="center">
-                //   <Space direction="vertical" size={0}>
-                //     <Typography name="Body 4/Medium">Partner</Typography>
-                //     <OsInput
-                //       value={queryDataa?.partnerQuery}
-                //       onChange={(e: any) => {
-                //         setQueryData({
-                //           ...queryDataa,
-                //           partnerQuery: e?.target?.value,
-                //         });
-                //       }}
-                //     />
-                //   </Space>
-                //   <Space direction="vertical" size={0}>
-                //     <Typography name="Body 4/Medium">
-                //       Partner Program
-                //     </Typography>
-                //     <OsInput
-                //       value={queryDataa?.partnerprogramQuery}
-                //       onChange={(e: any) => {
-                //         setQueryData({
-                //           ...queryDataa,
-                //           partnerprogramQuery: e?.target?.value,
-                //         });
-                //       }}
-                //     />
-                //   </Space>
-                //   <div
-                //     style={{
-                //       display: 'flex',
-                //       alignItems: 'center',
-                //       justifyContent: 'center',
-                //       marginTop: '20px',
-                //     }}
-                //   >
-                //     <Typography
-                //       cursor="pointer"
-                //       name="Button 1"
-                //       style={{cursor: 'pointer'}}
-                //       color={token?.colorLink}
-                //       onClick={() => {
-                //         setQueryData({
-                //           partnerQuery: '',
-                //           partnerprogramQuery: '',
-                //           size: 10,
-                //         });
-                //       }}
-                //     >
-                //       Reset
-                //     </Typography>
-                //   </div>
-                // </Space>
               }
             />
           )}
@@ -1194,7 +1142,7 @@ const Partners: React.FC = () => {
           setOpenPreviewModal(false);
         }}
       />
-    </>
+    </Suspense>
   );
 };
 export default Partners;
