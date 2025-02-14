@@ -33,6 +33,7 @@ import {
   getAllFormulas,
 } from '../../../../../redux/actions/formulas';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {getAllApprovedPartnerFoFormulas} from '../../../../../redux/actions/partner';
 
 const FormulaMain: React.FC = () => {
   const [token] = useThemeToken();
