@@ -38,11 +38,6 @@ import OsButton from '../os-button';
 import OsUpload from '../os-upload';
 import {AddQuoteInterface, FormattedData} from './types';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/legacy/build/pdf.worker.min.mjs',
-  import.meta.url,
-).toString();
-
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
   setUploadFileData,
@@ -75,6 +70,10 @@ const AddQuote: FC<AddQuoteInterface> = ({
   const [AdvancedSetting, setAdvancedSetting] = useState<boolean>(false);
 
   // const [lineItemSyncingData, setLineItemSyncingData] = useState<any>();
+
+  useEffect(() => {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.js'; // Use static public path
+  }, []);
 
   useEffect(() => {
     setLoading(true);
