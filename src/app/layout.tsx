@@ -1,5 +1,4 @@
 /* eslint-disable no-nested-ternary */
-// Add this at the top of the file
 
 'use client';
 
@@ -21,18 +20,18 @@ const jakartaSans = Plus_Jakarta_Sans({
 });
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
-  const [locationdata, setLOcationData] = useState<any>('lifeboat');
   const searchParams = useSearchParams();
-  const locationToRedirect = searchParams.get('location');
+  const [locationdata, setLOcationData] = useState<string | null>(null);
+
   useEffect(() => {
-    if (
-      locationToRedirect &&
-      locationToRedirect !== null &&
-      locationToRedirect !== undefined
-    ) {
+    const locationToRedirect = searchParams.get('location');
+    if (locationToRedirect) {
       setLOcationData(locationToRedirect);
+    } else {
+      setLOcationData('lifeboat');
     }
-  }, [locationToRedirect]);
+  }, [searchParams]);
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <ConfigProvider theme={theme}>
@@ -40,18 +39,17 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
           <body className={`${jakartaSans.variable}`}>
             <Providers>
               <CanvasRedirectWrapper>{children}</CanvasRedirectWrapper>
-              {locationdata === 'lifeboat' ? (
+              {locationdata && (
                 <NextScript
-                  src="/canvas-all-quote-ai.js"
+                  src={
+                    locationdata === 'lifeboat'
+                      ? '/canvas-all-quote-ai.js'
+                      : locationdata === 'OrderAI'
+                        ? '/canvas-all-orderai'
+                        : '/canvas-all.js'
+                  }
                   strategy="beforeInteractive"
                 />
-              ) : locationdata === 'OrderAI' ? (
-                <NextScript
-                  src="/canvas-all-orderai"
-                  strategy="beforeInteractive"
-                />
-              ) : (
-                <NextScript src="/canvas-all.js" strategy="beforeInteractive" />
               )}
             </Providers>
           </body>
