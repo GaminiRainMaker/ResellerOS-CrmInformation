@@ -33,7 +33,7 @@ import {
 } from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
-import React, {useEffect, useState} from 'react';
+import React, {Suspense, useEffect, useState} from 'react';
 import {Switch} from '@/app/components/common/antd/Switch';
 import OsInput from '@/app/components/common/os-input';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
@@ -1163,7 +1163,7 @@ const SuperAdminPartner: React.FC = () => {
   };
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
         <SuperAdminPartnerAnalytics data={superAdminPartnerAnalyticData} />
         <Row justify="space-between" align="middle">
@@ -1270,52 +1270,6 @@ const SuperAdminPartner: React.FC = () => {
                   </Typography>
                 </div>
               </Space>
-              // <Space size={12} align="center">
-              //   <Space direction="vertical" size={0}>
-              //     <Typography name="Body 4/Medium">Partner</Typography>
-              //     <OsInput
-              //       value={queryDataa?.partnerQuery}
-              //       onChange={(e: any) => {
-              //         setQueryData({
-              //           ...queryDataa,
-              //           partnerQuery: e?.target?.value,
-              //         });
-              //       }}
-              //     />
-              //   </Space>
-              //   <Space direction="vertical" size={0}>
-              //     <Typography name="Body 4/Medium">Partner Program</Typography>
-              //     <OsInput
-              //       value={queryDataa?.partnerprogramQuery}
-              //       onChange={(e: any) => {
-              //         setQueryData({
-              //           ...queryDataa,
-              //           partnerprogramQuery: e?.target?.value,
-              //         });
-              //       }}
-              //     />
-              //   </Space>
-              //   <div
-              //     style={{
-              //       display: 'flex',
-              //       alignItems: 'center',
-              //       justifyContent: 'center',
-              //       marginTop: '20px',
-              //     }}
-              //   >
-              //     <Typography
-              //       cursor="pointer"
-              //       name="Button 1"
-              //       style={{cursor: 'pointer'}}
-              //       color={token?.colorLink}
-              //       onClick={() => {
-              //         setQueryData({});
-              //       }}
-              //     >
-              //       Reset
-              //     </Typography>
-              //   </div>
-              // </Space>
             }
           />
         </Row>
@@ -1456,7 +1410,6 @@ const SuperAdminPartner: React.FC = () => {
         loading={loading}
         body={
           <>
-            {' '}
             <FormBuilderMain
               cartItems={formData?.formObject}
               form={form}
@@ -1497,7 +1450,6 @@ const SuperAdminPartner: React.FC = () => {
         loading={loading}
         body={
           <>
-            {' '}
             <FormBuilderMain
               cartItems={loginTemplateFormData?.formObject}
               form={form}
@@ -1626,17 +1578,6 @@ const SuperAdminPartner: React.FC = () => {
                 />
               </SelectFormItem>
             </Form>
-            {/* <div style={{marginTop: '10px'}}>
-              <Typography name="Body 4/Medium">
-                Reason for Rejection{' '}
-              </Typography>
-              <OsInput
-                value={rejectReason}
-                onChange={(e: any) => {
-                  setRejectReason(e?.target?.value);
-                }}
-              />
-            </div> */}
           </div>
         }
         bodyPadding={40}
@@ -1652,7 +1593,7 @@ const SuperAdminPartner: React.FC = () => {
         onOk={form.submit}
         styleFooter
       />
-    </>
+    </Suspense>
   );
 };
 

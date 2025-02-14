@@ -27,7 +27,7 @@ import {formatDate, formatMailString, handleDate} from '@/app/utils/base';
 import {MinusIcon, PlusIcon} from '@heroicons/react/24/outline';
 import {Checkbox, Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import {
   insertAssignPartnerProgram,
   updateForTheResellerRequest,
@@ -987,7 +987,7 @@ const Partners: React.FC = () => {
   }, [userInformation, allPartnerData]);
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
         <PartnerAnalytics data={allPartnerAnalyticData} />
         <Row justify="space-between" align="middle">
@@ -1089,58 +1089,6 @@ const Partners: React.FC = () => {
                     </Typography>
                   </div>
                 </Space>
-                // <Space size={12} align="center">
-                //   <Space direction="vertical" size={0}>
-                //     <Typography name="Body 4/Medium">Partner</Typography>
-                //     <OsInput
-                //       value={queryDataa?.partnerQuery}
-                //       onChange={(e: any) => {
-                //         setQueryData({
-                //           ...queryDataa,
-                //           partnerQuery: e?.target?.value,
-                //         });
-                //       }}
-                //     />
-                //   </Space>
-                //   <Space direction="vertical" size={0}>
-                //     <Typography name="Body 4/Medium">
-                //       Partner Program
-                //     </Typography>
-                //     <OsInput
-                //       value={queryDataa?.partnerprogramQuery}
-                //       onChange={(e: any) => {
-                //         setQueryData({
-                //           ...queryDataa,
-                //           partnerprogramQuery: e?.target?.value,
-                //         });
-                //       }}
-                //     />
-                //   </Space>
-                //   <div
-                //     style={{
-                //       display: 'flex',
-                //       alignItems: 'center',
-                //       justifyContent: 'center',
-                //       marginTop: '20px',
-                //     }}
-                //   >
-                //     <Typography
-                //       cursor="pointer"
-                //       name="Button 1"
-                //       style={{cursor: 'pointer'}}
-                //       color={token?.colorLink}
-                //       onClick={() => {
-                //         setQueryData({
-                //           partnerQuery: '',
-                //           partnerprogramQuery: '',
-                //           size: 10,
-                //         });
-                //       }}
-                //     >
-                //       Reset
-                //     </Typography>
-                //   </div>
-                // </Space>
               }
             />
           )}
@@ -1194,7 +1142,7 @@ const Partners: React.FC = () => {
           setOpenPreviewModal(false);
         }}
       />
-    </>
+    </Suspense>
   );
 };
 export default Partners;

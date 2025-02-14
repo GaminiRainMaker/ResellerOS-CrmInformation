@@ -15,7 +15,7 @@ import {notification} from 'antd';
 import ImgCrop from 'antd-img-crop';
 import _debounce from 'lodash/debounce';
 import {useSearchParams} from 'next/navigation';
-import {FC, useCallback, useEffect, useState} from 'react';
+import {FC, Suspense, useCallback, useEffect, useState} from 'react';
 import {uploadToAwsForUserImage} from '../../../../../redux/actions/upload';
 import {getUserByIdLogin} from '../../../../../redux/actions/user';
 import {useAppDispatch} from '../../../../../redux/hook';
@@ -147,7 +147,7 @@ const MyProfileCard: FC<any> = ({data}) => {
   const debounceFn = useCallback(_debounce(handleNotification, 500), []);
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <MyProfileCardStyle
         justify="space-between"
         align="middle"
@@ -262,7 +262,7 @@ const MyProfileCard: FC<any> = ({data}) => {
           </Col>
         ))}
       </MyProfileCardStyle>
-    </>
+    </Suspense>
   );
 };
 

@@ -24,7 +24,8 @@ import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
+import {handleDate} from '@/app/utils/base';
 import {
   deleteAttributeField,
   insertAttributeField,
@@ -51,7 +52,6 @@ import {
   standardAttributesSection,
   templateColumns,
 } from './templateColumns';
-import {handleDate} from '@/app/utils/base';
 
 const SuperAdminDealReg = () => {
   const [token] = useThemeToken();
@@ -347,7 +347,7 @@ const SuperAdminDealReg = () => {
 
   const onFinish = () => {
     const attributeSectionFormData = form?.getFieldsValue();
-    let obj = {
+    const obj = {
       ...attributeSectionFormData,
       date: handleDate(),
     };
@@ -400,7 +400,7 @@ const SuperAdminDealReg = () => {
 
   const onFinish2 = () => {
     const attributeFiledData = form?.getFieldsValue();
-    let obj = {
+    const obj = {
       ...attributeFiledData,
       date: handleDate(),
     };
@@ -485,7 +485,7 @@ const SuperAdminDealReg = () => {
   };
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
         <SuperAdminDealRegAnalytic data={analyticData} />
         <Row justify="space-between" align="middle">
@@ -795,7 +795,6 @@ const SuperAdminDealReg = () => {
         loading={false}
         body={
           <>
-            {' '}
             <FormBuilderMain
               cartItems={formData?.formObject}
               form={form}
@@ -931,7 +930,7 @@ const SuperAdminDealReg = () => {
         heading="Delete Atrribute Fields"
         description="Are you sure you want to delete this field?"
       />
-    </>
+    </Suspense>
   );
 };
 
