@@ -17,7 +17,7 @@ import Typography from '@/app/components/common/typography';
 import {Form, Space} from 'antd';
 import axios from 'axios';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
+import {FC, Suspense, useEffect, useState} from 'react';
 import {
   getFormattedValuesForBundlesOnly,
   getFormattedValuesForLineItems,
@@ -37,7 +37,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
   const [token] = useThemeToken();
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const [pdfUrl, setPdfUrl] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -337,7 +337,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
   };
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <GlobalLoader
         loading={formStackSyncLoading || GeneralSettingLoading || loading}
       >
@@ -434,7 +434,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
           </div>
         )}
       </GlobalLoader>
-    </>
+    </Suspense>
   );
 };
 

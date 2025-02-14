@@ -113,7 +113,7 @@ const CustomHeader = () => {
   const router = useRouter();
   const {TextArea} = Input;
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
 
   const pathname = usePathname();
   const loginAccount = searchParams.get('self');

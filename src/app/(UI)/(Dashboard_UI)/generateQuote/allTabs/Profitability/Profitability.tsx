@@ -49,7 +49,7 @@ import {
 } from '@heroicons/react/24/outline';
 import {Badge, Form, notification} from 'antd';
 import {useSearchParams} from 'next/navigation';
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, Suspense, useEffect, useState} from 'react';
 import OsDrawer from '@/app/components/common/os-drawer';
 import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
@@ -97,7 +97,7 @@ const Profitablity: FC<any> = ({
   const dispatch = useAppDispatch();
   const [BundleForm] = Form.useForm();
   const [token] = useThemeToken();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const isView = searchParams.get('isView');
   const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
@@ -646,240 +646,6 @@ const Profitablity: FC<any> = ({
     ),
     width: 111,
   };
-
-  // const ProfitabilityQuoteLineItemcolumns = [
-  //   {
-  //     title: '#Line',
-  //     dataIndex: 'line_number',
-  //     key: 'line_number',
-  //     render: (text: string, record: any) => (
-  //       <OsInput
-  //         disabled={renderEditableInput('#Line')}
-  //         style={{
-  //           height: '36px',
-  //         }}
-  //         defaultValue={text}
-  //         onKeyDown={(e) => handleKeyDown(e, record)}
-  //         onBlur={(e) => handleBlur(record)}
-  //         onChange={(e) =>
-  //           handleFieldChange(
-  //             record,
-  //             'line_number',
-  //             e.target.value,
-  //             selectedFilter,
-  //             'input',
-  //           )
-  //         }
-  //       />
-  //     ),
-  //     width: 111,
-  //   },
-  //   {
-  //     title: 'SKU',
-  //     dataIndex: 'product_code',
-  //     key: 'product_code',
-  //     width: 120,
-  //   },
-  //   {
-  //     title: 'Quantity',
-  //     dataIndex: 'quantity',
-  //     key: 'quantity',
-  //     sorter: (a: any, b: any) => a.quantity - b.quantity,
-  //     render: (text: string, record: any) => (
-  //       <OsInputNumber
-  //         formatter={currencyFormatter}
-  //         parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
-  //         defaultValue={text ?? 0.0}
-  //         disabled={renderEditableInput('Quantity')}
-  //         onKeyDown={(e) => handleKeyDown(e, record)}
-  //         onBlur={(e) => handleBlur(record)}
-  //         style={{
-  //           height: '36px',
-  //           textAlignLast: 'right',
-  //         }}
-  //         min={1}
-  //         onChange={(e) =>
-  //           handleFieldChange(record, 'quantity', e, selectedFilter, 'input')
-  //         }
-  //       />
-  //     ),
-  //     width: 120,
-  //   },
-  //   {
-  //     title: 'MSRP ($)',
-  //     dataIndex: 'list_price',
-  //     key: 'list_price',
-  //     sorter: (a: any, b: any) => a.list_price - b.list_price,
-  //     render: (text: string, record: any) => (
-  //       <OsInputNumber
-  //         min={0}
-  //         precision={2}
-  //         formatter={currencyFormatter}
-  //         parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
-  //         disabled={renderEditableInput('MSRP ($)')}
-  //         style={{
-  //           height: '36px',
-  //           textAlignLast: 'right',
-  //           width: '100%',
-  //         }}
-  //         onKeyDown={(e) => handleKeyDown(e, record)}
-  //         onBlur={(e) => handleBlur(record)}
-  //         defaultValue={text ?? 0.0}
-  //         onChange={(e) =>
-  //           handleFieldChange(record, 'list_price', e, selectedFilter, 'input')
-  //         }
-  //       />
-  //     ),
-  //     width: 150,
-  //   },
-  //   {
-  //     title: 'Cost ($)',
-  //     dataIndex: 'adjusted_price',
-  //     key: 'adjusted_price ',
-  //     sorter: (a: any, b: any) => a.adjusted_price - b.adjusted_price,
-  //     render: (text: string, record: any) => (
-  //       <OsInputNumber
-  //         precision={2}
-  //         formatter={currencyFormatter}
-  //         parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
-  //         min={0}
-  //         style={{
-  //           height: '36px',
-  //           textAlignLast: 'right',
-  //           width: '100%',
-  //         }}
-  //         onKeyDown={(e) => handleKeyDown(e, record)}
-  //         onBlur={(e) => handleBlur(record)}
-  //         disabled={renderEditableInput('Cost ($)')}
-  //         defaultValue={text ?? 0.0}
-  //         onChange={(e) =>
-  //           handleFieldChange(
-  //             record,
-  //             'adjusted_price',
-  //             e,
-  //             selectedFilter,
-  //             'input',
-  //           )
-  //         }
-  //       />
-  //     ),
-  //     width: 150,
-  //   },
-  //   {
-  //     title: 'Product Description',
-  //     dataIndex: 'description',
-  //     key: 'description',
-  //     width: 290,
-  //     render: (text: number) => (
-  //       <Typography name="Body 4/Medium" style={{color: '#0D0D0D'}}>
-  //         {text}
-  //       </Typography>
-  //     ),
-  //   },
-  //   {
-  //     title: 'Product Family',
-  //     dataIndex: 'product_family',
-  //     key: 'product_family',
-  //     width: 285,
-  //     render(text: any, record: any) {
-  //       return {
-  //         children: (
-  //           <CommonSelect
-  //             disabled={renderEditableInput('Product Family')}
-  //             allowClear
-  //             onClear={() => {
-  //               handleFieldChange(
-  //                 record,
-  //                 'product_family',
-  //                 '',
-  //                 selectedFilter,
-  //                 'select',
-  //               );
-  //             }}
-  //             style={{width: '200px', height: '36px'}}
-  //             placeholder="Select"
-  //             defaultValue={text ?? record?.Product?.product_family}
-  //             options={selectDataForProduct}
-  //             onChange={(value) => {
-  //               handleFieldChange(
-  //                 record,
-  //                 'product_family',
-  //                 value,
-  //                 selectedFilter,
-  //                 'select',
-  //               );
-  //             }}
-  //           />
-  //         ),
-  //       };
-  //     },
-  //   },
-  //   {
-  //     title: 'Amount',
-  //     dataIndex: 'line_amount',
-  //     key: 'line_amount',
-  //     sorter: (a: any, b: any) => a.line_amount - b.line_amount,
-  //     width: 150,
-  //     render: (text: string, record: any) => (
-  //       <OsInputNumber
-  //         min={0}
-  //         onKeyDown={(e) => handleKeyDown(e, record)}
-  //         onBlur={(e) => handleBlur(record)}
-  //         disabled={renderEditableInput('Amount')}
-  //         style={{
-  //           height: '36px',
-  //           textAlignLast: 'center',
-  //           width: '100%',
-  //         }}
-  //         precision={2}
-  //         formatter={currencyFormatter}
-  //         parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
-  //         prefix={updateAmountValue(record?.pricing_method)}
-  //         defaultValue={text ?? 0.0}
-  //         onChange={(e) => {
-  //           handleFieldChange(
-  //             record,
-  //             'line_amount',
-  //             e,
-  //             selectedFilter,
-  //             'input',
-  //           );
-  //         }}
-  //       />
-  //     ),
-  //   },
-  //   {
-  //     title: 'Gross Profit ($)',
-  //     dataIndex: 'gross_profit',
-  //     key: 'gross_profit',
-  //     sorter: (a: any, b: any) => a.gross_profit - b.gross_profit,
-  //     width: 150,
-  //     render: (text: number, record: any) => (
-  //       <Typography
-  //         name="Body 4/Medium"
-  //         style={{display: 'flex', justifyContent: 'end'}}
-  //       >
-  //         {abbreviate(text) ?? 0}
-  //       </Typography>
-  //     ),
-  //   },
-  //   {
-  //     title: 'Gross Profit %',
-  //     dataIndex: 'gross_profit_percentage',
-  //     key: 'gross_profit_percentage',
-  //     sorter: (a: any, b: any) =>
-  //       a.gross_profit_percentage - b.gross_profit_percentage,
-  //     width: 150,
-  //     render: (text: number, record: any) => (
-  //       <Typography
-  //         name="Body 4/Medium"
-  //         style={{display: 'flex', justifyContent: 'end'}}
-  //       >
-  //         {abbreviate(text ?? 0)}
-  //       </Typography>
-  //     ),
-  //   },
-  // ];
 
   const ProfitabilityQuoteLineItemcolumns = [
     {
@@ -2095,370 +1861,378 @@ const Profitablity: FC<any> = ({
   //   activeTab,
   // );
   return (
-    <GlobalLoader loading={profittibilityLoading}>
-      {finalProfitTableCol && finalProfitTableCol?.length > 0 ? (
-        !selectedFilter ? (
-          <div key={JSON.stringify(finalData)}>{renderFinalData()}</div>
-        ) : (
-          <>
-            {selectedFilter && finalData?.length > 0 ? (
-              <>
-                {finalData?.map((finalDataItem: any, index: number) => {
-                  const isBundle =
-                    Array.isArray(finalDataItem?.QuoteLineItem) &&
-                    finalDataItem.QuoteLineItem.findIndex(
-                      (item: any) => item?.bundle_id,
-                    ) > -1;
-                  return (
-                    <OsCollapse
-                      key={index}
-                      activeKey={collapseActiveKeys}
-                      onChange={(key: string | string[]) => {
-                        setCollapseActiveKeys(key);
-                      }}
-                      items={[
-                        {
-                          key: index,
-                          label: (
-                            <Row
-                              justify="space-between"
-                              align="middle"
-                              gutter={[8, 8]}
-                            >
-                              <Col xs={24} sm={12} md={12} lg={5} xl={5}>
-                                <Badge
-                                  count={finalDataItem?.QuoteLineItem?.length}
-                                  overflowCount={2000}
-                                >
-                                  <Typography
-                                    style={{padding: '5px 8px 0px 0px'}}
-                                    name="Body 4/Medium"
-                                    color={token?.colorBgContainer}
-                                    ellipsis
-                                    tooltip
-                                    as="div"
-                                    maxWidth={240}
+    <Suspense fallback={<div>Loading...</div>}>
+      <GlobalLoader loading={profittibilityLoading}>
+        {finalProfitTableCol && finalProfitTableCol?.length > 0 ? (
+          !selectedFilter ? (
+            <div key={JSON.stringify(finalData)}>{renderFinalData()}</div>
+          ) : (
+            <>
+              {selectedFilter && finalData?.length > 0 ? (
+                <>
+                  {finalData?.map((finalDataItem: any, index: number) => {
+                    const isBundle =
+                      Array.isArray(finalDataItem?.QuoteLineItem) &&
+                      finalDataItem.QuoteLineItem.findIndex(
+                        (item: any) => item?.bundle_id,
+                      ) > -1;
+                    return (
+                      <OsCollapse
+                        key={index}
+                        activeKey={collapseActiveKeys}
+                        onChange={(key: string | string[]) => {
+                          setCollapseActiveKeys(key);
+                        }}
+                        items={[
+                          {
+                            key: index,
+                            label: (
+                              <Row
+                                justify="space-between"
+                                align="middle"
+                                gutter={[8, 8]}
+                              >
+                                <Col xs={24} sm={12} md={12} lg={5} xl={5}>
+                                  <Badge
+                                    count={finalDataItem?.QuoteLineItem?.length}
+                                    overflowCount={2000}
                                   >
-                                    {finalDataItem?.name}
-                                  </Typography>
-                                </Badge>
-                              </Col>
-                              <Col xs={24} sm={12} md={12} lg={6} xl={6}>
-                                <span
-                                  style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                  }}
-                                >
-                                  Ext Price:{' '}
-                                  <Typography
-                                    name="Body 4/Medium"
-                                    color={token?.colorBgContainer}
-                                    ellipsis
-                                    tooltip
-                                    as="div"
-                                    style={{marginLeft: '2px'}}
-                                  >
-                                    $
-                                    {abbreviate(
-                                      Number(
-                                        finalDataItem?.totalExtendedPrice ??
-                                          0.0,
-                                      ),
-                                    )}
-                                  </Typography>
-                                </span>
-                              </Col>
-                              <Col xs={24} sm={12} md={12} lg={4} xl={4}>
-                                <span
-                                  style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                  }}
-                                >
-                                  GP:{' '}
-                                  <Typography
-                                    name="Body 4/Medium"
-                                    color={token?.colorBgContainer}
-                                    ellipsis
-                                    tooltip
-                                    as="div"
-                                    style={{marginLeft: '2px'}}
-                                  >
-                                    $
-                                    {abbreviate(
-                                      Number(
-                                        finalDataItem?.totalGrossProfit ?? 0.0,
-                                      ),
-                                    )}
-                                  </Typography>
-                                </span>
-                              </Col>
-                              <Col xs={24} sm={10} md={12} lg={4} xl={4}>
-                                <span
-                                  style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                  }}
-                                >
-                                  GP%:{' '}
-                                  <Typography
-                                    name="Body 4/Medium"
-                                    color={token?.colorBgContainer}
-                                    ellipsis
-                                    tooltip
-                                    as="div"
-                                    style={{marginLeft: '2px'}}
-                                  >
-                                    {' '}
-                                    {abbreviate(
-                                      Number(
-                                        finalDataItem?.totalGrossProfitPercentage ??
-                                          0.0,
-                                      ),
-                                    )}
-                                    %
-                                  </Typography>
-                                </span>
-                              </Col>
-                              {finalDataItem?.type === 'bundle' && (
-                                <>
-                                  <Col
+                                    <Typography
+                                      style={{padding: '5px 8px 0px 0px'}}
+                                      name="Body 4/Medium"
+                                      color={token?.colorBgContainer}
+                                      ellipsis
+                                      tooltip
+                                      as="div"
+                                      maxWidth={240}
+                                    >
+                                      {finalDataItem?.name}
+                                    </Typography>
+                                  </Badge>
+                                </Col>
+                                <Col xs={24} sm={12} md={12} lg={6} xl={6}>
+                                  <span
                                     style={{
                                       display: 'flex',
-                                      justifyContent: 'end',
+                                      alignItems: 'center',
                                     }}
-                                    xs={12}
-                                    sm={12}
-                                    md={12}
-                                    lg={3}
-                                    xl={3}
                                   >
-                                    <span
+                                    Ext Price:{' '}
+                                    <Typography
+                                      name="Body 4/Medium"
+                                      color={token?.colorBgContainer}
+                                      ellipsis
+                                      tooltip
+                                      as="div"
+                                      style={{marginLeft: '2px'}}
+                                    >
+                                      $
+                                      {abbreviate(
+                                        Number(
+                                          finalDataItem?.totalExtendedPrice ??
+                                            0.0,
+                                        ),
+                                      )}
+                                    </Typography>
+                                  </span>
+                                </Col>
+                                <Col xs={24} sm={12} md={12} lg={4} xl={4}>
+                                  <span
+                                    style={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                    }}
+                                  >
+                                    GP:{' '}
+                                    <Typography
+                                      name="Body 4/Medium"
+                                      color={token?.colorBgContainer}
+                                      ellipsis
+                                      tooltip
+                                      as="div"
+                                      style={{marginLeft: '2px'}}
+                                    >
+                                      $
+                                      {abbreviate(
+                                        Number(
+                                          finalDataItem?.totalGrossProfit ??
+                                            0.0,
+                                        ),
+                                      )}
+                                    </Typography>
+                                  </span>
+                                </Col>
+                                <Col xs={24} sm={10} md={12} lg={4} xl={4}>
+                                  <span
+                                    style={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                    }}
+                                  >
+                                    GP%:{' '}
+                                    <Typography
+                                      name="Body 4/Medium"
+                                      color={token?.colorBgContainer}
+                                      ellipsis
+                                      tooltip
+                                      as="div"
+                                      style={{marginLeft: '2px'}}
+                                    >
+                                      {' '}
+                                      {abbreviate(
+                                        Number(
+                                          finalDataItem?.totalGrossProfitPercentage ??
+                                            0.0,
+                                        ),
+                                      )}
+                                      %
+                                    </Typography>
+                                  </span>
+                                </Col>
+                                {finalDataItem?.type === 'bundle' && (
+                                  <>
+                                    <Col
                                       style={{
                                         display: 'flex',
-                                        alignItems: 'center',
-                                        marginRight: '10px',
+                                        justifyContent: 'end',
                                       }}
+                                      xs={12}
+                                      sm={12}
+                                      md={12}
+                                      lg={3}
+                                      xl={3}
                                     >
-                                      Qty:
-                                      <OsInputNumber
-                                        disabled={isView === 'true'}
-                                        defaultValue={finalDataItem?.quantity}
+                                      <span
                                         style={{
-                                          width: '60px',
-                                          marginLeft: '3px',
-                                          height: '36px',
-                                          textAlignLast: 'right',
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          marginRight: '10px',
                                         }}
-                                        precision={2}
-                                        formatter={currencyFormatter}
-                                        parser={(value) =>
-                                          value!.replace(/\$\s?|(,*)/g, '')
-                                        }
-                                        min={1}
-                                        onKeyDown={(e) => {
-                                          e.stopPropagation();
-                                          handleBundleKeyDown(e, finalDataItem);
-                                        }}
-                                        onBlur={(e) => {
-                                          e.stopPropagation();
-                                          handleBundleBlur(e, finalDataItem);
+                                      >
+                                        Qty:
+                                        <OsInputNumber
+                                          disabled={isView === 'true'}
+                                          defaultValue={finalDataItem?.quantity}
+                                          style={{
+                                            width: '60px',
+                                            marginLeft: '3px',
+                                            height: '36px',
+                                            textAlignLast: 'right',
+                                          }}
+                                          precision={2}
+                                          formatter={currencyFormatter}
+                                          parser={(value) =>
+                                            value!.replace(/\$\s?|(,*)/g, '')
+                                          }
+                                          min={1}
+                                          onKeyDown={(e) => {
+                                            e.stopPropagation();
+                                            handleBundleKeyDown(
+                                              e,
+                                              finalDataItem,
+                                            );
+                                          }}
+                                          onBlur={(e) => {
+                                            e.stopPropagation();
+                                            handleBundleBlur(e, finalDataItem);
+                                          }}
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                          }}
+                                        />
+                                      </span>
+                                      <PencilSquareIcon
+                                        height={24}
+                                        width={24}
+                                        color={token.colorBgContainer}
+                                        style={{
+                                          cursor: 'pointer',
+                                          marginTop: '5px',
                                         }}
                                         onClick={(e) => {
                                           e.stopPropagation();
+                                          if (isView === 'true') {
+                                            notification.open({
+                                              message:
+                                                "You can't edit bundle in view mode.",
+                                              type: 'info',
+                                            });
+                                          } else {
+                                            setBundleRecordId(
+                                              finalDataItem?.bundleId,
+                                            );
+                                            BundleForm.setFieldsValue({
+                                              name: finalDataItem?.name,
+                                              quantity: finalDataItem?.quantity,
+                                              description:
+                                                finalDataItem?.description,
+                                            });
+                                            setShowBundleDrawer(true);
+                                          }
                                         }}
                                       />
-                                    </span>
-                                    <PencilSquareIcon
-                                      height={24}
-                                      width={24}
-                                      color={token.colorBgContainer}
-                                      style={{
-                                        cursor: 'pointer',
-                                        marginTop: '5px',
-                                      }}
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        if (isView === 'true') {
-                                          notification.open({
-                                            message:
-                                              "You can't edit bundle in view mode.",
-                                            type: 'info',
-                                          });
-                                        } else {
-                                          setBundleRecordId(
-                                            finalDataItem?.bundleId,
-                                          );
-                                          BundleForm.setFieldsValue({
-                                            name: finalDataItem?.name,
-                                            quantity: finalDataItem?.quantity,
-                                            description:
-                                              finalDataItem?.description,
-                                          });
-                                          setShowBundleDrawer(true);
-                                        }
-                                      }}
-                                    />
-                                  </Col>
-                                </>
-                              )}
-                            </Row>
-                          ),
-                          children: (
-                            <div
-                              key={JSON.stringify(finalDataItem?.QuoteLineItem)}
-                            >
-                              <OsTableWithOutDrag
-                                loading={loading}
-                                columns={
-                                  isBundle
-                                    ? [...finalProfitTableCol, ActionColumn]
-                                    : finalProfitTableCol
-                                }
-                                dataSource={finalDataItem?.QuoteLineItem}
-                                scroll
-                                locale={locale}
-                                rowSelection={rowSelection}
-                                selectedRowsKeys={selectTedRowIds}
-                                defaultPageSize={
-                                  finalDataItem?.QuoteLineItem?.length
-                                }
-                                setPageChange={setPageChange}
-                                pageChange={pageChange}
-                                uniqueId={finalDataItem?.name}
-                              />
-                            </div>
-                          ),
-                        },
-                      ]}
-                    />
-                  );
-                })}
-              </>
-            ) : (
-              <EmptyContainer
-                title={`There is no data for ${selectedFilter}`}
-              />
-            )}
-          </>
-        )
-      ) : (
-        <EmptyContainer
-          title="There is no columns for Profitability"
-          subTitle="Please update the columns from the Admin Configuration Tab or request the admin to do so."
-        />
-      )}
-
-      <OsModal
-        title="Update Line Items"
-        loading={loading}
-        body={
-          <UpdatingLineItems
-            profabilityUpdationState={profabilityUpdationState}
-            setProfabilityUpdationState={setProfabilityUpdationState}
-            tableColumnDataShow={tableColumnDataShow}
+                                    </Col>
+                                  </>
+                                )}
+                              </Row>
+                            ),
+                            children: (
+                              <div
+                                key={JSON.stringify(
+                                  finalDataItem?.QuoteLineItem,
+                                )}
+                              >
+                                <OsTableWithOutDrag
+                                  loading={loading}
+                                  columns={
+                                    isBundle
+                                      ? [...finalProfitTableCol, ActionColumn]
+                                      : finalProfitTableCol
+                                  }
+                                  dataSource={finalDataItem?.QuoteLineItem}
+                                  scroll
+                                  locale={locale}
+                                  rowSelection={rowSelection}
+                                  selectedRowsKeys={selectTedRowIds}
+                                  defaultPageSize={
+                                    finalDataItem?.QuoteLineItem?.length
+                                  }
+                                  setPageChange={setPageChange}
+                                  pageChange={pageChange}
+                                  uniqueId={finalDataItem?.name}
+                                />
+                              </div>
+                            ),
+                          },
+                        ]}
+                      />
+                    );
+                  })}
+                </>
+              ) : (
+                <EmptyContainer
+                  title={`There is no data for ${selectedFilter}`}
+                />
+              )}
+            </>
+          )
+        ) : (
+          <EmptyContainer
+            title="There is no columns for Profitability"
+            subTitle="Please update the columns from the Admin Configuration Tab or request the admin to do so."
           />
-        }
-        width={700}
-        open={showUpdateLineItemModal}
-        onOk={() => {
-          updateLineItems();
-        }}
-        onCancel={() => {
-          setProfabilityUpdationState([
-            {
-              id: 1,
-              field: null,
-              value: '',
-              label: '',
-            },
-          ]);
-          setShowUpdateLineItemModal(false);
-        }}
-        bodyPadding={20}
-        primaryButtonText="Save"
-      />
+        )}
 
-      <OsModal
-        loading={bundleLoading}
-        body={
+        <OsModal
+          title="Update Line Items"
+          loading={loading}
+          body={
+            <UpdatingLineItems
+              profabilityUpdationState={profabilityUpdationState}
+              setProfabilityUpdationState={setProfabilityUpdationState}
+              tableColumnDataShow={tableColumnDataShow}
+            />
+          }
+          width={700}
+          open={showUpdateLineItemModal}
+          onOk={() => {
+            updateLineItems();
+          }}
+          onCancel={() => {
+            setProfabilityUpdationState([
+              {
+                id: 1,
+                field: null,
+                value: '',
+                label: '',
+              },
+            ]);
+            setShowUpdateLineItemModal(false);
+          }}
+          bodyPadding={20}
+          primaryButtonText="Save"
+        />
+
+        <OsModal
+          loading={bundleLoading}
+          body={
+            <BundleSection
+              selectTedRowIds={selectTedRowIds}
+              setSelectedRowData={setSelectedRowData}
+              setShowBundleModal={setShowBundleModal}
+              form={BundleForm}
+              setSelectedRowIds={setSelectedRowIds}
+              setProfitibilityDataa={setProfitibilityDataa}
+            />
+          }
+          width={700}
+          open={showBundleModal}
+          onCancel={() => {
+            setShowBundleModal((p: boolean) => !p);
+            BundleForm?.resetFields();
+          }}
+          primaryButtonText="Save"
+          onOk={BundleForm.submit}
+          footerPadding={20}
+        />
+
+        <OsDrawer
+          title={
+            <Typography name="Body 1/Regular" color="#0D0D0D">
+              Update Bundle
+            </Typography>
+          }
+          placement="right"
+          onClose={() => {
+            setShowBundleDrawer(false);
+            BundleForm.resetFields();
+            setBundleRecordId('');
+          }}
+          open={showBundleDrawer}
+          width={450}
+          footer={
+            <OsButton
+              loading={bundleLoading}
+              btnStyle={{width: '100%'}}
+              buttontype="PRIMARY"
+              text="Update Changes"
+              clickHandler={BundleForm.submit}
+            />
+          }
+        >
           <BundleSection
             selectTedRowIds={selectTedRowIds}
             setSelectedRowData={setSelectedRowData}
             setShowBundleModal={setShowBundleModal}
             form={BundleForm}
+            bundleId={bundleRecordId}
+            drawer
+            setShowBundleDrawer={setShowBundleDrawer}
             setSelectedRowIds={setSelectedRowIds}
             setProfitibilityDataa={setProfitibilityDataa}
           />
-        }
-        width={700}
-        open={showBundleModal}
-        onCancel={() => {
-          setShowBundleModal((p: boolean) => !p);
-          BundleForm?.resetFields();
-        }}
-        primaryButtonText="Save"
-        onOk={BundleForm.submit}
-        footerPadding={20}
-      />
+        </OsDrawer>
 
-      <OsDrawer
-        title={
-          <Typography name="Body 1/Regular" color="#0D0D0D">
-            Update Bundle
-          </Typography>
-        }
-        placement="right"
-        onClose={() => {
-          setShowBundleDrawer(false);
-          BundleForm.resetFields();
-          setBundleRecordId('');
-        }}
-        open={showBundleDrawer}
-        width={450}
-        footer={
-          <OsButton
-            loading={bundleLoading}
-            btnStyle={{width: '100%'}}
-            buttontype="PRIMARY"
-            text="Update Changes"
-            clickHandler={BundleForm.submit}
-          />
-        }
-      >
-        <BundleSection
-          selectTedRowIds={selectTedRowIds}
-          setSelectedRowData={setSelectedRowData}
-          setShowBundleModal={setShowBundleModal}
-          form={BundleForm}
-          bundleId={bundleRecordId}
-          drawer
-          setShowBundleDrawer={setShowBundleDrawer}
-          setSelectedRowIds={setSelectedRowIds}
-          setProfitibilityDataa={setProfitibilityDataa}
+        <DeleteModal
+          loading={loading}
+          setShowModalDelete={setIsDeleteProfitabilityModal}
+          setDeleteIds={setSelectedRowIds}
+          showModalDelete={isDeleteProfitabilityModal}
+          deleteSelectedIds={deleteProfitabityData}
+          description="Are you sure you want to delete selected line items?"
+          heading="Delete Line Item"
         />
-      </OsDrawer>
-
-      <DeleteModal
-        loading={loading}
-        setShowModalDelete={setIsDeleteProfitabilityModal}
-        setDeleteIds={setSelectedRowIds}
-        showModalDelete={isDeleteProfitabilityModal}
-        deleteSelectedIds={deleteProfitabityData}
-        description="Are you sure you want to delete selected line items?"
-        heading="Delete Line Item"
-      />
-      <DeleteModal
-        loading={bundleLoading}
-        setShowModalDelete={setShowRemoveBundleLineItemModal}
-        setDeleteIds={setSelectedRowIds}
-        showModalDelete={showRemoveBundleLineItemModal}
-        deleteSelectedIds={removeBundleLineItemsFunction}
-        description="Are you sure you want to delete line item from this Bundle?"
-        heading="Delete Line Item from Bundle"
-      />
-    </GlobalLoader>
+        <DeleteModal
+          loading={bundleLoading}
+          setShowModalDelete={setShowRemoveBundleLineItemModal}
+          setDeleteIds={setSelectedRowIds}
+          showModalDelete={showRemoveBundleLineItemModal}
+          deleteSelectedIds={removeBundleLineItemsFunction}
+          description="Are you sure you want to delete line item from this Bundle?"
+          heading="Delete Line Item from Bundle"
+        />
+      </GlobalLoader>
+    </Suspense>
   );
 };
 

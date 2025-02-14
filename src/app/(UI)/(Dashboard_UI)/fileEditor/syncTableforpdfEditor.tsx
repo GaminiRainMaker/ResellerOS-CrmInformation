@@ -32,7 +32,7 @@ import {
 } from '@/app/utils/base';
 import {Col, Row, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
+import {FC, Suspense, useEffect, useState} from 'react';
 import {
   insertLineItemSyncing,
   insertLineItemSyncingForSalesForce,
@@ -121,7 +121,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     (state) => state.syncTable,
   );
 
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const getQuoteFileId = searchParams.get('fileId');
 
@@ -876,7 +876,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   }, [syncedNewValue]);
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <GlobalLoader loading={nanonetsLoading}>
         <Row
           style={{
@@ -977,7 +977,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           />
         </Row>
       </GlobalLoader>
-    </>
+    </Suspense>
   );
 };
 

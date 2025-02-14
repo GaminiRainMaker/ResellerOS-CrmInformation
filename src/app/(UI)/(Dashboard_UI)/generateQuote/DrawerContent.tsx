@@ -22,7 +22,7 @@ import {
 import {currencyFormatter, formatDate} from '@/app/utils/base';
 import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
+import {FC, Suspense, useEffect, useState} from 'react';
 import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 import CommonStageSelect from '@/app/components/common/os-stage-select';
 import OsButton from '@/app/components/common/os-button';
@@ -41,7 +41,7 @@ import {getAllBillingContactByCustomerId} from '../../../../../redux/actions/bil
 
 const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getQuoteId = searchParams.get('id');
   const isView = searchParams.get('isView');
   const {data: dataAddress} = useAppSelector((state) => state.customer);
@@ -282,105 +282,88 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
     setOpportunityObject(singleObjects);
   }, [syncTableData, getQuoteId]);
 
-  // useEffect(() => {
-  //   setQuoteByIdLoading(true);
-  //   form.setFieldsValue({
-  //     file_name: quoteByIdData?.file_name,
-  //     opportunity_id: quoteByIdData?.opportunity_id,
-  //     customer_id: quoteByIdData?.customer_id,
-  //     contact_id: quoteByIdData?.contact_id,
-  //     status: quoteByIdData?.status,
-  //     quote_notes: quoteByIdData?.quote_notes,
-  //     quote_shipping: quoteByIdData?.quote_shipping,
-  //     quote_tax: quoteByIdData?.quote_tax,
-  //     quote_name: quoteByIdData?.quote_name,
-  //   });
-  //   setStageNewValue(quoteByIdData?.status);
-  //   setCustomerValue(quoteByIdData?.customer_id);
-  //   setQuoteByIdLoading(false);
-  // }, [quoteByIdData]);
-
   return (
-    <GlobalLoader loading={quoteByIdLoading}>
-      <Form
-        layout="vertical"
-        wrapperCol={{flex: 1}}
-        onFinish={onFinish}
-        form={form}
-        requiredMark={false}
-      >
-        <Row justify="space-between">
-          <Col span={12}>
-            <Typography name="Body 4/Medium" as="div">
-              Quote Generate Date
-            </Typography>
-            <Typography name="Body 2/Regular">
-              {formatDate(quoteByIdData?.createdAt, 'MM/DD/YYYY | HH:MM')}
-            </Typography>
-          </Col>
-
-          <Col>
-            <Form.Item
-              label={
-                <Typography name="Body 4/Medium" as="div">
-                  Status
-                </Typography>
-              }
-              name="status"
-            >
-              <CommonStageSelect
-                options={
-                  isView === 'true'
-                    ? quoteReviewStatusOptions
-                    : quoteStatusOptions
-                }
-                style={{width: '150px'}}
-                onChange={(e: string) => {
-                  setStageNewValue(e);
-                }}
-                currentStage={stageNewValue}
-              />
-            </Form.Item>
-          </Col>
-          <Col style={{marginBottom: '10px'}}>
-            {opportunitySynced ? (
-              <Typography name="Body 3/Regular">
-                Opportunity is synced to this quote
+    <Suspense fallback={<div>Loading...</div>}>
+      <GlobalLoader loading={quoteByIdLoading}>
+        <Form
+          layout="vertical"
+          wrapperCol={{flex: 1}}
+          onFinish={onFinish}
+          form={form}
+          requiredMark={false}
+        >
+          <Row justify="space-between">
+            <Col span={12}>
+              <Typography name="Body 4/Medium" as="div">
+                Quote Generate Date
               </Typography>
-            ) : (
-              <OsButton
-                text="Sync Opportunity"
-                buttontype="PRIMARY"
-                clickHandler={() => {
-                  syncTheOppWithQuote();
-                }}
+              <Typography name="Body 2/Regular">
+                {formatDate(quoteByIdData?.createdAt, 'MM/DD/YYYY | HH:MM')}
+              </Typography>
+            </Col>
+
+            <Col>
+              <Form.Item
+                label={
+                  <Typography name="Body 4/Medium" as="div">
+                    Status
+                  </Typography>
+                }
+                name="status"
+              >
+                <CommonStageSelect
+                  options={
+                    isView === 'true'
+                      ? quoteReviewStatusOptions
+                      : quoteStatusOptions
+                  }
+                  style={{width: '150px'}}
+                  onChange={(e: string) => {
+                    setStageNewValue(e);
+                  }}
+                  currentStage={stageNewValue}
+                />
+              </Form.Item>
+            </Col>
+            <Col style={{marginBottom: '10px'}}>
+              {opportunitySynced ? (
+                <Typography name="Body 3/Regular">
+                  Opportunity is synced to this quote
+                </Typography>
+              ) : (
+                <OsButton
+                  text="Sync Opportunity"
+                  buttontype="PRIMARY"
+                  clickHandler={() => {
+                    syncTheOppWithQuote();
+                  }}
+                />
+              )}
+            </Col>
+
+            <Col span={24}>
+              <Form.Item label="Quote Name" name="file_name">
+                <OsInput disabled={isView === 'true'} />
+              </Form.Item>
+              <Form.Item label="Quote #" name="quote_unique_in">
+                <OsInput placeholder="ID" disabled />
+              </Form.Item>
+
+              <Form.Item label="Expiration Date" name="expiration_date">
+                <CommonDatePicker onBlur={undefined} />
+              </Form.Item>
+              <OsCustomerSelect
+                setCustomerValue={setCustomerValue}
+                customerValue={customerValue}
+                isDisable
               />
-            )}
-          </Col>
 
-          <Col span={24}>
-            <Form.Item label="Quote Name" name="file_name">
-              <OsInput disabled={isView === 'true'} />
-            </Form.Item>
-            <Form.Item label="Quote #" name="quote_unique_in">
-              <OsInput placeholder="ID" disabled />
-            </Form.Item>
-
-            <Form.Item label="Expiration Date" name="expiration_date">
-              <CommonDatePicker onBlur={undefined} />
-            </Form.Item>
-            <OsCustomerSelect
-              setCustomerValue={setCustomerValue}
-              customerValue={customerValue}
-              isDisable
-            />
-
-            <OsOpportunitySelect
-              form={form}
-              customerValue={customerValue}
-              isDisable
-            />
-            {/* <Typography name="Body 4/Regular">Sync Opportunity</Typography>
+              <OsOpportunitySelect
+                form={form}
+                customerValue={customerValue}
+                isDisable
+              />
+              {/* <Typography name="Body 4/Regular">Sync Opportunity</Typography>
 
             <span style={{marginLeft: '10px'}}>
               <Checkbox
@@ -390,65 +373,66 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
               />
             </span> */}
 
-            <Form.Item label="Contacts" name="contact_id">
-              <CommonSelect
-                style={{width: '100%'}}
-                placeholder="Contacts"
-                options={billingOptionsData}
-                disabled={isView === 'true'}
-              />
-            </Form.Item>
+              <Form.Item label="Contacts" name="contact_id">
+                <CommonSelect
+                  style={{width: '100%'}}
+                  placeholder="Contacts"
+                  options={billingOptionsData}
+                  disabled={isView === 'true'}
+                />
+              </Form.Item>
 
-            <Form.Item label=" Quote Note" name="quote_notes">
-              <OsInput placeholder="Notes" disabled={isView === 'true'} />
-            </Form.Item>
+              <Form.Item label=" Quote Note" name="quote_notes">
+                <OsInput placeholder="Notes" disabled={isView === 'true'} />
+              </Form.Item>
 
-            <Form.Item label="Quote Tax" name="quote_tax">
-              <OsInputNumber
-                min={0}
-                precision={2}
-                prefix="$"
-                formatter={currencyFormatter}
-                parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
-                disabled={isView === 'true'}
-                style={{
-                  width: '100%',
-                }}
-                placeholder="Quote Tax"
-              />
-            </Form.Item>
+              <Form.Item label="Quote Tax" name="quote_tax">
+                <OsInputNumber
+                  min={0}
+                  precision={2}
+                  prefix="$"
+                  formatter={currencyFormatter}
+                  parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+                  disabled={isView === 'true'}
+                  style={{
+                    width: '100%',
+                  }}
+                  placeholder="Quote Tax"
+                />
+              </Form.Item>
 
-            <Form.Item label="Quote Shipping" name="quote_shipping">
-              <OsInputNumber
-                min={0}
-                precision={2}
-                prefix="$"
-                formatter={currencyFormatter}
-                parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
-                disabled={isView === 'true'}
-                style={{
-                  width: '100%',
-                }}
-                placeholder="Quote Shipping"
-              />
-            </Form.Item>
-            <Form.Item label="Billing Address" name="billing_id">
-              <CommonSelect options={billingOptions} />
-            </Form.Item>
-            <Form.Item label="Shipping Address" name="shipping_id">
-              <CommonSelect options={shippingOptions} />
-            </Form.Item>
+              <Form.Item label="Quote Shipping" name="quote_shipping">
+                <OsInputNumber
+                  min={0}
+                  precision={2}
+                  prefix="$"
+                  formatter={currencyFormatter}
+                  parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+                  disabled={isView === 'true'}
+                  style={{
+                    width: '100%',
+                  }}
+                  placeholder="Quote Shipping"
+                />
+              </Form.Item>
+              <Form.Item label="Billing Address" name="billing_id">
+                <CommonSelect options={billingOptions} />
+              </Form.Item>
+              <Form.Item label="Shipping Address" name="shipping_id">
+                <CommonSelect options={shippingOptions} />
+              </Form.Item>
 
-            <Form.Item label="Billing Contact" name="billing_phone">
-              <CommonSelect value={56} options={contactDetails} />
-            </Form.Item>
-            <Form.Item label="Shipping Contact" name="shipping_phone">
-              <CommonSelect options={contactDetails} />
-            </Form.Item>
-          </Col>
-        </Row>
-      </Form>
-    </GlobalLoader>
+              <Form.Item label="Billing Contact" name="billing_phone">
+                <CommonSelect value={56} options={contactDetails} />
+              </Form.Item>
+              <Form.Item label="Shipping Contact" name="shipping_phone">
+                <CommonSelect options={contactDetails} />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+      </GlobalLoader>
+    </Suspense>
   );
 };
 

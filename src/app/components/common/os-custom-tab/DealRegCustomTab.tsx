@@ -3,9 +3,8 @@
 /* eslint-disable no-nested-ternary */
 import DealRegDetailForm from '@/app/(UI)/(Dashboard_UI)/dealRegDetail/DealRegDetailForm';
 import {FormInstance} from 'antd';
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import {formatStatus} from '@/app/utils/CONSTANTS';
-import {checkDomainOfScale} from 'recharts/types/util/ChartUtils';
 import {useAppDispatch} from '../../../../../redux/hook';
 import {setDealReg} from '../../../../../redux/slices/dealReg';
 import {Row} from '../antd/Grid';
@@ -170,12 +169,14 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
   ]);
 
   return (
-    <CustmDealRegTab
-      token={token}
-      activeKey={activeKey}
-      items={tabItems}
-      onChange={handleTabChange}
-    />
+    <Suspense fallback={<div>Loading...</div>}>
+      <CustmDealRegTab
+        token={token}
+        activeKey={activeKey}
+        items={tabItems}
+        onChange={handleTabChange}
+      />
+    </Suspense>
   );
 };
 

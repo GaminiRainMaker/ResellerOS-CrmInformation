@@ -11,7 +11,7 @@ import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {Form, Radio, RadioChangeEvent} from 'antd';
 import {useSearchParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
+import {FC, Suspense, useEffect, useState} from 'react';
 import {getAllBundle, insertBundle} from '../../../../../redux/actions/bundle';
 import {updateQuoteLineItemForBundleId} from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -28,7 +28,7 @@ const BundleSection: FC<any> = ({
   setSelectedRowIds,
   setProfitibilityDataa,
 }) => {
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getQuoteId = searchParams.get('id');
   const dispatch = useAppDispatch();
   const {data: bundleData} = useAppSelector((state) => state.bundle);
@@ -93,103 +93,109 @@ const BundleSection: FC<any> = ({
   }, [bundleData]);
 
   return (
-    <Space
-      direction="vertical"
-      size={18}
-      style={{width: '100%', padding: drawer ? '' : '20px'}}
-    >
-      {!drawer && (
-        <Space direction="horizontal" size={18} style={{width: '100%'}}>
-          <Radio.Group onChange={onChange} value={radioValue}>
-            <Radio value={1}>
-              {' '}
-              <Typography name="Body 3/Regular">
-                Add in existing Bundle
-              </Typography>
-            </Radio>
-            <Radio value={2}>
-              <Typography name="Body 3/Regular">Create new bundle</Typography>
-            </Radio>
-          </Radio.Group>
-        </Space>
-      )}
-      <Form
-        layout="vertical"
-        requiredMark={false}
-        form={form}
-        onFinish={onFinish}
+    <Suspense fallback={<div>Loading...</div>}>
+      <Space
+        direction="vertical"
+        size={18}
+        style={{width: '100%', padding: drawer ? '' : '20px'}}
       >
-        {!drawer && radioValue == 1 ? (
-          <SelectFormItem
-            label={<Typography name="Body 4/Medium">Add to Bundle</Typography>}
-            name="bundle_id"
-            rules={[
-              {
-                required: true,
-                message: 'This field is required.',
-              },
-            ]}
-          >
-            <CommonSelect
-              allowClear
-              style={{width: '100%'}}
-              placeholder="Select Bundle"
-              options={bundleOptions}
-            />
-          </SelectFormItem>
-        ) : (
-          <Row justify="space-between" gutter={[16, 16]}>
-            <Col span={12}>
-              <SelectFormItem
-                label={
-                  <Typography name="Body 4/Medium">Bundle Name</Typography>
-                }
-                name="name"
-                rules={[
-                  {
-                    required: true,
-                    message: 'This field is required.',
-                  },
-                ]}
-              >
-                <OsInput />
-              </SelectFormItem>
-            </Col>
-
-            <Col span={12}>
-              <Form.Item
-                label={
-                  <Typography name="Body 4/Medium">Bundle Quantity</Typography>
-                }
-                name="quantity"
-                rules={[
-                  {
-                    required: true,
-                    message: 'This field is required.',
-                  },
-                  {
-                    pattern: /^\d+$/,
-                    message: 'Please enter valid value.',
-                  },
-                ]}
-              >
-                <OsInput />
-              </Form.Item>
-            </Col>
-            <Col span={24}>
-              <SelectFormItem
-                label={
-                  <Typography name="Body 4/Medium">Description</Typography>
-                }
-                name="description"
-              >
-                <OsInput min={3} />
-              </SelectFormItem>
-            </Col>
-          </Row>
+        {!drawer && (
+          <Space direction="horizontal" size={18} style={{width: '100%'}}>
+            <Radio.Group onChange={onChange} value={radioValue}>
+              <Radio value={1}>
+                {' '}
+                <Typography name="Body 3/Regular">
+                  Add in existing Bundle
+                </Typography>
+              </Radio>
+              <Radio value={2}>
+                <Typography name="Body 3/Regular">Create new bundle</Typography>
+              </Radio>
+            </Radio.Group>
+          </Space>
         )}
-      </Form>
-    </Space>
+        <Form
+          layout="vertical"
+          requiredMark={false}
+          form={form}
+          onFinish={onFinish}
+        >
+          {!drawer && radioValue == 1 ? (
+            <SelectFormItem
+              label={
+                <Typography name="Body 4/Medium">Add to Bundle</Typography>
+              }
+              name="bundle_id"
+              rules={[
+                {
+                  required: true,
+                  message: 'This field is required.',
+                },
+              ]}
+            >
+              <CommonSelect
+                allowClear
+                style={{width: '100%'}}
+                placeholder="Select Bundle"
+                options={bundleOptions}
+              />
+            </SelectFormItem>
+          ) : (
+            <Row justify="space-between" gutter={[16, 16]}>
+              <Col span={12}>
+                <SelectFormItem
+                  label={
+                    <Typography name="Body 4/Medium">Bundle Name</Typography>
+                  }
+                  name="name"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'This field is required.',
+                    },
+                  ]}
+                >
+                  <OsInput />
+                </SelectFormItem>
+              </Col>
+
+              <Col span={12}>
+                <Form.Item
+                  label={
+                    <Typography name="Body 4/Medium">
+                      Bundle Quantity
+                    </Typography>
+                  }
+                  name="quantity"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'This field is required.',
+                    },
+                    {
+                      pattern: /^\d+$/,
+                      message: 'Please enter valid value.',
+                    },
+                  ]}
+                >
+                  <OsInput />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <SelectFormItem
+                  label={
+                    <Typography name="Body 4/Medium">Description</Typography>
+                  }
+                  name="description"
+                >
+                  <OsInput min={3} />
+                </SelectFormItem>
+              </Col>
+            </Row>
+          )}
+        </Form>
+      </Space>
+    </Suspense>
   );
 };
 

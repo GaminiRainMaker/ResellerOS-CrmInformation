@@ -69,7 +69,7 @@ const SuperAdminPartner: React.FC = () => {
   const [programScriptForm] = Form.useForm();
   const [programLoginScriptForm] = Form.useForm();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getTabId = searchParams && searchParams.get('tab');
   const router = useRouter();
   const [formPartnerData, setFormPartnerData] = useState<any>();

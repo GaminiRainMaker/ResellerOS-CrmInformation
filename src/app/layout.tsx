@@ -9,7 +9,7 @@ import './globals.css';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import NextScript from 'next/script';
 import {useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import Providers from './Provider';
 import theme from './style/theme';
 import CanvasRedirectWrapper from './CanvasRedirect';
@@ -34,27 +34,29 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
     }
   }, [locationToRedirect]);
   return (
-    <ConfigProvider theme={theme}>
-      <html lang="en">
-        <body className={`${jakartaSans.variable}`}>
-          <Providers>
-            <CanvasRedirectWrapper>{children}</CanvasRedirectWrapper>
-            {locationdata === 'lifeboat' ? (
-              <NextScript
-                src="/canvas-all-quote-ai.js"
-                strategy="beforeInteractive"
-              />
-            ) : locationdata === 'OrderAI' ? (
-              <NextScript
-                src="/canvas-all-orderai"
-                strategy="beforeInteractive"
-              />
-            ) : (
-              <NextScript src="/canvas-all.js" strategy="beforeInteractive" />
-            )}
-          </Providers>
-        </body>
-      </html>
-    </ConfigProvider>
+    <Suspense fallback={<div>Loading...</div>}>
+      <ConfigProvider theme={theme}>
+        <html lang="en">
+          <body className={`${jakartaSans.variable}`}>
+            <Providers>
+              <CanvasRedirectWrapper>{children}</CanvasRedirectWrapper>
+              {locationdata === 'lifeboat' ? (
+                <NextScript
+                  src="/canvas-all-quote-ai.js"
+                  strategy="beforeInteractive"
+                />
+              ) : locationdata === 'OrderAI' ? (
+                <NextScript
+                  src="/canvas-all-orderai"
+                  strategy="beforeInteractive"
+                />
+              ) : (
+                <NextScript src="/canvas-all.js" strategy="beforeInteractive" />
+              )}
+            </Providers>
+          </body>
+        </html>
+      </ConfigProvider>
+    </Suspense>
   );
 }

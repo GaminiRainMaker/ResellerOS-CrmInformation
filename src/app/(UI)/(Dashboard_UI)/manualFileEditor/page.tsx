@@ -20,7 +20,7 @@ import '@handsontable/pikaday/css/pikaday.css';
 // import {HotTable} from '@handsontable/react';
 import {HyperFormula} from 'hyperformula';
 
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import './styles.css';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {addClassesToRows, alignHeaders} from '../fileEditor/hooksCallbacks';
@@ -59,7 +59,7 @@ registerAllModules();
 const EditorFile = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const router = useRouter();
   const getQuoteID = searchParams.get('id');
   const getQuoteFileId = searchParams.get('fileId');
@@ -522,16 +522,7 @@ const EditorFile = () => {
   }, [mergeedColumnHeader]);
 
   return (
-    <div
-      style={
-        {
-          // background: 'red',
-          // overflow: salesForceinstanceUrl ? 'auto' : '',
-          // maxHeight: salesForceinstanceUrl ? '105vh' : '',
-        }
-      }
-    >
-      {' '}
+    <Suspense fallback={<div>Loading...</div>}>
       <GlobalLoader loading={nanonetsLoading}>
         {currentFileData && (
           <Typography
@@ -927,7 +918,7 @@ const EditorFile = () => {
           }}
         />
       </GlobalLoader>
-    </div>
+    </Suspense>
   );
 };
 export default EditorFile;

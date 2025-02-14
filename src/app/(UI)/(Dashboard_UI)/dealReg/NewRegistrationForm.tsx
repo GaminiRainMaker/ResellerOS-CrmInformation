@@ -28,7 +28,7 @@ import {formatMailString, handleDate} from '@/app/utils/base';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {usePathname, useRouter, useSearchParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
+import {FC, Suspense, useEffect, useState} from 'react';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
 import {
   getDealRegByOpportunityId,
@@ -56,7 +56,7 @@ const NewRegistrationForm: FC<any> = ({
   const [form] = Form.useForm();
   const [token] = useThemeToken();
   const router = useRouter();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getOpportunityId = Number(searchParams.get('opportunityId'));
   const getContactId = Number(searchParams.get('contactId'));
   const getCustomerId = Number(searchParams.get('customerId'));
@@ -737,7 +737,7 @@ const NewRegistrationForm: FC<any> = ({
   };
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <Form
         name="dynamic_form_nest_item"
         onFinish={registeredFormFinishCurrent}
@@ -1192,7 +1192,7 @@ const NewRegistrationForm: FC<any> = ({
         footer
         footerPadding={30}
       />
-    </>
+    </Suspense>
   );
 };
 

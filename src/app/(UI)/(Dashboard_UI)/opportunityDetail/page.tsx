@@ -29,7 +29,7 @@ import {
 import {Checkbox, Form} from 'antd';
 import {TabsProps} from 'antd/lib';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 // eslint-disable-next-line import/order
 import {
   deleteOpportunity,
@@ -62,7 +62,7 @@ const OpportunityDetails = () => {
   const router = useRouter();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const opportunityId = searchParams.get('id');
   const {loading, opportunityById: opportunityData} = useAppSelector(
     (state) => state.Opportunity,
@@ -1029,7 +1029,7 @@ const OpportunityDetails = () => {
   ];
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <Space direction="vertical" size={12} style={{width: '100%'}}>
         <OsBreadCrumb items={menuItems} />
 
@@ -1219,7 +1219,7 @@ const OpportunityDetails = () => {
         description="Are you sure you want to delete this opportunity?"
         heading="Delete Opportunity"
       />
-    </>
+    </Suspense>
   );
 };
 

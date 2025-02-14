@@ -24,7 +24,7 @@ import {ArrowDownTrayIcon} from '@heroicons/react/24/outline';
 import {Badge, Form, MenuProps, notification} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import dynamic from 'next/dynamic';
 import {getAllBundle} from '../../../../../redux/actions/bundle';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
@@ -83,7 +83,7 @@ const GenerateQuote: React.FC = () => {
   const [form] = Form.useForm();
   const [addDocForm] = Form.useForm();
   const router = useRouter();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const [api, contextHolder] = notification.useNotification();
   const getQuoteID = searchParams.get('id');
   const isView = searchParams.get('isView');
@@ -620,7 +620,7 @@ const GenerateQuote: React.FC = () => {
   };
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       {contextHolder}
       <Space size={12} direction="vertical" style={{width: '100%'}}>
         <GenerateQuoteAnalytics
@@ -859,7 +859,7 @@ const GenerateQuote: React.FC = () => {
           addDocForm.resetFields();
         }}
       />
-    </>
+    </Suspense>
   );
 };
 

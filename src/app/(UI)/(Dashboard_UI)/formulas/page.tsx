@@ -13,7 +13,6 @@ import OsModal from '@/app/components/common/os-modal';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {Checkbox, Form} from 'antd';
-import {useSearchParams} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
 import OsButton from '@/app/components/common/os-button';
 import {
@@ -39,7 +38,6 @@ const FormulaMain: React.FC = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams()!;
   const [showModal, setShowModal] = useState<boolean>(false);
   const [loadingContract, setLoadingContract] = useState<boolean>(false);
   const {data: formulaData} = useAppSelector((state) => state.formulas);

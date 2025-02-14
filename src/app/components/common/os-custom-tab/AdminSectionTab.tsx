@@ -29,7 +29,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {sendEmailForSuport} from '../../../../../redux/actions/auth';
 
 const AdminCustomTabs: FC<any> = (tabs) => {
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getTab = searchParams.get('tab');
   const pathname = usePathname();
   const {userInformation} = useAppSelector((state) => state.user);

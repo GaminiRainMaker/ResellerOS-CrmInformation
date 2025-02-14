@@ -9,7 +9,6 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import {OsCard} from '@/app/components/common/os-card';
 import OsStatusWrapper from '@/app/components/common/os-status';
-import OsTable from '@/app/components/common/os-table';
 import DetailAnalyticCard from '@/app/components/common/os-table/DetailAnalyticCard';
 import Typography from '@/app/components/common/typography';
 import {
@@ -37,7 +36,7 @@ import {
 } from '@/app/utils/base';
 import {Form, message, Radio} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {
   deleteAddress,
@@ -65,7 +64,7 @@ const AccountDetails = () => {
     (state) => state.customer,
   );
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getCustomerID = searchParams && searchParams.get('id');
 
   const quotes =
@@ -519,7 +518,7 @@ const AccountDetails = () => {
   };
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <OsBreadCrumb items={menuItems} />
 
       <Row justify="space-between" gutter={[16, 16]}>
@@ -671,7 +670,7 @@ const AccountDetails = () => {
         heading="Delete Address?"
         description="Are you sure you want to delete this address?"
       />
-    </>
+    </Suspense>
   );
 };
 export default AccountDetails;

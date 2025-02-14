@@ -24,7 +24,7 @@ import {PlusIcon} from '@heroicons/react/24/outline';
 import {notification} from 'antd';
 import Form from 'antd/es/form';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useRef, useState} from 'react';
+import {Suspense, useEffect, useRef, useState} from 'react';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import {
   dealRegFormScript,
@@ -57,13 +57,12 @@ const DealRegDetail = () => {
     data: DealRegData,
     loading: dealRegLoading,
     getDealRegForNewLoading,
-    finalUpdatedDealRegData,
   } = useAppSelector((state) => state.dealReg);
   const [showModal, setShowModal] = useState(false);
   const [showSubmitFormModal, setShowSubmitFormModal] = useState(false);
   const [electronBotModal, showElectronBotModal] = useState(false);
   const [isSubmitLoginForm, showIsSubmitLoginForm] = useState(false);
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getOpportunityId = searchParams && searchParams.get('opportunityId');
   const [formData, setFormData] = useState<any>();
   const {userInformation} = useAppSelector((state) => state.user);
@@ -98,7 +97,7 @@ const DealRegDetail = () => {
         setDealregAppTimer(d?.payload?.data);
       }
     });
-  }, []);
+  }, [dispatch, getOpportunityId, isCanvas]);
 
   useEffect(() => {
     dispatch(setDealReg(DealRegData?.[0]));
@@ -421,7 +420,7 @@ const DealRegDetail = () => {
   };
 
   return (
-    <div>
+    <Suspense fallback={<div>Loading...</div>}>
       <Row justify="space-between" align="middle">
         <Col>
           <OsBreadCrumb items={OsBreadCrumbItems as any} />
@@ -543,7 +542,7 @@ const DealRegDetail = () => {
         heading="Delete Dealreg Form"
         description="Are you sure you want to delete this form?"
       />
-    </div>
+    </Suspense>
   );
 };
 

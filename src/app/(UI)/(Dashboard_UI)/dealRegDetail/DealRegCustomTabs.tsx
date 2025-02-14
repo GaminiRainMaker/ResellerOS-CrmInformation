@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable consistent-return */
 /* eslint-disable array-callback-return */
 /* eslint-disable @typescript-eslint/no-shadow */
@@ -24,7 +25,13 @@ import {
   updateSalesForceData,
 } from '@/app/utils/base';
 import {useSearchParams} from 'next/navigation';
-import {forwardRef, useEffect, useImperativeHandle, useState} from 'react';
+import {
+  forwardRef,
+  Suspense,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react';
 import dayjs from 'dayjs';
 import {Badge} from 'antd';
 import {queryAttributeFieldForForm} from '../../../../../redux/actions/attributeField';
@@ -75,7 +82,7 @@ const DealRegCustomTabs = forwardRef<
   ) => {
     const dispatch = useAppDispatch();
     const [token] = useThemeToken();
-    const searchParams = useSearchParams()!;
+    const searchParams = useSearchParams();
     const {
       data: DealRegData,
       getDealRegForNew,
@@ -622,18 +629,31 @@ const DealRegCustomTabs = forwardRef<
         });
 
       setTabItems(newTabItems);
-    }, [finalUpdatedDealRegData, activeKey, token, dispatch, formData]);
+    }, [
+      finalUpdatedDealRegData,
+      activeKey,
+      token,
+      dispatch,
+      formData,
+      queryData,
+      isCanvas,
+      form,
+      onFinish,
+      setActiveKey,
+    ]);
 
     useImperativeHandle(ref, () => ({
       onFinish,
     }));
 
     return (
-      <CustmDealRegTab
-        token={token}
-        activeKey={activeKey as any}
-        items={tabItems}
-      />
+      <Suspense fallback={<div>Loading...</div>}>
+        <CustmDealRegTab
+          token={token}
+          activeKey={activeKey as any}
+          items={tabItems}
+        />
+      </Suspense>
     );
   },
 );

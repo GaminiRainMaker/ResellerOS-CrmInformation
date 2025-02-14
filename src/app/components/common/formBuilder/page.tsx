@@ -68,7 +68,7 @@ const FormBuilderMain: React.FC<any> = ({
 }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const pathname = usePathname();
   // dealRegDetail
   const [formLoading, setFormLoading] = useState<boolean>(false);

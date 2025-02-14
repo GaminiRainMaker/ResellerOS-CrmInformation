@@ -13,7 +13,7 @@ import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
 import {EnvelopeIcon} from '@heroicons/react/24/outline';
 import {useSearchParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
+import {FC, Suspense, useEffect, useState} from 'react';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import {queryAllUsers} from '../../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
@@ -24,7 +24,7 @@ const ShareCredential: FC<any> = ({
   shareCredentialsIds,
   partnerPasswordId,
 }) => {
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const getOrganization = searchParams.get('organization');
@@ -94,76 +94,80 @@ const ShareCredential: FC<any> = ({
   };
 
   return (
-    <GlobalLoader loading={loading}>
-      <Row gutter={[16, 16]}>
-        {requireThePass?.length > 0 ? (
-          <>
-            {' '}
-            {requireThePass?.map((item: any, index: number) => (
-              <Col key={item?.id} style={{width: '100%'}} span={8}>
-                <OsContactCardStyle key={`${index}`}>
-                  <Row justify="space-between" align="middle">
-                    <Col>
-                      <Space direction="vertical" size={8} align="start">
-                        <TableNameColumn
-                          primaryText={
-                            <Typography name="Body 3/Regular">
-                              {item?.first_name && item?.last_name
-                                ? `${item.first_name} ${item.last_name}`
-                                : item?.first_name
-                                  ? item.first_name
-                                  : item?.user_name}
-                            </Typography>
-                          }
-                          secondaryText={
-                            <Typography name="Body 4/Regular">
-                              {item?.role ?? '--'}
-                            </Typography>
-                          }
-                          fallbackIcon={`${(item?.first_name ?? item?.user_name)
-                            ?.toString()
-                            ?.charAt(0)
-                            ?.toUpperCase()}`}
-                          iconBg="#1EB159"
-                          isNotification={false}
-                        />
-
-                        <Space size={8} align="center">
-                          <EnvelopeIcon
-                            width={24}
-                            color={token?.colorInfoBorder}
-                            style={{marginTop: '5px'}}
+    <Suspense fallback={<div>Loading...</div>}>
+      <GlobalLoader loading={loading}>
+        <Row gutter={[16, 16]}>
+          {requireThePass?.length > 0 ? (
+            <>
+              {' '}
+              {requireThePass?.map((item: any, index: number) => (
+                <Col key={item?.id} style={{width: '100%'}} span={8}>
+                  <OsContactCardStyle key={`${index}`}>
+                    <Row justify="space-between" align="middle">
+                      <Col>
+                        <Space direction="vertical" size={8} align="start">
+                          <TableNameColumn
+                            primaryText={
+                              <Typography name="Body 3/Regular">
+                                {item?.first_name && item?.last_name
+                                  ? `${item.first_name} ${item.last_name}`
+                                  : item?.first_name
+                                    ? item.first_name
+                                    : item?.user_name}
+                              </Typography>
+                            }
+                            secondaryText={
+                              <Typography name="Body 4/Regular">
+                                {item?.role ?? '--'}
+                              </Typography>
+                            }
+                            fallbackIcon={`${(
+                              item?.first_name ?? item?.user_name
+                            )
+                              ?.toString()
+                              ?.charAt(0)
+                              ?.toUpperCase()}`}
+                            iconBg="#1EB159"
+                            isNotification={false}
                           />
-                          <Typography name="Body 4/Regular" as="span">
-                            {item?.billing_email ?? item?.email}
-                          </Typography>
+
+                          <Space size={8} align="center">
+                            <EnvelopeIcon
+                              width={24}
+                              color={token?.colorInfoBorder}
+                              style={{marginTop: '5px'}}
+                            />
+                            <Typography name="Body 4/Regular" as="span">
+                              {item?.billing_email ?? item?.email}
+                            </Typography>
+                          </Space>
                         </Space>
-                      </Space>
-                    </Col>
-                    <Col>
-                      <Checkbox
-                        onChange={() => {
-                          shareCredentials(item?.id);
-                        }}
-                      />
-                    </Col>
-                  </Row>
-                </OsContactCardStyle>
-              </Col>
-            ))}
-          </>
-        ) : (
-          <>
-            {' '}
-            {!loading && (
-              <Typography name="Body 2/Regular">
-                There is no user to provide with this password.
-              </Typography>
-            )}
-          </>
-        )}
-      </Row>
-    </GlobalLoader>
+                      </Col>
+                      <Col>
+                        <Checkbox
+                          onChange={() => {
+                            shareCredentials(item?.id);
+                          }}
+                        />
+                      </Col>
+                    </Row>
+                  </OsContactCardStyle>
+                </Col>
+              ))}
+            </>
+          ) : (
+            <>
+              {' '}
+              {!loading && (
+                <Typography name="Body 2/Regular">
+                  There is no user to provide with this password.
+                </Typography>
+              )}
+            </>
+          )}
+        </Row>
+      </GlobalLoader>
+    </Suspense>
   );
 };
 

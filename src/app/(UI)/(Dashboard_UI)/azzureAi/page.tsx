@@ -35,7 +35,7 @@ import 'handsontable/dist/handsontable.min.css';
 import {registerAllModules} from 'handsontable/registry';
 import dynamic from 'next/dynamic';
 import {useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import {
   fetchAndParseExcel,
   getPDFFileData,
@@ -58,7 +58,7 @@ registerAllModules();
 const EditorFile = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const excelFile = searchParams.get('excel');
 
   const [showModalForAI, setShowModalForAI] = useState<boolean>(false);
@@ -425,107 +425,109 @@ const EditorFile = () => {
   ];
 
   return (
-    <GlobalLoader loading={false}>
-      <Row justify="space-between">
-        <Col>
-          <OsButton
-            text={excelFile === 'true' ? 'Upload Excel' : 'Upload Pdf'}
-            buttontype="PRIMARY"
-            clickHandler={() => {
-              setShowModalForAI(true);
+    <Suspense fallback={<div>Loading...</div>}>
+      <GlobalLoader loading={false}>
+        <Row justify="space-between">
+          <Col>
+            <OsButton
+              text={excelFile === 'true' ? 'Upload Excel' : 'Upload Pdf'}
+              buttontype="PRIMARY"
+              clickHandler={() => {
+                setShowModalForAI(true);
+              }}
+            />
+          </Col>
+        </Row>
+        {UploadedFileData && UploadedFileData?.length > 0 && (
+          <HotTable
+            data={UploadedFileData}
+            colWidths={[
+              300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300,
+              300, 300, 300,
+            ]}
+            height="auto"
+            formulas={{
+              engine: HyperFormula as unknown as any,
             }}
+            stretchH="all"
+            colHeaders={UploadedFileDataColumn}
+            width="auto"
+            minSpareRows={0}
+            autoWrapRow
+            autoWrapCol
+            licenseKey="non-commercial-and-evaluation"
+            dropdownMenu
+            hiddenColumns={{
+              indicators: true,
+            }}
+            contextMenu
+            multiColumnSorting
+            filters
+            rowHeaders
+            allowInsertRow
+            // allowInsertColumn={true}
+            afterGetColHeader={alignHeaders}
+            beforeRenderer={() => {
+              addClassesToRows('', '', '', '', '', '', UploadedFileData);
+            }}
+            afterRemoveRow={(change, source) => {}}
+            afterChange={(change: any, source) => {}}
           />
-        </Col>
-      </Row>
-      {UploadedFileData && UploadedFileData?.length > 0 && (
-        <HotTable
-          data={UploadedFileData}
-          colWidths={[
-            300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300,
-            300, 300, 300,
-          ]}
-          height="auto"
-          formulas={{
-            engine: HyperFormula as unknown as any,
-          }}
-          stretchH="all"
-          colHeaders={UploadedFileDataColumn}
-          width="auto"
-          minSpareRows={0}
-          autoWrapRow
-          autoWrapCol
-          licenseKey="non-commercial-and-evaluation"
-          dropdownMenu
-          hiddenColumns={{
-            indicators: true,
-          }}
-          contextMenu
-          multiColumnSorting
-          filters
-          rowHeaders
-          allowInsertRow
-          // allowInsertColumn={true}
-          afterGetColHeader={alignHeaders}
-          beforeRenderer={() => {
-            addClassesToRows('', '', '', '', '', '', UploadedFileData);
-          }}
-          afterRemoveRow={(change, source) => {}}
-          afterChange={(change: any, source) => {}}
-        />
-      )}
+        )}
 
-      <OsModal
-        // loading={loading}
-        body={
-          <>
-            {' '}
-            <Space size={24} direction="vertical" style={{width: '100%'}}>
-              <OSDraggerStyle
-                beforeUpload={beforeUpload}
-                showUploadList={false}
-                multiple
-                accept={excelFile === 'true' ? '.xls,.xlsx' : '.pdf'}
-              >
-                <FolderArrowDownIcon
-                  width={24}
-                  color={token?.colorInfoBorder}
-                />
-                <Typography
-                  name="Body 4/Medium"
-                  color={token?.colorPrimaryText}
-                  as="div"
+        <OsModal
+          // loading={loading}
+          body={
+            <>
+              {' '}
+              <Space size={24} direction="vertical" style={{width: '100%'}}>
+                <OSDraggerStyle
+                  beforeUpload={beforeUpload}
+                  showUploadList={false}
+                  multiple
+                  accept={excelFile === 'true' ? '.xls,.xlsx' : '.pdf'}
                 >
+                  <FolderArrowDownIcon
+                    width={24}
+                    color={token?.colorInfoBorder}
+                  />
                   <Typography
                     name="Body 4/Medium"
-                    style={{textDecoration: 'underline', cursor: 'pointer'}}
-                    color={token?.colorPrimary}
+                    color={token?.colorPrimaryText}
+                    as="div"
                   >
-                    Click to Upload
-                  </Typography>{' '}
-                  or Drag and Drop
-                </Typography>
-                <Typography
-                  name="Body 4/Medium"
-                  color={token?.colorPrimaryText}
-                >
-                  XLS, PDF.
-                </Typography>
-              </OSDraggerStyle>
-              {/* <UploadCard
+                    <Typography
+                      name="Body 4/Medium"
+                      style={{textDecoration: 'underline', cursor: 'pointer'}}
+                      color={token?.colorPrimary}
+                    >
+                      Click to Upload
+                    </Typography>{' '}
+                    or Drag and Drop
+                  </Typography>
+                  <Typography
+                    name="Body 4/Medium"
+                    color={token?.colorPrimaryText}
+                  >
+                    XLS, PDF.
+                  </Typography>
+                </OSDraggerStyle>
+                {/* <UploadCard
             uploadFileData={uploadFileData}
             setUploadFileData={setUploadFileData}
           /> */}
-            </Space>
-          </>
-        }
-        width={600}
-        open={showModalForAI}
-        onCancel={() => {
-          setShowModalForAI(false);
-        }}
-        footerPadding={30}
-      />
-    </GlobalLoader>
+              </Space>
+            </>
+          }
+          width={600}
+          open={showModalForAI}
+          onCancel={() => {
+            setShowModalForAI(false);
+          }}
+          footerPadding={30}
+        />
+      </GlobalLoader>
+    </Suspense>
   );
 };
 export default EditorFile;
