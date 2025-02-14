@@ -14,7 +14,6 @@ import {Form, message} from 'antd';
 import {usePathname, useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
-import {GlobalWorkerOptions} from 'pdfjs-dist';
 import {queryLineItemSyncingForSalesForce} from '../../../../../redux/actions/LineItemSyncing';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {
@@ -39,9 +38,10 @@ import OsButton from '../os-button';
 import OsUpload from '../os-upload';
 import {AddQuoteInterface, FormattedData} from './types';
 
-if (typeof window !== 'undefined') {
-  GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
-}
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/legacy/build/pdf.worker.min.mjs',
+  import.meta.url,
+).toString();
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
