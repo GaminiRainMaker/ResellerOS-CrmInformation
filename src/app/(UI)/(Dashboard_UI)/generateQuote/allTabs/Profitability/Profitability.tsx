@@ -649,7 +649,7 @@ const Profitablity: FC<any> = ({
 
   const ProfitabilityQuoteLineItemcolumns = [
     {
-      title: '#Line',
+      title: 'Line Number',
       dataIndex: 'line_number',
       key: 'line_number',
       render: (text: string, record: any) => (
@@ -673,7 +673,7 @@ const Profitablity: FC<any> = ({
       width: 111,
     },
     {
-      title: 'SKU',
+      title: 'Product Code',
       dataIndex: 'product_code',
       key: 'product_code',
       width: 120,
