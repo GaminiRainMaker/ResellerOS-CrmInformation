@@ -2,6 +2,9 @@
 const nextConfig = {
   optimizeFonts: false,
   reactStrictMode: true,
+  optimizeDeps: {
+    exclude: ['canvas'],
+  },
   api: {
     bodyParser: false,
   },
