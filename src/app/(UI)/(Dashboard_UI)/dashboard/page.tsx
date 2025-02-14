@@ -130,8 +130,6 @@ const Dashboard = () => {
 
   const CustomTooltip = ({active, payload}: any) => {
     if (active && payload && payload.length) {
-      console.log('payloadpayload', active, payload);
-
       return (
         <div
           style={{
