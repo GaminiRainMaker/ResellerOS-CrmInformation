@@ -14,7 +14,7 @@ type LicenseState = {
   loading: boolean;
   error: string | null;
   data: any;
-  license: any;
+  activeLicense: any;
   quoteAIAccess: any;
   activeLicensesByOrg: any;
 };
@@ -22,7 +22,7 @@ const initialState: LicenseState = {
   loading: false,
   error: null,
   data: [],
-  license: [],
+  activeLicense: [],
   quoteAIAccess: [],
   activeLicensesByOrg: [],
 };
@@ -32,7 +32,7 @@ const licenseSlice = createSlice({
   initialState,
   reducers: {
     setLicense: (state, action) => {
-      state.license = action.payload;
+      state.activeLicense = action.payload;
     },
   },
   extraReducers(builder) {

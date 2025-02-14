@@ -21,7 +21,11 @@ import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import styled from '@emotion/styled';
 import {usePathname} from 'next/navigation';
-
+import OsModal from '@/app/components/common/os-modal';
+import {OSDraggerStyleForSupport} from '@/app/components/common/os-upload/styled-components';
+import TrialBanner from '@/app/components/common/trialBanner/TrialBanner';
+import {convertFileToBase64} from '@/app/utils/base';
+import {QuestionOutlined} from '@ant-design/icons';
 import {
   ArrowLeftStartOnRectangleIcon,
   BellIcon,
@@ -32,11 +36,11 @@ import {
 import {
   Avatar,
   Badge,
-  Layout,
-  Upload,
   Input,
+  Layout,
   message,
   notification,
+  Upload,
 } from 'antd';
 import {MenuProps} from 'antd/es/menu';
 import Cookies from 'js-cookie';
@@ -47,29 +51,15 @@ import creditCard from '../../../../../public/assets/static/card-pos.svg';
 import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
 import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
+import {sendEmailForSuport} from '../../../../../redux/actions/auth';
 import {getCountOfNotification} from '../../../../../redux/actions/notifications';
-import {getGloabalySearchDataa} from '../../../../../redux/actions/user';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {
-  QuestionCircleFilled,
-  QuestionCircleOutlined,
-  QuestionOutlined,
-} from '@ant-design/icons';
-import OsModal from '@/app/components/common/os-modal';
-import {
-  OSDraggerStyle,
-  OSDraggerStyleForSupport,
-} from '@/app/components/common/os-upload/styled-components';
-import OsInput from '@/app/components/common/os-input';
-import {
-  uploadExcelFileToAws,
-  uploadToAws,
   uploadDocumentOnAzure,
+  uploadToAws,
   uploalImageonAzure,
 } from '../../../../../redux/actions/upload';
-import {convertFileToBase64} from '@/app/utils/base';
-import {sendEmailForSuport} from '../../../../../redux/actions/auth';
-import TrialBanner from '@/app/components/common/trialBanner/TrialBanner';
+import {getGloabalySearchDataa} from '../../../../../redux/actions/user';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 export const CustomUpload = styled(Upload)`
   .ant-upload-list-text {
@@ -129,7 +119,6 @@ const CustomHeader = () => {
   } = useAppSelector((state) => state.notification);
   const {isCanvas} = useAppSelector((state) => state.canvas);
   const salesForceUrl = searchParams.get('instance_url');
-
   const [userRole, setUserRole] = useState<string>('');
   const [searchFinalData, setSearchFinalData] = useState<any>();
   const [profileImg, setProfileImg] = useState<any>();
@@ -328,6 +317,7 @@ const CustomHeader = () => {
       setSearchFinalData(optionsForSearch);
     }
   }, [searchDataa]);
+
   useEffect(() => {
     if (loginAccount) {
       setProfileImg(loginUserInformation?.profile_image);
@@ -420,6 +410,7 @@ const CustomHeader = () => {
     SetAddIssueToSupport('');
     setUpoadedData([]);
   };
+  
   return (
     <Layout>
       <Row

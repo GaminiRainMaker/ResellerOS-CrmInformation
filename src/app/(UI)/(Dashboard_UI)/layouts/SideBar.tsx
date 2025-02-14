@@ -49,9 +49,9 @@ const SideBar = () => {
   const {isCanvas} = useAppSelector((state) => state.canvas);
   const searchParams = useSearchParams()!;
   const salesForceUrl = searchParams.get('instance_url');
+  const {activeLicense} = useAppSelector((state) => state.license);
 
   type MenuItem = Required<MenuProps>['items'][number];
-
 
   useEffect(() => {
     if (!!userInformation && !isCanvas && !salesForceUrl) {
@@ -60,7 +60,7 @@ const SideBar = () => {
           QuoteAI: payload?.payload?.is_quote,
           DealReg: payload?.payload?.is_dealReg,
         };
-        if (payload && userInformation?.Role === "reseller") {
+        if (payload && userInformation?.Role === 'reseller') {
           dispatch(checkQuoteAIAccess({user_id: payload?.payload?.id})).then(
             (data) => {
               if (data?.payload) {
@@ -113,7 +113,6 @@ const SideBar = () => {
   const isDealReg = userInformation?.DealReg;
   const isOrderAI = userInformation?.OrderAI;
   const Role = userInformation?.Role;
-
 
   useEffect(() => {
     if (pathname === null) {
@@ -734,50 +733,84 @@ const SideBar = () => {
         '',
       ),
 
-    isDealReg &&
-      Role === 'reseller' &&
-      getItem(
-        <Typography
-          cursor="pointer"
-          onClick={() => {
-            setSelectedKey(7);
-            setCrmChildKey(0);
-            router?.push('/dealReg');
-          }}
-          name="Button 1"
-          color={token?.colorTextSecondary}
-        >
-          <Space size={12}>
-            <OsAvatar
-              icon={
-                <ReceiptPercentIcon
-                  color={
-                    selectedKey === 7
-                      ? token?.colorLink
-                      : token?.colorTextSecondary
-                  }
-                  width={24}
-                />
-              }
-            />
+    isDealReg && Role === 'reseller'
+      ? getItem(
+          <Typography
+            cursor="pointer"
+            onClick={() => {
+              setSelectedKey(7);
+              setCrmChildKey(0);
+              router?.push('/dealReg');
+            }}
+            name="Button 1"
+            color={token?.colorTextSecondary}
+          >
+            <Space size={12}>
+              <OsAvatar
+                icon={
+                  <ReceiptPercentIcon
+                    color={
+                      selectedKey === 7
+                        ? token?.colorLink
+                        : token?.colorTextSecondary
+                    }
+                    width={24}
+                  />
+                }
+              />
 
-            <Typography
-              cursor="pointer"
-              name="Button 1"
-              style={{
-                marginTop: '1px',
-              }}
-              color={
-                selectedKey === 7 ? token?.colorLink : token?.colorTextSecondary
-              }
-            >
-              {' '}
-              DealRegAI
-            </Typography>
-          </Space>
-        </Typography>,
-        '7',
-      ),
+              <Typography
+                cursor="pointer"
+                name="Button 1"
+                style={{
+                  marginTop: '1px',
+                }}
+                color={
+                  selectedKey === 7
+                    ? token?.colorLink
+                    : token?.colorTextSecondary
+                }
+              >
+                {' '}
+                DealRegAI
+              </Typography>
+            </Space>
+          </Typography>,
+          '7',
+        )
+      : !isDealReg &&
+        Role === 'reseller' &&
+        getItem(
+          <Typography
+            cursor="pointer"
+            onClick={() => {
+              setSelectedKey(7);
+              setCrmChildKey(0);
+            }}
+            name="Button 1"
+            color={'#6b7280'}
+          >
+            <Space size={12}>
+              <OsAvatar
+                icon={<ReceiptPercentIcon color={'#6b7280'} width={24} />}
+              />
+
+              <Typography
+                cursor="pointer"
+                name="Button 1"
+                style={{
+                  marginTop: '1px',
+                }}
+                color={'#6b7280'}
+              >
+                {' '}
+                DealRegAI
+              </Typography>
+            </Space>
+          </Typography>,
+          '7',
+        ),
+
     isAdmin &&
       Role === 'superAdmin' &&
       getItem(
@@ -1076,54 +1109,81 @@ const SideBar = () => {
     //     '9',
     //   ),
 
-    isDealReg &&
-      Role === 'reseller' &&
-      getItem(
-        <Typography
-          cursor="pointer"
-          onClick={() => {
-            setSelectedKey(10);
-            setCrmChildKey(0);
-            router?.push(
-              isAdmin && Role === 'superAdmin'
-                ? 'superAdminPartner'
-                : '/partners',
-            );
-          }}
-          name="Button 1"
-          color={token?.colorTextSecondary}
-        >
-          <Space size={12}>
-            <OsAvatar
-              icon={
-                <UsersIcon
-                  color={
-                    selectedKey === 10
-                      ? token?.colorLink
-                      : token?.colorTextSecondary
-                  }
-                  width={24}
-                />
-              }
-            />
-            <Typography
-              cursor="pointer"
-              name="Button 1"
-              style={{
-                marginTop: '1px',
-              }}
-              color={
-                selectedKey === 10
-                  ? token?.colorLink
-                  : token?.colorTextSecondary
-              }
-            >
-              Partners & Partners Program
-            </Typography>
-          </Space>
-        </Typography>,
-        '10',
-      ),
+    isDealReg && Role === 'reseller'
+      ? getItem(
+          <Typography
+            cursor="pointer"
+            onClick={() => {
+              setSelectedKey(10);
+              setCrmChildKey(0);
+              router?.push(
+                isAdmin && Role === 'superAdmin'
+                  ? 'superAdminPartner'
+                  : '/partners',
+              );
+            }}
+            name="Button 1"
+            color={token?.colorTextSecondary}
+          >
+            <Space size={12}>
+              <OsAvatar
+                icon={
+                  <UsersIcon
+                    color={
+                      selectedKey === 10
+                        ? token?.colorLink
+                        : token?.colorTextSecondary
+                    }
+                    width={24}
+                  />
+                }
+              />
+              <Typography
+                cursor="pointer"
+                name="Button 1"
+                style={{
+                  marginTop: '1px',
+                }}
+                color={
+                  selectedKey === 10
+                    ? token?.colorLink
+                    : token?.colorTextSecondary
+                }
+              >
+                Partners & Partners Program
+              </Typography>
+            </Space>
+          </Typography>,
+          '10',
+        )
+      : !isDealReg &&
+        Role === 'reseller' &&
+        getItem(
+          <Typography
+            cursor="pointer"
+            onClick={() => {
+              setSelectedKey(10);
+              setCrmChildKey(0);
+            }}
+            name="Button 1"
+            color={'#6b7280'}
+          >
+            <Space size={12}>
+              <OsAvatar icon={<UsersIcon color={'#6b7280'} width={24} />} />
+              <Typography
+                cursor="pointer"
+                name="Button 1"
+                style={{
+                  marginTop: '1px',
+                }}
+                color={'#6b7280'}
+              >
+                Partners & Partners Program
+              </Typography>
+            </Space>
+          </Typography>,
+          '10',
+        ),
     isAdmin &&
       Role === 'superAdmin' &&
       getItem(
@@ -1382,43 +1442,65 @@ const SideBar = () => {
           ),
         ],
       ),
-    isAdmin &&
-      Role === 'reseller' &&
-      getItem(
-        <Space
-          size={12}
-          onClick={() => {
-            setSelectedKey(16);
-            setCrmChildKey(0);
-            router?.push('/admin');
-          }}
-          color={token?.colorTextSecondary}
-        >
-          <OsAvatar
-            icon={
-              <AdjustmentsHorizontalIcon
-                color={
-                  selectedKey === 16
-                    ? token?.colorLink
-                    : token?.colorTextSecondary
-                }
-                width={24}
-              />
-            }
-          />
-
-          <Typography
-            cursor="pointer"
-            name="Button 1"
-            color={
-              selectedKey === 16 ? token?.colorLink : token?.colorTextSecondary
-            }
+    isAdmin && Role === 'reseller'
+      ? getItem(
+          <Space
+            size={12}
+            onClick={() => {
+              setSelectedKey(16);
+              setCrmChildKey(0);
+              router?.push('/admin');
+            }}
+            color={token?.colorTextSecondary}
           >
-            Admin
-          </Typography>
-        </Space>,
-        '16',
-      ),
+            <OsAvatar
+              icon={
+                <AdjustmentsHorizontalIcon
+                  color={
+                    selectedKey === 16
+                      ? token?.colorLink
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+
+            <Typography
+              cursor="pointer"
+              name="Button 1"
+              color={
+                selectedKey === 16
+                  ? token?.colorLink
+                  : token?.colorTextSecondary
+              }
+            >
+              Admin
+            </Typography>
+          </Space>,
+          '16',
+        )
+      : !isAdmin &&
+        Role === 'reseller' &&
+        getItem(
+          <Space
+            size={12}
+            onClick={() => {
+              setSelectedKey(16);
+              setCrmChildKey(0);
+            }}
+            color={'#6b7280'}
+          >
+            <OsAvatar
+              icon={<AdjustmentsHorizontalIcon color={'#6b7280'} width={24} />}
+            />
+
+            <Typography cursor="pointer" name="Button 1" color={'#6b7280'}>
+              Admin
+            </Typography>
+          </Space>,
+          '16',
+        ),
     isAdmin &&
       Role === 'superAdmin' &&
       getItem(

@@ -8,6 +8,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
 import {StyleName} from '../typography/typography.interface';
+import {setLicense} from '../../../../../redux/slices/license';
 
 const TrialBanner: React.FC<{
   PrimaryTextTypography?: StyleName;
@@ -32,6 +33,7 @@ const TrialBanner: React.FC<{
         .then((data) => {
           const activeLicenses = data?.payload?.activeLicenses;
           if (activeLicenses?.length > 0) {
+            dispatch(setLicense(activeLicenses));
           } else {
             setLicenseMessage('Your Trial phase is expired!');
           }
