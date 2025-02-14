@@ -13,6 +13,7 @@ import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form, message} from 'antd';
 import {usePathname, useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
+import * as pdfjsLib from 'pdfjs-dist';
 import {queryLineItemSyncingForSalesForce} from '../../../../../redux/actions/LineItemSyncing';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {
@@ -36,10 +37,11 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsButton from '../os-button';
 import OsUpload from '../os-upload';
 import {AddQuoteInterface, FormattedData} from './types';
-import * as pdfjsLib from 'pdfjs-dist';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/legacy/build/pdf.worker.min.mjs',
+  import.meta.url,
+).toString();
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
@@ -62,7 +64,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
   const {userInformation} = useAppSelector((state) => state.user);
   const {data: syncTableData} = useAppSelector((state) => state.syncTable);
   const [form] = Form.useForm();
-  let pathname = usePathname();
+  const pathname = usePathname();
   const [loading, setLoading] = useState<boolean>(false);
   const [finalLoading, setFinalLoading] = useState<boolean>(false);
   const [existingQuoteId, setExistingQuoteId] = useState<number>();
@@ -105,7 +107,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
 
   const beforeUpload = (file: File) => {
     const obj: any = {...file};
-    let pathUsedToUpload = file?.type?.split('.')?.includes('spreadsheetml')
+    const pathUsedToUpload = file?.type?.split('.')?.includes('spreadsheetml')
       ? uploadExcelFileToAws
       : uploadToAws;
 
@@ -170,13 +172,13 @@ const AddQuote: FC<AddQuoteInterface> = ({
     const quoteId = form.getFieldValue('existingQuoteId');
     const quotesArr: any = [];
     let singleAddOnQuoteId: any;
-    let newArrWithManual: any = [];
-    let newArrWithoutManual: any = [];
+    const newArrWithManual: any = [];
+    const newArrWithoutManual: any = [];
     let countOfExportFiles: number = 0;
 
     if (updatedArr && updatedArr?.length > 0) {
       updatedArr?.map((items: any) => {
-        let model = items?.distributor_id
+        const model = items?.distributor_id
           ? items?.distributor_id
           : items?.oem_id
             ? items?.oem_id
@@ -190,9 +192,9 @@ const AddQuote: FC<AddQuoteInterface> = ({
             model === 'a02fffb7-5221-44a2-8eb1-85781a0ecd67' &&
             !items?.file?.type.includes('spreadsheetml')
           ) {
-            countOfExportFiles = countOfExportFiles + 1;
+            countOfExportFiles += 1;
           }
-          let newObj = {
+          const newObj = {
             ...items,
             file_name: items?.file?.name,
             total_page_count: items?.totalPages,
@@ -297,7 +299,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
 
       if (quotesArr.length > 0 && !quoteId) {
         for (let i = 0; i < quotesArr.length; i++) {
-          let newObj = {
+          const newObj = {
             ...quotesArr[i],
             organization: userInformation?.organization,
             // quote_name: Date.now(),
@@ -326,13 +328,13 @@ const AddQuote: FC<AddQuoteInterface> = ({
           };
           const insertedQuoteFile = await dispatch(insertQuoteFile(quoteFile));
           // ===============To get LineItems WIth non- repeative objects
-          let newArrValues = getLineItemsWithNonRepitive(
+          const newArrValues = getLineItemsWithNonRepitive(
             quotesArr[i].quoteFileObj[k]?.lineItems,
           );
 
           const lineItem = quotesArr[i].quoteFileObj[k]?.lineItems;
-          let allProductCodes: any = [];
-          let allProductCodeDataa: any = [];
+          const allProductCodes: any = [];
+          const allProductCodeDataa: any = [];
           lineItem?.map((itemsPro: any) => {
             allProductCodes?.push(
               itemsPro?.product_code &&
@@ -342,7 +344,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
                 : 'NEWCODE0123',
             );
           });
-          let valuessOfAlreayExist = await dispatch(
+          const valuessOfAlreayExist = await dispatch(
             getBulkProductIsExisting(allProductCodes),
           );
           if (valuessOfAlreayExist?.payload?.length > 0) {
@@ -354,7 +356,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
 
           if (valuessOfAlreayExist?.payload?.length > 0) {
             // ======To get items that are  non added Values==============
-            let newInsertionData = getValuesOFLineItemsThoseNotAddedBefore(
+            const newInsertionData = getValuesOFLineItemsThoseNotAddedBefore(
               lineItem,
               allProductCodeDataa,
             );
@@ -379,13 +381,13 @@ const AddQuote: FC<AddQuoteInterface> = ({
           }
           if (lineItem) {
             lineItem?.map((itemssProduct: any) => {
-              let productCode = itemssProduct?.product_code
+              const productCode = itemssProduct?.product_code
                 ? itemssProduct?.product_code &&
                   itemssProduct?.product_code !== null &&
                   itemssProduct?.product_code !== undefined &&
                   itemssProduct?.product_code?.toString()?.replace(/\s/g, '')
                 : 'NEWCODE0123';
-              let itemsToAdd = allProductCodeDataa?.find(
+              const itemsToAdd = allProductCodeDataa?.find(
                 (productItemFind: any) =>
                   productItemFind?.product_code
                     ?.toString()
@@ -481,7 +483,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
       let latestestFIleId: any;
       let quoteIdForManualss: any;
       if (newArrWithoutManual?.length === 0) {
-        let newObj = {
+        const newObj = {
           distributor_name: newArrWithManual?.[0]?.distributor_name,
           oem_name: newArrWithManual?.[0]?.oem_name,
           file_name: newArrWithManual?.[0]?.file_name,
@@ -498,16 +500,12 @@ const AddQuote: FC<AddQuoteInterface> = ({
       }
 
       for (let i = 0; i < newArrWithManual.length; i++) {
-        let itemss = newArrWithManual[i];
+        const itemss = newArrWithManual[i];
 
         const quoteFile = {
           file_name: itemss?.file_name,
           total_page_count: itemss?.totalPages,
-          quote_id: quoteId
-            ? quoteId
-            : singleAddOnQuoteId
-              ? singleAddOnQuoteId
-              : quoteIdForManualss,
+          quote_id: quoteId || singleAddOnQuoteId || quoteIdForManualss,
           is_verified: false,
           manual_file: true,
           pdf_url: itemss?.pdf_url,
@@ -524,11 +522,11 @@ const AddQuote: FC<AddQuoteInterface> = ({
       }
       if (countOfExportFiles > 0) {
         router.push(
-          `/fileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${null}&quoteExist=false&manualFlow=true`,
+          `/fileEditor?id=${quoteId || singleAddOnQuoteId || quoteIdForManualss}&fileId=${null}&quoteExist=false&manualFlow=true`,
         );
       } else {
         router.push(
-          `/manualFileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${null}&manualFlow=true`,
+          `/manualFileEditor?id=${quoteId || singleAddOnQuoteId || quoteIdForManualss}&fileId=${null}&manualFlow=true`,
         );
       }
     }
@@ -544,8 +542,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
       let latestQuoteId: any;
       let latestQuoteFIleId: any;
       for (let i = 0; i < newArrWithManual.length; i++) {
-        let itemss = newArrWithManual[i];
-        let newObj = {
+        const itemss = newArrWithManual[i];
+        const newObj = {
           ...itemss,
           organization: userInformation?.organization,
           user_id: userInformation?.id,
@@ -607,13 +605,13 @@ const AddQuote: FC<AddQuoteInterface> = ({
     const quoteId = form.getFieldValue('existingQuoteId');
     const quotesArr: any = [];
     let singleAddOnQuoteId: any;
-    let newArrWithManual: any = [];
-    let newArrWithoutManual: any = [];
+    const newArrWithManual: any = [];
+    const newArrWithoutManual: any = [];
     let countOfExportFiles: number = 0;
 
     if (updatedArr && updatedArr?.length > 0) {
       updatedArr?.map((items: any) => {
-        let model = items?.distributor_id
+        const model = items?.distributor_id
           ? items?.distributor_id
           : items?.oem_id
             ? items?.oem_id
@@ -627,9 +625,9 @@ const AddQuote: FC<AddQuoteInterface> = ({
             model === 'a02fffb7-5221-44a2-8eb1-85781a0ecd67' &&
             !items?.file?.type.includes('spreadsheetml')
           ) {
-            countOfExportFiles = countOfExportFiles + 1;
+            countOfExportFiles += 1;
           }
-          let newObj = {
+          const newObj = {
             ...items,
             file_name: items?.file?.name,
             total_page_count: items?.totalPages,
@@ -735,7 +733,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
 
       if (quotesArr.length > 0 && !quoteId) {
         for (let i = 0; i < quotesArr.length; i++) {
-          let newObj = {
+          const newObj = {
             ...quotesArr[i],
             organization: userInformation?.organization,
             // quote_name: Date.now(),
@@ -768,14 +766,14 @@ const AddQuote: FC<AddQuoteInterface> = ({
           const insertedQuoteFile = await dispatch(insertQuoteFile(quoteFile));
           // ===============To get LineItems WIth non- repeative objects
 
-          let newArrValues = getLineItemsWithNonRepitive(
+          const newArrValues = getLineItemsWithNonRepitive(
             quotesArr[i].quoteFileObj[k]?.lineItems,
           );
 
           const lineItem = quotesArr[i].quoteFileObj[k]?.lineItems;
 
-          let allProductCodes: any = [];
-          let allProductCodeDataa: any = [];
+          const allProductCodes: any = [];
+          const allProductCodeDataa: any = [];
           // return;
           lineItem?.map((itemsPro: any) => {
             allProductCodes?.push(
@@ -786,7 +784,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
                 : 'NEWCODE0123',
             );
           });
-          let valuessOfAlreayExist = await dispatch(
+          const valuessOfAlreayExist = await dispatch(
             getBulkProductIsExisting(allProductCodes),
           );
           if (valuessOfAlreayExist?.payload?.length > 0) {
@@ -798,7 +796,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
 
           if (valuessOfAlreayExist?.payload?.length > 0) {
             // ======To get items that are  non added Values==============
-            let newInsertionData = getValuesOFLineItemsThoseNotAddedBefore(
+            const newInsertionData = getValuesOFLineItemsThoseNotAddedBefore(
               lineItem,
               allProductCodeDataa,
             );
@@ -824,13 +822,13 @@ const AddQuote: FC<AddQuoteInterface> = ({
 
           if (lineItem) {
             lineItem?.map((itemssProduct: any) => {
-              let productCode = itemssProduct?.product_code
+              const productCode = itemssProduct?.product_code
                 ? itemssProduct?.product_code &&
                   itemssProduct?.product_code !== null &&
                   itemssProduct?.product_code !== undefined &&
                   itemssProduct?.product_code?.toString()?.replace(/\s/g, '')
                 : 'NEWCODE0123';
-              let itemsToAdd = allProductCodeDataa?.find(
+              const itemsToAdd = allProductCodeDataa?.find(
                 (productItemFind: any) =>
                   productItemFind?.product_code
                     ?.toString()
@@ -927,7 +925,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
       let latestestFIleId: any;
       let quoteIdForManualss: any;
       if (newArrWithoutManual?.length === 0) {
-        let newObj = {
+        const newObj = {
           distributor_name: newArrWithManual?.[0]?.distributor_name,
           oem_name: newArrWithManual?.[0]?.oem_name,
           file_name: newArrWithManual?.[0]?.file_name,
@@ -944,14 +942,10 @@ const AddQuote: FC<AddQuoteInterface> = ({
       }
 
       for (let i = 0; i < newArrWithManual.length; i++) {
-        let itemss = newArrWithManual[i];
+        const itemss = newArrWithManual[i];
         const quoteFile = {
           file_name: itemss?.file_name,
-          quote_id: quoteId
-            ? quoteId
-            : singleAddOnQuoteId
-              ? singleAddOnQuoteId
-              : quoteIdForManualss,
+          quote_id: quoteId || singleAddOnQuoteId || quoteIdForManualss,
           is_verified: false,
           manual_file: true,
           pdf_url: itemss?.pdf_url,
@@ -969,11 +963,11 @@ const AddQuote: FC<AddQuoteInterface> = ({
       }
       if (countOfExportFiles > 0) {
         router.push(
-          `/fileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${null}&quoteExist=false&manualFlow=true`,
+          `/fileEditor?id=${quoteId || singleAddOnQuoteId || quoteIdForManualss}&fileId=${null}&quoteExist=false&manualFlow=true`,
         );
       } else {
         router.push(
-          `/manualFileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${null}&manualFlow=true`,
+          `/manualFileEditor?id=${quoteId || singleAddOnQuoteId || quoteIdForManualss}&fileId=${null}&manualFlow=true`,
         );
       }
     }
@@ -989,8 +983,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
       let latestQuoteId: any;
       let latestQuoteFIleId: any;
       for (let i = 0; i < newArrWithManual.length; i++) {
-        let itemss = newArrWithManual[i];
-        let newObj = {
+        const itemss = newArrWithManual[i];
+        const newObj = {
           ...itemss,
           organization: userInformation?.organization,
           user_id: userInformation?.id,
@@ -1070,7 +1064,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
 
   useEffect(() => {
     dispatch(queryLineItemSyncingForSalesForce(query))?.then((payload: any) => {
-      let approvedOne = payload?.payload?.filter(
+      const approvedOne = payload?.payload?.filter(
         (items: any) => items?.status === 'Approved',
       );
       setLineItemSyncingData(approvedOne);
