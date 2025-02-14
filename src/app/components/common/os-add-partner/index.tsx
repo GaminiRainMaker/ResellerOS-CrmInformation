@@ -12,7 +12,6 @@ import {Form, notification} from 'antd';
 import {useEffect} from 'react';
 import {usePathname} from 'next/navigation';
 import {
-  getAllPartnerandProgram,
   insertPartner,
   updatePartnerById,
 } from '../../../../../redux/actions/partner';
@@ -72,11 +71,11 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
         partnerObj.admin_request = false;
       }
       if (isCanvas) {
-        (partnerObj.admin_request = true),
-          (partnerObj.organization =
-            isDecryptedRecord?.context?.organization?.name),
-          (partnerObj.salesforce_username =
-            isDecryptedRecord?.context?.user?.userName);
+        partnerObj.admin_request = true;
+        partnerObj.organization =
+          isDecryptedRecord?.context?.organization?.name;
+        partnerObj.salesforce_username =
+          isDecryptedRecord?.context?.user?.userName;
       }
       await dispatch(insertPartner(partnerObj)).then((d: any) => {
         if (d?.payload) {
