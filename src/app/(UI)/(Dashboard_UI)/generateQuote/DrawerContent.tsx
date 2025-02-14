@@ -28,6 +28,7 @@ import CommonStageSelect from '@/app/components/common/os-stage-select';
 import OsButton from '@/app/components/common/os-button';
 import moment from 'moment';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
 import {getQuoteByIdForEditQuoteHeader} from '../../../../../redux/actions/quote';
@@ -44,6 +45,8 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
   const searchParams = useSearchParams();
   const getQuoteId = searchParams.get('id');
   const isView = searchParams.get('isView');
+  const [token] = useThemeToken();
+
   const {data: dataAddress} = useAppSelector((state) => state.customer);
   // const {quoteById, quoteByIdLoading} = useAppSelector((state) => state.quote);
   const [customerValue, setCustomerValue] = useState<number>();
@@ -60,6 +63,7 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
     quoteByIdData?.status,
   );
   const [quoteByIdLoading, setQuoteByIdLoading] = useState<boolean>(false);
+  const [opportunityFilterOption, setOpportunityFilterOption] = useState<any>();
 
   const [opportunitySynced, setOpportunitySynced] = useState<boolean>(false);
 
@@ -73,6 +77,7 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     getAlllApisData();
   };
+
   useEffect(() => {
     const customerOptions: any = [];
     const updatedAllBillingContact: any = [];
@@ -112,6 +117,19 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
     setQuoteByIdLoading(true);
     let opportuntityId: any;
     let customerId: any;
+    await dispatch(getAllOpportunity())?.then((payload: any) => {
+      const opportunityOptions = payload?.payload?.map((opportunity: any) => ({
+        value: opportunity.id,
+        label: (
+          <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+            {opportunity.title}
+          </Typography>
+        ),
+      }));
+
+      setOpportunityFilterOption(opportunityOptions);
+    });
+
     await dispatch(getQuoteByIdForEditQuoteHeader(Number(getQuoteId)))?.then(
       (payload: any) => {
         setQuoteByIdData(payload?.payload);
@@ -357,12 +375,19 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
                 customerValue={customerValue}
                 isDisable
               />
-
-              <OsOpportunitySelect
+              <Form.Item label="Opportunity" name="opportunity_id">
+                <CommonSelect
+                  style={{width: '100%'}}
+                  placeholder="Contacts"
+                  options={opportunityFilterOption}
+                  disabled
+                />
+              </Form.Item>
+              {/* <OsOpportunitySelect
                 form={form}
                 customerValue={customerValue}
                 isDisable
-              />
+              /> */}
               {/* <Typography name="Body 4/Regular">Sync Opportunity</Typography>
 
             <span style={{marginLeft: '10px'}}>
