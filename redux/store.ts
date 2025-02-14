@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {Action, AnyAction, configureStore} from '@reduxjs/toolkit';
-import thunk, {ThunkAction, ThunkDispatch} from 'redux-thunk';
+import {ThunkAction, ThunkDispatch, thunk} from 'redux-thunk';
 import address from './slices/address';
 import billingContact from './slices/billingAddress';
 import bundle from './slices/bundle';
@@ -92,7 +92,7 @@ const store = configureStore({
     salesForceCredentials,
     canvas,
   },
-  middleware: [thunk],
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
   devTools: true,
 });
 
