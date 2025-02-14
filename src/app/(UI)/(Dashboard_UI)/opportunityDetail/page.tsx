@@ -54,6 +54,7 @@ import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHo
 import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 import OsInput from '@/app/components/common/os-input';
 import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
+import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 
 const OpportunityDetails = () => {
   const [token] = useThemeToken();
@@ -1106,18 +1107,21 @@ const OpportunityDetails = () => {
             }
           />
         </Row>
-        <Row justify="space-between" align="middle" style={{marginTop: '10px'}}>
+        <Row
+          justify="space-between"
+          align="middle"
+          style={{marginTop: '10px', display: 'flex'}}
+        >
           <Col style={{marginBottom: '30px'}}>
             <Typography name="Heading 3/Medium"> Opportunity Lines</Typography>
           </Col>
-          <OsTable
+          <OsTableWithOutDrag
+            loading={false}
             columns={ProfitabilityQuoteLineItemcolumns}
             dataSource={profitibiltyDataForSynced}
             scroll
-            loading={false}
-            paginationProps={false}
-            scrolly={200}
             locale={oppLinesLOcal}
+            paginationProps={false}
           />
         </Row>
         {/* )} */}

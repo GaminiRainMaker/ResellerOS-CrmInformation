@@ -63,6 +63,8 @@ const ReviewQuotes = dynamic(() => import('./allTabs/ReviewQuotes'), {
 import dynamic from 'next/dynamic';
 import {getRebateQuoteLineItemByQuoteId} from '../../../../../redux/actions/rebateQuoteLineitem';
 import {getAllValidationByQuoteId} from '../../../../../redux/actions/validation';
+import {getAddressByCustomerId} from '../../../../../redux/actions/address';
+import {getAllBillingContactByCustomerId} from '../../../../../redux/actions/billingContact';
 const DrawerContent = dynamic(() => import('./DrawerContent'), {
   ssr: false,
 });
@@ -171,7 +173,7 @@ const GenerateQuote: React.FC = () => {
     dispatch(getQuoteByIdForFormStack(Number(getQuoteID)))?.then(
       (payload: any) => {
         dispatch(getAllBundle(Number(getQuoteID)))?.then(
-          (payloadBundle: any) => {
+          async (payloadBundle: any) => {
             if (payloadBundle?.payload?.length > 0) {
               const newBundleData: any = [];
               payloadBundle?.payload?.map((items: any) => {
@@ -190,10 +192,31 @@ const GenerateQuote: React.FC = () => {
                 quoute_line_item_id: payload?.payload?.Profitabilities?.id,
                 quote_id: payload?.payload?.id,
               };
-              delete newObj?.Customer;
-              delete newObj?.Opportunity,
-                delete newObj?.Profitabilities,
-                setObjectForSyncingValues(newObj);
+              // delete newObj?.Customer;
+              delete newObj?.Opportunity;
+              delete newObj?.Profitabilities;
+              let addressAlll: any = [];
+              await dispatch(
+                getAddressByCustomerId(payload?.payload?.customer_id),
+              )?.then((payload: any) => {
+                addressAlll = payload?.payload;
+              });
+              let allContactDetails: any = [];
+              await dispatch(
+                getAllBillingContactByCustomerId(payload?.payload?.customer_id),
+              )?.then((payload: any) => {
+                if (payload?.payload && payload?.payload?.length > 0) {
+                  payload?.payload?.map((itemsIn: any) => {
+                    allContactDetails?.push(itemsIn);
+                  });
+                }
+              });
+
+              newObj.allContactDetails = allContactDetails;
+              newObj.addressForAll = addressAlll;
+
+              setObjectForSyncingValues(newObj);
+              setObjectForSyncingValues(newObj);
             } else {
               let newObj = {
                 ...payload?.payload?.Customer,
@@ -205,10 +228,28 @@ const GenerateQuote: React.FC = () => {
                 quote_id: payload?.payload?.id,
                 QuoteLineItems: payload?.payload?.Profitabilities,
               };
-              delete newObj?.Customer;
-              delete newObj?.Opportunity,
-                delete newObj?.Profitabilities,
-                setObjectForSyncingValues(newObj);
+              // delete newObj?.Customer;
+              delete newObj?.Opportunity, delete newObj?.Profitabilities;
+              let allContactDetails: any = [];
+              await dispatch(
+                getAllBillingContactByCustomerId(payload?.payload?.customer_id),
+              )?.then((payload: any) => {
+                if (payload?.payload && payload?.payload?.length > 0) {
+                  payload?.payload?.map((itemsIn: any) => {
+                    allContactDetails?.push(itemsIn);
+                  });
+                }
+              });
+
+              newObj.allContactDetails = allContactDetails;
+              let addressAlll: any;
+              await dispatch(
+                getAddressByCustomerId(payload?.payload?.customer_id),
+              )?.then((payload: any) => {
+                addressAlll = payload?.payload;
+              });
+              newObj.addressForAll = addressAlll;
+              setObjectForSyncingValues(newObj);
             }
           },
         );

@@ -305,7 +305,8 @@ const CrmAccount: React.FC = () => {
 
   const onFinish = () => {
     const FormData = form?.getFieldsValue();
-    dispatch(insertbillingContact(FormData)).then((d: any) => {
+
+  dispatch(insertbillingContact(FormData)).then((d: any) => {
       if (d?.payload) {
         dispatch(queryContact(searchQuery));
         dispatch(getAllbillingContact(''));

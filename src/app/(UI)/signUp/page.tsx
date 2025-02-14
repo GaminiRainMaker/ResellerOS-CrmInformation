@@ -6,15 +6,7 @@ import smsIcon from '../../../../public/assets/static/iconsax-svg/Svg/All/outlin
 import userIcon from '../../../../public/assets/static/iconsax-svg/Svg/All/outline/user.svg';
 
 const SignUP = () => {
-
   const inputFields = [
-    {
-      name: 'username',
-      label: 'Username',
-      type: 'text',
-      placeholder: 'Enter your username here!',
-      icon: userIcon,
-    },
     {
       name: 'email',
       type: 'text',
@@ -22,13 +14,21 @@ const SignUP = () => {
       placeholder: 'Enter your email here!',
       icon: smsIcon,
     },
-    {
-      name: 'password',
-      type: 'password',
-      label: 'Password',
-      placeholder: 'Minimum 8 characters',
-      icon: eyeIcon,
-    },
+    // {
+    //   name: 'username',
+    //   label: 'Username',
+    //   type: 'text',
+    //   placeholder: 'Enter your username here!',
+    //   icon: userIcon,
+    // },
+
+    // {
+    //   name: 'password',
+    //   type: 'password',
+    //   label: 'Password',
+    //   placeholder: 'Minimum 8 characters',
+    //   icon: eyeIcon,
+    // },
   ];
 
   return (

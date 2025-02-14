@@ -51,6 +51,7 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
       form.setFieldsValue({billing_phone: formattedValue});
     }
   };
+
   return (
     <>
       {!drawer && (
@@ -168,31 +169,6 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
                 onChange={handlePhoneChange}
               />
             </SelectFormItem>
-            {/* <SelectFormItem
-              label={<Typography name="Body 4/Medium">Phone</Typography>}
-              name="billing_phone"
-              // rules={[
-              //   {
-              //     pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-              //     message: 'Please enter valid email.',
-              //   },
-              // ]}
-            >
-              <OsInput
-                value={value}
-                onChange={handleChange}
-                maxLength={14} // max length includes formatting symbols like parentheses and dashes
-                placeholder="Enter phone number"
-              />
-              {/* <InputNumberStyled
-                style={{width: '100%'}}
-                maxLength={11}
-                type="Number"
-                placeholder="Enter Text"
-                max={11}
-                formatter={true}
-              /> */}
-            {/* </SelectFormItem> */}
           </Col>
         </Row>
       </Form>

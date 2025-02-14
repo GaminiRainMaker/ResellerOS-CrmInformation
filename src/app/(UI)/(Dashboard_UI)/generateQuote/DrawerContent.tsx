@@ -35,6 +35,7 @@ import moment from 'moment';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
 import dayjs from 'dayjs';
 import {getAddressByCustomerId} from '../../../../../redux/actions/address';
+import {getAllBillingContactByCustomerId} from '../../../../../redux/actions/billingContact';
 
 const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
   const dispatch = useAppDispatch();
@@ -51,6 +52,7 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
 
   const [billingOptions, setBillingOptions] = useState<any>();
   const [shippingOptions, setShippingOptions] = useState<any>();
+  const [contactDetails, setContactDetails] = useState<any>();
 
   const [stageNewValue, setStageNewValue] = useState<string>(
     quoteByIdData?.status,
@@ -126,6 +128,8 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
             : null,
           billing_id: payload?.payload?.billing_id,
           shipping_id: payload?.payload?.shipping_id,
+          shipping_phone: payload?.payload?.shipping_phone?.split('#')?.[0],
+          billing_phone: payload?.payload?.billing_phone?.split('#')?.[0],
         });
         customerId = payload?.payload?.customer_id;
         opportuntityId = payload?.payload?.opportunity_id;
@@ -134,29 +138,73 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
         setStageNewValue(payload?.payload?.status);
       },
     );
+    const formatValues = (values: any) => {
+      // Check if values is a string and not null or undefined
+      if (
+        typeof values === 'string' &&
+        values !== null &&
+        values !== undefined
+      ) {
+        return values + '-';
+      } else {
+        return '';
+      }
+    };
+    const formatValuesLast = (values: any) => {
+      // Check if values is a string and not null or undefined
+      if (
+        typeof values === 'string' &&
+        values !== null &&
+        values !== undefined
+      ) {
+        return '(' + values + ')';
+      } else {
+        return '';
+      }
+    };
 
     await dispatch(getAddressByCustomerId(customerId))?.then((payload: any) => {
       let shipparry: any = [];
       let billingArray: any = [];
       if (payload?.payload && payload?.payload?.length > 0) {
         payload?.payload?.map((itemsIn: any) => {
-          if (itemsIn?.address_type == 'Billing') {
+          if (
+            itemsIn?.address_type == 'Billing' &&
+            (itemsIn?.shiping_address_line ||
+              itemsIn?.shiping_city ||
+              itemsIn?.shiping_state ||
+              itemsIn?.shiping_country ||
+              itemsIn?.shiping_pin_code)
+          ) {
             billingArray?.push({
-              label: `${formatStatus(itemsIn?.shiping_address_line)}-${formatStatus(itemsIn?.shiping_city)}-${formatStatus(itemsIn?.shiping_state)}-${formatStatus(itemsIn?.shiping_country)}(${itemsIn?.shiping_pin_code})`,
+              label: `${formatValues(formatStatus(itemsIn?.shiping_address_line))}${formatValues(formatStatus(itemsIn?.shiping_city))}${formatValues(formatStatus(itemsIn?.shiping_state))}${formatValues(formatStatus(itemsIn?.shiping_country))}${formatValuesLast(itemsIn?.shiping_pin_code)}`,
               value: itemsIn?.id,
             });
-          } else if (itemsIn?.address_type == 'Shipping') {
+          } else if (
+            itemsIn?.address_type == 'Shipping' &&
+            (itemsIn?.shiping_address_line ||
+              itemsIn?.shiping_city ||
+              itemsIn?.shiping_state ||
+              itemsIn?.shiping_country ||
+              itemsIn?.shiping_pin_code)
+          ) {
             shipparry?.push({
-              label: `${formatStatus(itemsIn?.shiping_address_line)}-${formatStatus(itemsIn?.shiping_city)}-${formatStatus(itemsIn?.shiping_state)}-${formatStatus(itemsIn?.shiping_country)}(${itemsIn?.shiping_pin_code})`,
+              label: `${formatValues(formatStatus(itemsIn?.shiping_address_line))}${formatValues(formatStatus(itemsIn?.shiping_city))}${formatValues(formatStatus(itemsIn?.shiping_state))}${formatValues(formatStatus(itemsIn?.shiping_country))}${formatValuesLast(itemsIn?.shiping_pin_code)}`,
               value: itemsIn?.id,
             });
-          } else {
+          } else if (
+            itemsIn?.shiping_address_line ||
+            itemsIn?.shiping_city ||
+            itemsIn?.shiping_state ||
+            itemsIn?.shiping_country ||
+            itemsIn?.shiping_pin_code
+          ) {
             billingArray?.push({
-              label: `${formatStatus(itemsIn?.shiping_address_line)}-${formatStatus(itemsIn?.shiping_city)}-${formatStatus(itemsIn?.shiping_state)}-${formatStatus(itemsIn?.shiping_country)}(${itemsIn?.shiping_pin_code})`,
+              label: `${formatValues(formatStatus(itemsIn?.shiping_address_line))}${formatValues(formatStatus(itemsIn?.shiping_city))}${formatValues(formatStatus(itemsIn?.shiping_state))}${formatValues(formatStatus(itemsIn?.shiping_country))}${formatValuesLast(itemsIn?.shiping_pin_code)}`,
               value: itemsIn?.id,
             });
             shipparry?.push({
-              label: `${formatStatus(itemsIn?.shiping_address_line)}-${formatStatus(itemsIn?.shiping_city)}-${formatStatus(itemsIn?.shiping_state)}-${formatStatus(itemsIn?.shiping_country)}(${itemsIn?.shiping_pin_code})`,
+              label: `${formatValues(formatStatus(itemsIn?.shiping_address_line))}${formatValues(formatStatus(itemsIn?.shiping_city))}${formatValues(formatStatus(itemsIn?.shiping_state))}${formatValues(formatStatus(itemsIn?.shiping_country))}${formatValuesLast(itemsIn?.shiping_pin_code)}`,
               value: itemsIn?.id,
             });
           }
@@ -165,6 +213,29 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
       setShippingOptions(shipparry);
       setBillingOptions(billingArray);
     });
+    await dispatch(getAllBillingContactByCustomerId(customerId))?.then(
+      (payload: any) => {
+        let shipparry: any = [];
+
+        let allContactArrr: any = [];
+        if (payload?.payload && payload?.payload?.length > 0) {
+          payload?.payload?.map((itemsIn: any) => {
+            if (
+              itemsIn?.billing_first_name ||
+              itemsIn?.billing_last_name ||
+              itemsIn?.billing_role ||
+              itemsIn?.billing_phone
+            ) {
+              allContactArrr?.push({
+                label: `${formatValues(itemsIn?.billing_first_name)}${formatValues(itemsIn?.billing_last_name)}${formatValues(itemsIn?.billing_role)}${formatValuesLast(itemsIn?.billing_phone)}`,
+                value: `${formatValues(itemsIn?.billing_first_name)}${formatValues(itemsIn?.billing_last_name)}${formatValues(itemsIn?.billing_role)}${formatValuesLast(itemsIn?.billing_phone)}#${itemsIn?.id}`,
+              });
+            }
+          });
+        }
+        setContactDetails(allContactArrr);
+      },
+    );
 
     await dispatch(getAllCustomer({}))?.then((payload: any) => {});
     await dispatch(getAllOpportunity())?.then((payload: any) => {
@@ -302,13 +373,13 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
             <OsCustomerSelect
               setCustomerValue={setCustomerValue}
               customerValue={customerValue}
-              isDisable={isView === 'true' ? true : false}
+              isDisable={true}
             />
 
             <OsOpportunitySelect
               form={form}
               customerValue={customerValue}
-              isDisable={isView === 'true' ? true : false}
+              isDisable={true}
             />
             {/* <Typography name="Body 4/Regular">Sync Opportunity</Typography>
 
@@ -370,6 +441,13 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
             </Form.Item>
             <Form.Item label="Shipping Address" name="shipping_id">
               <CommonSelect options={shippingOptions} />
+            </Form.Item>
+
+            <Form.Item label="Billing Contact" name="billing_phone">
+              <CommonSelect value={56} options={contactDetails} />
+            </Form.Item>
+            <Form.Item label="Shipping Contact" name="shipping_phone">
+              <CommonSelect options={contactDetails} />
             </Form.Item>
           </Col>
         </Row>

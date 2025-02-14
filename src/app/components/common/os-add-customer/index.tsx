@@ -52,6 +52,32 @@ const AddCustomer: React.FC<any> = ({
   const [sameAsShippingAddress, setSameAsShippingAddress] =
     useState<boolean>(false);
 
+  const formatPhoneNumber = (input: any) => {
+    const cleaned = input.replace(/\D/g, ''); // Remove non-digits
+    const formatted = cleaned.slice(0, 11); // Limit to 11 digits
+
+    if (formatted.length <= 3) {
+      return `(${formatted}`;
+    } else if (formatted.length <= 6) {
+      return `(${formatted.slice(0, 3)}) ${formatted.slice(3)}`;
+    } else {
+      return `(${formatted.slice(0, 3)}) ${formatted.slice(3, 6)}-${formatted.slice(6, 11)}`;
+    }
+  };
+  const handlePhoneChange = (e: any) => {
+    // Get the current value
+    const value = e.target.value;
+
+    if (value === '') {
+      // If input is empty, reset the form field
+      form.setFieldsValue({billing_phone: ''});
+    } else {
+      // Otherwise, format the phone number
+      const formattedValue = formatPhoneNumber(value);
+      form.setFieldsValue({billing_phone: formattedValue});
+    }
+  };
+
   const uploadImagesToBackend = async (newFileList: any, index: any) => {
     if (newFileList) {
       notification.open({
@@ -135,6 +161,9 @@ const AddCustomer: React.FC<any> = ({
       customer_id: contactRecordData?.customer_id ?? customerData?.id,
       id: contactRecordData?.customer_id ? contactRecordData?.id : null,
     };
+
+    console.log('34324324', finalDAta);
+    return;
     dispatch(insertbillingContact(finalDAta))?.then((d: any) => {
       if (d?.payload) {
         contactForm.resetFields();
@@ -621,6 +650,30 @@ const AddCustomer: React.FC<any> = ({
                           <OsInput placeholder="Enter Email" />
                         </SelectFormItem>
                       </Col>
+                      <Col span={24}>
+                        <SelectFormItem
+                          label={
+                            <Typography name="Body 4/Medium">Phone</Typography>
+                          }
+                          name="billing_phone"
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Please enter a phone number.',
+                            },
+                            {
+                              pattern: /^\(\d{3}\) \d{3}-\d{4}$/, // Regex to match (XXX) XXX-XXXX format
+                              message: 'Please enter a valid phone number.',
+                            },
+                          ]}
+                        >
+                          <OsInput
+                            maxLength={14} // Includes parentheses and dashes
+                            placeholder="Enter phone number"
+                            onChange={handlePhoneChange}
+                          />
+                        </SelectFormItem>
+                      </Col>
                     </Row>
                   ) : (
                     <>
@@ -697,6 +750,7 @@ const AddCustomer: React.FC<any> = ({
                                         billing_role: item?.billing_role,
                                         billing_id: item?.id,
                                         id: item?.id,
+                                        billing_phone: item?.billing_phone,
                                       });
                                       setcontactRecordData(item);
                                       setShowContactModal(true);
