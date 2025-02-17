@@ -66,7 +66,7 @@ const Validation: FC<any> = ({
   const [finalFieldData, setFinalFieldData] = useState<any>({});
 
   useEffect(() => {
-    dispatch(getAllContract());
+    dispatch(getAllContract({}));
     dispatch(getAllValidationByQuoteId(Number(getQuoteID)));
   }, []);
 

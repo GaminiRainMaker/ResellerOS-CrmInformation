@@ -55,7 +55,7 @@ const ContractProductMain: React.FC = () => {
 
   useEffect(() => {
     dispatch(getAllContractProduct());
-    dispatch(getAllContract());
+    dispatch(getAllContract({}));
   }, []);
 
   const finalOptionsForContract = contactData

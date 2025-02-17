@@ -96,8 +96,6 @@ const TrialFiles = () => {
         columns={columns}
         dataSource={files}
         pagination={false}
-        // selectTedRowIds={selectTedRowIds}
-        // setSelectedRowIds={setSelectedRowIds}
       />
       <Button
         type="primary"

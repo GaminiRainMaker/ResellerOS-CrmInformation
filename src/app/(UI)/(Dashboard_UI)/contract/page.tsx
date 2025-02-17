@@ -139,7 +139,7 @@ const ContractMain: React.FC = () => {
       newObj.id = recordId;
     }
     await dispatch(insertContract(newObj));
-    dispatch(getAllContract());
+    dispatch(getAllContract({}));
     setContractObject('');
     setShowModal(false);
     form?.resetFields();
@@ -147,7 +147,7 @@ const ContractMain: React.FC = () => {
 
   const deleteContractById = async () => {
     await dispatch(deleteContract(Number(deleteId)));
-    dispatch(getAllContract());
+    dispatch(getAllContract({}));
     setShowModalDelete(false);
     setDeleteId('');
   };

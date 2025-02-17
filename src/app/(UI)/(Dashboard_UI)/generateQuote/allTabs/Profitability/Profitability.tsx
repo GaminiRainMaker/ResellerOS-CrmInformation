@@ -359,7 +359,7 @@ const Profitablity: FC<any> = ({
         }
       },
     );
-    await dispatch(getAllContract());
+    await dispatch(getAllContract({}));
     await dispatch(getContractConfiguartion({}));
     setProfitibilityLoading(false);
   };
@@ -376,7 +376,7 @@ const Profitablity: FC<any> = ({
       //     }
       //   },
       // );
-      // dispatch(getAllContract());
+      // dispatch(getAllContract({}));
       // dispatch(getContractConfiguartion({}));
     }
     // setProfitibilityLoading(false);

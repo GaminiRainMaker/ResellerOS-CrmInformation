@@ -16,7 +16,7 @@ export const insertContract = createAsyncThunk(
 
 export const getAllContract = createAsyncThunk(
   'contract/getAllContract',
-  async (data: any, thunkApi: any) => {
+  async (thunkApi: any) => {
     try {
       const res = await CONTRACT_API.get();
       return res.data;
