@@ -113,7 +113,7 @@ const MyProfile = () => {
     const userData = userDetailForm?.getFieldsValue();
     if (userData) {
       dispatch(updateUserById({...userData, id: Number(getUserID)})).then(
-        (d) => {
+        (d: any) => {
           if (d?.payload) {
             dispatch(getUserByIdLogin(getUserID));
           }
@@ -132,7 +132,7 @@ const MyProfile = () => {
           id: Number(getUserID),
         }),
       )
-        .then((d) => {
+        .then((d: any) => {
           changePasswordForm?.resetFields();
         })
         .catch((error: any) => {

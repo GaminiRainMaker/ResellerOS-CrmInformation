@@ -92,7 +92,7 @@ const CrmInformation: React.FC = () => {
   }>({
     customer: null,
     contact: null,
-    pageSize: 10,
+    pageSize: 5,
     pageNumber: 1,
   });
   const searchQuery = useDebounceHook(query, 500);
