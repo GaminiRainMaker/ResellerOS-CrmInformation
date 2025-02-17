@@ -10,6 +10,8 @@ import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {ContractConfigurationColumn} from '@/app/utils/CONSTANTS';
 import {useEffect, useState} from 'react';
+import {ToggleColStyled} from '@/app/components/common/os-div-row-col/styled-component';
+import {Switch} from '@/app/components/common/antd/Switch';
 import {TabContainerStyle} from './styled-components';
 import {
   useAppDispatch,
@@ -19,8 +21,6 @@ import {
   getAllGeneralSetting,
   insertUpdateGeneralSetting,
 } from '../../../../../../../../redux/actions/generalSetting';
-import {ToggleColStyled} from '@/app/components/common/os-div-row-col/styled-component';
-import {Switch} from '@/app/components/common/antd/Switch';
 import {
   getUserByTokenAccess,
   updateAdvancedSetting,
@@ -196,7 +196,7 @@ const ConverSationProcess = () => {
                         width: '100%',
                       }}
                     >
-                      <Space
+                      {/* <Space
                         direction="vertical"
                         size={4}
                         style={{width: '100%'}}
@@ -205,7 +205,7 @@ const ConverSationProcess = () => {
                           Price Book ID
                         </Typography>
                         <OsInput placeholder="Write here!" />
-                      </Space>
+                      </Space> */}
                       <Space
                         direction="vertical"
                         size={4}

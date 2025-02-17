@@ -265,6 +265,7 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
                   style={{width: '100%'}}
                   placeholder="Search here"
                   showSearch
+                  // open={!loading}
                   allowClear
                   onSearch={(e) => {
                     setQueryData({
