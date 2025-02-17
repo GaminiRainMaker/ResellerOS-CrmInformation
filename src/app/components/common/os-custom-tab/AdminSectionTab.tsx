@@ -23,9 +23,8 @@ import {
 } from '../../../../../redux/actions/upload';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {sendEmailForSuport} from '../../../../../redux/actions/auth';
-import {Color} from 'antd/es/color-picker';
 
-const AdminCustomTabs: FC<any> = (tabs) => {
+const AdminCustomTabs: FC<any> = ({tabs, isTrialActive}) => {
   const searchParams = useSearchParams()!;
   const getTab = searchParams.get('tab');
   const pathname = usePathname();
@@ -44,7 +43,6 @@ const AdminCustomTabs: FC<any> = (tabs) => {
   const [loadingSpin, setLoadingSpin] = useState<boolean>(false);
   const router = useRouter();
 
-  console.log('23432432432', tabs);
   useEffect(() => {
     if (tabs?.tabs?.length > 0) {
       let tabIndex;
@@ -337,9 +335,11 @@ const AdminCustomTabs: FC<any> = (tabs) => {
                             style={{
                               padding: '12px 24px',
                               background:
-                                activekeysall === itemild?.key
-                                  ? token.colorInfo
-                                  : '',
+                              isTrialActive
+                                ? 'grey'
+                                : activekeysall === itemild?.key
+                                ? token.colorInfo
+                                : '',
                               color:
                                 activekeysall === itemild?.key
                                   ? token.colorBgContainer

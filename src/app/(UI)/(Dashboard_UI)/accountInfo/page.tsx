@@ -19,10 +19,20 @@ const AccountInfo = () => {
   const router = useRouter();
   const getRole = searchParams.get('role');
   const getId = searchParams.get('id');
-  const {userInformation} = useAppSelector((state) => state.user);
   const organization = searchParams.get('organization');
   const isSuperAdminProfile = searchParams.get('isSuperAdminProfile');
   const getOrganization = searchParams.get('organization');
+  const {activeLicense} = useAppSelector((state) => state.license);
+  const [isLicenseActivate, setIsLicenseActivate] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (
+      activeLicense[0]?.license_type === 'demo' ||
+      activeLicense[0]?.license_type === 'trial'
+    ) {
+      setIsLicenseActivate(true);
+    }
+  }, [activeLicense]);
 
   const tabs = [
     {
@@ -38,7 +48,13 @@ const AccountInfo = () => {
         {
           key: 2,
           name: 'My Team',
-          superChild: <MyTeam />,
+          superChild: isLicenseActivate ? (
+            <Typography name="Body 3/Regular">
+              You Not have permission to see the Team.
+            </Typography>
+          ) : (
+            <MyTeam />
+          ),
           route: `/accountInfo?id=${getId}&organization=${organization}&tab=myTeam&isSuperAdminProfile=${isSuperAdminProfile}`,
         },
       ],
@@ -51,7 +67,13 @@ const AccountInfo = () => {
         {
           key: 4,
           name: 'Partner Passwords',
-          superChild: <PartnerPassword />,
+          superChild: isLicenseActivate ? (
+            <Typography name="Body 3/Regular">
+              You Not have permission to see the Partner Passwords.
+            </Typography>
+          ) : (
+            <PartnerPassword />
+          ),
           route: `/accountInfo?id=${getId}&organization=${organization}&tab=partnerPassword&isSuperAdminProfile=${isSuperAdminProfile}`,
         },
       ],
@@ -73,6 +95,10 @@ const AccountInfo = () => {
       ],
     },
   ];
+
+  useEffect(() => {
+    setTabsData(tabs);
+  }, [isLicenseActivate]);
 
   const [tabsData, setTabsData] = useState(tabs);
 
@@ -145,7 +171,7 @@ const AccountInfo = () => {
           <MyProfile />
         </>
       ) : (
-        <CustomTabs tabs={tabsData} />
+        <CustomTabs tabs={tabsData} isTrialActive={isLicenseActivate} />
       )}
     </>
   );
