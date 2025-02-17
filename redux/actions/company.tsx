@@ -3,7 +3,7 @@ import {createAsyncThunk} from '@reduxjs/toolkit';
 import {COMPANY_API} from '../../services/company';
 
 export const insertCompany = createAsyncThunk(
-  'contract/insertCompany',
+  'company/insertCompany',
   async (data: any, thunkApi) => {
     try {
       const res = await COMPANY_API.post(data);
@@ -15,7 +15,7 @@ export const insertCompany = createAsyncThunk(
 );
 
 export const getAllCompany = createAsyncThunk(
-  'contract/getAllCompany',
+  'company/getAllCompany',
   async (data, thunkApi) => {
     try {
       const res = await COMPANY_API.get();
@@ -27,8 +27,8 @@ export const getAllCompany = createAsyncThunk(
 );
 
 export const getCompanyByUserId = createAsyncThunk(
-  'contract/getCompanyByUserId',
-  async (data, thunkApi) => {
+  'company/getCompanyByUserId',
+  async (data: any, thunkApi: any) => {
     try {
       const res = await COMPANY_API.getCompanyByUserId(data);
       return res.data;
@@ -39,8 +39,8 @@ export const getCompanyByUserId = createAsyncThunk(
 );
 
 export const updateCompanyById = createAsyncThunk(
-  'contract/updateCompanyById',
-  async (data: any, thunkApi) => {
+  'company/updateCompanyById',
+  async (data: any, thunkApi: any) => {
     try {
       const res = await COMPANY_API.patch(data);
       return res.data;
@@ -50,8 +50,8 @@ export const updateCompanyById = createAsyncThunk(
   },
 );
 export const deleteCompany = createAsyncThunk(
-  'contract/deleteCompany',
-  async (id: any, thunkApi) => {
+  'company/deleteCompany',
+  async (id: any, thunkApi: any) => {
     try {
       const res = await COMPANY_API.deleteById(id);
       return res.data;

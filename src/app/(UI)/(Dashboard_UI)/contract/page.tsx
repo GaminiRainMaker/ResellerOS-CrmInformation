@@ -46,7 +46,7 @@ const ContractMain: React.FC = () => {
   const [contractFinalData, setContractFinalData] = useState<any>();
 
   useEffect(() => {
-    dispatch(getAllContract());
+    dispatch(getAllContract({}));
   }, []);
 
   const locale = {
