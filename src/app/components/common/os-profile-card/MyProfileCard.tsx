@@ -175,7 +175,7 @@ const MyProfileCard: FC<any> = ({data, isCompanyData}) => {
                 background={data?.profile_image ? '' : '#1EB159'}
                 size={94}
               />
-              {loginAccount && (
+              {(loginAccount || isCompanyData) && (
                 <span
                   style={{
                     position: 'absolute',
