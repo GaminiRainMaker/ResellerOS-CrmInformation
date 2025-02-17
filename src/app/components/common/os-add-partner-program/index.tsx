@@ -9,7 +9,7 @@ import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
 import {Form, notification} from 'antd';
 import {useEffect, useState} from 'react';
-import {getAllPartnerandProgram} from '../../../../../redux/actions/partner';
+import {usePathname} from 'next/navigation';
 import {
   insertPartnerProgram,
   updatePartnerProgramById,
@@ -17,9 +17,6 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {AddPartnerInterface} from '../os-add-partner/os-add-partner.interface';
 import OsPartnerSelect from '../os-partner-select';
-import {usePathname, useSearchParams} from 'next/navigation';
-import OsButton from '../os-button';
-import CommonSelect from '../os-select';
 
 const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
   form,
@@ -35,7 +32,6 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams()!;
   const pathname = usePathname();
   const {userInformation} = useAppSelector((state) => state.user);
   const [partnerValue, setPartnerValue] = useState<number>();
@@ -78,27 +74,20 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
       }
       if (isCanvas) {
         partnerProgramObj.admin_request = true;
-        (partnerProgramObj.organization =
-          isDecryptedRecord?.context?.organization?.name),
-          (partnerProgramObj.salesforce_username =
-            isDecryptedRecord?.context?.user?.userName);
+        partnerProgramObj.organization =
+          isDecryptedRecord?.context?.organization?.name;
+        partnerProgramObj.salesforce_username =
+          isDecryptedRecord?.context?.user?.userName;
       }
       dispatch(insertPartnerProgram(partnerProgramObj)).then((d: any) => {
         if (d?.payload) {
           form?.resetFields();
           // if (finalProgramOptions) {
-          let newObj = {
+          const newObj = {
             name: d?.payload?.partner_program,
             value: d?.payload?.id,
           };
-          //   if (newObj) {
-          //     let newArr: any =
-          //       finalProgramOptions?.length > 0
-          //         ? [newObj, ...finalProgramOptions]
-          //         : [newObj];
-          //     setFinalProgramOptions(newArr);
-          //   }
-          // }
+
           if (setPartnerProgramNewId) {
             setPartnerProgramNewId(newObj);
           }
@@ -157,7 +146,7 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
           onFinish={onFinish}
           layout="vertical"
           requiredMark={false}
-          initialValues={updateTheObject ? updateTheObject : formPartnerData}
+          initialValues={updateTheObject || formPartnerData}
         >
           {!partnerId && (
             <OsPartnerSelect

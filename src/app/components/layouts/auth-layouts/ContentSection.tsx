@@ -1,10 +1,14 @@
+/* eslint-disable arrow-body-style */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable eqeqeq */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/no-unstable-nested-components */
+
+'use client';
+
 import {Form, notification} from 'antd';
 import Image from 'next/image';
-import {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect, useState, Suspense} from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {CheckCircleIcon} from '@heroicons/react/24/outline';
 import Cookies from 'js-cookie';
@@ -33,7 +37,6 @@ import DailogModal from '../../common/os-modal/DialogModal';
 import Typography from '../../common/typography';
 import {AuthLayoutInterface} from './authLayout.interface';
 import {ContentSectionWrapper, CustomCheckbox} from './styled-components';
-import React from 'react';
 
 const ContentSection: FC<AuthLayoutInterface> = ({
   heading,
@@ -49,7 +52,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   const router = useRouter();
   const dispatch = useAppDispatch();
   const pathName = usePathname();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getUserId = searchParams && searchParams.get('id');
   const [signUpData, setSignUpData] = useState<any>();
   const [showDailogModal, setShowDailogModal] = useState<boolean>(false);
@@ -97,12 +100,23 @@ const ContentSection: FC<AuthLayoutInterface> = ({
 
   const onSubmitForm = (formValues: any, type: any) => {
     if (type === 'Verify Email') {
-      dispatch(verifyEmail({token: Verifytoken})).then((d) => {
+      const obj = {
+        password: formValues?.password,
+        token: Verifytoken,
+      };
+      dispatch(verifyEmail(obj)).then((d) => {
+        if (d?.payload === undefined || !d?.payload) {
+          notification?.open({
+            message: 'Your email has already been verified. Please log in',
+            type: 'info',
+          });
+          router.push('/login');
+          return;
+        }
         if (d?.payload) {
           router.push('/login');
         }
       });
-      return;
     }
 
     const validateEmail = (email: any) =>
@@ -273,20 +287,19 @@ const ContentSection: FC<AuthLayoutInterface> = ({
               'User does not exist with this email address. Please try again with correct email!',
             type: 'error',
           });
-          return;
         }
       });
     } else if (
-      formValues?.username &&
-      formValues?.password &&
+      // formValues?.username &&
+      // formValues?.password &&
       formValues?.email &&
       type === 'Create Account'
     ) {
       dispatch(
         signUpAuth({
-          user_name: formValues?.username,
+          user_name: formValues?.email?.toLowerCase(),
           email: formValues?.email?.toLowerCase(),
-          password: formValues?.password,
+          // password: formValues?.password,
           organization: organizationValue,
         }),
       ).then((payload: any) => {
@@ -306,6 +319,10 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           });
         } else {
           router.push('/login');
+          notification?.open({
+            message: 'Please check your Email for login instructions.',
+            type: 'info',
+          });
         }
       });
     }
@@ -320,7 +337,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   };
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <ContentSectionWrapper direction="vertical" size={72}>
         <Image src={OSResellerLogo} alt="OSResellerLogo" />
         <Space direction="vertical" size={72}>
@@ -354,7 +371,6 @@ const ContentSection: FC<AuthLayoutInterface> = ({
               requiredMark={false}
             >
               {inputFields?.map((item: any) => {
-                console.log('item');
                 return (
                   <Form.Item
                     style={{
@@ -538,7 +554,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           router.push('/');
         }}
       />
-    </>
+    </Suspense>
   );
 };
 

@@ -1,3 +1,7 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/exhaustive-deps */
 
@@ -29,7 +33,11 @@ import {
 } from '@heroicons/react/24/outline';
 import {Form, message, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useRef, useState} from 'react';
+import React, {Suspense, useEffect, useState, useRef} from 'react';
+import {Switch} from '@/app/components/common/antd/Switch';
+import OsInput from '@/app/components/common/os-input';
+import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
+import {Checkbox} from '@/app/components/common/antd/Checkbox';
 import {updateAssignPartnerProgramById} from '../../../../../redux/actions/assignPartnerProgram';
 import {
   deletePartner,
@@ -38,7 +46,6 @@ import {
 import {
   deletePartnerProgram,
   deletePartnerProgramTemplateData,
-  getAllPartnerProgram,
   launchPlayWright,
   upadteToRequestPartnerandprogramfromAmin,
   updatePartnerProgramById,
@@ -47,11 +54,6 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AddPartnerProgramScript from './AddPartnerProgramScript';
 import SuperAdminPartnerAnalytics from './SuperAdminPartnerAnalytic';
 import {getUserByTokenAccess} from '../../../../../redux/actions/user';
-import {Switch} from '@/app/components/common/antd/Switch';
-import React from 'react';
-import OsInput from '@/app/components/common/os-input';
-import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
-import {Checkbox} from '@/app/components/common/antd/Checkbox';
 import AddSalesForceCredentials, {
   AddSalesForceCredentialsRef,
 } from '../salesForceCredentials/AddSalesForceCredentials';
@@ -71,7 +73,7 @@ const SuperAdminPartner: React.FC = () => {
   const [programScriptForm] = Form.useForm();
   const [programLoginScriptForm] = Form.useForm();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getTabId = searchParams && searchParams.get('tab');
   const router = useRouter();
   const [formPartnerData, setFormPartnerData] = useState<any>();
@@ -139,30 +141,29 @@ const SuperAdminPartner: React.FC = () => {
           payload?.payload?.AllPartner
         ) {
           payload?.payload?.AllPartner?.map((items: any) => {
-            countForActivePartnerProgram =
-              countForActivePartnerProgram + items?.PartnerPrograms?.length;
+            countForActivePartnerProgram += items?.PartnerPrograms?.length;
           });
         }
 
-        let newObj = {
+        const newObj = {
           requested: payload?.payload?.requested?.length,
           allPartner: payload?.payload?.AllPartner?.length,
           Declined: payload?.payload?.DeclinedData?.length,
           PartnerProgram: countForActivePartnerProgram,
         };
         setSuperAdminPartnerAnalyticData(newObj);
-        let newArrOfPartner: any = [];
-        let newArrOfPartnerProgram: any = [];
+        const newArrOfPartner: any = [];
+        const newArrOfPartnerProgram: any = [];
 
         payload?.payload?.AllPartner?.map((items: any) => {
-          let newObjPatner = {
+          const newObjPatner = {
             label: formatStatus(items?.partner),
             value: items?.partner,
           };
           newArrOfPartner?.push(newObjPatner);
           if (items?.PartnerPrograms?.length) {
             items?.PartnerPrograms?.map((itemPro: any) => {
-              let newObjPatnerPfro = {
+              const newObjPatnerPfro = {
                 label: formatStatus(itemPro?.partner_program),
                 value: itemPro?.partner_program,
               };
@@ -188,18 +189,18 @@ const SuperAdminPartner: React.FC = () => {
   useEffect(() => {
     dispatch(getAllPartnerandProgramFilterDataForAdmin(searchQuery))?.then(
       (payload: any) => {
-        let newArrOfPartner: any = [];
-        let newArrOfPartnerProgram: any = [];
+        const newArrOfPartner: any = [];
+        const newArrOfPartnerProgram: any = [];
 
         payload?.payload?.AllPartner?.map((items: any) => {
-          let newObjPatner = {
+          const newObjPatner = {
             label: formatStatus(items?.partner),
             value: items?.partner,
           };
           newArrOfPartner?.push(newObjPatner);
           if (items?.PartnerPrograms?.length) {
             items?.PartnerPrograms?.map((itemPro: any) => {
-              let newObjPatnerPfro = {
+              const newObjPatnerPfro = {
                 label: formatStatus(itemPro?.partner_program),
                 value: itemPro?.partner_program,
               };
@@ -227,8 +228,8 @@ const SuperAdminPartner: React.FC = () => {
   }, [getTabId]);
 
   const updateLoginStep = async (id: number, value: boolean) => {
-    let obj = {
-      id: id,
+    const obj = {
+      id,
       login_step: value,
     };
     await dispatch(updatePartnerProgramById(obj));
@@ -278,9 +279,9 @@ const SuperAdminPartner: React.FC = () => {
     partnerName: string,
     partnerProgramName: string,
   ) => {
-    let data = {
-      partner_id: partner_id,
-      partner_program_id: partner_program_id,
+    const data = {
+      partner_id,
+      partner_program_id,
       type: typeOf,
       valueUpdate: value,
       rejection_reason: rejectReason,
@@ -337,8 +338,8 @@ const SuperAdminPartner: React.FC = () => {
 
   const deletePartnerProgramTemplate = async (id: number, type: string) => {
     const obj = {
-      id: id,
-      type: type,
+      id,
+      type,
     };
     dispatch(deletePartnerProgramTemplateData(obj)).then((d) => {
       if (d?.payload) {
@@ -420,15 +421,13 @@ const SuperAdminPartner: React.FC = () => {
       ),
       dataIndex: 'organization',
       key: 'organization',
-      render: (text: string, record: any) => {
-        return (
-          <Typography name="Body 4/Regular">
-            {record?.AssignPartnerProgram?.organization ??
-              record?.Partner?.organization ??
-              '--'}
-          </Typography>
-        );
-      },
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">
+          {record?.AssignPartnerProgram?.organization ??
+            record?.Partner?.organization ??
+            '--'}
+        </Typography>
+      ),
       width: 200,
     },
     {
@@ -439,17 +438,15 @@ const SuperAdminPartner: React.FC = () => {
       ),
       dataIndex: 'requested_by',
       key: 'requested_by',
-      render: (text: string, record: any) => {
-        return (
-          <Typography name="Body 4/Regular">
-            {record?.AssignPartnerProgram?.User?.email ??
-              record?.AssignPartnerProgram?.organization ??
-              record?.Partner?.salesforce_username ??
-              `${record?.Partner?.organization} Organization` ??
-              '--'}
-          </Typography>
-        );
-      },
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">
+          {record?.AssignPartnerProgram?.User?.email ??
+            record?.AssignPartnerProgram?.organization ??
+            record?.Partner?.salesforce_username ??
+            `${record?.Partner?.organization} Organization` ??
+            '--'}
+        </Typography>
+      ),
       width: 200,
     },
     // {
@@ -486,15 +483,12 @@ const SuperAdminPartner: React.FC = () => {
             record?.AssignPartnerProgram?.new_request
               ? true
               : !record?.AssignPartnerProgram
-                ? true
-                : false
           }
           disabled
         />
       ),
       width: 200,
     },
-
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -553,27 +547,25 @@ const SuperAdminPartner: React.FC = () => {
                   formatStatus(record?.Partner?.partner),
                   formatStatus(record?.partner_program),
                 );
+              } else if (
+                record?.form_data?.length > 0 &&
+                !record?.form_data?.includes(null)
+              ) {
+                updateRequest(
+                  true,
+                  record?.AssignPartnerProgram?.id,
+                  record?.AssignPartnerProgram?.requested_by,
+                  record?.Partner?.id,
+                  record?.id,
+                  record?.Partner?.partner,
+                  record?.partner_program,
+                );
               } else {
-                if (
-                  record?.form_data?.length > 0 &&
-                  !record?.form_data?.includes(null)
-                ) {
-                  updateRequest(
-                    true,
-                    record?.AssignPartnerProgram?.id,
-                    record?.AssignPartnerProgram?.requested_by,
-                    record?.Partner?.id,
-                    record?.id,
-                    record?.Partner?.partner,
-                    record?.partner_program,
-                  );
-                } else {
-                  notification?.open({
-                    message:
-                      'Please create a template for this partner program for approval.',
-                    type: 'info',
-                  });
-                }
+                notification?.open({
+                  message:
+                    'Please create a template for this partner program for approval.',
+                  type: 'info',
+                });
               }
             }}
           />{' '}
@@ -584,26 +576,6 @@ const SuperAdminPartner: React.FC = () => {
             clickHandler={() => {
               setShowRejectModal(true);
               setRejectedRecord(record);
-
-              return;
-              // if (!record?.AssignPartnerProgram) {
-              //   updateTheAuthorization(
-              //     true,
-              //     record?.Partner?.id,
-              //     record?.id,
-              //     'delete',
-              //   );
-              // } else {
-              //   updateRequest(
-              //     false,
-              //     record?.AssignPartnerProgram?.id,
-              //     record?.AssignPartnerProgram?.requested_by,
-              //     record?.Partner?.id,
-              //     record?.id,
-              //     record?.Partner?.partner,
-              //     record?.partner_program,
-              //   );
-              // }
             }}
           />
         </Space>
@@ -784,7 +756,6 @@ const SuperAdminPartner: React.FC = () => {
             const userData = {
               userID: userId,
             };
-            console.log('userData', userId, userData);
             dispatch(launchPlayWright(userData));
           }}
         >
@@ -913,7 +884,7 @@ const SuperAdminPartner: React.FC = () => {
                     height={24}
                     width={24}
                     onClick={() => {
-                      let newObj = {
+                      const newObj = {
                         partner: formatStatus(record?.partner),
                         industry: record?.industry,
                         email: record?.email,
@@ -1043,17 +1014,10 @@ const SuperAdminPartner: React.FC = () => {
                     dataIndex: 'organization',
                     key: 'organization',
                     render: (text: any, recordd: any) => (
-                      console.log(
-                        '3243242342',
-                        recordd,
-                        recordd?.AssignPartnerProgram?.rejection_reason,
-                      ),
-                      (
-                        <Typography name="Body 4/Regular">
-                          {recordd?.AssignPartnerProgram?.rejection_reason ??
-                            '--'}
-                        </Typography>
-                      )
+                      <Typography name="Body 4/Regular">
+                        {recordd?.AssignPartnerProgram?.rejection_reason ??
+                          '--'}
+                      </Typography>
                     ),
                     width: 200,
                   },
@@ -1094,13 +1058,13 @@ const SuperAdminPartner: React.FC = () => {
         title: 'Action',
         dataIndex: 'actions',
         key: 'actions',
-        render: (text: string, record: any, index: number) => (
+        render: (text: string, record: any) => (
           <Space size={18}>
             <PencilSquareIcon
               height={24}
               width={24}
               onClick={() => {
-                let newObj = {
+                const newObj = {
                   partner: record?.partner,
                   description: record?.description,
                   partner_program: formatStatus(record?.partner_program),
@@ -1156,27 +1120,25 @@ const SuperAdminPartner: React.FC = () => {
                     formatStatus(record?.Partner?.partner),
                     formatStatus(record?.partner_program),
                   );
+                } else if (
+                  record?.form_data?.length > 0 &&
+                  !record?.form_data?.includes(null)
+                ) {
+                  updateRequest(
+                    true,
+                    record?.AssignPartnerProgram?.id,
+                    record?.AssignPartnerProgram?.requested_by,
+                    record?.Partner?.id,
+                    record?.id,
+                    record?.Partner?.partner,
+                    record?.partner_program,
+                  );
                 } else {
-                  if (
-                    record?.form_data?.length > 0 &&
-                    !record?.form_data?.includes(null)
-                  ) {
-                    updateRequest(
-                      true,
-                      record?.AssignPartnerProgram?.id,
-                      record?.AssignPartnerProgram?.requested_by,
-                      record?.Partner?.id,
-                      record?.id,
-                      record?.Partner?.partner,
-                      record?.partner_program,
-                    );
-                  } else {
-                    notification?.open({
-                      message:
-                        'Please create a template for this partner program for approval.',
-                      type: 'info',
-                    });
-                  }
+                  notification?.open({
+                    message:
+                      'Please create a template for this partner program for approval.',
+                    type: 'info',
+                  });
                 }
               }}
             />{' '}
@@ -1187,26 +1149,6 @@ const SuperAdminPartner: React.FC = () => {
               clickHandler={() => {
                 setShowRejectModal(true);
                 setRejectedRecord(record);
-
-                return;
-                // if (!record?.AssignPartnerProgram) {
-                //   updateTheAuthorization(
-                //     true,
-                //     record?.Partner?.id,
-                //     record?.id,
-                //     'delete',
-                //   );
-                // } else {
-                //   updateRequest(
-                //     false,
-                //     record?.AssignPartnerProgram?.id,
-                //     record?.AssignPartnerProgram?.requested_by,
-                //     record?.Partner?.id,
-                //     record?.id,
-                //     record?.Partner?.partner,
-                //     record?.partner_program,
-                //   );
-                // }
               }}
             />
           </Space>
@@ -1224,7 +1166,7 @@ const SuperAdminPartner: React.FC = () => {
     const programLoginScriptData = programLoginScriptForm?.getFieldsValue();
 
     // Create an object with the required ID
-    let obj: any = {id: selectPartnerProgramId};
+    const obj: any = {id: selectPartnerProgramId};
 
     // Add `script` to the object only if it exists
     if (programScriptData?.script) {
@@ -1264,7 +1206,7 @@ const SuperAdminPartner: React.FC = () => {
   };
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
         <SuperAdminPartnerAnalytics data={superAdminPartnerAnalyticData} />
         <Row justify="space-between" align="middle">
@@ -1377,52 +1319,6 @@ const SuperAdminPartner: React.FC = () => {
                   </Typography>
                 </div>
               </Space>
-              // <Space size={12} align="center">
-              //   <Space direction="vertical" size={0}>
-              //     <Typography name="Body 4/Medium">Partner</Typography>
-              //     <OsInput
-              //       value={queryDataa?.partnerQuery}
-              //       onChange={(e: any) => {
-              //         setQueryData({
-              //           ...queryDataa,
-              //           partnerQuery: e?.target?.value,
-              //         });
-              //       }}
-              //     />
-              //   </Space>
-              //   <Space direction="vertical" size={0}>
-              //     <Typography name="Body 4/Medium">Partner Program</Typography>
-              //     <OsInput
-              //       value={queryDataa?.partnerprogramQuery}
-              //       onChange={(e: any) => {
-              //         setQueryData({
-              //           ...queryDataa,
-              //           partnerprogramQuery: e?.target?.value,
-              //         });
-              //       }}
-              //     />
-              //   </Space>
-              //   <div
-              //     style={{
-              //       display: 'flex',
-              //       alignItems: 'center',
-              //       justifyContent: 'center',
-              //       marginTop: '20px',
-              //     }}
-              //   >
-              //     <Typography
-              //       cursor="pointer"
-              //       name="Button 1"
-              //       style={{cursor: 'pointer'}}
-              //       color={token?.colorLink}
-              //       onClick={() => {
-              //         setQueryData({});
-              //       }}
-              //     >
-              //       Reset
-              //     </Typography>
-              //   </div>
-              // </Space>
             }
           />
         </Row>
@@ -1498,7 +1394,7 @@ const SuperAdminPartner: React.FC = () => {
           form={form}
           setOpen={setShowPartnerDrawer}
           formPartnerData={formPartnerData}
-          drawer={true}
+          drawer
           setUpdateTheObject={setUpdateTheObject}
           updateTheObject={updateTheObject}
           getPartnerDataForSuperAdmin={getPartnerDataForSuperAdmin}
@@ -1563,7 +1459,6 @@ const SuperAdminPartner: React.FC = () => {
         loading={loading}
         body={
           <>
-            {' '}
             <FormBuilderMain
               cartItems={formData?.formObject}
               form={form}
@@ -1604,7 +1499,6 @@ const SuperAdminPartner: React.FC = () => {
         loading={loading}
         body={
           <>
-            {' '}
             <FormBuilderMain
               cartItems={loginTemplateFormData?.formObject}
               form={form}
@@ -1662,7 +1556,7 @@ const SuperAdminPartner: React.FC = () => {
         onCancel={() => {
           setShowScriptModal(false);
         }}
-        primaryButtonText={'Save'}
+        primaryButtonText="Save"
       />
       <OsModal
         loading={insertProgramLoading}
@@ -1681,7 +1575,7 @@ const SuperAdminPartner: React.FC = () => {
         onCancel={() => {
           setShowLoginScriptModal(false);
         }}
-        primaryButtonText={'Save'}
+        primaryButtonText="Save"
       />
 
       <OsModal
@@ -1697,7 +1591,7 @@ const SuperAdminPartner: React.FC = () => {
                 name="Heading 3/Medium"
                 color={token?.colorPrimaryText}
               >
-                {`Rejected  Partner Program`}
+                Rejected Partner Program
               </Typography>
 
               <Typography name="Body 3/Regular" color={token?.colorPrimaryText}>
@@ -1733,17 +1627,6 @@ const SuperAdminPartner: React.FC = () => {
                 />
               </SelectFormItem>
             </Form>
-            {/* <div style={{marginTop: '10px'}}>
-              <Typography name="Body 4/Medium">
-                Reason for Rejection{' '}
-              </Typography>
-              <OsInput
-                value={rejectReason}
-                onChange={(e: any) => {
-                  setRejectReason(e?.target?.value);
-                }}
-              />
-            </div> */}
           </div>
         }
         bodyPadding={40}
@@ -1779,7 +1662,7 @@ const SuperAdminPartner: React.FC = () => {
         primaryButtonText="Save"
         bodyPadding={24}
       />
-    </>
+    </Suspense>
   );
 };
 

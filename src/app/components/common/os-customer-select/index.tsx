@@ -71,6 +71,7 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
 
   const onFinish = async () => {
     const FormData = form1?.getFieldsValue();
+
     if (activeKeyForTabs < '3') {
       setActiveKeyForTabs((Number(activeKeyForTabs) + 1)?.toString());
       return;
@@ -92,7 +93,6 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
           },
         ]);
         setCustomerValue(data?.payload?.id);
-        form?.setFieldValue('customer_id', data?.payload?.id);
         const newAddressObj: any = {
           ...FormData,
           customer_id: data?.payload?.id,
@@ -100,6 +100,12 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
         const newBillingObject: any = {
           ...objectValuesForContact,
           customer_id: data?.payload?.id,
+          billing_email: FormData?.billing_email,
+          billing_last_name: FormData?.billing_last_name,
+          billing_first_name: FormData?.billing_first_name,
+          billing_role: FormData?.billing_role,
+
+          billing_phone: FormData?.billing_phone,
         };
         if (newAddressObj) {
           dispatch(insertAddAddress(newAddressObj));

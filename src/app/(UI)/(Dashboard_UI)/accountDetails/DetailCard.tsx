@@ -12,7 +12,7 @@ import Typography from '@/app/components/common/typography';
 import {PencilSquareIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {updateAddress} from '../../../../../redux/actions/address';
 import {
   deleteCustomers,
@@ -22,10 +22,23 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setBillingContact} from '../../../../../redux/slices/billingAddress';
 
+interface Address {
+  id: string;
+  address_type: 'Both' | 'Shipping' | 'Billing';
+  primary_shipping?: boolean;
+  primary_billing?: boolean;
+  created_at: string;
+  [key: string]: any; // For additional fields
+}
+
+interface CustomerData {
+  Addresses?: Address[];
+}
+
 const DetailCard = () => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getCustomerID = searchParams && searchParams.get('id');
   const [form] = Form.useForm();
   const {customerDataById: customerData} = useAppSelector(
@@ -40,9 +53,11 @@ const DetailCard = () => {
   const [contactDetail, setContactDetail] = useState<any>();
   const [shipppingAddress, setShippingAddress] = useState<any>();
   const [showDrawer, setShowDrawer] = useState<boolean>(false);
-  const [errorFileds, setErrorFileds] = useState<boolean>(false);
   const [activeKeyForTabs, setActiveKeyForTabs] = useState<any>('1');
-  const [newAddContact, setNewAddContact] = useState<Boolean>(false);
+  const [shippingNewAddress, setShippingNewAddress] = useState<Address | null>(
+    null,
+  );
+  const [billingAddress, setBillingAddress] = useState<Address | null>(null);
 
   const contactCardData = [
     {
@@ -54,41 +69,64 @@ const DetailCard = () => {
     },
   ];
 
-  const defaultAddress =
-    customerData?.Addresses?.find(
-      (address: any) => address?.is_default_address,
-    ) || customerData?.Addresses?.[0];
+  useEffect(() => {
+    if (!customerData?.Addresses?.length) return;
+
+    const addresses = customerData.Addresses;
+
+    // Find primary shipping & billing addresses
+    const primaryShipping = addresses.find(
+      (addr: any) => addr.primary_shipping,
+    );
+    const primaryBilling = addresses.find((addr: any) => addr.primary_billing);
+
+    // Fallback to first created addresses
+    const fallbackShipping =
+      addresses
+        .filter(
+          (addr: any) =>
+            addr.address_type === 'Both' || addr.address_type === 'Shipping',
+        )
+        .sort(
+          (a: any, b: any) =>
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+        )[0] || null;
+
+    const fallbackBilling =
+      addresses
+        .filter(
+          (addr: any) =>
+            addr.address_type === 'Both' || addr.address_type === 'Billing',
+        )
+        .sort(
+          (a: any, b: any) =>
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+        )[0] || null;
+
+    // Set state with priority
+    setShippingNewAddress(primaryShipping || fallbackShipping);
+    setBillingAddress(primaryBilling || fallbackBilling);
+  }, [customerData]);
 
   const customerUpdatedData = {
     id: customerData?.id,
     name: customerData?.name,
     currency: customerData?.currency,
     BillingContacts: customerData?.BillingContacts,
-    shiping_address_line: defaultAddress?.shiping_address_line,
-    shiping_city: defaultAddress?.shiping_city,
-    shiping_state: defaultAddress?.shiping_state,
-    shiping_pin_code: defaultAddress?.shiping_pin_code,
-    shiping_country: defaultAddress?.shiping_country,
-    billing_address_line: defaultAddress?.billing_address_line,
-    billing_city: defaultAddress?.billing_city,
-    billing_state: defaultAddress?.billing_state,
-    billing_pin_code: defaultAddress?.billing_pin_code,
-    billing_country: defaultAddress?.billing_country,
+    shiping_address_line: shippingNewAddress?.shiping_address_line,
+    shiping_city: shippingNewAddress?.shiping_city,
+    shiping_state: shippingNewAddress?.shiping_state,
+    shiping_pin_code: shippingNewAddress?.shiping_pin_code,
+    shiping_country: shippingNewAddress?.shiping_country,
+    billing_address_line: billingAddress?.shiping_address_line,
+    billing_city: billingAddress?.shiping_city,
+    billing_state: billingAddress?.shiping_state,
+    billing_pin_code: billingAddress?.shiping_pin_code,
+    billing_country: billingAddress?.shiping_country,
   };
 
   const editCustomerFileds = (record: any) => {
     form.setFieldsValue({
-      billing_address_line: record?.Addresses?.[0]?.billing_address_line,
-      billing_city: record?.Addresses?.[0]?.billing_city,
-      billing_state: record?.Addresses?.[0]?.billing_state,
-      billing_pin_code: record?.Addresses?.[0]?.billing_pin_code,
-      billing_country: record?.Addresses?.[0]?.billing_country,
-      shiping_address_line: record?.Addresses?.[0]?.shiping_address_line,
-      shiping_city: record?.Addresses?.[0]?.shiping_city,
-      shiping_state: record?.Addresses?.[0]?.shiping_state,
-      shiping_pin_code: record?.Addresses?.[0]?.shiping_pin_code,
-      shiping_country: record?.Addresses?.[0]?.shiping_country,
-      shipping_id: record?.Addresses?.[0]?.id,
       name: record?.name,
       currency: record?.currency,
       industry: record?.industry,
@@ -131,6 +169,7 @@ const DetailCard = () => {
 
   const updateCustomerDetails = async () => {
     const FormData = form.getFieldsValue();
+
     await dispatch(
       updateAddress({...FormData, shipping_id: shipppingAddress?.id}),
     );
@@ -144,6 +183,7 @@ const DetailCard = () => {
   const getCustomer = () => {
     dispatch(getCustomerBYId(getCustomerID));
   };
+
   return (
     <>
       <ProfileCard

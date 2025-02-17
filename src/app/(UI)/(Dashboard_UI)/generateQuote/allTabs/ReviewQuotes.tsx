@@ -1,3 +1,8 @@
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable array-callback-return */
+/* eslint-disable no-nested-ternary */
+
 'use client';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
@@ -16,12 +21,19 @@ import {
   convertToNumber,
   updateTables,
   useRemoveDollarAndCommahook,
-  useRemoveDollarAndCommahookDataa,
 } from '@/app/utils/base';
 import {CheckIcon, XMarkIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
+import GlobalLoader from '@/app/components/common/os-global-loader';
+import CommonSelect from '@/app/components/common/os-select';
+import {
+  countrupickList,
+  EnergyStarFlagpicklist,
+  EPEATFlagPickList,
+  TAAFlagPickList,
+} from '@/app/utils/CONSTANTS';
 import GreenCheckIcon from '../../../../../../public/assets/static/greenCheckIcon.svg';
 import RaiseConcernImg from '../../../../../../public/assets/static/raiseConcern.svg';
 import {
@@ -32,14 +44,6 @@ import {
 } from '../../../../../../redux/actions/quoteFile';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setConcernQuoteLineItemData} from '../../../../../../redux/slices/quotelineitem';
-import {getProfitabilityByQuoteId} from '../../../../../../redux/actions/profitability';
-import {setProfitability} from '../../../../../../redux/slices/profitability';
-import {
-  setQuoteFileDataCount,
-  setQuoteFileUnverifiedById,
-} from '../../../../../../redux/slices/quoteFile';
-import GlobalLoader from '@/app/components/common/os-global-loader';
-import CommonSelect from '@/app/components/common/os-select';
 
 const ReviewQuotes: FC<any> = ({
   tableColumnDataShow,
@@ -50,7 +54,7 @@ const ReviewQuotes: FC<any> = ({
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const router = useRouter();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const isView = searchParams.get('isView');
   const {abbreviate} = useAbbreviationHook(0);
@@ -92,12 +96,11 @@ const ReviewQuotes: FC<any> = ({
       }
 
       if (name) {
-        const convertToTitleCase = (input: string) => {
-          return input
+        const convertToTitleCase = (input: string) =>
+          input
             .toLowerCase()
             .replace(/_/g, ' ')
             .replace(/\b\w/g, (char: any) => char?.toUpperCase());
-        };
 
         if (name?.includes('_') || name === name?.toLowerCase()) {
           name = convertToTitleCase(name);
@@ -116,8 +119,8 @@ const ReviewQuotes: FC<any> = ({
         item?.QuoteLineItems.forEach((quoteLineItem: any) => {
           groupedData[name].QuoteLineItem.push(quoteLineItem);
 
-          let Adjustted = Number(
-            useRemoveDollarAndCommahookDataa(
+          const Adjustted = Number(
+            useRemoveDollarAndCommahook(
               quoteLineItem?.adjusted_price &&
                 quoteLineItem?.adjusted_price !== undefined &&
                 quoteLineItem?.adjusted_price !== null
@@ -126,8 +129,8 @@ const ReviewQuotes: FC<any> = ({
             ) ?? 0,
           );
 
-          let QuantityValue = Number(
-            useRemoveDollarAndCommahookDataa(
+          const QuantityValue = Number(
+            useRemoveDollarAndCommahook(
               quoteLineItem?.quantity &&
                 quoteLineItem?.quantity !== undefined &&
                 quoteLineItem?.quantity !== null
@@ -145,7 +148,7 @@ const ReviewQuotes: FC<any> = ({
     });
 
     setReviewQuotesData(Object.values(groupedData));
-    let newArrForPaggination: any = [];
+    const newArrForPaggination: any = [];
 
     Object.values(groupedData)?.map((items: any) => {
       newArrForPaggination?.push({
@@ -186,7 +189,7 @@ const ReviewQuotes: FC<any> = ({
 
   const InputDetailQuoteLineItemcolumns = [
     {
-      title: '#Line',
+      title: 'Line Number',
       dataIndex: 'line_number',
       key: 'line_number',
       render: (text: any, record: any, index: number) => (
@@ -195,7 +198,7 @@ const ReviewQuotes: FC<any> = ({
       width: 130,
     },
     {
-      title: 'SKU',
+      title: 'Product Code',
       dataIndex: 'product_code',
       key: 'product_code',
       width: 187,
@@ -218,14 +221,14 @@ const ReviewQuotes: FC<any> = ({
       width: 187,
       render: (text: number) => {
         const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        console.log('32432432', value);
+
         return (
-          <Typography name="Body 4/Medium">
-            {convertToNumber(value)}
-            {/* {`${abbreviate(Number(value ?? 0))}`} */}
-          </Typography>
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
         );
       },
     },
+
     {
       title: 'Cost ($)',
       dataIndex: 'adjusted_price',
@@ -233,14 +236,17 @@ const ReviewQuotes: FC<any> = ({
       sorter: (a: any, b: any) => a.adjusted_price - b.adjusted_price,
       width: 187,
       render: (text: any) => {
-        const value = useRemoveDollarAndCommahook(text ? text : 0);
+        const value = useRemoveDollarAndCommahook(text || 0);
         return (
-          <Typography name="Body 4/Medium">
-            {convertToNumber(value)}
-            {/* {text === null ? 0.0 : `${abbreviate(value ?? 0.0)}`} */}
-          </Typography>
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
         );
       },
+    },
+    {
+      title: 'Product Description',
+      dataIndex: 'description',
+      key: 'description',
+      width: 365,
     },
     {
       title: 'Product Family',
@@ -251,7 +257,7 @@ const ReviewQuotes: FC<any> = ({
         return {
           children: (
             <CommonSelect
-              disabled={true}
+              disabled
               allowClear
               style={{width: '200px', height: '36px'}}
               placeholder="Select"
@@ -262,10 +268,413 @@ const ReviewQuotes: FC<any> = ({
       },
     },
     {
-      title: 'Product Description',
-      dataIndex: 'description',
-      key: 'description',
-      width: 365,
+      title: 'Availability',
+      dataIndex: 'availability',
+      key: 'availability',
+      width: 150,
+    },
+    {
+      title: 'Adjusted Quantity',
+      dataIndex: 'adjusted_quantity',
+      key: 'adjusted_quantity',
+      width: 150,
+    },
+    {
+      title: 'Adjusted Price ($)',
+      dataIndex: 'adjusted_price',
+      key: 'adjusted_price',
+      width: 187,
+      render: (text: any) => {
+        const value = useRemoveDollarAndCommahook(text || 0);
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'line_amount',
+      key: 'line_amount',
+      width: 187,
+      render: (text: any) => {
+        const value = useRemoveDollarAndCommahook(text || 0);
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+    {
+      title: 'Unit Price ($)',
+      dataIndex: 'adjusted_price',
+      key: 'adjusted_price',
+      width: 150,
+      render: (text: any) => {
+        const value = useRemoveDollarAndCommahook(text || 0);
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+    {
+      title: 'Extended Price ($)',
+      dataIndex: 'bundle_ext_price',
+      key: 'bundle_ext_price',
+      width: 187,
+      render: (text: any) => {
+        const value = useRemoveDollarAndCommahook(text || 0);
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+    {
+      title: 'Gross Profit ($)',
+      dataIndex: 'bundle_gp',
+      key: 'bundle_gp',
+      width: 150,
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+    {
+      title: 'Gross Profit (%)',
+      dataIndex: 'bundle_gp_percentage',
+      key: 'bundle_gp_percentage',
+      width: 150,
+      render: (text: any) => {
+        const value = text || 0; // Default to 0 if no value
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+    {
+      title: 'Bundle Cost',
+      dataIndex: 'bundle_cost',
+      key: 'bundle_cost',
+      width: 150,
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+    {
+      title: 'Bundle Extended Price',
+      dataIndex: 'bundle_ext_price',
+      key: 'bundle_ext_price',
+      width: 187,
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+    {
+      title: 'Bundle Gross Profit',
+      dataIndex: 'bundle_gp',
+      key: 'bundle_gp',
+      width: 150,
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+    {
+      title: 'Bundle Gross Profit (%)',
+      dataIndex: 'bundle_gp_percentage',
+      key: 'bundle_gp_percentage',
+      width: 150,
+      render: (text: any) => {
+        const value = text || 0; // Default to 0 if no value
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+    {
+      title: 'Bundle MSRP',
+      dataIndex: 'bundle_msrp',
+      key: 'bundle_msrp',
+      width: 187,
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+
+    {
+      title: 'TAA Flag',
+      dataIndex: 'taa_flag',
+      key: 'taa_flag',
+      width: 150,
+      render(text: any, record: any) {
+        return {
+          children: (
+            <CommonSelect
+              disabled
+              allowClear
+              style={{width: '200px', height: '36px'}}
+              placeholder="Select"
+              defaultValue={text ?? record?.taa_flag}
+              options={TAAFlagPickList}
+            />
+          ),
+        };
+      },
+    },
+    {
+      title: 'EPEAT Flag',
+      dataIndex: 'epeat_flag',
+      key: 'epeat_flag',
+      width: 150,
+      render(text: any, record: any) {
+        return {
+          children: (
+            <CommonSelect
+              disabled
+              style={{width: '200px', height: '36px'}}
+              placeholder="Select"
+              defaultValue={text ?? record?.epeat_flag}
+              options={EPEATFlagPickList}
+            />
+          ),
+        };
+      },
+    },
+    {
+      title: 'Country Of Origin',
+      dataIndex: 'country_of_origin',
+      key: 'country_of_origin',
+      width: 150,
+      render(text: any, record: any) {
+        return {
+          children: (
+            <CommonSelect
+              disabled
+              style={{width: '200px', height: '36px'}}
+              placeholder="Select"
+              defaultValue={text ?? record?.country_of_origin}
+              options={countrupickList}
+            />
+          ),
+        };
+      },
+    },
+    {
+      title: 'Energy Star Flag',
+      dataIndex: 'energy_star_flag',
+      key: 'energy_star_flag',
+      width: 150,
+      render(text: any, record: any) {
+        return {
+          children: (
+            <CommonSelect
+              disabled
+              allowClear
+              style={{width: '200px', height: '36px'}}
+              placeholder="Select"
+              defaultValue={text ?? record?.energy_star_flag}
+              options={EnergyStarFlagpicklist}
+            />
+          ),
+        };
+      },
+    },
+    {
+      title: 'Bundle Name',
+      dataIndex: 'bundle_name',
+      key: 'bundle_name',
+      width: 285,
+    },
+    {
+      title: 'Bundle Rebate',
+      dataIndex: 'bundle_rebate',
+      key: 'bundle_rebate',
+      width: 150,
+    },
+    {
+      title: 'Bundle Rebate Amount',
+      dataIndex: 'bundle_rebate_amount',
+      key: 'bundle_rebate_amount',
+      width: 150,
+    },
+    {
+      title: 'Bundle Unit Price',
+      dataIndex: 'bundle_unit_price',
+      key: 'bundle_unit_price',
+      width: 150,
+    },
+    {
+      title: 'Contract Fee Percentage',
+      dataIndex: 'contract_fee_percentage',
+      key: 'contract_fee_percentage',
+      width: 150,
+    },
+    {
+      title: 'Contract Fee Amount',
+      dataIndex: 'contract_fee_amount',
+      key: 'contract_fee_amount',
+      width: 150,
+    },
+    {
+      title: 'Contract Price ($)',
+      dataIndex: 'line_amount',
+      key: 'line_amount',
+      width: 187,
+      render: (text: any) => {
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
+        return (
+          <Typography name="Body 4/Medium">{convertToNumber(value)}</Typography>
+        );
+      },
+    },
+    {
+      title: 'Subscription Term',
+      dataIndex: 'subscription_term',
+      key: 'subscription_term',
+      width: 150,
+    },
+    {
+      title: 'End Date',
+      dataIndex: 'end_date',
+      key: 'end_date',
+      width: 150,
+    },
+    {
+      title: 'Eol Date',
+      dataIndex: 'eol_date',
+      key: 'eol_date',
+      width: 150,
+    },
+    {
+      title: 'Epeat Flag',
+      dataIndex: 'epeat_flag',
+      key: 'epeat_flag',
+      width: 150,
+    },
+    {
+      title: 'Equivalent Clin',
+      dataIndex: 'equivalent_clin',
+      key: 'equivalent_clin',
+      width: 150,
+    },
+    {
+      title: 'Excel Bundle Name',
+      dataIndex: 'excel_bundle_name',
+      key: 'excel_bundle_name',
+      width: 150,
+    },
+    {
+      title: 'File Name',
+      dataIndex: 'file_name',
+      key: 'file_name',
+      width: 150,
+    },
+    {
+      title: 'Gsa Price',
+      dataIndex: 'gsa_price',
+      key: 'gsa_price',
+      width: 150,
+    },
+    {
+      title: 'Model Id',
+      dataIndex: 'model_id',
+      key: 'model_id',
+      width: 150,
+    },
+    {
+      title: 'Mpn',
+      dataIndex: 'mpn',
+      key: 'mpn',
+      width: 150,
+    },
+    {
+      title: 'Ndr Cost',
+      dataIndex: 'ndr_cost',
+      key: 'ndr_cost',
+      width: 150,
+    },
+    {
+      title: 'Notes',
+      dataIndex: 'notes',
+      key: 'notes',
+      width: 150,
+    },
+    {
+      title: 'Oem',
+      dataIndex: 'oem',
+      key: 'oem',
+      width: 150,
+    },
+    {
+      title: 'Oem Name',
+      dataIndex: 'oem_name',
+      key: 'oem_name',
+      width: 150,
+    },
+    {
+      title: 'Partner Fee (%)',
+      dataIndex: 'partner_fee_percentage',
+      key: 'partner_fee_percentage',
+      width: 150,
+    },
+    {
+      title: 'Partner Fee Amount',
+      dataIndex: 'partner_fee_amount',
+      key: 'partner_fee_amount',
+      width: 150,
+    },
+    {
+      title: 'Serial #',
+      dataIndex: 'serial_number',
+      key: 'serial_number',
+      width: 150,
+    },
+    {
+      title: 'Service Duration',
+      dataIndex: 'service_duration',
+      key: 'service_duration',
+      width: 150,
+    },
+    {
+      title: 'Ss Part',
+      dataIndex: 'ss_part',
+      key: 'ss_part',
+      width: 150,
+    },
+    {
+      title: 'Start Date',
+      dataIndex: 'start_date',
+      key: 'start_date',
+      width: 150,
+    },
+    {
+      title: 'Uom',
+      dataIndex: 'uom',
+      key: 'uom',
+      width: 150,
+    },
+    {
+      title: 'Warranty Flag',
+      dataIndex: 'warranty_flag',
+      key: 'warranty_flag',
+      width: 150,
+    },
+    {
+      title: 'Warranty Period',
+      dataIndex: 'warranty_period',
+      key: 'warranty_period',
+      width: 150,
     },
   ];
 
@@ -389,181 +798,176 @@ const ReviewQuotes: FC<any> = ({
           <>
             {reviewQuotesData &&
               reviewQuotesData?.length > 0 &&
-              reviewQuotesData?.map((finalDataItem: any, index: number) => {
-                return (
-                  <OsCollapse
-                    key={index + 1}
-                    items={[
-                      {
-                        label: (
-                          <Row justify="space-between">
-                            <Col span={10}>
-                              <p>{finalDataItem?.title}</p>
-                            </Col>
-                            <Col span={4}>
-                              <p>
-                                Line Items:{' '}
-                                {finalDataItem?.QuoteLineItem?.length}
-                              </p>
-                            </Col>
-                            <Col span={4}>
-                              <p>
-                                Total Cost: $
-                                {abbreviate(
-                                  Number(
-                                    finalDataItem?.totalAdjustedPrice ?? 0.0,
-                                  ),
-                                )}
-                              </p>
-                            </Col>
-                            <Col
-                              span={4}
-                              style={{
-                                justifyContent: 'end',
-                                display: 'flex',
-                              }}
-                            >
-                              <Space>
-                                <AvatarStyled
-                                  shape="square"
-                                  background={token?.colorSuccess}
-                                  size={28}
-                                  icon={
-                                    <CheckIcon
-                                      width={25}
-                                      color={token?.colorBgContainer}
-                                      onClick={(e) => {
-                                        e?.stopPropagation();
-                                        if (isView === 'true') {
-                                          notification.open({
-                                            message:
-                                              "You can't use in view mode.",
-                                            type: 'info',
-                                          });
-                                        } else {
-                                          setShowVerificationFileModal(true);
-                                          setFileData(finalDataItem);
-                                        }
-                                      }}
-                                    />
-                                  }
-                                />
-                                <AvatarStyled
-                                  shape="square"
-                                  background={token?.colorError}
-                                  size={28}
-                                  icon={
-                                    <XMarkIcon
-                                      width={25}
-                                      color={token?.colorBgContainer}
-                                      onClick={(e) => {
-                                        if (isView === 'true') {
-                                          notification.open({
-                                            message:
-                                              "You can't use in view mode.",
-                                            type: 'info',
-                                          });
-                                        } else {
-                                          if (!finalDataItem?.maunalAdded) {
-                                            if (
-                                              finalDataItem?.QuoteLineItem
-                                                ?.length === 0
-                                            ) {
-                                              setConditionsForTheButtons({
-                                                ...conditionsForTheButtons,
-                                                exportAs: false,
-                                              });
-                                              setShowExportAs(false);
-                                            } else {
-                                              setConditionsForTheButtons({
-                                                ...conditionsForTheButtons,
-                                                exportAs: true,
-                                              });
-                                              setShowExportAs(true);
-                                            }
-                                            if (
-                                              !finalDataItem?.title
-                                                ?.toLowerCase()
-                                                ?.split('.')
-                                                ?.includes('pdf')
-                                            ) {
-                                              setConditionsForTheButtons({
-                                                ...conditionsForTheButtons,
-                                                exportTable: false,
-                                              });
-                                              setShowExportToTable(false);
-                                            } else {
-                                              setConditionsForTheButtons({
-                                                ...conditionsForTheButtons,
-                                                exportTable: true,
-                                              });
-                                              setShowExportToTable(true);
-                                            }
-                                            if (
-                                              finalDataItem?.QuoteLineItem
-                                                ?.length === 0 &&
-                                              !finalDataItem?.title
-                                                ?.toLowerCase()
-                                                ?.split('.')
-                                                ?.includes('pdf')
-                                            ) {
-                                              setConditionsForTheButtons({
-                                                ...conditionsForTheButtons,
-                                                maunalExport: true,
-                                              });
-                                              setShowSubmitButton(true);
-                                            } else {
-                                              setConditionsForTheButtons({
-                                                ...conditionsForTheButtons,
-                                                maunalExport: false,
-                                              });
-                                              setShowSubmitButton(false);
-                                            }
-                                          }
-                                          if (finalDataItem?.maunalAdded) {
+              reviewQuotesData?.map((finalDataItem: any, index: number) => (
+                <OsCollapse
+                  key={index + 1}
+                  items={[
+                    {
+                      label: (
+                        <Row justify="space-between">
+                          <Col span={10}>
+                            <p>{finalDataItem?.title}</p>
+                          </Col>
+                          <Col span={4}>
+                            <p>
+                              Line Items: {finalDataItem?.QuoteLineItem?.length}
+                            </p>
+                          </Col>
+                          <Col span={4}>
+                            <p>
+                              Total Cost: $
+                              {abbreviate(
+                                Number(
+                                  finalDataItem?.totalAdjustedPrice ?? 0.0,
+                                ),
+                              )}
+                            </p>
+                          </Col>
+                          <Col
+                            span={4}
+                            style={{
+                              justifyContent: 'end',
+                              display: 'flex',
+                            }}
+                          >
+                            <Space>
+                              <AvatarStyled
+                                shape="square"
+                                background={token?.colorSuccess}
+                                size={28}
+                                icon={
+                                  <CheckIcon
+                                    width={25}
+                                    color={token?.colorBgContainer}
+                                    onClick={(e) => {
+                                      e?.stopPropagation();
+                                      if (isView === 'true') {
+                                        notification.open({
+                                          message:
+                                            "You can't use in view mode.",
+                                          type: 'info',
+                                        });
+                                      } else {
+                                        setShowVerificationFileModal(true);
+                                        setFileData(finalDataItem);
+                                      }
+                                    }}
+                                  />
+                                }
+                              />
+                              <AvatarStyled
+                                shape="square"
+                                background={token?.colorError}
+                                size={28}
+                                icon={
+                                  <XMarkIcon
+                                    width={25}
+                                    color={token?.colorBgContainer}
+                                    onClick={(e) => {
+                                      if (isView === 'true') {
+                                        notification.open({
+                                          message:
+                                            "You can't use in view mode.",
+                                          type: 'info',
+                                        });
+                                      } else {
+                                        if (!finalDataItem?.maunalAdded) {
+                                          if (
+                                            finalDataItem?.QuoteLineItem
+                                              ?.length === 0
+                                          ) {
                                             setConditionsForTheButtons({
                                               ...conditionsForTheButtons,
                                               exportAs: false,
+                                            });
+                                            setShowExportAs(false);
+                                          } else {
+                                            setConditionsForTheButtons({
+                                              ...conditionsForTheButtons,
+                                              exportAs: true,
+                                            });
+                                            setShowExportAs(true);
+                                          }
+                                          if (
+                                            !finalDataItem?.title
+                                              ?.toLowerCase()
+                                              ?.split('.')
+                                              ?.includes('pdf')
+                                          ) {
+                                            setConditionsForTheButtons({
+                                              ...conditionsForTheButtons,
                                               exportTable: false,
+                                            });
+                                            setShowExportToTable(false);
+                                          } else {
+                                            setConditionsForTheButtons({
+                                              ...conditionsForTheButtons,
+                                              exportTable: true,
+                                            });
+                                            setShowExportToTable(true);
+                                          }
+                                          if (
+                                            finalDataItem?.QuoteLineItem
+                                              ?.length === 0 &&
+                                            !finalDataItem?.title
+                                              ?.toLowerCase()
+                                              ?.split('.')
+                                              ?.includes('pdf')
+                                          ) {
+                                            setConditionsForTheButtons({
+                                              ...conditionsForTheButtons,
                                               maunalExport: true,
                                             });
                                             setShowSubmitButton(true);
-                                            setShowExportToTable(false);
-                                            setShowExportAs(false);
+                                          } else {
+                                            setConditionsForTheButtons({
+                                              ...conditionsForTheButtons,
+                                              maunalExport: false,
+                                            });
+                                            setShowSubmitButton(false);
                                           }
-
-                                          setShowRaiseConcernModal(true);
-                                          setFileData(finalDataItem);
                                         }
-                                        e?.stopPropagation();
-                                      }}
-                                    />
-                                  }
-                                />
-                              </Space>
-                            </Col>
-                          </Row>
-                        ),
-                        children: (
-                          <OsTableWithOutDrag
-                            loading={quoteFileDataLoading}
-                            columns={finalReviewCol}
-                            dataSource={finalDataItem?.QuoteLineItem}
-                            scroll
-                            locale={locale}
-                            defaultPageSize={
-                              finalDataItem?.QuoteLineItem?.length
-                            }
-                            setPageChange={setPageChange}
-                            pageChange={pageChange}
-                            uniqueId={finalDataItem?.name}
-                          />
-                        ),
-                      },
-                    ]}
-                  />
-                );
-              })}
+                                        if (finalDataItem?.maunalAdded) {
+                                          setConditionsForTheButtons({
+                                            ...conditionsForTheButtons,
+                                            exportAs: false,
+                                            exportTable: false,
+                                            maunalExport: true,
+                                          });
+                                          setShowSubmitButton(true);
+                                          setShowExportToTable(false);
+                                          setShowExportAs(false);
+                                        }
+
+                                        setShowRaiseConcernModal(true);
+                                        setFileData(finalDataItem);
+                                      }
+                                      e?.stopPropagation();
+                                    }}
+                                  />
+                                }
+                              />
+                            </Space>
+                          </Col>
+                        </Row>
+                      ),
+                      children: (
+                        <OsTableWithOutDrag
+                          loading={quoteFileDataLoading}
+                          columns={finalReviewCol}
+                          dataSource={finalDataItem?.QuoteLineItem}
+                          scroll
+                          locale={locale}
+                          defaultPageSize={finalDataItem?.QuoteLineItem?.length}
+                          setPageChange={setPageChange}
+                          pageChange={pageChange}
+                          uniqueId={finalDataItem?.name}
+                        />
+                      ),
+                    },
+                  ]}
+                />
+              ))}
           </>
         ) : (
           <EmptyContainer
@@ -613,7 +1017,7 @@ const ReviewQuotes: FC<any> = ({
           // conditionsForTheButtons?.maunalExport ? 'Submit Issue' : ''
           showSubmitButton ? 'Submit Issue' : ''
         }
-        fifthButtonText={'Update Manually'}
+        fifthButtonText="Update Manually"
         onOk={() => {
           form?.submit();
           setButtonType('primary');

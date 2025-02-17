@@ -76,3 +76,15 @@ export const queryContact = createAsyncThunk(
     }
   },
 );
+
+export const getAllBillingContactByCustomerId = createAsyncThunk(
+  'address/getAddressByCustomerId',
+  async (id: any, thunkApi) => {
+    try {
+      const res = await BILLINGADDRESS_API.getAllBillingContactByCustomerId(id);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

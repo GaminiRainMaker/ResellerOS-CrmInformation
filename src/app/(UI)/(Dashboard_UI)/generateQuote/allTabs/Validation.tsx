@@ -1,6 +1,13 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable @typescript-eslint/no-use-before-define */
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable no-nested-ternary */
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable no-restricted-syntax */
+
 'use client';
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
+import {Col, Row} from '@/app/components/common/antd/Grid';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsCollapse from '@/app/components/common/os-collapse';
@@ -10,75 +17,75 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
-import { pricingMethod } from '@/app/utils/CONSTANTS';
-import { calculateProfitabilityData, currencyFormatter, getContractStatus } from '@/app/utils/base';
+import {pricingMethod} from '@/app/utils/CONSTANTS';
+import {
+  calculateProfitabilityData,
+  currencyFormatter,
+  getContractStatus,
+} from '@/app/utils/base';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
   XCircleIcon,
 } from '@heroicons/react/24/outline';
-import { Badge, Form } from 'antd';
-import { useSearchParams } from 'next/navigation';
-import { FC, useEffect, useState } from 'react';
-import { getContractConfiguartion } from '../../../../../../redux/actions/contractConfiguration';
-import { useAppDispatch, useAppSelector } from '../../../../../../redux/hook';
-import { getAllContract } from '../../../../../../redux/actions/contract';
-import { getContractProductByContractVehicle } from '../../../../../../redux/actions/contractProduct';
-import { getAllValidationByQuoteId, updateValidationById } from '../../../../../../redux/actions/validation';
-import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
-import BundleSection from '../BundleSection';
-import OsButton from '@/app/components/common/os-button';
-import OsDrawer from '@/app/components/common/os-drawer';
-import OsModal from '@/app/components/common/os-modal';
-import UpdatingLineItems from '../UpdatingLineItems';
-import GlobalLoader from '@/app/components/common/os-global-loader';
+import {Badge} from 'antd';
+import {useSearchParams} from 'next/navigation';
+import {FC, useEffect, useState} from 'react';
 import OsInputNumber from '@/app/components/common/os-input/InputNumber';
+import {getContractConfiguartion} from '../../../../../../redux/actions/contractConfiguration';
+import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
+import {getAllContract} from '../../../../../../redux/actions/contract';
+import {getContractProductByContractVehicle} from '../../../../../../redux/actions/contractProduct';
+import {
+  getAllValidationByQuoteId,
+  updateValidationById,
+} from '../../../../../../redux/actions/validation';
 
 const Validation: FC<any> = ({
   tableColumnDataShow,
   selectedFilter,
-  selectTedRowData,
-  setSelectedRowData,
-  setSelectedRowIds,
   selectTedRowIds,
   collapseActiveKeys,
   setCollapseActiveKeys,
 }) => {
-  const { abbreviate } = useAbbreviationHook(0);
+  const {abbreviate} = useAbbreviationHook(0);
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
-  const { data: ValidationData, loading } = useAppSelector(
+  const {data: ValidationData, loading} = useAppSelector(
     (state) => state.validation,
   );
-  const { data: contractConfigurationData } = useAppSelector(
+  const {data: contractConfigurationData} = useAppSelector(
     (state) => state.contractConfiguration,
   );
   const [validationFinalData, setValidationFinalData] = useState<any>([]);
-  const { userInformation } = useAppSelector((state) => state.user);
-  const { data: contactData } = useAppSelector((state) => state.contract);
+  const {userInformation} = useAppSelector((state) => state.user);
+  const {data: contactData} = useAppSelector((state) => state.contract);
   const [keyPressed, setKeyPressed] = useState('');
   const [finalFieldData, setFinalFieldData] = useState<any>({});
 
   useEffect(() => {
     dispatch(getAllContract());
     dispatch(getAllValidationByQuoteId(Number(getQuoteID)));
-  }, [])
+  }, []);
 
-  const contractVehicleOptions = contactData?.filter((item: any) => item?.organization === userInformation?.organization).map((option: any) => ({
-    label: option?.contract_vehicle_name,
-    value: option?.id
-  }));
+  const contractVehicleOptions = contactData
+    ?.filter(
+      (item: any) => item?.organization === userInformation?.organization,
+    )
+    .map((option: any) => ({
+      label: option?.contract_vehicle_name,
+      value: option?.id,
+    }));
 
   const filterDataByValue = (data: any[], filterValue?: string) => {
-    const groupedData: { [key: string]: any } = {};
+    const groupedData: {[key: string]: any} = {};
     const arrayData: any[] = [];
     if (!data || data.length === 0) {
       setValidationFinalData([]);
       return;
     }
-
 
     const convertToTitleCase = (input: string) => {
       if (!input) return '';
@@ -90,7 +97,7 @@ const Validation: FC<any> = ({
 
     data.forEach((item) => {
       let name: string | undefined;
-      let description = '';
+      const description = '';
       const type = 'groups';
 
       if (filterValue) {
@@ -121,8 +128,6 @@ const Validation: FC<any> = ({
           name = convertToTitleCase(name);
         }
 
-
-
         if (!groupedData[name]) {
           groupedData[name] = {
             name,
@@ -133,7 +138,6 @@ const Validation: FC<any> = ({
             totalGrossProfit: 0,
             totalGrossProfitPercentage: 0,
             totalContractPrice: 0,
-
           };
         }
 
@@ -146,8 +150,8 @@ const Validation: FC<any> = ({
         groupedData[name].totalGrossProfitPercentage =
           groupedData[name].totalExtendedPrice !== 0
             ? (groupedData[name].totalGrossProfit /
-              groupedData[name].totalExtendedPrice) *
-            100
+                groupedData[name].totalExtendedPrice) *
+              100
             : 0;
 
         groupedData[name].QuoteLineItem.push(item);
@@ -166,7 +170,6 @@ const Validation: FC<any> = ({
     }
   }, [JSON.stringify(ValidationData), selectedFilter]);
 
-
   const renderEditableInput = (field: string) => {
     const editableField = tableColumnDataShow.find(
       (item: any) => item.field_name === field,
@@ -177,14 +180,16 @@ const Validation: FC<any> = ({
     return true;
   };
 
-
-  const contractVehicleStatus = async (value: number | null | undefined, record: any) => {
+  const contractVehicleStatus = async (
+    value: number | null | undefined,
+    record: any,
+  ) => {
     try {
       const productCode = record?.product_code;
 
       // Check if the value is null or undefined and handle accordingly
       if (value === null || value === undefined) {
-        let updateObject = {
+        const updateObject = {
           id: record?.id,
           contract_status: 'Reject',
           contract_vehicle: null,
@@ -192,7 +197,9 @@ const Validation: FC<any> = ({
         };
 
         // Dispatch to update the contract status with null contract_vehicle
-        const updateResponse = await dispatch(updateValidationById(updateObject));
+        const updateResponse = await dispatch(
+          updateValidationById(updateObject),
+        );
 
         if (updateResponse?.payload) {
           // Fetch updated validation data for the current quote
@@ -203,17 +210,19 @@ const Validation: FC<any> = ({
       }
 
       // Fetch the contract products for the given contract vehicle
-      const response = await dispatch(getContractProductByContractVehicle(value));
+      const response = await dispatch(
+        getContractProductByContractVehicle(value),
+      );
 
       // Ensure res?.payload is an array, defaulting to an empty array if not
       const contractProducts = response?.payload || [];
 
       // Check if there's a product matching the current product code
       const matchedProduct = contractProducts.find(
-        (item: any) => item.Product?.product_code === productCode
+        (item: any) => item.Product?.product_code === productCode,
       );
 
-      console.log('matchedProduct', matchedProduct, contractProducts)
+      console.log('matchedProduct', matchedProduct, contractProducts);
       // Initialize the object for the update
       let updateObject = {
         id: record?.id,
@@ -225,7 +234,7 @@ const Validation: FC<any> = ({
       // If we found a matched product, calculate the contract status
       if (matchedProduct) {
         const finalStatus = contractStatus(record, matchedProduct);
-        console.log('finalStatus', finalStatus)
+        console.log('finalStatus', finalStatus);
         if (finalStatus) {
           updateObject = {
             id: record?.id,
@@ -251,11 +260,13 @@ const Validation: FC<any> = ({
     }
   };
 
-  const handleFieldChange = (record: any,
+  const handleFieldChange = (
+    record: any,
     field: string,
     value: any,
-    type: string,) => {
-    const updatedRecord = { ...record, [field]: value };
+    type: string,
+  ) => {
+    const updatedRecord = {...record, [field]: value};
     const result: any = calculateProfitabilityData(
       Number(updatedRecord?.quantity),
       updatedRecord?.pricing_method,
@@ -273,7 +284,7 @@ const Validation: FC<any> = ({
     if (type === 'select') {
       handleSave(updatedRecord);
     }
-  }
+  };
 
   const handleKeyDown = (e: any, record: any) => {
     if (e.key === 'Enter') {
@@ -296,7 +307,6 @@ const Validation: FC<any> = ({
     }
   }, [keyPressed, finalFieldData]);
 
-
   const handleSave = async (record: any) => {
     try {
       await dispatch(updateValidationById(record)).then((d: any) => {
@@ -309,14 +319,13 @@ const Validation: FC<any> = ({
     } catch (error) {
       console.error('Error saving data:', error);
     }
-  }
+  };
   const updateAmountValue = (pricingMethods: string) => {
     if (['cost_percentage', 'list_percentage', 'gp'].includes(pricingMethods)) {
       return `%`;
     }
     return `$`;
   };
-
 
   const ValidationQuoteLineItemcolumns = [
     {
@@ -333,12 +342,7 @@ const Validation: FC<any> = ({
           onKeyDown={(e) => handleKeyDown(e, record)}
           onBlur={(e) => handleBlur(record)}
           onChange={(e) =>
-            handleFieldChange(
-              record,
-              'line_number',
-              e.target.value,
-              'input',
-            )
+            handleFieldChange(record, 'line_number', e.target.value, 'input')
           }
         />
       ),
@@ -368,9 +372,7 @@ const Validation: FC<any> = ({
             textAlignLast: 'right',
           }}
           min={1}
-          onChange={(e) =>
-            handleFieldChange(record, 'quantity', e, 'input')
-          }
+          onChange={(e) => handleFieldChange(record, 'quantity', e, 'input')}
         />
       ),
       width: 120,
@@ -395,9 +397,7 @@ const Validation: FC<any> = ({
           onKeyDown={(e) => handleKeyDown(e, record)}
           onBlur={(e) => handleBlur(record)}
           defaultValue={text ?? 0.0}
-          onChange={(e) =>
-            handleFieldChange(record, 'list_price', e, 'input')
-          }
+          onChange={(e) => handleFieldChange(record, 'list_price', e, 'input')}
         />
       ),
       width: 150,
@@ -423,12 +423,7 @@ const Validation: FC<any> = ({
           disabled={renderEditableInput('Cost ($)')}
           defaultValue={text ?? 0.0}
           onChange={(e) =>
-            handleFieldChange(
-              record,
-              'adjusted_price',
-              e,
-              'input',
-            )
+            handleFieldChange(record, 'adjusted_price', e, 'input')
           }
         />
       ),
@@ -486,16 +481,11 @@ const Validation: FC<any> = ({
           onBlur={(e) => handleBlur(record)}
           allowClear
           disabled={renderEditableInput('Pricing Method')}
-          style={{ width: '100%', height: '36px' }}
+          style={{width: '100%', height: '36px'}}
           placeholder="Select"
           defaultValue={text}
           onChange={(value) => {
-            handleFieldChange(
-              record,
-              'pricing_method',
-              value,
-              'select',
-            );
+            handleFieldChange(record, 'pricing_method', value, 'select');
           }}
           options={pricingMethod}
         />
@@ -509,12 +499,12 @@ const Validation: FC<any> = ({
       render: (text: string, record: any) => (
         <CommonSelect
           allowClear
-          style={{ width: '100%', height: '34px' }}
+          style={{width: '100%', height: '34px'}}
           placeholder="Select"
           defaultValue={text}
           options={contractVehicleOptions}
           onChange={(e) => {
-            contractVehicleStatus(e, record)
+            contractVehicleStatus(e, record);
           }}
         />
       ),
@@ -541,12 +531,7 @@ const Validation: FC<any> = ({
           prefix={updateAmountValue(record?.pricing_method)}
           defaultValue={text ?? 0.0}
           onChange={(e) => {
-            handleFieldChange(
-              record,
-              'line_amount',
-              e,
-              'input',
-            );
+            handleFieldChange(record, 'line_amount', e, 'input');
           }}
         />
       ),
@@ -578,12 +563,11 @@ const Validation: FC<any> = ({
       dataIndex: 'contract_price',
       key: 'contract_price',
       width: 150,
-      render: (text: number, record: any) => {
-        return <Typography name="Body 4/Medium">
+      render: (text: number, record: any) => (
+        <Typography name="Body 4/Medium">
           {text ? `$ ${abbreviate(text ?? 0)}` : 0}
         </Typography>
-      }
-
+      ),
     },
     {
       title: 'Contract Status',
@@ -591,7 +575,7 @@ const Validation: FC<any> = ({
       key: 'contract_status',
       width: 180,
       render(text: string, record: any) {
-        const status = record?.contract_status
+        const status = record?.contract_status;
         return {
           children: (
             <TableNameColumn
@@ -599,7 +583,10 @@ const Validation: FC<any> = ({
                 status === 'success' ? (
                   <CheckCircleIcon width={24} color={token?.colorSuccess} />
                 ) : status === 'warning' ? (
-                  <ExclamationCircleIcon width={24} color={token?.colorWarning} />
+                  <ExclamationCircleIcon
+                    width={24}
+                    color={token?.colorWarning}
+                  />
                 ) : (
                   <XCircleIcon width={24} color={token?.colorError} />
                 )
@@ -644,12 +631,11 @@ const Validation: FC<any> = ({
     setFinalValidationTableCol(newArr);
   }, [tableColumnDataShow, contactData]);
 
-  const rowSelection = () => { };
+  const rowSelection = () => {};
 
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Validation." />,
   };
-
 
   useEffect(() => {
     dispatch(getContractConfiguartion({}));
@@ -662,35 +648,39 @@ const Validation: FC<any> = ({
     let status = '';
     const statuses = ['green', 'yellow'];
 
-    for (let statusCheck of statuses) {
+    for (const statusCheck of statuses) {
       const matchingObjects =
         contractConfigurationData?.filter(
           (item: any) => item?.contract_status === statusCheck,
         ) || [];
 
       if (matchingObjects.length > 0) {
-        const finalData = matchingObjects?.[0]?.json && JSON?.parse(matchingObjects?.[0]?.json);
-        fieldName = finalData?.[0]?.['fieldName'];
-        operator = finalData?.[0]?.['operator'];
+        const finalData =
+          matchingObjects?.[0]?.json && JSON?.parse(matchingObjects?.[0]?.json);
+        fieldName = finalData?.[0]?.fieldName;
+        operator = finalData?.[0]?.operator;
 
         // Handle formula valueType
-        if (finalData?.[0]?.['valueType'] === 'formula') {
-          finalSecondValue = finalData?.[0]?.['value']?.reduce(
+        if (finalData?.[0]?.valueType === 'formula') {
+          finalSecondValue = finalData?.[0]?.value?.reduce(
             (acc: any, fieldName: any) => {
-              const value1 = fieldName === 'contract_price' ? matchedProduct?.[fieldName] : record?.[fieldName];
+              const value1 =
+                fieldName === 'contract_price'
+                  ? matchedProduct?.[fieldName]
+                  : record?.[fieldName];
               if (typeof value1 === 'number') {
                 return acc + value1; // Add if it's a number
-              } else if (typeof value1 === 'string') {
+              }
+              if (typeof value1 === 'string') {
                 return acc + value1; // Concatenate if it's a string
               }
               return acc; // Skip if it's neither number nor string
             },
-            typeof record?.[finalData?.[0]['value']?.[0]] === 'number' ? 0 : '',
+            typeof record?.[finalData?.[0].value?.[0]] === 'number' ? 0 : '',
           );
         } else {
-          finalSecondValue = finalData?.[0]?.['value'];
+          finalSecondValue = finalData?.[0]?.value;
         }
-
 
         // Check if we can calculate status
         if (operator && record?.[fieldName] && finalSecondValue) {
@@ -705,13 +695,14 @@ const Validation: FC<any> = ({
         if (status === 'Correct') {
           if (statusCheck === 'green') {
             return 'success'; // Return "success" if contract_status is green
-          } else if (statusCheck === 'yellow') {
+          }
+          if (statusCheck === 'yellow') {
             return 'warning'; // Return "warning" if contract_status is yellow
           }
         }
       }
     }
-    console.log('FInalStatus', status)
+    console.log('FInalStatus', status);
     return status; // Return the final status if no match was found
   };
 
@@ -736,67 +727,63 @@ const Validation: FC<any> = ({
             {selectedFilter && validationFinalData?.length > 0 ? (
               <>
                 {validationFinalData?.map(
-                  (finalDataItem: any, index: number) => {
-                    return (
-                      <OsCollapse
-                        key={index}
-                        activeKey={collapseActiveKeys}
-                        onChange={(key: string | string[]) => {
-                          setCollapseActiveKeys(key);
-                        }}
-                        items={[
-                          {
-                            key: index,
-                            label: (
-                              <Row
-                                justify="space-between"
-                                align="middle"
-                                gutter={[8, 8]}
-                              >
-                                <Col xs={24} sm={12} md={12} lg={5} xl={5}>
-                                  <Badge
-                                    count={finalDataItem?.QuoteLineItem?.length}
+                  (finalDataItem: any, index: number) => (
+                    <OsCollapse
+                      key={index}
+                      activeKey={collapseActiveKeys}
+                      onChange={(key: string | string[]) => {
+                        setCollapseActiveKeys(key);
+                      }}
+                      items={[
+                        {
+                          key: index,
+                          label: (
+                            <Row
+                              justify="space-between"
+                              align="middle"
+                              gutter={[8, 8]}
+                            >
+                              <Col xs={24} sm={12} md={12} lg={5} xl={5}>
+                                <Badge
+                                  count={finalDataItem?.QuoteLineItem?.length}
+                                >
+                                  <Typography
+                                    style={{padding: '5px 8px 0px 0px'}}
+                                    name="Body 4/Medium"
+                                    color={token?.colorBgContainer}
+                                    ellipsis
+                                    tooltip
+                                    as="div"
+                                    maxWidth={240}
                                   >
-                                    <Typography
-                                      style={{ padding: '5px 8px 0px 0px' }}
-                                      name="Body 4/Medium"
-                                      color={token?.colorBgContainer}
-                                      ellipsis
-                                      tooltip
-                                      as="div"
-                                      maxWidth={240}
-                                    >
-                                      {finalDataItem?.name}
-                                    </Typography>
-                                  </Badge>
-                                </Col>
-                              </Row>
-                            ),
-                            children: (
-                              <div
-                                key={JSON.stringify(
-                                  finalDataItem?.QuoteLineItem,
-                                )}
-                              >
-                                <OsTableWithOutDrag
-                                  loading={loading}
-                                  columns={finalValidationTableCol}
-                                  dataSource={finalDataItem?.QuoteLineItem}
-                                  scroll
-                                  locale={locale}
-                                  rowSelection={rowSelection}
-                                  selectedRowsKeys={selectTedRowIds}
-                                  defaultPageSize={
-                                    finalDataItem?.QuoteLineItem?.length
-                                  }
-                                />
-                              </div>
-                            ),
-                          },
-                        ]}
-                      />
-                    );
-                  },
+                                    {finalDataItem?.name}
+                                  </Typography>
+                                </Badge>
+                              </Col>
+                            </Row>
+                          ),
+                          children: (
+                            <div
+                              key={JSON.stringify(finalDataItem?.QuoteLineItem)}
+                            >
+                              <OsTableWithOutDrag
+                                loading={loading}
+                                columns={finalValidationTableCol}
+                                dataSource={finalDataItem?.QuoteLineItem}
+                                scroll
+                                locale={locale}
+                                rowSelection={rowSelection}
+                                selectedRowsKeys={selectTedRowIds}
+                                defaultPageSize={
+                                  finalDataItem?.QuoteLineItem?.length
+                                }
+                              />
+                            </div>
+                          ),
+                        },
+                      ]}
+                    />
+                  ),
                 )}
               </>
             ) : (
@@ -809,8 +796,6 @@ const Validation: FC<any> = ({
       ) : (
         <EmptyContainer title="There Is No Validation Columns" />
       )}
-
-
     </>
   );
 };

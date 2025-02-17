@@ -2,11 +2,11 @@
 
 import AuthLayout from '@/app/components/layouts/auth-layouts/AuthLayout';
 import {useRouter} from 'next/navigation';
+import React, {Suspense} from 'react';
 import eyeIcon from '../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
 import smsIcon from '../../../../public/assets/static/iconsax-svg/Svg/All/outline/sms.svg';
 import {loginUser} from '../../../../redux/actions/user';
 import {useAppDispatch} from '../../../../redux/hook';
-import React from 'react';
 
 const LogIn = () => {
   const dispatch = useAppDispatch();
@@ -46,7 +46,7 @@ const LogIn = () => {
   ];
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <AuthLayout
         heading="Welcome Back!"
         description="Enter your credentials to access your account."
@@ -56,7 +56,7 @@ const LogIn = () => {
         inputFields={inputFields}
         onClick={onClick}
       />
-    </>
+    </Suspense>
   );
 };
 

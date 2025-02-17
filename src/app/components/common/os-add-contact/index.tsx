@@ -9,6 +9,12 @@ import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-s
 import Typography from '@/app/components/common/typography';
 import Form from 'antd/es/form/Form';
 import {CustomerAccountInterface} from './os-contact-interface';
+import {
+  OsContactStyle,
+  OsPhoneInputStyle,
+} from '../os-contact/styled-components';
+import {InputNumber} from 'antd';
+import {InputNumberStyled} from '../os-input/styled-components';
 
 const AddContact: React.FC<CustomerAccountInterface> = ({
   onFinish,
@@ -19,6 +25,33 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
   isDealregForm = false,
 }) => {
   const [token] = useThemeToken();
+
+  const formatPhoneNumber = (input: any) => {
+    const cleaned = input.replace(/\D/g, ''); // Remove non-digits
+    const formatted = cleaned.slice(0, 11); // Limit to 11 digits
+
+    if (formatted.length <= 3) {
+      return `(${formatted}`;
+    } else if (formatted.length <= 6) {
+      return `(${formatted.slice(0, 3)}) ${formatted.slice(3)}`;
+    } else {
+      return `(${formatted.slice(0, 3)}) ${formatted.slice(3, 6)}-${formatted.slice(6, 11)}`;
+    }
+  };
+  const handlePhoneChange = (e: any) => {
+    // Get the current value
+    const value = e.target.value;
+
+    if (value === '') {
+      // If input is empty, reset the form field
+      form.setFieldsValue({billing_phone: ''});
+    } else {
+      // Otherwise, format the phone number
+      const formattedValue = formatPhoneNumber(value);
+      form.setFieldsValue({billing_phone: formattedValue});
+    }
+  };
+
   return (
     <>
       {!drawer && (
@@ -113,6 +146,28 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
               ]}
             >
               <OsInput placeholder="Enter Text" />
+            </SelectFormItem>
+          </Col>
+          <Col span={24}>
+            <SelectFormItem
+              label={<Typography name="Body 4/Medium">Phone</Typography>}
+              name="billing_phone"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter a phone number.',
+                },
+                {
+                  pattern: /^\(\d{3}\) \d{3}-\d{4}$/, // Regex to match (XXX) XXX-XXXX format
+                  message: 'Please enter a valid phone number.',
+                },
+              ]}
+            >
+              <OsInput
+                maxLength={14} // Includes parentheses and dashes
+                placeholder="Enter phone number"
+                onChange={handlePhoneChange}
+              />
             </SelectFormItem>
           </Col>
         </Row>

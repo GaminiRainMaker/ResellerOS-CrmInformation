@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable no-sequences */
+/* eslint-disable no-else-return */
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable eqeqeq */
 /* eslint-disable no-await-in-loop */
@@ -8,7 +13,6 @@
 'use client';
 
 import {Divider} from '@/app/components/common/antd/Divider';
-import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsInput from '@/app/components/common/os-input';
@@ -20,18 +24,15 @@ import {
   quoteLineItemColumnForSync,
 } from '@/app/utils/CONSTANTS';
 import {
-  decrypt,
-  decryptFromSalesforce,
-  encrypt,
   encryptForSalesforce,
   getLineItemsWithNonRepitive,
   getValuesOFLineItemsThoseNotAddedBefore,
   handleDate,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
-import {Col, Row, Select, notification} from 'antd';
+import {Col, Row, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
+import {FC, Suspense, useEffect, useState} from 'react';
 import {
   insertLineItemSyncing,
   insertLineItemSyncingForSalesForce,
@@ -120,8 +121,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     (state) => state.syncTable,
   );
 
-  const [token] = useThemeToken();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const getQuoteFileId = searchParams.get('fileId');
 
@@ -189,7 +189,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   if (keys) {
     keys?.map((item: any) => {
       // if (item && !item?.toLowerCase()?.includes('line')) {
-      mergeedColumn?.push(item ? item : 'emptyHeader');
+      mergeedColumn?.push(item || 'emptyHeader');
       // }
     });
   }
@@ -337,20 +337,19 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
                 : salesFOrceManual === true
                   ? currentFileData?.FileId
                   : Number(getQuoteFileId),
-            is_salesforce:
+            is_salesforce: !!(
               SaleQuoteId ||
               salesFOrceAccoutFlow === 'true' ||
               salesFOrceAccoutFlow ||
               salesFOrceManual
-                ? true
-                : false,
-            assert_mapping: salesFOrceAccoutId ? true : false,
+            ),
+            assert_mapping: !!salesFOrceAccoutId,
           }),
         );
 
-    let updatedArrForAddingLineItemSync: any = [];
+    const updatedArrForAddingLineItemSync: any = [];
     updatedData?.map((items: any) => {
-      let findThevalue = lineItemSyncingData?.find(
+      const findThevalue = lineItemSyncingData?.find(
         (itemInn: any) =>
           itemInn?.pdf_header ===
             items?.pdf_header?.toString()?.toLowerCase() &&
@@ -376,15 +375,15 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
               pdf_header: preVal,
               quote_header: newVal,
               status: 'Pending',
-              is_salesforce: salesForceinstanceUrl ? true : false,
+              is_salesforce: !!salesForceinstanceUrl,
               life_boat_salesforce: true,
-              assert_mapping: salesFOrceAccoutId ? true : false,
+              assert_mapping: !!salesFOrceAccoutId,
             }),
           );
 
-      let updatedArrForAddingLineItemSyncFOrSales: any = [];
+      const updatedArrForAddingLineItemSyncFOrSales: any = [];
       NewupdatedData?.map((items: any) => {
-        let findThevalue = lineItemSyncingData?.find(
+        const findThevalue = lineItemSyncingData?.find(
           (itemInn: any) =>
             itemInn?.pdf_header?.toLowerCase().replace(/\s+/g, '') ===
               items?.pdf_header?.toLowerCase().replace(/\s+/g, '') &&
@@ -399,7 +398,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             pdf_header: items?.pdf_header?.toLowerCase(),
             life_boat_salesforce: true,
 
-            assert_mapping: salesFOrceAccoutId ? true : false,
+            assert_mapping: !!salesFOrceAccoutId,
           });
         }
       });
@@ -427,7 +426,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       alllArrayValue?.push(newObj);
     });
     function cleanObject(obj: any) {
-      let cleanedObj: any = {};
+      const cleanedObj: any = {};
       // Iterate through the keys of the object
       // currentFileName
       Object.keys(obj).forEach((key) => {
@@ -440,10 +439,10 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     }
 
     // Map over newArr and apply cleanObject to each element
-    let requiredOutput = alllArrayValue.map((obj: any) => cleanObject(obj));
-    let newArrWIthFileName: any = [];
+    const requiredOutput = alllArrayValue.map((obj: any) => cleanObject(obj));
+    const newArrWIthFileName: any = [];
     requiredOutput?.map((items: any) => {
-      let newObj = {
+      const newObj = {
         ...items,
       };
       if (salesFOrceAccoutFlow === 'true' || salesFOrceAccoutFlow) {
@@ -455,12 +454,12 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
               ? currentFileData?.FileId
               : salesForceFiledId);
       }
-      let string = items?.rosquoteai__Product_Code__c?.trim();
+      const string = items?.rosquoteai__Product_Code__c?.trim();
 
       delete newObj.rosquoteai__Product_Code__c;
 
       // Remove any remaining spaces and newlines within the string
-      let newProductCode = string && string.replace(/\s+/g, '');
+      const newProductCode = string && string.replace(/\s+/g, '');
       if (newProductCode) {
         newObj.rosquoteai__Product_Code__c = newProductCode;
       }
@@ -525,7 +524,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       );
 
       if (salesFOrceAccoutFlow === 'true' || salesFOrceAccoutFlow) {
-        let newdata = {
+        const newdata = {
           token: salesForceToken,
           AccountId: salesFOrceAccoutId,
           urls: salesForceinstanceUrl,
@@ -534,7 +533,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
 
         await dispatch(addSalesForceDataaForAccount(newdata))?.then(
           (payload: any) => {
-            let messgaeForApi = payload?.payload?.message;
+            const messgaeForApi = payload?.payload?.message;
             notification.open({
               message: messgaeForApi,
               type: 'info',
@@ -556,7 +555,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           jsonstring,
           'CghhpgRahZKN0P8SaquPX/k30H+v2QWcKpcH42H9q0w=',
         );
-        let newdata = {
+        const newdata = {
           token: salesForceToken,
           // documentId: salesForceFiledId,
           urls: salesForceinstanceUrl,
@@ -571,8 +570,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         };
 
         await dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {
-          let types: any = payload?.payload?.Errormessage ? 'error' : 'info';
-          let messgaeForApi = payload?.payload?.message
+          const types: any = payload?.payload?.Errormessage ? 'error' : 'info';
+          const messgaeForApi = payload?.payload?.message
             ? payload?.payload?.message
             : payload?.payload?.Errormessage;
 
@@ -611,9 +610,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       };
       await dispatch(updateQuoteJsonAndManual(data));
 
-      let newArrValues = getLineItemsWithNonRepitive(requiredOutput);
+      const newArrValues = getLineItemsWithNonRepitive(requiredOutput);
 
-      let allProductCodes: any = [];
+      const allProductCodes: any = [];
       let allProductCodeDataa: any = [];
       const allReabatesWithProductCodeData: any = [];
       const allContractWithProductCodeData: any = [];
@@ -624,7 +623,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             : 'NEWCODE0123',
         );
       });
-      let valuessOfAlreayExist = await dispatch(
+      const valuessOfAlreayExist = await dispatch(
         getBulkProductIsExisting(allProductCodes),
       );
 
@@ -634,13 +633,13 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
 
       if (valuessOfAlreayExist?.payload?.length > 0) {
         // ======To get items that are  non added Values==============
-        let newInsertionData = getValuesOFLineItemsThoseNotAddedBefore(
+        const newInsertionData = getValuesOFLineItemsThoseNotAddedBefore(
           requiredOutput,
           allProductCodeDataa,
         );
 
         if (newInsertionData?.length > 0) {
-          let newArrrForConcat: any = [...allProductCodeDataa];
+          const newArrrForConcat: any = [...allProductCodeDataa];
           await dispatch(insertProductsInBulk(newInsertionData))?.then(
             (payload: any) => {
               payload?.payload?.map((itemsBulk: any) => {
@@ -651,7 +650,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           allProductCodeDataa = newArrrForConcat;
         }
       } else {
-        let newArrrForConcat: any = [...allProductCodeDataa];
+        const newArrrForConcat: any = [...allProductCodeDataa];
         await dispatch(insertProductsInBulk(newArrValues))?.then(
           (payload: any) => {
             payload?.payload?.map((itemsBulk: any) => {
@@ -680,13 +679,13 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
 
       if (requiredOutput) {
         for (let i = 0; i < requiredOutput?.length; i++) {
-          let itemsOfProduct = requiredOutput[i];
+          const itemsOfProduct = requiredOutput[i];
 
           if (itemsOfProduct) {
-            let productCode = itemsOfProduct?.product_code
+            const productCode = itemsOfProduct?.product_code
               ? itemsOfProduct?.product_code?.replace(/\s/g, '')
               : 'NEWCODE0123';
-            let itemsToAdd = allProductCodeDataa?.find(
+            const itemsToAdd = allProductCodeDataa?.find(
               (productItemFind: any) =>
                 productItemFind?.product_code?.replace(/\s/g, '') ===
                 productCode,
@@ -697,11 +696,10 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
                   ? currentFileData?.id
                   : salesFOrceManual === true
                     ? currentFileData?.FileId
-                    : getQuoteFileId
-                      ? getQuoteFileId
-                      : quoteFileById?.[0]?.id
+                    : getQuoteFileId ||
+                      (quoteFileById?.[0]?.id
                         ? quoteFileById?.[0]?.id
-                        : getQuoteFileId,
+                        : getQuoteFileId),
               quote_id: Number(getQuoteID),
               product_id: itemsToAdd?.id,
               product_code: itemsToAdd?.product_code,
@@ -720,7 +718,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
               organization: userInformation.organization,
             };
 
-            let findRebateIndex = allReabatesWithProductCodeData?.findIndex(
+            const findRebateIndex = allReabatesWithProductCodeData?.findIndex(
               (itemReb: any) =>
                 itemsToAdd.product_code === itemReb.product_code,
             );
@@ -733,7 +731,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
                     ?.percentage_payout,
               });
             }
-            let findContractIndex = allContractWithProductCodeData?.findIndex(
+            const findContractIndex = allContractWithProductCodeData?.findIndex(
               (itemReb: any) =>
                 itemsToAdd.product_code === itemReb.product_code,
             );
@@ -815,18 +813,17 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           if (finalOpportunityArray && syncTableData?.length > 0) {
             dispatch(insertOpportunityLineItem(finalOpportunityArray));
           }
-          let fileIdLatest = searchParams.get('fileId');
+          const fileIdLatest = searchParams.get('fileId');
 
           await dispatch(
             quoteFileVerification({
               id:
                 fullStackManul === 'true'
                   ? currentFileData?.id
-                  : fileIdLatest
-                    ? fileIdLatest
-                    : quoteFileById?.[0]?.id
+                  : fileIdLatest ||
+                    (quoteFileById?.[0]?.id
                       ? quoteFileById?.[0]?.id
-                      : fileIdLatest,
+                      : fileIdLatest),
             }),
           );
 
@@ -841,7 +838,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
 
   const handleChange = () => {
     // This defines which option we are using salesforce or full stack
-    let optionsTOAdd = SaleQuoteId
+    const optionsTOAdd = SaleQuoteId
       ? salesFOrceAccoutFlow === 'true' ||
         salesFOrceAccoutFlow ||
         salesFOrceManual ||
@@ -849,14 +846,14 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         ? accoutSyncOptions
         : SaleForceQuoteLineItemColumnSync
       : quoteLineItemColumnForSync;
-    let newArrOfOptions: any = [];
+    const newArrOfOptions: any = [];
     // This defines the options already added to the synced values
     syncedNewValue?.map((items: any) => {
       if (items?.newVal) {
         newArrOfOptions?.push(items?.newVal);
       }
     });
-    let newArrOfOptionsToNotUsed = [...optionsTOAdd];
+    const newArrOfOptionsToNotUsed = [...optionsTOAdd];
     // This will remove the options value those are already added in sync
     if (newArrOfOptions?.length > 0) {
       newArrOfOptions?.map((item: string) => {
@@ -879,7 +876,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   }, [syncedNewValue]);
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <GlobalLoader loading={nanonetsLoading}>
         <Row
           style={{
@@ -920,7 +917,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             </Row>
             <Divider />
             {syncedNewValue?.map((item: any, indexOfCol: number) => {
-              let newLabel = syncTableQuoteLItemValues?.find(
+              const newLabel = syncTableQuoteLItemValues?.find(
                 (items: any) =>
                   items?.value?.toString()?.toUpperCase() ===
                   item?.newVal?.toString()?.toUpperCase(),
@@ -980,7 +977,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           />
         </Row>
       </GlobalLoader>
-    </>
+    </Suspense>
   );
 };
 

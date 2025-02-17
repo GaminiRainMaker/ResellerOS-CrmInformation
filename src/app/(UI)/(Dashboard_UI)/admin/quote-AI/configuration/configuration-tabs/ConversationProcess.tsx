@@ -49,43 +49,14 @@ const ConverSationProcess = () => {
   }, []);
   useEffect(() => {
     dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
-      setAdvancedSetting(payload?.payload?.advanced_excel);
+      setAdvancedSetting(true);
     });
   }, []);
-  const updateAdvancedSettingdd = async (value: boolean) => {
-    await dispatch(updateAdvancedSetting({advanced_excel: value}));
-    dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
-      setAdvancedSetting(payload?.payload?.advanced_excel);
-    });
-  };
+
   return (
     <TabContainerStyle>
       <Row>
         <Col span={24}>
-          {userInformation?.Admin && (
-            <Space
-              size={24}
-              direction="horizontal"
-              style={{
-                width: '100%',
-                background: 'white',
-                padding: '24px',
-                borderRadius: '12px',
-              }}
-            >
-              <Switch
-                checked={AdvancedSetting}
-                onChange={(e) => {
-                  setAdvancedSetting(e);
-
-                  updateAdvancedSettingdd(e);
-                }}
-              />
-              <Typography name="Body 2/Medium">
-                Advanced Excel/Pdf Files Processing
-              </Typography>
-            </Space>
-          )}
           <Space
             size={24}
             direction="vertical"

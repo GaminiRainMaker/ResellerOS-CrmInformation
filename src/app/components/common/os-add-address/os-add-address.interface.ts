@@ -6,4 +6,5 @@ export interface OsAddAddressInterface {
   drawer?: boolean;
   setActiveKey: (b: string) => void;
   onFinish: (p: any) => void;
+  recordData?: any;
 }

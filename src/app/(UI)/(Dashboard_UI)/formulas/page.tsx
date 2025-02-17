@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/exhaustive-deps */
 
@@ -11,35 +12,33 @@ import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {Checkbox, Descriptions, Form} from 'antd';
-import {useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {Checkbox, Form} from 'antd';
+import React, {useEffect, useState} from 'react';
 import OsButton from '@/app/components/common/os-button';
 import {
   PencilSquareIcon,
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
+import OsDrawer from '@/app/components/common/os-drawer';
+import {
+  changeTheALpabetsFromFormula,
+  formatStatus,
+} from '@/app/utils/CONSTANTS';
+import AddFormula from './addFormula';
 import {
   insertFormula,
   deleteFormula,
   getAllFormulas,
 } from '../../../../../redux/actions/formulas';
-import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
-import OsDrawer from '@/app/components/common/os-drawer';
-import AddFormula from './addFormula';
-import {
-  changeTheALpabetsFromFormula,
-  formatStatus,
-} from '@/app/utils/CONSTANTS';
-import React from 'react';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {getAllApprovedPartnerFoFormulas} from '../../../../../redux/actions/partner';
 
 const FormulaMain: React.FC = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams()!;
   const [showModal, setShowModal] = useState<boolean>(false);
   const [loadingContract, setLoadingContract] = useState<boolean>(false);
   const {data: formulaData} = useAppSelector((state) => state.formulas);
@@ -47,14 +46,18 @@ const FormulaMain: React.FC = () => {
   const [deleteId, setDeleteId] = useState<any>();
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [recordId, setRecordId] = useState<any>();
+  const [optionsForPartner, setOptionsFOrPartner] = useState<any>();
+
   const [selectValue, setSelectValue] = useState<{
     oem_id: number | null;
     distributor_id: number | null;
     is_active: boolean | null;
+    partner_id: number | null;
   }>({
     oem_id: null,
     distributor_id: null,
     is_active: false,
+    partner_id: null,
   });
 
   useEffect(() => {
@@ -66,12 +69,33 @@ const FormulaMain: React.FC = () => {
     emptyText: (
       <EmptyContainer
         title="No Files"
-        actionButton={'Add New Formula'}
+        actionButton="Add New Formula"
         onClick={() => setShowModal((p) => !p)}
       />
     ),
   };
 
+  const getPartnerListData = async () => {
+    await dispatch(
+      getAllApprovedPartnerFoFormulas({newArrCheckTONotExist: []}),
+    )?.then((payload: any) => {
+      let arrOfPartnerss: any = [];
+      if (payload?.payload) {
+        payload?.payload?.map((items: any) => {
+          arrOfPartnerss?.push({
+            label: formatStatus(items?.partner),
+            value: items?.id,
+          });
+        });
+      }
+
+      setOptionsFOrPartner(arrOfPartnerss);
+    });
+  };
+
+  useEffect(() => {
+    getPartnerListData();
+  }, []);
   const FormulaColumn = [
     {
       title: 'Title',
@@ -116,11 +140,7 @@ const FormulaMain: React.FC = () => {
 
       render: (text: string, record: any, index: number) => (
         <Space size={18}>
-          {record?.Oem
-            ? formatStatus(record?.Oem?.oem)
-            : record?.Distributor
-              ? formatStatus(record?.Distributor?.distributor)
-              : '----'}
+          {record?.Partner ? formatStatus(record?.Partner?.partner) : '----'}
         </Space>
       ),
     },
@@ -146,7 +166,9 @@ const FormulaMain: React.FC = () => {
                 is_active: record?.is_active,
                 oem_id: record?.oem_id,
                 distributor_id: record?.distributor_id,
+                partner_id: record?.partner_id,
               });
+
               setOpenDrawer(true);
             }}
             color={token.colorInfoBorder}
@@ -170,7 +192,7 @@ const FormulaMain: React.FC = () => {
   const AddNewFormula = async () => {
     setOpenDrawer(false);
     const FormData = form?.getFieldsValue();
-    let newObj: any = {
+    const newObj: any = {
       ...FormData,
     };
     if (recordId) {
@@ -181,12 +203,14 @@ const FormulaMain: React.FC = () => {
     }
     if (selectValue?.oem_id) {
       newObj.oem_id = selectValue?.oem_id;
+      newObj.partner_id = selectValue?.partner_id;
     }
     if (selectValue?.distributor_id) {
       newObj.distributor_id = selectValue?.distributor_id;
+      newObj.partner_id = selectValue?.partner_id;
     }
     setLoadingContract(true);
-    let result = changeTheALpabetsFromFormula(newObj?.formula);
+    const result = changeTheALpabetsFromFormula(newObj?.formula);
     delete newObj.formula;
     newObj.formula = result;
     await dispatch(insertFormula(newObj));
@@ -198,6 +222,7 @@ const FormulaMain: React.FC = () => {
       is_active: false,
       oem_id: null,
       distributor_id: null,
+      partner_id: null,
     });
   };
 
@@ -244,6 +269,7 @@ const FormulaMain: React.FC = () => {
             drawer={false}
             setSelectValue={setSelectValue}
             selectValue={selectValue}
+            optionsForPartner={optionsForPartner}
           />
         }
         width={800}
@@ -254,6 +280,7 @@ const FormulaMain: React.FC = () => {
             is_active: false,
             oem_id: null,
             distributor_id: null,
+            partner_id: null,
           });
           form?.resetFields();
         }}
@@ -283,6 +310,7 @@ const FormulaMain: React.FC = () => {
             is_active: false,
             oem_id: null,
             distributor_id: null,
+            partner_id: null,
           });
         }}
         open={openDrawer}
@@ -305,9 +333,10 @@ const FormulaMain: React.FC = () => {
         <AddFormula
           onFinish={AddNewFormula}
           form={form}
-          drawer={true}
+          drawer
           setSelectValue={setSelectValue}
           selectValue={selectValue}
+          optionsForPartner={optionsForPartner}
         />
       </OsDrawer>
 

@@ -2,7 +2,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable array-callback-return */
-import { Col, Row } from '@/app/components/common/antd/Grid';
+
+'use client';
+
+import {Col, Row} from '@/app/components/common/antd/Grid';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
@@ -13,23 +16,26 @@ import {
   TagIcon,
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
-import { FC, useEffect, useState } from 'react';
+import {FC, Suspense, useEffect, useState} from 'react';
+import {useSearchParams} from 'next/navigation';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
-import { useAppSelector } from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {updateQuoteById} from '../../../../../redux/actions/quote';
 
-const GenerateQuoteAnalytics: FC<any> = () => {
+const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
   const [token] = useThemeToken();
-  const [totalValues, setTotalValues] = useState<any>();
+  const dispatch = useAppDispatch();
+  const searchParams = useSearchParams();
+  const getQuoteID = searchParams.get('id');
   const [totalRebateAmount, setTotalRebateAmount] = useState<any>();
-  const { data: profitabilityDataByQuoteId } = useAppSelector(
+  const {data: profitabilityDataByQuoteId} = useAppSelector(
     (state) => state.profitability,
   );
-  const { rebateQuoteLine } = useAppSelector(
+  const {rebateQuoteLine} = useAppSelector(
     (state) => state.rebateQuoteLineItem,
   );
-  const { abbreviate } = useAbbreviationHook(0);
-
+  const {abbreviate} = useAbbreviationHook(0);
   useEffect(() => {
     let rebateAmount: any = 0;
     rebateQuoteLine?.map((item: any) => {
@@ -72,8 +78,7 @@ const GenerateQuoteAnalytics: FC<any> = () => {
             item?.adjusted_price !== undefined &&
             item?.quantity !== undefined
           ) {
-            let temp: any;
-            temp =
+            const temp =
               Number(item?.adjusted_price) *
               (item?.quantity ? Number(item?.quantity) : 1);
             adjustedPrice += temp;
@@ -85,23 +90,21 @@ const GenerateQuoteAnalytics: FC<any> = () => {
             item?.adjusted_price !== undefined &&
             item?.quantity !== undefined
           ) {
-            let temp: any;
-            temp =
+            const temp =
               Number(item?.adjusted_price) *
               (item?.quantity ? Number(item?.quantity) : 1);
-            BundleAdjustedPrice += Number(temp) ?? 1 * Number(item.Bundle.quantity) ?? 1;
+            BundleAdjustedPrice +=
+              Number(temp) ?? 1 * Number(item.Bundle.quantity) ?? 1;
           }
         }
       });
     }
-    let totalGrossProfit = grossProfit + bundleGrossProfit;
-    let totalExitPrice = exitPrice + bundleExitPrice;
+    const totalGrossProfit = grossProfit + bundleGrossProfit;
+    const totalExitPrice = exitPrice + bundleExitPrice;
 
     if (totalExitPrice > 0) {
       grossProfitPercentage = (totalGrossProfit / totalExitPrice) * 100;
     }
-    console.log("profitabilityDataByQuoteIdprofitabilityDataByQuoteId", profitabilityDataByQuoteId, grossProfitPercentage)
-
     setTotalValues({
       GrossProfit: totalGrossProfit,
       GrossProfitPercentage: grossProfitPercentage,
@@ -110,7 +113,7 @@ const GenerateQuoteAnalytics: FC<any> = () => {
     });
   }, [JSON.stringify(profitabilityDataByQuoteId), profitabilityDataByQuoteId]);
 
-  const [analyticsData, setAnalyticsData] = useState<any>()
+  const [analyticsData, setAnalyticsData] = useState<any>();
 
   useEffect(() => {
     const analyticsDataa = [
@@ -145,7 +148,7 @@ const GenerateQuoteAnalytics: FC<any> = () => {
           <Image
             src={MoneyRecive}
             alt="MoneyRecive"
-            style={{ cursor: 'pointer', height: '24px', width: '24px' }}
+            style={{cursor: 'pointer', height: '24px', width: '24px'}}
           />
         ),
         iconBg: token?.colorErrorBg,
@@ -165,38 +168,57 @@ const GenerateQuoteAnalytics: FC<any> = () => {
           <Image
             src={MoneySend}
             alt="MoneySend"
-            style={{ cursor: 'pointer', height: '24px', width: '24px' }}
+            style={{cursor: 'pointer', height: '24px', width: '24px'}}
           />
         ),
         iconBg: token?.colorInfoHover,
       },
     ];
-    setAnalyticsData(analyticsDataa)
-  }, [JSON.stringify(profitabilityDataByQuoteId), profitabilityDataByQuoteId, totalValues])
+    setAnalyticsData(analyticsDataa);
+  }, [
+    JSON.stringify(profitabilityDataByQuoteId),
+    profitabilityDataByQuoteId,
+    totalValues,
+  ]);
 
-  console.log("23423423432", totalValues)
+  useEffect(() => {
+    if (totalValues && getQuoteID) {
+      dispatch(
+        updateQuoteById({
+          quote_total: totalValues?.ExitPrice,
+          total_cost: totalValues?.TotalCost,
+          gross_profit: totalValues?.GrossProfit,
+          gross_profit_percentage: totalValues?.GrossProfitPercentage,
+          id: Number(getQuoteID),
+        }),
+      );
+    }
+  }, [totalValues]);
+
   return (
-    <Row
-      justify="space-between"
-      style={{
-        padding: '36px 24px',
-        background: token?.colorBgContainer,
-        borderRadius: '12px',
-      }}
-      gutter={[0, 16]}
-    >
-      {analyticsData?.map((item: any) => (
-        <Col>
-          <TableNameColumn
-            primaryText={item?.primary}
-            secondaryText={item?.secondry}
-            fallbackIcon={item?.icon}
-            iconBg={item?.iconBg}
-            isNotification={false}
-          />
-        </Col>
-      ))}
-    </Row>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Row
+        justify="space-between"
+        style={{
+          padding: '36px 24px',
+          background: token?.colorBgContainer,
+          borderRadius: '12px',
+        }}
+        gutter={[0, 16]}
+      >
+        {analyticsData?.map((item: any) => (
+          <Col>
+            <TableNameColumn
+              primaryText={item?.primary}
+              secondaryText={item?.secondry}
+              fallbackIcon={item?.icon}
+              iconBg={item?.iconBg}
+              isNotification={false}
+            />
+          </Col>
+        ))}
+      </Row>
+    </Suspense>
   );
 };
 

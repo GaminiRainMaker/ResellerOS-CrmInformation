@@ -1,3 +1,6 @@
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable no-nested-ternary */
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 
 'use client';
@@ -25,7 +28,8 @@ import {
 import {TabsProps} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
-import React, {useEffect, useState} from 'react';
+import React, {Suspense, useEffect, useState} from 'react';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import {
   deleteDealregForm,
   queryDealReg,
@@ -35,7 +39,6 @@ import {SeparatedData} from '../dealRegDetail/dealReg.interface';
 import NewRegistrationForm from './NewRegistrationForm';
 import DealRegAnalytics from './dealRegAnalytics';
 import {StyledTable} from './styled-components';
-import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 
 const DealReg: React.FC = () => {
   const [token] = useThemeToken();
@@ -288,48 +291,44 @@ const DealReg: React.FC = () => {
 
   useEffect(() => {
     const separatedData = processDealRegData(DealRegData, statusValue);
-    let sortedArrr = Object.values(separatedData)?.sort((a: any, b: any) => {
-      return b.dealReg_id - a.dealReg_id;
-    });
+    const sortedArrr = Object.values(separatedData)?.sort(
+      (a: any, b: any) => b.dealReg_id - a.dealReg_id,
+    );
     setFinalDealRegData(sortedArrr);
   }, [DealRegData, statusValue]);
 
-  const generateTabContent = (status: string) => {
-    return (
-      <StyledTable
-        bordered
-        token={token}
-        columns={DealRegColumns}
-        expandable={{
-          // eslint-disable-next-line react/no-unstable-nested-components
-          expandedRowRender: (record: any) => {
-            return (
-              <OsTable
-                rowKey={record?.id}
-                columns={dealRegFormColumns}
-                dataSource={record?.data}
-                scroll
-                loading={false}
-                paginationProps={false}
-              />
-            );
-          },
-          rowExpandable: (record: any) => record.title !== 'Not Expandable',
-          expandIcon: ({expanded, onExpand, record}) =>
-            expanded ? (
-              <MinusIcon width={20} onClick={(e: any) => onExpand(record, e)} />
-            ) : (
-              <PlusIcon width={20} onClick={(e: any) => onExpand(record, e)} />
-            ),
-        }}
-        dataSource={finalDealRegData}
-        // scroll
-        locale={locale}
-        loading={false}
-        // drag
-      />
-    );
-  };
+  const generateTabContent = (status: string) => (
+    <StyledTable
+      bordered
+      token={token}
+      columns={DealRegColumns}
+      expandable={{
+        // eslint-disable-next-line react/no-unstable-nested-components
+        expandedRowRender: (record: any) => (
+          <OsTable
+            rowKey={record?.id}
+            columns={dealRegFormColumns}
+            dataSource={record?.data}
+            scroll
+            loading={false}
+            paginationProps={false}
+          />
+        ),
+        rowExpandable: (record: any) => record.title !== 'Not Expandable',
+        expandIcon: ({expanded, onExpand, record}) =>
+          expanded ? (
+            <MinusIcon width={20} onClick={(e: any) => onExpand(record, e)} />
+          ) : (
+            <PlusIcon width={20} onClick={(e: any) => onExpand(record, e)} />
+          ),
+      }}
+      dataSource={finalDealRegData}
+      // scroll
+      locale={locale}
+      loading={false}
+      // drag
+    />
+  );
 
   const tabItems: TabsProps['items'] = [
     {
@@ -446,7 +445,7 @@ const DealReg: React.FC = () => {
   };
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
         <DealRegAnalytics />
         <Row justify="space-between" align="middle">
@@ -547,9 +546,9 @@ const DealReg: React.FC = () => {
         showModalDelete={showModalDelete}
         deleteSelectedIds={deleteSelectedIds}
         heading="Delete Dealreg Form"
-        description={'Are you sure you want to delete this form?'}
+        description="Are you sure you want to delete this form?"
       />
-    </>
+    </Suspense>
   );
 };
 

@@ -1,3 +1,9 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-param-reassign */
+/* eslint-disable @typescript-eslint/no-use-before-define */
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable no-restricted-globals */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable import/order */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-nested-ternary */
@@ -12,13 +18,10 @@
 'use client';
 
 import '@handsontable/pikaday/css/pikaday.css';
-const HotTable = dynamic(() => import('@handsontable/react'), {
-  ssr: false,
-});
 import {HyperFormula} from 'hyperformula';
 
 // import {HotTable} from '@handsontable/react';
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import './styles.css';
 
 import {Space} from '@/app/components/common/antd/Space';
@@ -30,12 +33,9 @@ import {
   formatStatus,
 } from '@/app/utils/CONSTANTS';
 import {
-  base64ToArrayBuffer1,
   checkFunctionInArray,
   concatenateAfterFirstWithSpace,
   convertToBoolean,
-  decryptFromSalesforce,
-  encrypt,
   encryptForSalesforce,
   getLineItemsWithNonRepitive,
   getResultedValue,
@@ -53,15 +53,11 @@ import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import 'handsontable/dist/handsontable.min.css';
-import {
-  queryLineItemSyncing,
-  queryLineItemSyncingForSalesForce,
-} from '../../../../../redux/actions/LineItemSyncing';
+import {queryLineItemSyncingForSalesForce} from '../../../../../redux/actions/LineItemSyncing';
 import {
   addSalesForceDataa,
   getSalesForceDataaForEditAsItIs,
   getSalesForceFileData,
-  getExcelData,
   getPDFFileData,
   getPDFFileDataByAzureForSales,
 } from '../../../../../redux/actions/auth';
@@ -81,26 +77,27 @@ import dynamic from 'next/dynamic';
 
 import {registerAllModules} from 'handsontable/registry';
 import {
-  getAllFormulas,
   getAllFormulasByDistributorAndOem,
   getFormulaByFormulaAndOemDist,
   insertFormula,
 } from '../../../../../redux/actions/formulas';
-import {identity} from 'lodash';
 import Typography from '@/app/components/common/typography';
 import {
   getBulkProductIsExisting,
   insertProductsInBulk,
 } from '../../../../../redux/actions/product';
-import React from 'react';
 import {getUserByTokenAccess} from '../../../../../redux/actions/user';
+
+const HotTable = dynamic(() => import('@handsontable/react'), {
+  ssr: false,
+});
 
 registerAllModules();
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
 
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getQUoteId = searchParams.get('id');
   const getQuoteFileId = searchParams.get('fileId');
   const [quoteItems, setQuoteItems] = useState<any>([]);
@@ -130,8 +127,6 @@ const EditorFile = () => {
   const [formulaSelected, setFormulaSelected] = useState<any>();
   const [showApplyFormula, setShowApplyFormula] = useState<boolean>(false);
 
-  const [runSriptToGetValues, setRunScriptTOGetValues] =
-    useState<boolean>(false);
   const [accoutSyncOptions, setAccoutSyncOptions] = useState<any>();
 
   const [openAddNewFormulaModal, setOpenAddNewFormulaModal] =
@@ -186,8 +181,8 @@ const EditorFile = () => {
   }>({
     searchValue: '',
     asserType: false,
-    salesforce: salesForceinstanceUrl ? true : false,
-    lifeboatsalesforce: salesForceinstanceUrl ? true : false,
+    salesforce: !!salesForceinstanceUrl,
+    lifeboatsalesforce: !!salesForceinstanceUrl,
   });
 
   const getQuoteFileByIdForFormulads = async () => {
@@ -199,12 +194,12 @@ const EditorFile = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllFormulasByDistributorAndOem(fileData ? fileData : {}))?.then(
+    dispatch(getAllFormulasByDistributorAndOem(fileData || {}))?.then(
       (payload: any) => {
-        let newArr: any = [];
+        const newArr: any = [];
         payload?.payload?.map((items: any) => {
           if (items?.is_active) {
-            let newObj = {
+            const newObj = {
               label: items?.title,
               value: items?.formula,
             };
@@ -227,7 +222,7 @@ const EditorFile = () => {
 
     if (EditSalesLineItems === 'true' || EditSalesLineItems === true) {
       // Work In Case of Edit Data As It Is
-      let newdata = {
+      const newdata = {
         token: salesForceToken,
         // documentId: salesForceFiledId,
         urls: salesForceinstanceUrl,
@@ -237,8 +232,8 @@ const EditorFile = () => {
       dispatch(getSalesForceDataaForEditAsItIs(newdata))?.then(
         (payload: any) => {
           if (payload?.payload?.qliFields) {
-            let keysss = Object.keys(payload?.payload?.qliFields);
-            let arrOfOptions: any = [];
+            const keysss = Object.keys(payload?.payload?.qliFields);
+            const arrOfOptions: any = [];
             if (keysss) {
               keysss?.map((items: any) => {
                 arrOfOptions?.push({
@@ -250,7 +245,6 @@ const EditorFile = () => {
 
             setAccoutSyncOptions(arrOfOptions);
           }
-          let newSortedArr: any = [];
           if (payload?.payload) {
             //   payload?.payload?.map((items: any) => {
             //     let sortedKeys = Object.keys(items).sort();
@@ -264,21 +258,20 @@ const EditorFile = () => {
           }
           setUpdateLineItemsValue(payload?.payload);
           setNanonetsLoading(false);
-          return;
         },
       );
       return;
     }
 
     // Work in case of export to tables
-    let dataSingle = {
+    const dataSingle = {
       token: salesForceToken,
       FileId: salesForceFiledId,
       urls: salesForceinstanceUrl,
       quoteId: null,
       file_type: null,
     };
-    let data = {
+    const data = {
       token: salesForceToken,
       FileId: null,
       urls: salesForceinstanceUrl,
@@ -286,7 +279,7 @@ const EditorFile = () => {
       file_type: 'ExportFileToTable',
     };
 
-    let pathTOGo = data;
+    const pathTOGo = data;
     salesFOrceManual === true || salesFOrceManual === 'true'
       ? data
       : dataSingle;
@@ -300,7 +293,7 @@ const EditorFile = () => {
           return;
         }
 
-        let newObj = {
+        const newObj = {
           token: salesForceToken,
           FileId: null,
           urls: salesForceinstanceUrl,
@@ -330,9 +323,9 @@ const EditorFile = () => {
       }
 
       if (payload?.payload) {
-        let newObjFromSalesFOrce = JSON.parse(payload?.payload?.qliFields);
-        let keysss = Object.keys(newObjFromSalesFOrce);
-        let arrOfOptions: any = [];
+        const newObjFromSalesFOrce = JSON.parse(payload?.payload?.qliFields);
+        const keysss = Object.keys(newObjFromSalesFOrce);
+        const arrOfOptions: any = [];
 
         if (keysss) {
           keysss?.map((items: any) => {
@@ -354,28 +347,28 @@ const EditorFile = () => {
       dispatch(
         getPDFFileDataByAzureForSales({base64Pdf: payload?.payload?.body}),
       )?.then((payload: any) => {
-        let newArrCheck: any = [];
+        const newArrCheck: any = [];
 
         if (lineItemSyncingData && lineItemSyncingData?.length > 0) {
           lineItemSyncingData?.map((items: any) => {
-            let resultString = items?.pdf_header?.replace(/\s+/g, '');
+            const resultString = items?.pdf_header?.replace(/\s+/g, '');
             newArrCheck?.push(resultString);
           });
         }
 
-        let mainItem = payload?.payload?.analyzeResult?.tables;
-        let globalArr: any = [];
+        const mainItem = payload?.payload?.analyzeResult?.tables;
+        const globalArr: any = [];
         // console.log('35435324234', mainItem);
 
-        let resultTantArrr: any = [];
+        const resultTantArrr: any = [];
 
         for (let i = 0; i < mainItem?.length; i++) {
-          let innerIntems = mainItem[i];
+          const innerIntems = mainItem[i];
           if (innerIntems?.cells?.[0]?.kind === 'columnHeader') {
-            let result: any = [];
+            const result: any = [];
 
             // Step 1: Extract headers from column headers
-            let headers: any = {};
+            const headers: any = {};
             innerIntems?.cells.forEach((item: any) => {
               if (item.kind === 'columnHeader') {
                 headers[item.columnIndex] = item.content; // Store headers by their column index
@@ -415,7 +408,7 @@ const EditorFile = () => {
       getQuoteFileByIdForFormulads();
       if (ExistingQuoteItemss === 'true') {
         setNanonetsLoading(true);
-        let newObj = {
+        const newObj = {
           id: Number(getQUoteId),
           fileId: Number(getQuoteFileId),
         };
@@ -437,28 +430,28 @@ const EditorFile = () => {
           if (payload?.payload?.advanced_excel || true) {
             dispatch(getPDFFileData({pdfUrl: quoteFileById?.pdf_url}))?.then(
               (payload: any) => {
-                let newArrCheck: any = [];
+                const newArrCheck: any = [];
 
                 if (lineItemSyncingData && lineItemSyncingData?.length > 0) {
                   lineItemSyncingData?.map((items: any) => {
-                    let resultString = items?.pdf_header?.replace(/\s+/g, '');
+                    const resultString = items?.pdf_header?.replace(/\s+/g, '');
                     newArrCheck?.push(resultString);
                   });
                 }
 
-                let mainItem = payload?.payload?.analyzeResult?.tables;
-                let globalArr: any = [];
+                const mainItem = payload?.payload?.analyzeResult?.tables;
+                const globalArr: any = [];
                 // console.log('35435324234', mainItem);
 
-                let resultTantArrr: any = [];
+                const resultTantArrr: any = [];
 
                 for (let i = 0; i < mainItem?.length; i++) {
-                  let innerIntems = mainItem[i];
+                  const innerIntems = mainItem[i];
                   if (innerIntems?.cells?.[0]?.kind === 'columnHeader') {
-                    let result: any = [];
+                    const result: any = [];
 
                     // Step 1: Extract headers from column headers
-                    let headers: any = {};
+                    const headers: any = {};
                     innerIntems?.cells.forEach((item: any) => {
                       if (item.kind === 'columnHeader') {
                         headers[item.columnIndex] = item.content; // Store headers by their column index
@@ -560,7 +553,7 @@ const EditorFile = () => {
                   }
                 }
                 if (newArrrrAll) {
-                  let newUpdatedArr: any = [];
+                  const newUpdatedArr: any = [];
                   newArrrrAll?.map((items: any, index: number) => {
                     const replaceKeyInObject = (
                       obj: any,
@@ -575,7 +568,7 @@ const EditorFile = () => {
                     };
 
                     // Transform the array
-                    let newArrssr = items.map((item: any) =>
+                    const newArrssr = items.map((item: any) =>
                       replaceKeyInObject(item, '', `emptyHeader${index + 1}`),
                     );
                     newUpdatedArr?.push(newArrssr);
@@ -590,7 +583,7 @@ const EditorFile = () => {
     }
   }, [ExistingQuoteItemss, quoteFileById, salesForceinstanceUrl]);
 
-  let newArrForAlpa = [
+  const newArrForAlpa = [
     'A :',
     'B :',
     'C :',
@@ -618,7 +611,7 @@ const EditorFile = () => {
     'Y :',
     'Z :',
   ];
-  let newArrForAlpaForFormulas = [
+  const newArrForAlpaForFormulas = [
     'A',
     'B',
     'C',
@@ -709,7 +702,7 @@ const EditorFile = () => {
   useEffect(() => {
     if (!salesForceinstanceUrl) {
       if (fullStackManul === 'true') {
-        let data = {
+        const data = {
           id: getQUoteId,
           type_of_file: 'export',
         };
@@ -796,10 +789,11 @@ const EditorFile = () => {
     };
 
     // Apply transformation
-    let result = transformObjects(resultArray);
+    const result = transformObjects(resultArray);
     function cleanKeys(obj: any) {
       const cleanedObj: any = {};
       // Iterate over each key-value pair in the object
+      // eslint-disable-next-line no-restricted-syntax
       for (const [key, value] of Object.entries(obj)) {
         // Remove special characters (e.g., periods, spaces) from the key
         // Issue with inconsistent row with data value solution
@@ -820,7 +814,7 @@ const EditorFile = () => {
     }
 
     // Clean the array
-    let cleanedArr = cleanArray(result);
+    const cleanedArr = cleanArray(result);
 
     setMergedVaalues(cleanedArr);
     setFinalArrayForMerged(cleanedArr);
@@ -845,7 +839,7 @@ const EditorFile = () => {
         };
 
         // Apply transformation
-        let result = transformObjects(newTableData?.[0]);
+        const result = transformObjects(newTableData?.[0]);
         mergeTableData(result);
       }
     }, 100);
@@ -858,8 +852,8 @@ const EditorFile = () => {
     changedValue: any,
   ) => {
     if (changedValue?.includes('=')) {
-      let result = changeTheALpabetsFromFormula(changedValue);
-      let newObj: any = {formula: result};
+      const result = changeTheALpabetsFromFormula(changedValue);
+      const newObj: any = {formula: result};
       if (fileData?.distributor_id) {
         newObj.distributor_id = fileData?.distributor_id;
       } else if (fileData?.oem_id) {
@@ -867,7 +861,7 @@ const EditorFile = () => {
       }
       dispatch(getFormulaByFormulaAndOemDist(newObj))?.then((payload: any) => {
         if (payload?.payload === null) {
-          let isExist = checkFunctionInArray(decliendFormulas, changedValue);
+          const isExist = checkFunctionInArray(decliendFormulas, changedValue);
           if (!isExist) {
             setValueOfNewFormula(changedValue);
             setOpenAddNewFormulaModal(true);
@@ -924,8 +918,8 @@ const EditorFile = () => {
             updateLineItemColumnData?.push(dataObj);
           }
           if (salesForceinstanceUrl) {
-            let cleanedString = item.replace(/^rosquoteai__|__c$/g, '');
-            let finalResult = cleanedString.replace(/_/g, ' ');
+            const cleanedString = item.replace(/^rosquoteai__|__c$/g, '');
+            const finalResult = cleanedString.replace(/_/g, ' ');
             updateLineItemColumnArr?.push(formatStatus(finalResult));
           } else {
             updateLineItemColumnArr?.push(formatStatus(item));
@@ -950,11 +944,11 @@ const EditorFile = () => {
       });
     }
 
-    let minLength = Math.min(mergeedColumnArr.length, newArrForAlpa.length);
+    const minLength = Math.min(mergeedColumnArr.length, newArrForAlpa.length);
 
-    let result = new Array(minLength).fill(null).map((_, index) => {
-      return `${newArrForAlpa[index]} ${mergeedColumnArr[index]}`;
-    });
+    const result = new Array(minLength)
+      .fill(null)
+      .map((_, index) => `${newArrForAlpa[index]} ${mergeedColumnArr[index]}`);
     setMergeedColumn(result);
   }, [ExistingQuoteItemss, quoteItems, mergedValue]);
 
@@ -1005,14 +999,14 @@ const EditorFile = () => {
       type: 'info',
     });
 
-    let finalLineItems: any = [];
-    let newArrFOrUpdation: any = [];
-    let newArrForAddition: any = [];
+    const finalLineItems: any = [];
+    const newArrFOrUpdation: any = [];
+    const newArrForAddition: any = [];
 
     if (EditSalesLineItems === 'true' || EditSalesLineItems === true) {
-      let newArrWithFileId: any = [];
+      const newArrWithFileId: any = [];
       updateLineItemsValue?.map((itemss: any) => {
-        let newObj = {
+        const newObj = {
           ...itemss,
           rosquoteai__SF_File_Id__c: salesForceFiledId,
         };
@@ -1025,7 +1019,7 @@ const EditorFile = () => {
         'CghhpgRahZKN0P8SaquPX/k30H+v2QWcKpcH42H9q0w=',
       );
 
-      let newdata = {
+      const newdata = {
         token: salesForceToken,
         // documentId: salesForceFiledId,
         urls: salesForceinstanceUrl,
@@ -1049,7 +1043,7 @@ const EditorFile = () => {
     if (updateLineItemsValue && updateLineItemsValue?.length > 0) {
       updateLineItemsValue?.map((items: any) => {
         if (items?.id === null) {
-          let newObj = {
+          const newObj = {
             ...items,
           };
           newObj.adjusted_price = items?.cost;
@@ -1066,7 +1060,7 @@ const EditorFile = () => {
 
     if (newArrForAddition && newArrForAddition?.length > 0) {
       const lineItem = newArrForAddition;
-      let allProductCodes: any = [];
+      const allProductCodes: any = [];
       let allProductCodeDataa: any = [];
       lineItem?.map((itemsPro: any) => {
         allProductCodes?.push(
@@ -1075,17 +1069,17 @@ const EditorFile = () => {
             : 'NEWCODE0123',
         );
       });
-      let valuessOfAlreayExist = await dispatch(
+      const valuessOfAlreayExist = await dispatch(
         getBulkProductIsExisting(allProductCodes),
       );
       if (valuessOfAlreayExist?.payload?.length > 0) {
         allProductCodeDataa = valuessOfAlreayExist?.payload;
       }
-      let newArrValues = getLineItemsWithNonRepitive(newArrForAddition);
+      const newArrValues = getLineItemsWithNonRepitive(newArrForAddition);
 
       if (valuessOfAlreayExist?.payload?.length > 0) {
         // ======To get items that are  non added Values==============
-        let newInsertionData = getValuesOFLineItemsThoseNotAddedBefore(
+        const newInsertionData = getValuesOFLineItemsThoseNotAddedBefore(
           lineItem,
           allProductCodeDataa,
         );
@@ -1111,10 +1105,10 @@ const EditorFile = () => {
 
       if (lineItem) {
         lineItem?.map((itemssProduct: any) => {
-          let productCode = itemssProduct?.product_code
+          const productCode = itemssProduct?.product_code
             ? itemssProduct?.product_code?.replace(/\s/g, '')
             : 'NEWCODE0123';
-          let itemsToAdd = allProductCodeDataa?.find(
+          const itemsToAdd = allProductCodeDataa?.find(
             (productItemFind: any) =>
               productItemFind?.product_code?.replace(/\s/g, '') === productCode,
           );
@@ -1139,7 +1133,7 @@ const EditorFile = () => {
         (payload: any) => {
           if (payload?.payload && payload?.payload?.length > 0) {
             payload?.payload?.map((items: any) => {
-              let newObj = {
+              const newObj = {
                 ...items,
               };
               newObj.cost = items?.adjusted_price;
@@ -1204,10 +1198,8 @@ const EditorFile = () => {
         type: 'info',
       });
       setNanonetsLoading(false);
-
-      return;
     } else {
-      let data = {
+      const data = {
         token: salesForceToken,
         FileId: null,
         urls: salesForceinstanceUrl,
@@ -1217,7 +1209,7 @@ const EditorFile = () => {
 
       dispatch(getSalesForceFileData(data))?.then(async (payload: any) => {
         if (!payload?.payload?.body) {
-          let newObj = {
+          const newObj = {
             token: salesForceToken,
             FileId: null,
             urls: salesForceinstanceUrl,
@@ -1243,25 +1235,21 @@ const EditorFile = () => {
               // location?.reload();
             }
           });
+        } else if (payload?.payload?.body) {
+          setShowApplyFormula(false);
+          setShowAddColumnModal(false);
+          setShowModal(false);
+          setShowUpdateColumnModal(false);
+          setOpenAddNewFormulaModal(false);
+          setAccoutSyncOptions(false);
+          setMergedVaalues('');
+          setMergeedColumn([]);
+          setQuoteItems([]);
 
-          return;
-        } else {
-          if (payload?.payload?.body) {
-            setShowApplyFormula(false);
-            setShowAddColumnModal(false);
-            setShowModal(false);
-            setShowUpdateColumnModal(false);
-            setOpenAddNewFormulaModal(false);
-            setAccoutSyncOptions(false);
-            setMergedVaalues('');
-            setMergeedColumn([]);
-            setQuoteItems([]);
-
-            fetchSaleForceDataa();
-            // router.replace(
-            //   `/fileEditor?quote_Id=${SaleQuoteId}&key=${salesForceToken}&instance_url=${salesForceinstanceUrl}&file_Id=${null}&editLine=false&manual=true`,
-            // );
-          }
+          fetchSaleForceDataa();
+          // router.replace(
+          //   `/fileEditor?quote_Id=${SaleQuoteId}&key=${salesForceToken}&instance_url=${salesForceinstanceUrl}&file_Id=${null}&editLine=false&manual=true`,
+          // );
         }
       });
     }
@@ -1276,7 +1264,7 @@ const EditorFile = () => {
       );
       location?.reload();
     } else {
-      let data = {
+      const data = {
         id: getQUoteId,
         type_of_file: 'export',
       };
@@ -1286,7 +1274,7 @@ const EditorFile = () => {
             location?.reload();
           }
           if (payload?.payload === null) {
-            let dataNew = {
+            const dataNew = {
               id: getQUoteId,
               type_of_file: 'manual',
             };
@@ -1318,8 +1306,8 @@ const EditorFile = () => {
   };
 
   const AddNewCloumnToMergedTable = async (value: any) => {
-    let newArr: any = [...mergedValue];
-    let resultantArr: any = [];
+    const newArr: any = [...mergedValue];
+    const resultantArr: any = [];
 
     newArr?.map((items: any) => {
       resultantArr?.push({...items, [value]: ''});
@@ -1330,12 +1318,12 @@ const EditorFile = () => {
   };
 
   const UpdateTheColumnName = async (type: any, old: string, newVal: any) => {
-    let newArr: any = [...mergedValue];
-    const renameKey = (arr: any, oldKey: any, newKey: any) => {
-      return arr.map((obj: any) => {
+    const newArr: any = [...mergedValue];
+    const renameKey = (arr: any, oldKey: any, newKey: any) =>
+      arr.map((obj: any) => {
         // Create a new object preserving the order of keys
-        let newObj: any = {};
-        for (let key of Object.keys(obj)) {
+        const newObj: any = {};
+        for (const key of Object.keys(obj)) {
           if (key === oldKey) {
             // Rename the old key to new key
             newObj[newKey] = obj[key];
@@ -1346,10 +1334,9 @@ const EditorFile = () => {
         }
         return newObj;
       });
-    };
 
-    let result = concatenateAfterFirstWithSpace(old);
-    let updatedArr = renameKey(newArr, result, newVal);
+    const result = concatenateAfterFirstWithSpace(old);
+    const updatedArr = renameKey(newArr, result, newVal);
 
     setMergedVaalues(updatedArr);
     notification.open({
@@ -1365,7 +1352,7 @@ const EditorFile = () => {
   };
   const [existingColumnOptions, setExistingColumnName] = useState<any>();
   useEffect(() => {
-    let newArr: any = [];
+    const newArr: any = [];
     mergeedColumn?.map((items: any) => {
       newArr?.push({label: items, value: items});
     });
@@ -1376,12 +1363,12 @@ const EditorFile = () => {
     const keys = Object.keys(mergedValue?.[0]);
     const newArrrUpadted = mergedValue?.length > 0 ? [...mergedValue] : [];
 
-    let resulsst = concatenateAfterFirstWithSpace(oldName);
+    const resulsst = concatenateAfterFirstWithSpace(oldName);
     // Find the index of the key 'ap'
     const index = keys.indexOf(resulsst);
-    let indexToApply = index;
+    const indexToApply = index;
     // Alpabet extration
-    let columnLetter = newArrForAlpaForFormulas[indexToApply];
+    const columnLetter = newArrForAlpaForFormulas[indexToApply];
 
     // Generate the new array with the computed property
 
@@ -1431,15 +1418,15 @@ const EditorFile = () => {
     const keys = Object.keys(mergedValue?.[0]);
     // =====================for from map
     const index = keys.indexOf(FromMap);
-    let indexToApply = index;
+    const indexToApply = index;
     // Alpabet extration
-    let column1 = newArrForAlpaForFormulas[indexToApply];
+    const column1 = newArrForAlpaForFormulas[indexToApply];
     // ====================for toMap========
 
     const indexNew = keys.indexOf(MapTo);
-    let indexToApplynew = indexNew;
+    const indexToApplynew = indexNew;
     // Alpabet extration
-    let column2 = newArrForAlpaForFormulas[indexToApplynew];
+    const column2 = newArrForAlpaForFormulas[indexToApplynew];
 
     // Function to extract function name from the formula
     function extractFunctionName(formula: any) {
@@ -1465,8 +1452,8 @@ const EditorFile = () => {
     // Update array with new column and formula
     newArrr = newArrr.map((item, index) => {
       // Formula is based on the index (1-based)
-      let rowIndex = index + 1;
-      let formula = generateFormula(functionName, rowIndex, column1, column2);
+      const rowIndex = index + 1;
+      const formula = generateFormula(functionName, rowIndex, column1, column2);
       // Return the updated object
       return {
         ...item,
@@ -1519,8 +1506,8 @@ const EditorFile = () => {
   };
 
   const addFormulaTOStoredFormulas = async (value: any) => {
-    let result = changeTheALpabetsFromFormula(value);
-    let newObj: any = {formula: result};
+    const result = changeTheALpabetsFromFormula(value);
+    const newObj: any = {formula: result};
     if (fileData?.distributor_id) {
       newObj.distributor_id = fileData?.distributor_id;
     } else if (fileData?.oem_id) {
@@ -1532,409 +1519,560 @@ const EditorFile = () => {
   };
 
   return (
-    <GlobalLoader loading={nanonetsLoading}>
-      <Space size={0} style={{marginBottom: '20px'}}>
-        {' '}
-        <Typography name="Body 1/Bold">{currentFIle?.file_name}</Typography>
-      </Space>
+    <Suspense fallback={<div>Loading...</div>}>
+      <GlobalLoader loading={nanonetsLoading}>
+        <Space size={0} style={{marginBottom: '20px'}}>
+          {' '}
+          <Typography name="Body 1/Bold">{currentFIle?.file_name}</Typography>
+        </Space>
 
-      {(ExistingQuoteItemss === 'true' ||
-        EditSalesLineItems === 'true' ||
-        EditSalesLineItems === true) &&
-      updateLineItemsValue?.length > 0 ? (
-        <>
-          <div
-            style={
-              {
-                // position: 'relative',
-                // maxHeight: '75vh',
-                // overflow: 'auto',
-              }
-            }
-          >
-            <HotTable
-              data={updateLineItemsValue}
-              colWidths={200}
-              columnHeaderHeight={40}
-              height="auto"
-              colHeaders={updateLineItemColumn}
-              // columns={z}
-              width="auto"
-              minSpareRows={0}
-              autoWrapRow
-              autoWrapCol
-              licenseKey="non-commercial-and-evaluation"
-              dropdownMenu
-              hiddenColumns={{
-                indicators: true,
-                columns: salesForceinstanceUrl ? [0, 1] : [0, 1],
-              }}
-              contextMenu={true}
-              multiColumnSorting
-              filters
-              rowHeaders
-              allowInsertRow={true}
-              allowInsertColumn
-              afterGetColHeader={alignHeaders}
-              beforeRenderer={() => {
-                addClassesToRows('', '', '', '', '', '', quoteItems);
-              }}
-              afterRemoveRow={(change, source) => {
-                deleteRowsItemsForLineItemsa(source, change);
-              }}
-              afterChange={(change: any, source) => {
-                if (change) {
-                  updateRowsValueForLineItems(
-                    change?.[0]?.[0],
-                    change?.[0]?.[1],
-                    change?.[0]?.[3],
-                  );
+        {(ExistingQuoteItemss === 'true' ||
+          EditSalesLineItems === 'true' ||
+          EditSalesLineItems === true) &&
+        updateLineItemsValue?.length > 0 ? (
+          <>
+            <div
+              style={
+                {
+                  // position: 'relative',
+                  // maxHeight: '75vh',
+                  // overflow: 'auto',
                 }
-              }}
-              // navigableHeaders
-            />
-          </div>
-          <br />
-          <Space
-            onClick={(e) => {
-              e?.preventDefault();
-            }}
-            size={25}
-            style={{
-              display: 'flex',
-              justifyContent: 'end',
-              marginRight: '50px',
-              right: '0',
-              bottom: '0',
-              marginBottom: '20px',
-            }}
-          >
-            {!salesForceinstanceUrl && (
-              <OsButton
-                text="Cancel"
-                buttontype="SECONDARY"
-                clickHandler={CancelEditing}
+              }
+            >
+              <HotTable
+                data={updateLineItemsValue}
+                colWidths={200}
+                columnHeaderHeight={40}
+                height="auto"
+                colHeaders={updateLineItemColumn}
+                // columns={z}
+                width="auto"
+                minSpareRows={0}
+                autoWrapRow
+                autoWrapCol
+                licenseKey="non-commercial-and-evaluation"
+                dropdownMenu
+                hiddenColumns={{
+                  indicators: true,
+                  columns: salesForceinstanceUrl ? [0, 1] : [0, 1],
+                }}
+                contextMenu
+                multiColumnSorting
+                filters
+                rowHeaders
+                allowInsertRow
+                allowInsertColumn
+                afterGetColHeader={alignHeaders}
+                beforeRenderer={() => {
+                  addClassesToRows('', '', '', '', '', '', quoteItems);
+                }}
+                afterRemoveRow={(change, source) => {
+                  deleteRowsItemsForLineItemsa(source, change);
+                }}
+                afterChange={(change: any, source) => {
+                  if (change) {
+                    updateRowsValueForLineItems(
+                      change?.[0]?.[0],
+                      change?.[0]?.[1],
+                      change?.[0]?.[3],
+                    );
+                  }
+                }}
+                // navigableHeaders
               />
-            )}
-            <OsButton
-              text="Save Line Items"
-              buttontype="PRIMARY"
-              clickHandler={updateData}
-            />
-          </Space>{' '}
-        </>
-      ) : (
-        <>
-          {(ExistingQuoteItemss === 'false' ||
-            (salesForceinstanceUrl &&
-              (EditSalesLineItems === 'false' ||
-                EditSalesLineItems === false))) && (
-            <>
-              {mergedValue && mergedValue?.length > 0 ? (
-                <>
-                  <div
-                    style={{
-                      position: 'relative',
-                      maxHeight: '75vh',
-                      overflow: 'auto',
-                    }}
-                  >
-                    {(ExistingQuoteItemss === 'false' ||
-                      EditSalesLineItems === 'false' ||
-                      !EditSalesLineItems) && (
-                      <Space
-                        onClick={(e) => {
-                          e?.preventDefault();
+            </div>
+            <br />
+            <Space
+              onClick={(e) => {
+                e?.preventDefault();
+              }}
+              size={25}
+              style={{
+                display: 'flex',
+                justifyContent: 'end',
+                marginRight: '50px',
+                right: '0',
+                bottom: '0',
+                marginBottom: '20px',
+              }}
+            >
+              {!salesForceinstanceUrl && (
+                <OsButton
+                  text="Cancel"
+                  buttontype="SECONDARY"
+                  clickHandler={CancelEditing}
+                />
+              )}
+              <OsButton
+                text="Save Line Items"
+                buttontype="PRIMARY"
+                clickHandler={updateData}
+              />
+            </Space>{' '}
+          </>
+        ) : (
+          <>
+            {(ExistingQuoteItemss === 'false' ||
+              (salesForceinstanceUrl &&
+                (EditSalesLineItems === 'false' ||
+                  EditSalesLineItems === false))) && (
+              <>
+                {mergedValue && mergedValue?.length > 0 ? (
+                  <>
+                    <div
+                      style={{
+                        position: 'relative',
+                        maxHeight: '75vh',
+                        overflow: 'auto',
+                      }}
+                    >
+                      {(ExistingQuoteItemss === 'false' ||
+                        EditSalesLineItems === 'false' ||
+                        !EditSalesLineItems) && (
+                        <Space
+                          onClick={(e) => {
+                            e?.preventDefault();
+                          }}
+                          size={25}
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'end',
+                            marginRight: '50px',
+                            right: '0',
+                            bottom: '0',
+                            marginBottom: '20px',
+                          }}
+                        >
+                          <OsButton
+                            text="Update Column Name"
+                            buttontype="PRIMARY"
+                            clickHandler={() => {
+                              setShowUpdateColumnModal(true);
+                            }}
+                          />
+                          <OsButton
+                            text="Apply Formula"
+                            buttontype="PRIMARY"
+                            clickHandler={() => {
+                              setShowApplyFormula(true);
+                            }}
+                          />
+                          <OsButton
+                            text="Add New Column"
+                            buttontype="PRIMARY"
+                            clickHandler={() => {
+                              setShowAddColumnModal(true);
+                            }}
+                          />
+                        </Space>
+                      )}
+                      <HotTable
+                        data={mergedValue}
+                        allowRemoveColumn
+                        dropdownMenu
+                        colWidths={200}
+                        columnHeaderHeight={40}
+                        height="auto"
+                        colHeaders={mergeedColumn}
+                        width="auto"
+                        minSpareRows={0}
+                        autoWrapRow
+                        formulas={{
+                          engine: HyperFormula as unknown as any,
                         }}
-                        size={25}
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'end',
-                          marginRight: '50px',
-                          right: '0',
-                          bottom: '0',
-                          marginBottom: '20px',
+                        afterFormulasValuesUpdate={afterFormulasValuesUpdate}
+                        stretchH="all"
+                        autoWrapCol
+                        licenseKey="non-commercial-and-evaluation"
+                        hiddenColumns={{
+                          indicators: true,
                         }}
-                      >
+                        contextMenu
+                        multiColumnSorting
+                        filters
+                        rowHeaders
+                        allowInsertRow
+                        allowInsertColumn
+                        afterGetColHeader={alignHeaders}
+                        beforeRenderer={() => {
+                          addClassesToRows('', '', '', '', '', '', quoteItems);
+                        }}
+                        afterRemoveRow={(change, source) => {
+                          deleteRowsItems(source, change);
+                        }}
+                        afterChange={(change: any, source) => {
+                          if (change) {
+                            updateRowsValue(
+                              change?.[0]?.[0],
+                              change?.[0]?.[1],
+                              change?.[0]?.[3],
+                            );
+                          }
+                        }}
+                        // navigableHeaders
+                      />
+                    </div>
+                    <br />
+                    <Space
+                      onClick={(e) => {
+                        e?.preventDefault();
+                      }}
+                      size={25}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'end',
+                        marginRight: '50px',
+                        right: '0',
+                        bottom: '0',
+                        marginBottom: '20px',
+                      }}
+                    >
+                      {!salesForceinstanceUrl && (
                         <OsButton
-                          text="Update Column Name"
-                          buttontype="PRIMARY"
+                          text="Cancel"
+                          buttontype="SECONDARY"
                           clickHandler={() => {
-                            setShowUpdateColumnModal(true);
+                            syncShow('cancel');
                           }}
                         />
-                        <OsButton
-                          text="Apply Formula"
-                          buttontype="PRIMARY"
-                          clickHandler={() => {
-                            setShowApplyFormula(true);
-                          }}
-                        />
-                        <OsButton
-                          text="Add New Column"
-                          buttontype="PRIMARY"
-                          clickHandler={() => {
-                            setShowAddColumnModal(true);
-                          }}
-                        />
-                      </Space>
-                    )}
-                    <HotTable
-                      data={mergedValue}
-                      allowRemoveColumn
-                      dropdownMenu
-                      colWidths={200}
-                      columnHeaderHeight={40}
-                      height="auto"
-                      colHeaders={mergeedColumn}
-                      width="auto"
-                      minSpareRows={0}
-                      autoWrapRow
-                      formulas={{
-                        engine: HyperFormula,
-                      }}
-                      afterFormulasValuesUpdate={afterFormulasValuesUpdate}
-                      stretchH="all"
-                      autoWrapCol
-                      licenseKey="non-commercial-and-evaluation"
-                      hiddenColumns={{
-                        indicators: true,
-                      }}
-                      contextMenu={true}
-                      multiColumnSorting
-                      filters
-                      rowHeaders
-                      allowInsertRow
-                      allowInsertColumn
-                      afterGetColHeader={alignHeaders}
-                      beforeRenderer={() => {
-                        addClassesToRows('', '', '', '', '', '', quoteItems);
-                      }}
-                      afterRemoveRow={(change, source) => {
-                        deleteRowsItems(source, change);
-                      }}
-                      afterChange={(change: any, source) => {
-                        if (change) {
-                          updateRowsValue(
-                            change?.[0]?.[0],
-                            change?.[0]?.[1],
-                            change?.[0]?.[3],
-                          );
-                        }
-                      }}
-                      // navigableHeaders
-                    />
-                  </div>
-                  <br />
-                  <Space
-                    onClick={(e) => {
-                      e?.preventDefault();
-                    }}
-                    size={25}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'end',
-                      marginRight: '50px',
-                      right: '0',
-                      bottom: '0',
-                      marginBottom: '20px',
-                    }}
-                  >
-                    {!salesForceinstanceUrl && (
+                      )}
                       <OsButton
-                        text="Cancel"
-                        buttontype="SECONDARY"
+                        text="Sync Table"
+                        buttontype="PRIMARY"
                         clickHandler={() => {
-                          syncShow('cancel');
+                          syncShow('sync');
+                          // addNewValueForChangesHit();
                         }}
                       />
+                    </Space>
+                  </>
+                ) : (
+                  <div style={{position: 'absolute', width: '100%'}}>
+                    <div
+                      style={
+                        {
+                          // position: 'relative',
+                          // maxHeight: '75vh',
+                          // overflow: 'auto',
+                        }
+                      }
+                    >
+                      {quoteItems &&
+                        quoteItems?.map((itemss: any, indexOFTable: number) => {
+                          const allHeaderValue: any = [];
+                          const keysData =
+                            itemss?.[0] && Object?.keys(itemss?.[0]);
+                          if (keysData) {
+                            keysData?.map((item: any) => {
+                              if (item) {
+                                allHeaderValue?.push(formatStatus(item));
+                              }
+                            });
+                          }
+
+                          return (
+                            <div>
+                              <Space
+                                direction="horizontal"
+                                style={{width: '100%'}}
+                              >
+                                <Typography
+                                  name="Body 3/Regular"
+                                  onClick={() => mergeTableData(quoteItems)}
+                                >
+                                  Table {indexOFTable + 1}
+                                </Typography>
+                                <TrashIcon
+                                  style={{color: 'red', width: '20px'}}
+                                  onClick={() => {
+                                    deleteTable(indexOFTable);
+                                  }}
+                                />
+                              </Space>
+
+                              <div>
+                                <HotTable
+                                  data={itemss}
+                                  colWidths={[
+                                    200, 200, 400, 200, 200, 200, 200, 200, 200,
+                                    200, 200, 200, 200, 200, 200, 200,
+                                  ]}
+                                  height="auto"
+                                  colHeaders={allHeaderValue}
+                                  width="auto"
+                                  minSpareRows={0}
+                                  formulas={{
+                                    engine: HyperFormula as unknown as any,
+                                  }}
+                                  stretchH="all"
+                                  autoWrapRow
+                                  autoWrapCol
+                                  licenseKey="non-commercial-and-evaluation"
+                                  fillHandle
+                                  dropdownMenu
+                                  hiddenColumns={{
+                                    indicators: true,
+                                  }}
+                                  contextMenu
+                                  multiColumnSorting
+                                  filters
+                                  rowHeaders
+                                  allowInsertRow
+                                  allowInsertColumn={false}
+                                  afterGetColHeader={alignHeaders}
+                                  beforeRenderer={() => {
+                                    addClassesToRows(
+                                      '',
+                                      '',
+                                      '',
+                                      '',
+                                      '',
+                                      '',
+                                      quoteItems,
+                                    );
+                                  }}
+                                  afterRemoveRow={(change, source) => {
+                                    deleteRowsItemsForTable(
+                                      indexOFTable,
+                                      change,
+                                      source,
+                                    );
+                                  }}
+                                  afterChange={(change: any, source) => {
+                                    if (change) {
+                                      updateRowsValueforTable(
+                                        indexOFTable,
+                                        change?.[0]?.[0],
+                                        change?.[0]?.[1],
+                                        change?.[0]?.[3],
+                                      );
+                                    }
+                                  }}
+                                  // navigableHeaders
+                                />
+                              </div>
+                            </div>
+                          );
+                        })}
+                    </div>
+                    {quoteItems && (
+                      <>
+                        <br />
+                        <Space
+                          size={25}
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'end',
+                            marginRight: '50px',
+                            right: '0',
+                            bottom: '0',
+                            marginBottom: '20px',
+                          }}
+                        >
+                          {' '}
+                          {!salesForceinstanceUrl && (
+                            <OsButton
+                              text="Cancel"
+                              buttontype="SECONDARY"
+                              clickHandler={(e: void) => {
+                                CancelEditing();
+                              }}
+                            />
+                          )}
+                          {quoteItems?.length > 0 && (
+                            <OsButton
+                              text="Merge Table"
+                              buttontype="PRIMARY"
+                              clickHandler={() => mergeTableData(quoteItems)}
+                            />
+                          )}
+                        </Space>
+                      </>
                     )}
+                  </div>
+                )}
+              </>
+            )}
+          </>
+        )}
+        {showModal && (
+          <OsModal
+            // loading={loading}
+            body={
+              <SyncTableData
+                mergedValue={finalArrForMerged}
+                setMergedVaalues={setMergedVaalues}
+                setNanonetsLoading={setNanonetsLoading}
+                nanonetsLoading={nanonetsLoading}
+                routingConditions={checkForNewFile}
+                checkForNewFileForSalesForce={checkForNewFileForSalesForce}
+                manualFlow={false}
+                lineItemSyncingData={lineItemSyncingData}
+                CurrentFileId={currentFIle}
+                currentFileData={currentFIle}
+                accoutSyncOptions={accoutSyncOptions}
+              />
+            }
+            width={600}
+            open={showModal}
+            onCancel={() => {
+              setShowModal((p) => !p);
+            }}
+          />
+        )}
+        {!salesForceinstanceUrl && (
+          <OsModal
+            body={
+              <Row style={{width: '100%', padding: '15px'}}>
+                <Space
+                  style={{width: '100%'}}
+                  size={24}
+                  direction="vertical"
+                  align="center"
+                >
+                  <Space direction="vertical" align="center" size={1}>
+                    <Typography
+                      name="Body 3/Regular"
+                      style={{fontSize: '20px', textAlign: 'center'}}
+                    >
+                      This file is already updated. Please review the other file
+                      on Review Quotes
+                    </Typography>
+                  </Space>
+
+                  <Space size={12}>
                     <OsButton
-                      text="Sync Table"
+                      // loading={loading}
+                      text="Return to Review Quotes"
                       buttontype="PRIMARY"
                       clickHandler={() => {
-                        syncShow('sync');
-                        // addNewValueForChangesHit();
+                        router?.push(
+                          `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue()}`,
+                        );
+                        CancelEditing();
                       }}
                     />
                   </Space>
-                </>
-              ) : (
-                <div style={{position: 'absolute', width: '100%'}}>
-                  <div
-                    style={
-                      {
-                        // position: 'relative',
-                        // maxHeight: '75vh',
-                        // overflow: 'auto',
-                      }
-                    }
-                  >
-                    {quoteItems &&
-                      quoteItems?.map((itemss: any, indexOFTable: number) => {
-                        const allHeaderValue: any = [];
-                        const keysData =
-                          itemss?.[0] && Object?.keys(itemss?.[0]);
-                        if (keysData) {
-                          keysData?.map((item: any) => {
-                            if (item) {
-                              allHeaderValue?.push(formatStatus(item));
-                            }
-                          });
-                        }
-
-                        return (
-                          <div>
-                            <Space
-                              direction="horizontal"
-                              style={{width: '100%'}}
-                            >
-                              <Typography
-                                name="Body 3/Regular"
-                                onClick={() => mergeTableData(quoteItems)}
-                              >
-                                Table {indexOFTable + 1}
-                              </Typography>
-                              <TrashIcon
-                                style={{color: 'red', width: '20px'}}
-                                onClick={() => {
-                                  deleteTable(indexOFTable);
-                                }}
-                              />
-                            </Space>
-
-                            <div>
-                              <HotTable
-                                data={itemss}
-                                colWidths={[
-                                  200, 200, 400, 200, 200, 200, 200, 200, 200,
-                                  200, 200, 200, 200, 200, 200, 200,
-                                ]}
-                                height="auto"
-                                colHeaders={allHeaderValue}
-                                width="auto"
-                                minSpareRows={0}
-                                formulas={{
-                                  engine: HyperFormula,
-                                }}
-                                stretchH="all"
-                                autoWrapRow
-                                autoWrapCol
-                                licenseKey="non-commercial-and-evaluation"
-                                fillHandle
-                                dropdownMenu={true}
-                                hiddenColumns={{
-                                  indicators: true,
-                                }}
-                                contextMenu={true}
-                                multiColumnSorting
-                                filters
-                                rowHeaders
-                                allowInsertRow
-                                allowInsertColumn={false}
-                                afterGetColHeader={alignHeaders}
-                                beforeRenderer={() => {
-                                  addClassesToRows(
-                                    '',
-                                    '',
-                                    '',
-                                    '',
-                                    '',
-                                    '',
-                                    quoteItems,
-                                  );
-                                }}
-                                afterRemoveRow={(change, source) => {
-                                  deleteRowsItemsForTable(
-                                    indexOFTable,
-                                    change,
-                                    source,
-                                  );
-                                }}
-                                afterChange={(change: any, source) => {
-                                  if (change) {
-                                    updateRowsValueforTable(
-                                      indexOFTable,
-                                      change?.[0]?.[0],
-                                      change?.[0]?.[1],
-                                      change?.[0]?.[3],
-                                    );
-                                  }
-                                }}
-                                // navigableHeaders
-                              />
-                            </div>
-                          </div>
-                        );
-                      })}
-                  </div>
-                  {quoteItems && (
-                    <>
-                      <br />
-                      <Space
-                        size={25}
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'end',
-                          marginRight: '50px',
-                          right: '0',
-                          bottom: '0',
-                          marginBottom: '20px',
-                        }}
-                      >
-                        {' '}
-                        {!salesForceinstanceUrl && (
-                          <OsButton
-                            text="Cancel"
-                            buttontype="SECONDARY"
-                            clickHandler={(e: void) => {
-                              CancelEditing();
-                            }}
-                          />
-                        )}
-                        {quoteItems?.length > 0 && (
-                          <OsButton
-                            text="Merge Table"
-                            buttontype="PRIMARY"
-                            clickHandler={() => mergeTableData(quoteItems)}
-                          />
-                        )}
-                      </Space>
-                    </>
-                  )}
-                </div>
-              )}
-            </>
-          )}
-        </>
-      )}
-      {showModal && (
+                </Space>
+              </Row>
+            }
+            width={600}
+            onCancel={() => {
+              router?.push(
+                `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue()}`,
+              );
+            }}
+            open={returnBackModal}
+            // open={false}
+          />
+        )}
         <OsModal
-          // loading={loading}
+          title="Update  Column Name"
+          bodyPadding={30}
           body={
-            <SyncTableData
-              mergedValue={finalArrForMerged}
-              setMergedVaalues={setMergedVaalues}
-              setNanonetsLoading={setNanonetsLoading}
-              nanonetsLoading={nanonetsLoading}
-              routingConditions={checkForNewFile}
-              checkForNewFileForSalesForce={checkForNewFileForSalesForce}
-              manualFlow={false}
-              lineItemSyncingData={lineItemSyncingData}
-              CurrentFileId={currentFIle}
-              currentFileData={currentFIle}
-              accoutSyncOptions={accoutSyncOptions}
-            />
+            <Row gutter={[16, 24]} justify="space-between">
+              <Col span={12}>
+                <Typography name="Body 3/Regular">Select column</Typography>
+                <CommonSelect
+                  style={{width: '100%'}}
+                  value={oldColumnName}
+                  placeholder="Please select the column header name"
+                  options={existingColumnOptions}
+                  onChange={(e: any) => {
+                    setNewHeaderName('');
+                    setOldColumnName(e);
+                  }}
+                />
+              </Col>
+              <Col span={12}>
+                <Typography name="Body 3/Regular">Column New name</Typography>
+
+                <OsInput
+                  style={{width: '100%'}}
+                  placeholder="Please add new column header name"
+                  value={newHeaderName}
+                  onChange={(e: any) => {
+                    setNewHeaderName(e?.target?.value);
+                  }}
+                />
+              </Col>
+              <div
+                style={{
+                  display: 'flex',
+                  width: '100%',
+                  justifyContent: 'flex-end',
+                }}
+              >
+                {' '}
+                <div style={{marginRight: '30px'}}>
+                  <OsButton
+                    // style={{marginRight: '100px'}}
+                    disabled={
+                      !(newHeaderName?.length > 0 && oldColumnName?.length > 0)
+                    }
+                    text="Update"
+                    buttontype="SECONDARY"
+                    clickHandler={() => {
+                      UpdateTheColumnName('open', oldColumnName, newHeaderName);
+                    }}
+                  />{' '}
+                </div>
+                <OsButton
+                  disabled={
+                    !(newHeaderName?.length > 0 && oldColumnName?.length > 0)
+                  }
+                  text="Update & Close"
+                  buttontype="PRIMARY"
+                  clickHandler={() => {
+                    UpdateTheColumnName('close', oldColumnName, newHeaderName);
+                  }}
+                />
+              </div>
+            </Row>
           }
-          width={600}
-          open={showModal}
+          width={900}
+          open={showUpdateColumnModal}
           onCancel={() => {
-            setShowModal((p) => !p);
+            setShowUpdateColumnModal(false);
+            setNewHeaderName('');
+            setOldColumnName('');
           }}
         />
-      )}
-      {!salesForceinstanceUrl && (
         <OsModal
+          title="Add New Column"
+          bodyPadding={30}
+          body={
+            <Row gutter={[16, 24]} justify="space-between">
+              <Col span={21}>
+                <OsInput
+                  style={{width: '100%'}}
+                  placeholder="Please add the column header name"
+                  onChange={(e: any) => {
+                    setNewHeaderName(e?.target?.value);
+                  }}
+                />
+              </Col>
+              <OsButton
+                disabled={!(newHeaderName?.length > 0)}
+                text="Add"
+                buttontype="PRIMARY"
+                clickHandler={() => {
+                  AddNewCloumnToMergedTable(newHeaderName);
+                }}
+              />
+            </Row>
+          }
+          width={900}
+          open={showAddColumnModal}
+          onCancel={() => {
+            setShowAddColumnModal(false);
+          }}
+        />
+
+        <OsModal
+          title="Store New Formula "
+          bodyPadding={30}
           body={
             <Row style={{width: '100%', padding: '15px'}}>
               <Space
@@ -1944,343 +2082,190 @@ const EditorFile = () => {
                 align="center"
               >
                 <Space direction="vertical" align="center" size={1}>
-                  <Typography
-                    name="Body 3/Regular"
-                    style={{fontSize: '20px', textAlign: 'center'}}
-                  >
-                    {
-                      'This file is already updated. Please review the other file on Review Quotes'
-                    }
+                  <Typography name="Body 2/Regular">
+                    Store New Formula
+                  </Typography>
+                  <Typography name="Body 3/Regular">
+                    Would you like to save this formula to our stored
+                    collection?
                   </Typography>
                 </Space>
 
                 <Space size={12}>
                   <OsButton
-                    // loading={loading}
-                    text="Return to Review Quotes"
+                    text="No"
+                    buttontype="SECONDARY"
+                    clickHandler={() => {
+                      const newArrr: any =
+                        decliendFormulas?.length > 0
+                          ? [...decliendFormulas]
+                          : [];
+
+                      newArrr?.push(valueOfNewFormula);
+                      setDecliendFormulas(newArrr);
+                      setValueOfNewFormula('');
+                      setOpenAddNewFormulaModal(false);
+                    }}
+                  />
+                  <OsButton
+                    text="Yes, Add"
                     buttontype="PRIMARY"
                     clickHandler={() => {
-                      router?.push(
-                        `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue()}`,
-                      );
-                      CancelEditing();
+                      addFormulaTOStoredFormulas(valueOfNewFormula);
                     }}
                   />
                 </Space>
               </Space>
             </Row>
           }
-          width={600}
+          width={700}
+          open={openAddNewFormulaModal}
           onCancel={() => {
-            router?.push(
-              `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue()}`,
-            );
+            setOpenAddNewFormulaModal(false);
           }}
-          open={returnBackModal}
-          // open={false}
         />
-      )}
-      <OsModal
-        title="Update  Column Name"
-        bodyPadding={30}
-        body={
-          <Row gutter={[16, 24]} justify="space-between">
-            <Col span={12}>
-              <Typography name="Body 3/Regular">Select column</Typography>
-              <CommonSelect
-                style={{width: '100%'}}
-                value={oldColumnName}
-                placeholder="Please select the column header name"
-                options={existingColumnOptions}
-                onChange={(e: any) => {
-                  setNewHeaderName('');
-                  setOldColumnName(e);
-                }}
-              />
-            </Col>
-            <Col span={12}>
-              <Typography name="Body 3/Regular">Column New name</Typography>
 
-              <OsInput
-                style={{width: '100%'}}
-                placeholder="Please add new column header name"
-                value={newHeaderName}
-                onChange={(e: any) => {
-                  setNewHeaderName(e?.target?.value);
-                }}
-              />
-            </Col>
-            <div
-              style={{
-                display: 'flex',
-                width: '100%',
-                justifyContent: 'flex-end',
-              }}
-            >
-              {' '}
-              <div style={{marginRight: '30px'}}>
-                <OsButton
-                  // style={{marginRight: '100px'}}
-                  disabled={
-                    newHeaderName?.length > 0 && oldColumnName?.length > 0
-                      ? false
-                      : true
-                  }
-                  text="Update"
-                  buttontype="SECONDARY"
-                  clickHandler={() => {
-                    UpdateTheColumnName('open', oldColumnName, newHeaderName);
-                  }}
-                />{' '}
-              </div>
-              <OsButton
-                disabled={
-                  newHeaderName?.length > 0 && oldColumnName?.length > 0
-                    ? false
-                    : true
-                }
-                text="Update & Close"
-                buttontype="PRIMARY"
-                clickHandler={() => {
-                  UpdateTheColumnName('close', oldColumnName, newHeaderName);
-                }}
-              />
-            </div>
-          </Row>
-        }
-        width={900}
-        open={showUpdateColumnModal}
-        onCancel={() => {
-          setShowUpdateColumnModal(false);
-          setNewHeaderName('');
-          setOldColumnName('');
-        }}
-      />
-      <OsModal
-        title="Add New Column"
-        bodyPadding={30}
-        body={
-          <Row gutter={[16, 24]} justify="space-between">
-            <Col span={21}>
-              <OsInput
-                style={{width: '100%'}}
-                placeholder="Please add the column header name"
-                onChange={(e: any) => {
-                  setNewHeaderName(e?.target?.value);
-                }}
-              />
-            </Col>
-            <OsButton
-              disabled={newHeaderName?.length > 0 ? false : true}
-              text="Add"
-              buttontype="PRIMARY"
-              clickHandler={() => {
-                AddNewCloumnToMergedTable(newHeaderName);
-              }}
-            />
-          </Row>
-        }
-        width={900}
-        open={showAddColumnModal}
-        onCancel={() => {
-          setShowAddColumnModal(false);
-        }}
-      />
-
-      <OsModal
-        title="Store New Formula "
-        bodyPadding={30}
-        body={
-          <Row style={{width: '100%', padding: '15px'}}>
-            <Space
-              style={{width: '100%'}}
-              size={24}
-              direction="vertical"
-              align="center"
-            >
-              <Space direction="vertical" align="center" size={1}>
-                <Typography name="Body 2/Regular">
-                  {'Store New Formula'}
-                </Typography>
-                <Typography name="Body 3/Regular">
-                  {
-                    'Would you like to save this formula to our stored collection?'
-                  }
-                </Typography>
-              </Space>
-
-              <Space size={12}>
-                <OsButton
-                  text={`No`}
-                  buttontype="SECONDARY"
-                  clickHandler={() => {
-                    let newArrr: any =
-                      decliendFormulas?.length > 0 ? [...decliendFormulas] : [];
-
-                    newArrr?.push(valueOfNewFormula);
-                    setDecliendFormulas(newArrr);
-                    setValueOfNewFormula('');
-                    setOpenAddNewFormulaModal(false);
+        <OsModal
+          title="Apply Formula"
+          bodyPadding={30}
+          body={
+            <Row gutter={[16, 24]} justify="space-between">
+              <Col span={24}>
+                <Typography name="Body 1/Regular"> Formula</Typography>
+                <CommonSelect
+                  style={{width: '100%'}}
+                  value={formulaSelected}
+                  placeholder="Please select the formula"
+                  options={formulaOptions}
+                  onChange={(e: any, label: any) => {
+                    setNewHeaderName('');
+                    setOldColumnName('');
+                    setFormulaSelected(e);
+                    setTypeOfFormula(label?.label);
                   }}
                 />
-                <OsButton
-                  text="Yes, Add"
-                  buttontype="PRIMARY"
-                  clickHandler={() => {
-                    addFormulaTOStoredFormulas(valueOfNewFormula);
-                  }}
-                />
-              </Space>
-            </Space>
-          </Row>
-        }
-        width={700}
-        open={openAddNewFormulaModal}
-        onCancel={() => {
-          setOpenAddNewFormulaModal(false);
-        }}
-      />
-
-      <OsModal
-        title="Apply Formula"
-        bodyPadding={30}
-        body={
-          <Row gutter={[16, 24]} justify="space-between">
-            <Col span={24}>
-              <Typography name="Body 1/Regular"> Formula</Typography>
-              <CommonSelect
-                style={{width: '100%'}}
-                value={formulaSelected}
-                placeholder="Please select the formula"
-                options={formulaOptions}
-                onChange={(e: any, label: any) => {
-                  setNewHeaderName('');
-                  setOldColumnName('');
-                  setFormulaSelected(e);
-                  setTypeOfFormula(label?.label);
-                }}
-              />
-            </Col>
-            {formulaSelected && (
-              <>
-                {' '}
-                <Col span={12}>
-                  <Typography name="Body 3/Regular">
-                    {typeOfFormula?.toString()?.toLowerCase() !== 'split'
-                      ? 'Apply formula from'
-                      : 'Apply formula on'}
-                  </Typography>
-
-                  <CommonSelect
-                    style={{width: '100%'}}
-                    value={oldColumnName}
-                    placeholder={
-                      typeOfFormula?.toString()?.toLowerCase() === 'split'
-                        ? 'Please select the column header name'
-                        : 'Please select the column you want to map from'
-                    }
-                    options={existingColumnOptions}
-                    onChange={(e: any) => {
-                      setNewHeaderName('');
-                      setOldColumnName(e);
-                    }}
-                  />
-                </Col>
-                {typeOfFormula?.toString()?.toLowerCase() !== 'split' && (
+              </Col>
+              {formulaSelected && (
+                <>
+                  {' '}
                   <Col span={12}>
                     <Typography name="Body 3/Regular">
                       {typeOfFormula?.toString()?.toLowerCase() !== 'split'
-                        ? 'Apply formula to'
+                        ? 'Apply formula from'
                         : 'Apply formula on'}
                     </Typography>
 
-                    {/* <Typography name='Body 3/Regular' > New column name</Typography> */}
-
                     <CommonSelect
                       style={{width: '100%'}}
-                      value={oldColumnName1}
-                      placeholder="Please select the column to you want to map"
+                      value={oldColumnName}
+                      placeholder={
+                        typeOfFormula?.toString()?.toLowerCase() === 'split'
+                          ? 'Please select the column header name'
+                          : 'Please select the column you want to map from'
+                      }
                       options={existingColumnOptions}
                       onChange={(e: any) => {
                         setNewHeaderName('');
-                        setOldColumnName1(e);
+                        setOldColumnName(e);
                       }}
                     />
                   </Col>
-                )}
-                <Col
-                  span={
-                    typeOfFormula?.toString()?.toLowerCase() === 'split'
-                      ? 12
-                      : 24
-                  }
-                >
-                  <Typography name="Body 3/Regular">
-                    {' '}
-                    New column name
-                  </Typography>
+                  {typeOfFormula?.toString()?.toLowerCase() !== 'split' && (
+                    <Col span={12}>
+                      <Typography name="Body 3/Regular">
+                        {typeOfFormula?.toString()?.toLowerCase() !== 'split'
+                          ? 'Apply formula to'
+                          : 'Apply formula on'}
+                      </Typography>
 
-                  <OsInput
-                    style={{width: '100%'}}
-                    placeholder="Please add new column header name"
-                    value={newHeaderName}
-                    onChange={(e: any) => {
-                      setNewHeaderName(e?.target?.value);
-                    }}
-                  />
-                </Col>
-              </>
-            )}
+                      {/* <Typography name='Body 3/Regular' > New column name</Typography> */}
 
-            <div
-              style={{
-                display: 'flex',
-                width: '100%',
-                justifyContent: 'flex-end',
-              }}
-            >
-              {' '}
-              <div style={{marginRight: '30px'}}>
-                <OsButton
-                  // style={{marginRight: '100px'}}
-                  disabled={
-                    newHeaderName?.length > 0 && oldColumnName?.length > 0
-                      ? false
-                      : true
-                  }
-                  text="Apply"
-                  buttontype="PRIMARY"
-                  clickHandler={() => {
-                    if (typeOfFormula?.toString()?.toLowerCase() === 'split') {
-                      applyFormula(
-                        formulaSelected,
-                        oldColumnName,
-                        newHeaderName,
-                      );
-                    } else {
-                      applyformulaforSumAverage(
-                        formulaSelected,
-                        oldColumnName,
-                        newHeaderName,
-                        oldColumnName1,
-                      );
+                      <CommonSelect
+                        style={{width: '100%'}}
+                        value={oldColumnName1}
+                        placeholder="Please select the column to you want to map"
+                        options={existingColumnOptions}
+                        onChange={(e: any) => {
+                          setNewHeaderName('');
+                          setOldColumnName1(e);
+                        }}
+                      />
+                    </Col>
+                  )}
+                  <Col
+                    span={
+                      typeOfFormula?.toString()?.toLowerCase() === 'split'
+                        ? 12
+                        : 24
                     }
-                  }}
-                />{' '}
+                  >
+                    <Typography name="Body 3/Regular">
+                      {' '}
+                      New column name
+                    </Typography>
+
+                    <OsInput
+                      style={{width: '100%'}}
+                      placeholder="Please add new column header name"
+                      value={newHeaderName}
+                      onChange={(e: any) => {
+                        setNewHeaderName(e?.target?.value);
+                      }}
+                    />
+                  </Col>
+                </>
+              )}
+
+              <div
+                style={{
+                  display: 'flex',
+                  width: '100%',
+                  justifyContent: 'flex-end',
+                }}
+              >
+                {' '}
+                <div style={{marginRight: '30px'}}>
+                  <OsButton
+                    // style={{marginRight: '100px'}}
+                    disabled={
+                      !(newHeaderName?.length > 0 && oldColumnName?.length > 0)
+                    }
+                    text="Apply"
+                    buttontype="PRIMARY"
+                    clickHandler={() => {
+                      if (
+                        typeOfFormula?.toString()?.toLowerCase() === 'split'
+                      ) {
+                        applyFormula(
+                          formulaSelected,
+                          oldColumnName,
+                          newHeaderName,
+                        );
+                      } else {
+                        applyformulaforSumAverage(
+                          formulaSelected,
+                          oldColumnName,
+                          newHeaderName,
+                          oldColumnName1,
+                        );
+                      }
+                    }}
+                  />{' '}
+                </div>
               </div>
-            </div>
-          </Row>
-        }
-        width={900}
-        open={showApplyFormula}
-        onCancel={() => {
-          setShowApplyFormula(false);
-          setFormulaSelected('');
-          setNewHeaderName('');
-          setOldColumnName('');
-        }}
-      />
-    </GlobalLoader>
+            </Row>
+          }
+          width={900}
+          open={showApplyFormula}
+          onCancel={() => {
+            setShowApplyFormula(false);
+            setFormulaSelected('');
+            setNewHeaderName('');
+            setOldColumnName('');
+          }}
+        />
+      </GlobalLoader>
+    </Suspense>
   );
 };
 export default EditorFile;

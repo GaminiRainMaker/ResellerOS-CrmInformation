@@ -19,6 +19,7 @@ import {
   getAllApprovedPartnerForQuoteConfiq,
   getAllPartnerandProgramApprovedDataSalesForce,
   createOrUpdateMasterPartner,
+  getAllApprovedPartnerFoFormulas,
 } from '../actions/partner';
 
 type PartnerState = {
@@ -341,6 +342,24 @@ const partnerSlice = createSlice({
           state.error = action.payload;
         },
       )
+      .addCase(getAllApprovedPartnerFoFormulas.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getAllApprovedPartnerFoFormulas.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.allPartnersById = action.payload;
+        },
+      )
+      .addCase(
+        getAllApprovedPartnerFoFormulas.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
       .addCase(createOrUpdateMasterPartner.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -349,7 +368,7 @@ const partnerSlice = createSlice({
         createOrUpdateMasterPartner.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          // state.allPartnersById = action.payload;
+          state.allPartnersById = action.payload;
         },
       )
       .addCase(
@@ -358,7 +377,8 @@ const partnerSlice = createSlice({
           state.loading = false;
           state.error = action.payload;
         },
-      );
+      )
+      
   },
 });
 

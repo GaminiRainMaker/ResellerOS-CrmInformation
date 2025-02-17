@@ -83,9 +83,8 @@ const OsUpload: React.FC<any> = ({
   useEffect(() => {
     setLoading(true);
     dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
-      setAdvancedSetting(payload?.payload?.advanced_excel);
-
       // setAdvancedSetting(payload?.payload?.advanced_excel);
+      setAdvancedSetting(true);
     });
     setLoading(false);
   }, []);
@@ -430,12 +429,12 @@ const OsUpload: React.FC<any> = ({
                 let extractedTableKey = Object.keys(
                   payload?.payload.analyzeResult.documents[0].fields,
                 ).find((key) => key.startsWith('ExtractedTable_'));
-
                 if (extractedTableKey && extractedTableKey !== undefined) {
                   let extractedModel =
                     payload?.payload.analyzeResult.documents[0].fields?.[
                       extractedTableKey
                     ].valueArray;
+
                   resultTantArrr = extractedModel.flat().map((item: any) => {
                     let valueObject = item.valueObject;
                     let output: any = {};
@@ -573,11 +572,13 @@ const OsUpload: React.FC<any> = ({
                   let newItem: any = {};
                   for (let key in item) {
                     // Remove spaces, periods, hashes, and other non-alphanumeric characters, and convert to lowercase
-                    let newKey = key
-                      .replace(/[^\w\s]/g, '')
-                      .replace(/\s+/g, '')
-                      .toLowerCase()
-                      ?.trim();
+                    let newKey = transformString(
+                      key
+                        .replace(/[^\w\s]/g, '')
+                        .replace(/\s+/g, '')
+                        .toLowerCase()
+                        ?.trim(),
+                    );
 
                     // Assign the value to the new key
                     newItem[newKey?.trim()] = item[key].trim();

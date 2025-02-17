@@ -1,3 +1,9 @@
+/* eslint-disable no-restricted-globals */
+/* eslint-disable no-sequences */
+/* eslint-disable array-callback-return */
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable eqeqeq */
+
 'use client';
 
 import AddQuote from '@/app/components/common/addQuote';
@@ -13,12 +19,13 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {AttachmentOptions, selectData} from '@/app/utils/CONSTANTS';
-import {formatDate, handleDate} from '@/app/utils/base';
+import {handleDate} from '@/app/utils/base';
 import {ArrowDownTrayIcon} from '@heroicons/react/24/outline';
 import {Badge, Form, MenuProps, notification} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {act, useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
+import dynamic from 'next/dynamic';
 import {getAllBundle} from '../../../../../redux/actions/bundle';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
 import {
@@ -34,6 +41,12 @@ import {
 } from '../../../../../redux/actions/quoteFile';
 import {getAllTableColumn} from '../../../../../redux/actions/tableColumn';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+
+import {getRebateQuoteLineItemByQuoteId} from '../../../../../redux/actions/rebateQuoteLineitem';
+import {getAllValidationByQuoteId} from '../../../../../redux/actions/validation';
+import {getAddressByCustomerId} from '../../../../../redux/actions/address';
+import {getAllBillingContactByCustomerId} from '../../../../../redux/actions/billingContact';
+
 const DownloadFile = dynamic(() => import('./DownloadFile'), {
   ssr: false,
 });
@@ -47,12 +60,7 @@ const ProfitabilityMain = dynamic(
     ssr: false,
   },
 );
-const Rebates = dynamic(() => import('./allTabs/Rebates'), {
-  ssr: false,
-});
-const Validation = dynamic(() => import('./allTabs/Validation'), {
-  ssr: false,
-});
+
 const AttachmentDocument = dynamic(() => import('./allTabs/Attachment/index'), {
   ssr: false,
 });
@@ -60,9 +68,6 @@ const ReviewQuotes = dynamic(() => import('./allTabs/ReviewQuotes'), {
   ssr: false,
 });
 
-import dynamic from 'next/dynamic';
-import {getRebateQuoteLineItemByQuoteId} from '../../../../../redux/actions/rebateQuoteLineitem';
-import {getAllValidationByQuoteId} from '../../../../../redux/actions/validation';
 const DrawerContent = dynamic(() => import('./DrawerContent'), {
   ssr: false,
 });
@@ -78,16 +83,19 @@ const GenerateQuote: React.FC = () => {
   const [form] = Form.useForm();
   const [addDocForm] = Form.useForm();
   const router = useRouter();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const [api, contextHolder] = notification.useNotification();
   const getQuoteID = searchParams.get('id');
   const isView = searchParams.get('isView');
   const [activeTab, setActiveTab] = useState<any>('1');
 
   const [validationTab, setValidationTab] = useState<boolean>(false);
-  const {loading} = useAppSelector((state) => state.quoteLineItem);
+  const {loading, quoteLineItem} = useAppSelector(
+    (state) => state.quoteLineItem,
+  );
   const {quoteById} = useAppSelector((state) => state.quote);
   const [quoteByIdData, setQuoteByIdData] = useState<any>();
+  const [totalValues, setTotalValues] = useState<any>();
 
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [selectTedRowData, setSelectedRowData] = useState<any>([]);
@@ -153,6 +161,7 @@ const GenerateQuote: React.FC = () => {
     );
   };
 
+  // console.log('32423432432', totalValues);
   useEffect(() => {
     getAlllApisData();
   }, [getQuoteID]);
@@ -167,7 +176,7 @@ const GenerateQuote: React.FC = () => {
     dispatch(getQuoteByIdForFormStack(Number(getQuoteID)))?.then(
       (payload: any) => {
         dispatch(getAllBundle(Number(getQuoteID)))?.then(
-          (payloadBundle: any) => {
+          async (payloadBundle: any) => {
             if (payloadBundle?.payload?.length > 0) {
               const newBundleData: any = [];
               payloadBundle?.payload?.map((items: any) => {
@@ -175,7 +184,7 @@ const GenerateQuote: React.FC = () => {
                   newBundleData?.push(items);
                 }
               });
-              let newObj = {
+              const newObj = {
                 bundleData: newBundleData,
                 QuoteLineItems: payload?.payload?.Profitabilities,
                 ...payload?.payload?.Customer,
@@ -186,12 +195,33 @@ const GenerateQuote: React.FC = () => {
                 quoute_line_item_id: payload?.payload?.Profitabilities?.id,
                 quote_id: payload?.payload?.id,
               };
-              delete newObj?.Customer;
-              delete newObj?.Opportunity,
-                delete newObj?.Profitabilities,
-                setObjectForSyncingValues(newObj);
+              // delete newObj?.Customer;
+              delete newObj?.Opportunity;
+              delete newObj?.Profitabilities;
+              let addressAlll: any = [];
+              await dispatch(
+                getAddressByCustomerId(payload?.payload?.customer_id),
+              )?.then((payload: any) => {
+                addressAlll = payload?.payload;
+              });
+              const allContactDetails: any = [];
+              await dispatch(
+                getAllBillingContactByCustomerId(payload?.payload?.customer_id),
+              )?.then((payload: any) => {
+                if (payload?.payload && payload?.payload?.length > 0) {
+                  payload?.payload?.map((itemsIn: any) => {
+                    allContactDetails?.push(itemsIn);
+                  });
+                }
+              });
+
+              newObj.allContactDetails = allContactDetails;
+              newObj.addressForAll = addressAlll;
+
+              setObjectForSyncingValues(newObj);
+              setObjectForSyncingValues(newObj);
             } else {
-              let newObj = {
+              const newObj = {
                 ...payload?.payload?.Customer,
                 ...payload?.payload?.Opportunity,
                 ...payload?.payload,
@@ -201,10 +231,29 @@ const GenerateQuote: React.FC = () => {
                 quote_id: payload?.payload?.id,
                 QuoteLineItems: payload?.payload?.Profitabilities,
               };
-              delete newObj?.Customer;
-              delete newObj?.Opportunity,
-                delete newObj?.Profitabilities,
-                setObjectForSyncingValues(newObj);
+              // delete newObj?.Customer;
+              delete newObj?.Opportunity;
+              delete newObj?.Profitabilities;
+              const allContactDetails: any = [];
+              await dispatch(
+                getAllBillingContactByCustomerId(payload?.payload?.customer_id),
+              )?.then((payload: any) => {
+                if (payload?.payload && payload?.payload?.length > 0) {
+                  payload?.payload?.map((itemsIn: any) => {
+                    allContactDetails?.push(itemsIn);
+                  });
+                }
+              });
+
+              newObj.allContactDetails = allContactDetails;
+              let addressAlll: any;
+              await dispatch(
+                getAddressByCustomerId(payload?.payload?.customer_id),
+              )?.then((payload: any) => {
+                addressAlll = payload?.payload;
+              });
+              newObj.addressForAll = addressAlll;
+              setObjectForSyncingValues(newObj);
             }
           },
         );
@@ -241,7 +290,7 @@ const GenerateQuote: React.FC = () => {
     setTableColumnDataShow(filterRequired);
   }, [activeTab, tableColumnData]);
 
-  const commonUpdateCompleteAndDraftMethod = (status: string) => {
+  const commonUpdateCompleteAndDraftMethod = async (status: string) => {
     try {
       // setStatusUpdateLoading(true);
       if (getQuoteID) {
@@ -252,11 +301,12 @@ const GenerateQuote: React.FC = () => {
           ids: getQuoteID,
           status,
         };
-        dispatch(updateQuoteStatusById(obj)).then((d) => {
+        await dispatch(updateQuoteStatusById(obj)).then((d) => {
           if (d?.payload) {
             setStatusUpdateLoading(false);
           }
         });
+        getAlllApisData();
       }
     } catch (err) {
       setStatusUpdateLoading(false);
@@ -346,7 +396,7 @@ const GenerateQuote: React.FC = () => {
                 type: 'info',
               });
             } else if (selectTedRowData?.length > 0) {
-              let bundleCount = selectTedRowData.filter(
+              const bundleCount = selectTedRowData.filter(
                 (item: any) => item?.bundle_id,
               ).length;
               if (bundleCount > 0) {
@@ -570,10 +620,13 @@ const GenerateQuote: React.FC = () => {
   };
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       {contextHolder}
       <Space size={12} direction="vertical" style={{width: '100%'}}>
-        <GenerateQuoteAnalytics />
+        <GenerateQuoteAnalytics
+          totalValues={totalValues}
+          setTotalValues={setTotalValues}
+        />
 
         <Row justify="space-between" align="middle">
           <Col>
@@ -612,30 +665,32 @@ const GenerateQuote: React.FC = () => {
                     quoteDetails={objectForSyncingValues}
                     isGenerateQuotePage
                   />
-                  <OsButton
-                    loading={
-                      statusValue === 'Needs Review'
-                        ? statusUpdateLoading
-                        : false
-                    }
-                    text=" Mark as Complete"
-                    buttontype="PRIMARY"
-                    clickHandler={() => {
-                      if (
-                        quoteFileUnverifiedById &&
-                        quoteFileUnverifiedById?.length > 0
-                      ) {
-                        notification?.open({
-                          message:
-                            'Please verify all the files first to mark as Complete this Quote',
-                          type: 'info',
-                        });
-                        return;
+                  {/* {quoteByIdData?.status !== 'Needs Review' && (
+                    <OsButton
+                      loading={
+                        statusValue === 'Needs Review'
+                          ? statusUpdateLoading
+                          : false
                       }
-                      setStatusValue('Needs Review');
-                      commonUpdateCompleteAndDraftMethod('Needs Review');
-                    }}
-                  />
+                      text="Submit For Review"
+                      buttontype="PRIMARY"
+                      clickHandler={() => {
+                        if (
+                          quoteFileUnverifiedById &&
+                          quoteFileUnverifiedById?.length > 0
+                        ) {
+                          notification?.open({
+                            message:
+                              'Please verify all the files first to mark as Complete this Quote',
+                            type: 'info',
+                          });
+                          return;
+                        }
+                        setStatusValue('Needs Review');
+                        commonUpdateCompleteAndDraftMethod('Needs Review');
+                      }}
+                    />
+                  )} */}
                 </>
               )}
 
@@ -695,7 +750,7 @@ const GenerateQuote: React.FC = () => {
                           setTypeForAttachmentFilter(e);
                         }}
                         allowClear
-                        defaultValue={'all'}
+                        defaultValue="all"
                       />
                     ) : (
                       <CommonSelect
@@ -780,7 +835,11 @@ const GenerateQuote: React.FC = () => {
           </Row>
         }
       >
-        <DrawerContent form={form} onFinish={onFinish} />
+        <DrawerContent
+          form={form}
+          onFinish={onFinish}
+          totalValues={totalValues}
+        />
       </OsDrawer>
 
       <OsModal
@@ -800,7 +859,7 @@ const GenerateQuote: React.FC = () => {
           addDocForm.resetFields();
         }}
       />
-    </>
+    </Suspense>
   );
 };
 

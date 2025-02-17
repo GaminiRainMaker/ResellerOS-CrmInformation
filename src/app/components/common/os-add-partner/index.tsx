@@ -9,17 +9,16 @@ import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
 import {industryOptions} from '@/app/utils/CONSTANTS';
 import {Form, notification} from 'antd';
+import {usePathname} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {
-  getAllPartnerandProgram,
   insertPartner,
   updatePartnerById,
 } from '../../../../../redux/actions/partner';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import CustomTextCapitalization from '../hooks/CustomTextCapitalizationHook';
 import CommonSelect from '../os-select';
 import {AddPartnerInterface} from './os-add-partner.interface';
-import {usePathname, useSearchParams} from 'next/navigation';
-import CustomTextCapitalization from '../hooks/CustomTextCapitalizationHook';
 
 const AddPartner: React.FC<AddPartnerInterface> = ({
   form,
@@ -77,15 +76,15 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
         partnerObj.admin_request = false;
       }
       if (isCanvas) {
-        (partnerObj.admin_request = true),
-          (partnerObj.organization =
-            isDecryptedRecord?.context?.organization?.name),
-          (partnerObj.salesforce_username =
-            isDecryptedRecord?.context?.user?.userName);
+        partnerObj.admin_request = true;
+        partnerObj.organization =
+          isDecryptedRecord?.context?.organization?.name;
+        partnerObj.salesforce_username =
+          isDecryptedRecord?.context?.user?.userName;
       }
       await dispatch(insertPartner(partnerObj)).then((d: any) => {
         if (d?.payload) {
-          let newObj = {
+          const newObj = {
             name: d?.payload?.partner,
             value: d?.payload?.id,
           };
@@ -164,7 +163,7 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
           onFinish={onFinish}
           layout="vertical"
           requiredMark={false}
-          initialValues={updateTheObject ? updateTheObject : formPartnerData}
+          initialValues={updateTheObject || formPartnerData}
         >
           <Form.Item
             label="Partner Name"
