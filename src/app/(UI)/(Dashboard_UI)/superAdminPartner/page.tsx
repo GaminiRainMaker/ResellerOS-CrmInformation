@@ -341,7 +341,7 @@ const SuperAdminPartner: React.FC = () => {
       id,
       type,
     };
-    dispatch(deletePartnerProgramTemplateData(obj)).then((d) => {
+    dispatch(deletePartnerProgramTemplateData(obj)).then((d: any) => {
       if (d?.payload) {
         setOpenPreviewModal(false);
         setShowLoginTemplateModal(false);
@@ -1180,7 +1180,7 @@ const SuperAdminPartner: React.FC = () => {
 
     // Dispatch the update only if `script` or `login_script` exists
     if (obj.script || obj.login_script) {
-      await dispatch(updatePartnerProgramById(obj)).then((d) => {
+      await dispatch(updatePartnerProgramById(obj)).then((d: any) => {
         getPartnerDataForSuperAdmin();
       });
     }
