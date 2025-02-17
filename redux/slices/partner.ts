@@ -20,6 +20,7 @@ import {
   getAllPartnerandProgramApprovedDataSalesForce,
   createOrUpdateMasterPartner,
   getAllApprovedPartnerFoFormulas,
+  getAllPartnersForParentPartner,
 } from '../actions/partner';
 
 type PartnerState = {
@@ -378,7 +379,24 @@ const partnerSlice = createSlice({
           state.error = action.payload;
         },
       )
-      
+      .addCase(getAllPartnersForParentPartner.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getAllPartnersForParentPartner.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.allPartnersById = action.payload;
+        },
+      )
+      .addCase(
+        getAllPartnersForParentPartner.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      );
   },
 });
 

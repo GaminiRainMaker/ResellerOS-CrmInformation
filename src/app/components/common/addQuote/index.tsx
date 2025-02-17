@@ -1,3 +1,7 @@
+/* eslint-disable no-restricted-globals */
+/* eslint-disable no-nested-ternary */
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable @typescript-eslint/no-loop-func */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-await-in-loop */
@@ -553,6 +557,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           date: handleDate(),
         };
         const response = await dispatch(insertQuote([newObj]))?.then(
+          // eslint-disable-next-line @typescript-eslint/no-loop-func
           async (payload: any) => {
             latestQuoteId = payload?.payload?.data?.[0]?.id;
             const quoteFile = {

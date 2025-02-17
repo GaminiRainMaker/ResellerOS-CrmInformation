@@ -10,8 +10,11 @@ import Typography from '@/app/components/common/typography';
 import {industryOptions} from '@/app/utils/CONSTANTS';
 import {Form, notification} from 'antd';
 import {usePathname} from 'next/navigation';
+import {Option} from 'antd/es/mentions';
+
 import {useEffect, useState} from 'react';
 import {
+  getAllPartnersForParentPartner,
   insertPartner,
   updatePartnerById,
 } from '../../../../../redux/actions/partner';
@@ -19,6 +22,8 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import CustomTextCapitalization from '../hooks/CustomTextCapitalizationHook';
 import CommonSelect from '../os-select';
 import {AddPartnerInterface} from './os-add-partner.interface';
+import useDebounceHook from '../hooks/useDebounceHook';
+import GlobalLoader from '../os-global-loader';
 
 const AddPartner: React.FC<AddPartnerInterface> = ({
   form,
@@ -42,7 +47,15 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
   const {setGetAllPartnerandProgramFilterDataForAdmin} = useAppSelector(
     (state) => state.partner,
   );
+
+  const [loading, seyLoading] = useState<boolean>(false);
   const [masterPartnerOption, setMasterPartnerOption] = useState<any>();
+
+  const [queryDataa, setQueryData] = useState<{
+    partnerQuery: string | null;
+  }>({
+    partnerQuery: '',
+  });
 
   useEffect(() => {
     form?.resetFields();
@@ -119,20 +132,44 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
     form?.resetFields();
   }, [formPartnerData]);
 
-  useEffect(() => {
-    if (setGetAllPartnerandProgramFilterDataForAdmin?.AllPartner) {
-      const options =
-        setGetAllPartnerandProgramFilterDataForAdmin?.AllPartner?.map(
-          (partner: any) => ({
+  const [newSfreere, setNewdsfd] = useState<any>();
+  const searchQuery = useDebounceHook(queryDataa, 500);
+
+  const getAllPartnerForParentList = async () => {
+    seyLoading(true);
+    await dispatch(getAllPartnersForParentPartner(searchQuery))?.then(
+      (payload: any) => {
+        if (payload?.payload) {
+          const options = payload?.payload?.map((partner: any) => ({
             label: <CustomTextCapitalization text={partner?.partner} />, // Partner name as label
             value: partner?.id, // Partner ID as value
-          }),
-        );
-      setMasterPartnerOption(options);
-    }
-  }, [setGetAllPartnerandProgramFilterDataForAdmin?.AllPartner]);
+          }));
+          setMasterPartnerOption(options);
+          setNewdsfd(options);
+        }
+      },
+    );
+    seyLoading(false);
+  };
+  useEffect(() => {
+    getAllPartnerForParentList();
+  }, [searchQuery]);
+
+  // useEffect(() => {
+  //   if (setGetAllPartnerandProgramFilterDataForAdmin?.AllPartner) {
+  //     const options =
+  //       setGetAllPartnerandProgramFilterDataForAdmin?.AllPartner?.map(
+  //         (partner: any) => ({
+  //           label: <CustomTextCapitalization text={partner?.partner} />, // Partner name as label
+  //           value: partner?.id, // Partner ID as value
+  //         }),
+  //       );
+  //     setMasterPartnerOption(options);
+  //   }
+  // }, [setGetAllPartnerandProgramFilterDataForAdmin?.AllPartner]);
+  console.log('32432423432', masterPartnerOption);
   return (
-    <>
+    <GlobalLoader loading={loading}>
       {!drawer && (
         <Row
           justify="space-between"
@@ -218,24 +255,51 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
             </Col>
             <Col span={drawer ? 24 : 12}>
               <Form.Item
-                label="Master Partner"
+                label="Parent Partner"
                 name="master_partner_id"
                 rules={[
-                  {required: false, message: 'Please select master partner!'},
+                  {required: false, message: 'Please select parent partner!'},
                 ]}
               >
                 <CommonSelect
                   style={{width: '100%'}}
+                  placeholder="Search here"
+                  showSearch
+                  allowClear
+                  onSearch={(e) => {
+                    setQueryData({
+                      ...queryDataa,
+                      partnerQuery: e,
+                    });
+                  }}
+                  value={queryDataa?.partnerQuery}
+                >
+                  {masterPartnerOption?.map((options: any) => (
+                    <Option key={options?.value} value={options?.value}>
+                      {options?.label}
+                    </Option>
+                  ))}
+                </CommonSelect>
+                {/* <CommonSelect
+                  style={{width: '100%'}}
                   placeholder="Select"
                   options={masterPartnerOption}
+                  value={queryDataa?.partnerQuery}
                   allowClear
-                />
+                  showSearch
+                  onSearch={(e) => {
+                    setQueryData({
+                      ...queryDataa,
+                      partnerQuery: e,
+                    });
+                  }}
+                /> */}
               </Form.Item>
             </Col>
           </Row>
         </Form>
       </Space>
-    </>
+    </GlobalLoader>
   );
 };
 

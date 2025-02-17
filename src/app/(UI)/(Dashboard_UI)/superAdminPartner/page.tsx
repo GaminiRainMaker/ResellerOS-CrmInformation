@@ -1217,12 +1217,12 @@ const SuperAdminPartner: React.FC = () => {
           </Col>
           <Col style={{display: 'flex', alignItems: 'center'}}>
             <Space size={12} style={{height: '48px'}}>
-              <OsButton
+              {/* <OsButton
                 text="Upload Master Partner"
                 buttontype="PRIMARY"
                 icon={<PlusIcon />}
                 clickHandler={() => setShowUploadMasterPartnerModal((p) => !p)}
-              />
+              /> */}
               <OsButton
                 text="New Partner"
                 buttontype="PRIMARY"
