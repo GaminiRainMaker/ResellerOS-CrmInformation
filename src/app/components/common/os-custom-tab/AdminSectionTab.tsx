@@ -24,7 +24,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {sendEmailForSuport} from '../../../../../redux/actions/auth';
 
-const AdminCustomTabs: FC<any> = ({tabs, isTrialActive}) => {
+const AdminCustomTabs: FC<any> = (tabs) => {
   const searchParams = useSearchParams()!;
   const getTab = searchParams.get('tab');
   const pathname = usePathname();
@@ -335,11 +335,15 @@ const AdminCustomTabs: FC<any> = ({tabs, isTrialActive}) => {
                             style={{
                               padding: '12px 24px',
                               background:
-                              isTrialActive
-                                ? 'grey'
-                                : activekeysall === itemild?.key
-                                ? token.colorInfo
-                                : '',
+                                itemild?.key === activekeysall &&
+                                tabs?.isTrialActive &&
+                                (getTab === 'myTeam' ||
+                                  getTab === 'partnerPassword')
+                                  ? 'grey'
+                                  : activekeysall === itemild?.key
+                                    ? token.colorInfo
+                                    : '',
+
                               color:
                                 activekeysall === itemild?.key
                                   ? token.colorBgContainer
