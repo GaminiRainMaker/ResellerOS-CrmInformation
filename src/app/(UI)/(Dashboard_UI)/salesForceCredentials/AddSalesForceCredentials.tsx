@@ -2,7 +2,7 @@ import {Button} from '@/app/components/common/antd/Button';
 import {Card} from '@/app/components/common/antd/Card';
 import {Upload} from '@/app/components/common/antd/Upload';
 import {FileTextOutlined, UploadOutlined} from '@ant-design/icons';
-import {message} from 'antd';
+import {message, Typography} from 'antd';
 import React, {forwardRef, useImperativeHandle, useState} from 'react';
 import Papa from 'papaparse';
 import {useAppDispatch} from '../../../../../redux/hook';
@@ -15,6 +15,7 @@ import {uploadExcelFileToAws} from '../../../../../redux/actions/upload';
 import {masterPartnerFetchAndParseExcel} from '../../../../../redux/actions/auth';
 import {createOrUpdateMasterPartner} from '../../../../../redux/actions/partner';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import {Col, Row} from '@/app/components/common/antd/Grid';
 
 export interface AddSalesForceCredentialsRef {
   uploadToDatabase: () => Promise<void>;
@@ -160,30 +161,47 @@ const AddSalesForceCredentials = forwardRef<AddSalesForceCredentialsRef, Props>(
     return (
       <div>
         <br />
-        <Upload
-          beforeUpload={handleFileUpload}
-          showUploadList={false}
-          disabled={fileData.length > 0} // Disable upload if data exists
-          openFileDialogOnClick={fileData.length === 0} // Prevent opening file dialog if data exists
-        >
-          <Button
-            icon={<UploadOutlined />}
-            loading={dataUploadLoading}
-            type="primary"
-            style={{
-              backgroundColor:
-                fileData.length > 0
-                  ? token.colorTextDisabled
-                  : token.colorPrimary, // Disabled color when data exists
-              borderRadius: '15px',
-              fontWeight: '500',
-              padding: '20px',
-              cursor: fileData.length > 0 ? 'not-allowed' : 'pointer', // Change cursor when disabled
-            }}
-          >
-            Click to Upload {isMasterPartnerUpload ? 'Xlsx' : 'CSV'}
-          </Button>
-        </Upload>
+        <Row align={'middle'} justify={'space-between'} >
+          <Col>
+            <Upload
+              beforeUpload={handleFileUpload}
+              showUploadList={false}
+              disabled={fileData.length > 0} // Disable upload if data exists
+              openFileDialogOnClick={fileData.length === 0} // Prevent opening file dialog if data exists
+            >
+              <Button
+                icon={<UploadOutlined />}
+                loading={dataUploadLoading}
+                type="primary"
+                style={{
+                  backgroundColor:
+                    fileData.length > 0
+                      ? token.colorTextDisabled
+                      : token.colorPrimary, // Disabled color when data exists
+                  borderRadius: '15px',
+                  fontWeight: '500',
+                  padding: '20px',
+                  cursor: fileData.length > 0 ? 'not-allowed' : 'pointer', // Change cursor when disabled
+                }}
+              >
+                Click to Upload {isMasterPartnerUpload ? 'Xlsx' : 'CSV'}
+              </Button>
+            </Upload>
+          </Col>
+          <Col>
+            <Card  bordered={false} style={{width: 400}}>
+              <FileTextOutlined style={{fontSize: '24px', marginRight: 8}} />
+              <Typography.Link
+                href={
+                  'https://prodresellerosstorage.blob.core.windows.net/prodreselleros/sample%20credentials.csv?sp=r&st=2025-02-17T11:40:24Z&se=2050-02-17T19:40:24Z&spr=https&sv=2022-11-02&sr=b&sig=htTV%2F0BSZyHjZe4HHhUMLy6vdyirHud2sMpeAVBqaaU%3D'
+                }
+                target="_blank"
+              >
+                Download Sample File Download Sample File
+              </Typography.Link>
+            </Card>
+          </Col>
+        </Row>
 
         {fileName && (
           <Card

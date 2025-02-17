@@ -18,7 +18,7 @@ const OsTableWithOutDrag: FC<any> = ({
   tablePageSize = 100,
   showPagination,
   selectedRowsKeys = [],
-  defaultPageSize,
+  defaultPageSize = 5,
   setPageChange,
   pageChange,
   uniqueId,
