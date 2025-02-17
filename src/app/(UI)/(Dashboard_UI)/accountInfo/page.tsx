@@ -10,6 +10,7 @@ import {Suspense, useEffect, useState} from 'react';
 import MyProfile from './myProfile';
 import MyTeam from './myTeam';
 import PartnerPassword from './partnerPassword';
+import MyCompany from './company';
 
 const AccountInfo = () => {
   const searchParams = useSearchParams();
@@ -37,6 +38,12 @@ const AccountInfo = () => {
           name: 'My Team',
           superChild: <MyTeam />,
           route: `/accountInfo?id=${getId}&organization=${organization}&tab=myTeam&isSuperAdminProfile=${isSuperAdminProfile}`,
+        },
+        {
+          key: 3,
+          name: 'Company',
+          superChild: <MyCompany />,
+          route: `/accountInfo?id=${getId}&organization=${organization}&tab=myCompany&isSuperAdminProfile=${isSuperAdminProfile}`,
         },
       ],
     },

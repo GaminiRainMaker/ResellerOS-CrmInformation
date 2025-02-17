@@ -99,6 +99,10 @@ const AdminCustomTabs: FC<any> = (tabs) => {
             tabIndex = 0;
             superChildIndex = 1;
             break;
+          case 'myTeam':
+            tabIndex = 0;
+            superChildIndex = 2;
+            break;
           case 'partnerPassword':
             tabIndex = 1;
             superChildIndex = 0;

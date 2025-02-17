@@ -129,6 +129,11 @@ export const API = {
     INDEX: '/contract',
     QUERY: '/contract/query',
   },
+  COMPANY: {
+    INDEX: '/company',
+    QUERY: '/company/query',
+    GetCompanyByUserId: '/company/getCompanyByUserId',
+  },
   FORMULA: {
     INDEX: '/Formulas',
     GET_FORMULA: '/Formulas/getFormulaByFormula',
