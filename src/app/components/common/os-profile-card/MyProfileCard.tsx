@@ -15,7 +15,7 @@ import {message, notification} from 'antd';
 import ImgCrop from 'antd-img-crop';
 import _debounce from 'lodash/debounce';
 import {useSearchParams} from 'next/navigation';
-import {FC, Suspense, useCallback, useEffect, useState} from 'react';
+import {FC, Suspense, useCallback, useEffect, useRef, useState} from 'react';
 import {uploalImageonAzure} from '../../../../../redux/actions/upload';
 import {useAppDispatch} from '../../../../../redux/hook';
 import {Col} from '../antd/Grid';
@@ -34,7 +34,10 @@ const MyProfileCard: FC<any> = ({data, isCompanyData}) => {
   const searchParams = useSearchParams();
   const getUserID = searchParams.get('id');
   const loginAccount = searchParams.get('self');
+  const propsDataRef = useRef<any>(null);
+
   useEffect(() => {
+    propsDataRef.current = data; 
     setUserRole(
       data?.master_admin && data?.role === 'superAdmin'
         ? 'Master Super Admin'
@@ -77,34 +80,40 @@ const MyProfileCard: FC<any> = ({data, isCompanyData}) => {
       });
     }
     let UpdatedData: any = {};
-    convertFileToBase64(newFileList)
-      .then(async (base64String: string) => {
-        if (isCompanyData) {
-          UpdatedData = {
-            document: base64String,
-            userType: 'company',
-            id: data?.company_id,
-          };
-        } else {
-          UpdatedData = {
-            document: base64String,
-            userType: 'user',
-            id: getUserID,
-          };
-        }
-        await dispatch(uploalImageonAzure(UpdatedData)).then((payload: any) => {
-          if (payload?.payload) {
-            if (UpdatedData?.userType === 'user') {
-              dispatch(getUserByIdLogin(getUserID));
-            } else if (UpdatedData?.userType === 'company') {
-              dispatch(getCompanyByUserId({user_id: getUserID}));
-            }
+    const latestData = propsDataRef.current; // Use the latest data from ref
+
+    if (latestData) {
+      convertFileToBase64(newFileList)
+        .then(async (base64String: string) => {
+          if (isCompanyData) {
+            UpdatedData = {
+              document: base64String,
+              userType: 'company',
+              id: latestData?.company_id,
+            };
+          } else {
+            UpdatedData = {
+              document: base64String,
+              userType: 'user',
+              id: getUserID,
+            };
           }
+          await dispatch(uploalImageonAzure(UpdatedData)).then(
+            (payload: any) => {
+              if (payload?.payload) {
+                if (UpdatedData?.userType === 'user') {
+                  dispatch(getUserByIdLogin(getUserID));
+                } else if (UpdatedData?.userType === 'company') {
+                  dispatch(getCompanyByUserId({user_id: getUserID}));
+                }
+              }
+            },
+          );
+        })
+        .catch((error: any) => {
+          message.error('Error converting file to base64', error);
         });
-      })
-      .catch((error: any) => {
-        message.error('Error converting file to base64', error);
-      });
+    }
   };
 
   const handleNotification = (list: any) => {
