@@ -306,16 +306,25 @@ const FieldDisplayConfiguration: FC<any> = () => {
                         direction="vertical"
                         style={{width: '100%'}}
                       >
-                        {tableColumnDataShow && (
-                          <OsTableWithOutDrag
-                            loading={false}
-                            tableSelectionType="checkbox"
-                            columns={allColumns}
-                            dataSource={tableColumnDataShow}
-                            defaultPageSize={10}
-                            scrolly={200}
-                          />
-                        )}
+                        <>
+                          <div style={{display: 'flex', justifyContent: 'end'}}>
+                            <OsButton
+                              text="Save"
+                              buttontype="PRIMARY"
+                              clickHandler={updateTableColumnValues}
+                              loading={loading}
+                            />
+                          </div>
+
+                          {tableColumnDataShow && (
+                            <OsTableWithOutDrag
+                              loading={false}
+                              tableSelectionType="checkbox"
+                              columns={allColumns}
+                              dataSource={tableColumnDataShow}
+                            />
+                          )}
+                        </>
                       </Space>
                     ),
                   },
@@ -325,26 +334,6 @@ const FieldDisplayConfiguration: FC<any> = () => {
           </Col>
         </Row>
       </TabContainerStyle>
-      <footer
-        style={{
-          width: 'max-content',
-          float: 'right',
-          position: 'absolute',
-          bottom: '0%',
-          right: '10px',
-        }}
-      >
-        <Row>
-          <Col>
-            <OsButton
-              text="Save"
-              buttontype="PRIMARY"
-              clickHandler={updateTableColumnValues}
-              loading={loading}
-            />
-          </Col>
-        </Row>
-      </footer>
     </>
   );
 };

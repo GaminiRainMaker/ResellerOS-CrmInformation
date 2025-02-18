@@ -1,5 +1,5 @@
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
@@ -10,10 +10,10 @@ import {
   formatStatus,
   quotLineItemsColumnsSync,
 } from '@/app/utils/CONSTANTS';
-import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { Input, Select, Table } from 'antd';
-import { ColumnsType } from 'antd/lib/table';
-import { useEffect, useState } from 'react';
+import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
+import {Input, Select, Table} from 'antd';
+import {ColumnsType} from 'antd/lib/table';
+import {useEffect, useState} from 'react';
 import {
   getContractConfiguartion,
   insertUpdateContractConfiguartion,
@@ -22,9 +22,9 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../../../../../redux/hook';
-import { RowData, StatusFileProps } from '../configuration.interface';
+import {RowData, StatusFileProps} from '../configuration.interface';
 
-const { Option } = Select;
+const {Option} = Select;
 
 const StatusFile: React.FC<StatusFileProps> = ({
   initialData,
@@ -37,8 +37,8 @@ const StatusFile: React.FC<StatusFileProps> = ({
   const [dataSource, setDataSource] = useState<RowData[]>([]);
   const [count, setCount] = useState(0);
   const dispatch = useAppDispatch();
-  const { loading } = useAppSelector((state) => state.contractConfiguration);
-  const [fieldTypes, setFieldTypes] = useState<{ [key: string]: string }>({});
+  const {loading} = useAppSelector((state) => state.contractConfiguration);
+  const [fieldTypes, setFieldTypes] = useState<{[key: string]: string}>({});
 
   useEffect(() => {
     if (initialData?.json?.length > 0) {
@@ -78,7 +78,7 @@ const StatusFile: React.FC<StatusFileProps> = ({
   ) => {
     const newDataSource = dataSource?.map((item) => {
       if (item.key === key) {
-        const newItem = { ...item, [column]: value };
+        const newItem = {...item, [column]: value};
         if (column === 'valueType' && value === 'input') {
           newItem.value = '';
         }
@@ -96,7 +96,6 @@ const StatusFile: React.FC<StatusFileProps> = ({
       }
       return item;
     });
-    console.log('newDataSource', newDataSource)
     setDataSource(newDataSource);
   };
 
@@ -145,7 +144,7 @@ const StatusFile: React.FC<StatusFileProps> = ({
           onChange={(value) =>
             handleInputChange(value, record.key, 'fieldName')
           }
-          style={{ width: '100%', height: '34px' }}
+          style={{width: '100%', height: '34px'}}
           options={quotLineItemsColumnsSync}
         />
       ),
@@ -161,7 +160,7 @@ const StatusFile: React.FC<StatusFileProps> = ({
           placeholder="Select Operator"
           value={text}
           onChange={(value) => handleInputChange(value, record.key, 'operator')}
-          style={{ width: '100%', height: '34px' }}
+          style={{width: '100%', height: '34px'}}
           options={ContractOperatorsOptions}
         />
       ),
@@ -179,7 +178,7 @@ const StatusFile: React.FC<StatusFileProps> = ({
           onChange={(value) =>
             handleInputChange(value, record.key, 'valueType')
           }
-          style={{ width: '100%', height: '34px' }}
+          style={{width: '100%', height: '34px'}}
         >
           <Option value="input">Input</Option>
           <Option value="formula">Formula</Option>
@@ -196,35 +195,38 @@ const StatusFile: React.FC<StatusFileProps> = ({
         if (record.valueType !== 'input' && text?.length > 0) {
           text?.map((items: any) => {
             if (items !== '' && items !== null && items !== undefined) {
-              newArrr?.push(formatStatus(items))
+              newArrr?.push(formatStatus(items));
             }
-          })
+          });
         }
-        let valueToShow = record.valueType === 'input' ? text : newArrr
-        return (<>{record.valueType === 'input' ? (
-          <Input
-            value={formatStatus(text)}
-            placeholder="Enter value"
-            onChange={(e) =>
-              handleInputChange(e.target.value, record.key, 'value')
-            }
-          />
-        ) : (
-          <CommonSelect
-            allowClear
-            value={valueToShow}
-            placeholder="Select Fields"
-            onChange={(value) => {
-              handleInputChange(value, record.key, 'value')
-            }}
-            style={{ width: '100%', height: 'auto' }}
-            mode="multiple"
-          >
-            {getFieldOptions(fieldTypes[record.key] || '')}
-          </CommonSelect>
-        )}</>)
+        let valueToShow = record.valueType === 'input' ? text : newArrr;
+        return (
+          <>
+            {record.valueType === 'input' ? (
+              <Input
+                value={formatStatus(text)}
+                placeholder="Enter value"
+                onChange={(e) =>
+                  handleInputChange(e.target.value, record.key, 'value')
+                }
+              />
+            ) : (
+              <CommonSelect
+                allowClear
+                value={valueToShow}
+                placeholder="Select Fields"
+                onChange={(value) => {
+                  handleInputChange(value, record.key, 'value');
+                }}
+                style={{width: '100%', height: 'auto'}}
+                mode="multiple"
+              >
+                {getFieldOptions(fieldTypes[record.key] || '')}
+              </CommonSelect>
+            )}
+          </>
+        );
       },
-
 
       width: 250,
     },
@@ -232,12 +234,12 @@ const StatusFile: React.FC<StatusFileProps> = ({
       title: 'Action',
       key: 'action',
       render: (_, record) => (
-        <span style={{ display: 'flex', justifyContent: 'center' }}>
+        <span style={{display: 'flex', justifyContent: 'center'}}>
           <TrashIcon
             height={24}
             width={24}
             color={token.colorError}
-            style={{ cursor: 'pointer' }}
+            style={{cursor: 'pointer'}}
             onClick={() => handleDelete(record.key)}
           />
         </span>
@@ -259,7 +261,7 @@ const StatusFile: React.FC<StatusFileProps> = ({
       json: [JSON?.stringify(dataSource)],
     };
     if (obj) {
-      dispatch(insertUpdateContractConfiguartion(obj)).then((d) => {
+      dispatch(insertUpdateContractConfiguartion(obj)).then((d: any) => {
         if (d?.payload) {
           dispatch(getContractConfiguartion(''));
         }
@@ -285,15 +287,7 @@ const StatusFile: React.FC<StatusFileProps> = ({
             key: '1',
             label: <Typography name="Body 2/Medium">Fields</Typography>,
             children: (
-              <Space size={24} direction="vertical" style={{ width: '100%' }}>
-                <Table
-                  style={{ boxShadow: ' 5px 5px 5px 5px grey' }}
-                  dataSource={dataSource}
-                  columns={columns}
-                  pagination={false}
-                  rowKey="key"
-                />
-
+              <Space size={24} direction="vertical" style={{width: '100%'}}>
                 <Row justify={'space-between'}>
                   <Col>
                     <OsButton
@@ -301,7 +295,7 @@ const StatusFile: React.FC<StatusFileProps> = ({
                       buttontype="PRIMARY"
                       icon={<PlusIcon width={24} />}
                       clickHandler={handleAdd}
-                      style={{ marginBottom: 16 }}
+                      style={{marginBottom: 16}}
                     />{' '}
                   </Col>
                   <Col>
@@ -310,10 +304,17 @@ const StatusFile: React.FC<StatusFileProps> = ({
                       text="Save"
                       buttontype="PRIMARY"
                       clickHandler={handleSave}
-                      style={{ marginBottom: 16 }}
+                      style={{marginBottom: 16}}
                     />
                   </Col>
                 </Row>
+                <Table
+                  style={{boxShadow: ' 5px 5px 5px 5px grey'}}
+                  dataSource={dataSource}
+                  columns={columns}
+                  pagination={false}
+                  rowKey="key"
+                />
               </Space>
             ),
           },
