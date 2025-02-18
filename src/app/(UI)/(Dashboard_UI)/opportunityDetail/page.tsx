@@ -892,7 +892,6 @@ const OpportunityDetails = () => {
           scroll
           loading={false}
           paginationProps={false}
-          scrolly={200}
           locale={dealRegLocal}
         />
       ),
@@ -911,7 +910,6 @@ const OpportunityDetails = () => {
           scroll
           loading={false}
           paginationProps={false}
-          scrolly={200}
           locale={dealRegLocal}
         />
       ),
@@ -933,7 +931,6 @@ const OpportunityDetails = () => {
           scroll
           loading={false}
           paginationProps={false}
-          scrolly={200}
           locale={dealRegLocal}
         />
       ),
@@ -955,7 +952,6 @@ const OpportunityDetails = () => {
           scroll
           loading={false}
           paginationProps={false}
-          scrolly={200}
           locale={dealRegLocal}
         />
       ),
@@ -977,7 +973,6 @@ const OpportunityDetails = () => {
           scroll
           loading={false}
           paginationProps={false}
-          scrolly={200}
           locale={dealRegLocal}
         />
       ),
@@ -999,7 +994,6 @@ const OpportunityDetails = () => {
           scroll
           loading={false}
           paginationProps={false}
-          scrolly={200}
           locale={dealRegLocal}
         />
       ),
@@ -1021,7 +1015,6 @@ const OpportunityDetails = () => {
           scroll
           loading={false}
           paginationProps={false}
-          scrolly={200}
           locale={dealRegLocal}
         />
       ),
@@ -1044,8 +1037,6 @@ const OpportunityDetails = () => {
           <Col>
             <Typography name="Heading 3/Medium">All Quotes</Typography>
           </Col>
-          {/* {!isDealReg && ( */}
-
           <Col style={{float: 'right'}}>
             <AddQuote
               uploadFileData={uploadFileData}
@@ -1059,9 +1050,7 @@ const OpportunityDetails = () => {
               customerId={opportunityData?.customer_id}
             />
           </Col>
-          {/* )} */}
         </Row>
-        {/* {opportunityData && opportunityData?.length > 0 && ( */}
         <Row
           style={{
             background: 'white',
@@ -1095,10 +1084,8 @@ const OpportunityDetails = () => {
                         key={tabItem?.key}
                         columns={Quotecolumns}
                         dataSource={activeQuotes}
-                        scroll
                         loading={oppSyncValueLoading}
                         locale={locale}
-                        scrolly={200}
                       />
                     )}
                   </>
@@ -1114,18 +1101,15 @@ const OpportunityDetails = () => {
           style={{marginTop: '10px', display: 'flex'}}
         >
           <Col style={{marginBottom: '30px'}}>
-            <Typography name="Heading 3/Medium"> Opportunity Lines</Typography>
+            <Typography name="Heading 3/Medium">Opportunity Lines</Typography>
           </Col>
           <OsTableWithOutDrag
             loading={false}
             columns={ProfitabilityQuoteLineItemcolumns}
             dataSource={profitibiltyDataForSynced}
-            scroll
             locale={oppLinesLOcal}
-            paginationProps={false}
           />
         </Row>
-        {/* )} */}
         {isDealReg && (
           <>
             <Row
@@ -1145,17 +1129,7 @@ const OpportunityDetails = () => {
                   clickHandler={() => setShowModal((p) => !p)}
                 />
               </Col>
-              {/* )} */}
             </Row>
-            {/* <Row
-              justify="space-between"
-              align="middle"
-              style={{ marginTop: '10px' }}
-            >
-              <Col>
-                <Typography name="Heading 3/Medium">All DealReg</Typography>
-              </Col>
-            </Row> */}
             <Row
               style={{
                 background: 'white',

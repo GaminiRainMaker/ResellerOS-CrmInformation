@@ -58,6 +58,17 @@ const QuoteProcess = () => {
 
   return (
     <TabContainerStyle>
+      <Row justify={'end'}>
+        <Col>
+          <OsButton
+            text="Save"
+            buttontype="PRIMARY"
+            clickHandler={updateContractSetting}
+            loading={loading}
+          />
+        </Col>
+      </Row>
+        <br/>
       <Row>
         <Col span={24}>
           <Space
@@ -200,22 +211,6 @@ const QuoteProcess = () => {
           </Space>
         </Col>
       </Row>
-      <footer
-        style={{
-          width: 'max-content',
-          float: 'right',
-          position: 'absolute',
-          bottom: '0%',
-          right: '10px',
-        }}
-      >
-        <OsButton
-          text="Save"
-          buttontype="PRIMARY"
-          clickHandler={updateContractSetting}
-          loading={loading}
-        />
-      </footer>
     </TabContainerStyle>
   );
 };

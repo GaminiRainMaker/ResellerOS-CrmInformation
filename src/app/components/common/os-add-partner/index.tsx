@@ -1,29 +1,26 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
-
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
-import {industryOptions} from '@/app/utils/CONSTANTS';
-import {Form, notification} from 'antd';
-import {usePathname} from 'next/navigation';
-import {Option} from 'antd/es/mentions';
+import { industryOptions } from '@/app/utils/CONSTANTS';
+import { Form, notification } from 'antd';
+import { usePathname } from 'next/navigation';
 
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import {
   getAllPartnersForParentPartner,
   insertPartner,
   updatePartnerById,
 } from '../../../../../redux/actions/partner';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import CustomTextCapitalization from '../hooks/CustomTextCapitalizationHook';
-import CommonSelect from '../os-select';
-import {AddPartnerInterface} from './os-add-partner.interface';
+import { AddPartnerInterface } from './os-add-partner.interface';
 import useDebounceHook from '../hooks/useDebounceHook';
 import GlobalLoader from '../os-global-loader';
+import CommonSelect from '../os-select';
 
 const AddPartner: React.FC<AddPartnerInterface> = ({
   form,
@@ -42,20 +39,21 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
   const [token] = useThemeToken();
   const pathname = usePathname();
   const dispatch = useAppDispatch();
-  const {userInformation} = useAppSelector((state) => state.user);
-  const {isCanvas, isDecryptedRecord} = useAppSelector((state) => state.canvas);
-  const {setGetAllPartnerandProgramFilterDataForAdmin} = useAppSelector(
+  const { userInformation } = useAppSelector((state) => state.user);
+  const { isCanvas, isDecryptedRecord } = useAppSelector((state) => state.canvas);
+  const { setGetAllPartnerandProgramFilterDataForAdmin } = useAppSelector(
     (state) => state.partner,
   );
 
-  const [loading, seyLoading] = useState<boolean>(false);
-  const [masterPartnerOption, setMasterPartnerOption] = useState<any>();
-
+  const [loading, setLoading] = useState<boolean>(false);
+  const [masterPartnerOption, setMasterPartnerOption] = useState<any>([]);
   const [queryDataa, setQueryData] = useState<{
     partnerQuery: string | null;
   }>({
     partnerQuery: '',
   });
+
+  const searchQuery = useDebounceHook(queryDataa, 500);
 
   useEffect(() => {
     form?.resetFields();
@@ -63,6 +61,7 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
       form.setFieldsValue(updateTheObject);
     }
   }, [updateTheObject]);
+
   const onFinish = async (value: any) => {
     const partnerObj = {
       ...value,
@@ -129,45 +128,25 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
   };
 
   useEffect(() => {
-    form?.resetFields();
-  }, [formPartnerData]);
+    const getAllPartnerForParentList = async () => {
+      setLoading(true);
+      await dispatch(getAllPartnersForParentPartner(searchQuery))?.then(
+        (payload: any) => {
+          if (payload?.payload) {
+            const options = payload?.payload?.map((partner: any) => ({
+              label: <CustomTextCapitalization text={partner?.partner} />,
+              value: partner?.id,
+            }));
+            setMasterPartnerOption(options);
+          }
+        },
+      );
+      setLoading(false);
+    };
 
-  const [newSfreere, setNewdsfd] = useState<any>();
-  const searchQuery = useDebounceHook(queryDataa, 500);
-
-  const getAllPartnerForParentList = async () => {
-    seyLoading(true);
-    await dispatch(getAllPartnersForParentPartner(searchQuery))?.then(
-      (payload: any) => {
-        if (payload?.payload) {
-          const options = payload?.payload?.map((partner: any) => ({
-            label: <CustomTextCapitalization text={partner?.partner} />, // Partner name as label
-            value: partner?.id, // Partner ID as value
-          }));
-          setMasterPartnerOption(options);
-          setNewdsfd(options);
-        }
-      },
-    );
-    seyLoading(false);
-  };
-  useEffect(() => {
     getAllPartnerForParentList();
   }, [searchQuery]);
 
-  // useEffect(() => {
-  //   if (setGetAllPartnerandProgramFilterDataForAdmin?.AllPartner) {
-  //     const options =
-  //       setGetAllPartnerandProgramFilterDataForAdmin?.AllPartner?.map(
-  //         (partner: any) => ({
-  //           label: <CustomTextCapitalization text={partner?.partner} />, // Partner name as label
-  //           value: partner?.id, // Partner ID as value
-  //         }),
-  //       );
-  //     setMasterPartnerOption(options);
-  //   }
-  // }, [setGetAllPartnerandProgramFilterDataForAdmin?.AllPartner]);
-  console.log('32432423432', masterPartnerOption);
   return (
     <GlobalLoader loading={loading}>
       {!drawer && (
@@ -193,7 +172,7 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
       <Space
         size={16}
         direction="vertical"
-        style={{width: '100%', padding: !drawer ? '24px 40px 20px 40px' : ''}}
+        style={{ width: '100%', padding: !drawer ? '24px 40px 20px 40px' : '' }}
       >
         <Form
           form={form}
@@ -205,7 +184,7 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
           <Form.Item
             label="Partner Name"
             name="partner"
-            rules={[{required: true, message: 'Please Enter Partner!'}]}
+            rules={[{ required: true, message: 'Please Enter Partner!' }]}
           >
             <OsInput placeholder="Partner name here" />
           </Form.Item>
@@ -213,22 +192,22 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
           <Form.Item
             label="Industry"
             name="industry"
-            rules={[{required: true, message: 'Please select industry!'}]}
+            rules={[{ required: true, message: 'Please select industry!' }]}
           >
             <CommonSelect
-              style={{width: '100%'}}
+              style={{ width: '100%' }}
               placeholder="Select"
               options={industryOptions}
               allowClear
             />
           </Form.Item>
+
           <Row justify="space-between" gutter={[16, 16]}>
             <Col span={drawer ? 24 : 12}>
               <Form.Item
                 label="Email"
                 name="email"
                 rules={[
-                  // {required: true, message: 'Please Enter email!'},
                   {
                     pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                     message: 'Please enter valid email.',
@@ -238,6 +217,7 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
                 <OsInput placeholder="info@email.com" />
               </Form.Item>
             </Col>
+
             <Col span={drawer ? 24 : 12}>
               <Form.Item
                 label="Website"
@@ -253,48 +233,25 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
                 <OsInput placeholder="www.website.com" />
               </Form.Item>
             </Col>
+
             <Col span={drawer ? 24 : 12}>
               <Form.Item
                 label="Parent Partner"
                 name="master_partner_id"
                 rules={[
-                  {required: false, message: 'Please select parent partner!'},
+                  { required: false, message: 'Please select parent partner!' },
                 ]}
               >
                 <CommonSelect
-                  style={{width: '100%'}}
-                  placeholder="Search here"
                   showSearch
-                  // open={!loading}
                   allowClear
-                  onSearch={(e) => {
-                    setQueryData({
-                      ...queryDataa,
-                      partnerQuery: e,
-                    });
-                  }}
-                  value={queryDataa?.partnerQuery}
-                >
-                  {masterPartnerOption?.map((options: any) => (
-                    <Option key={options?.value} value={options?.value}>
-                      {options?.label}
-                    </Option>
-                  ))}
-                </CommonSelect>
-                {/* <CommonSelect
-                  style={{width: '100%'}}
-                  placeholder="Select"
+                  placeholder="Search for a parent partner"
                   options={masterPartnerOption}
-                  value={queryDataa?.partnerQuery}
-                  allowClear
-                  showSearch
-                  onSearch={(e) => {
-                    setQueryData({
-                      ...queryDataa,
-                      partnerQuery: e,
-                    });
+                  onSearch={(value: string) => {
+                    setQueryData({ partnerQuery: value });
                   }}
-                /> */}
+                  filterOption={false} // Disable default filter behavior
+                />
               </Form.Item>
             </Col>
           </Row>

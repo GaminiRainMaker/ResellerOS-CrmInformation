@@ -259,7 +259,7 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
       const oppAdddetails = payload?.payload?.find(
         (itemsIn: any) => itemsIn?.id === opportuntityId,
       );
-      if (oppAdddetails?.synced_quote === getQuoteId) {
+      if (oppAdddetails?.synced_quote == getQuoteId) {
         setOpportunitySynced(true);
       } else {
         setOpportunitySynced(false);
@@ -299,7 +299,9 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
     );
     setOpportunityObject(singleObjects);
   }, [syncTableData, getQuoteId]);
-
+  const disabledDate = (current: any) => {
+    // Disable dates before today
+    return current && current < moment().startOf('day');  };
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <GlobalLoader loading={quoteByIdLoading}>
@@ -368,7 +370,8 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
               </Form.Item>
 
               <Form.Item label="Expiration Date" name="expiration_date">
-                <CommonDatePicker onBlur={undefined} />
+                <CommonDatePicker onBlur={undefined}        disabledDate={disabledDate}
+                />
               </Form.Item>
               <OsCustomerSelect
                 setCustomerValue={setCustomerValue}

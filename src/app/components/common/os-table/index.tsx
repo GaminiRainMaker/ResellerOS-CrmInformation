@@ -149,7 +149,7 @@ const OsTable: FC<any> = ({
           onChange: handlePaginationChange,
           position: ['bottomRight'],
           showSizeChanger: true,
-          pageSizeOptions: [10, 20, 30, 50, 100],
+          pageSizeOptions: [5, 10, 20, 30, 50, 100],
         }}
         scroll={
           scrolly

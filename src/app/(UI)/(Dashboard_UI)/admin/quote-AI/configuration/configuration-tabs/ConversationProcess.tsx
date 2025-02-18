@@ -10,21 +10,16 @@ import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {ContractConfigurationColumn} from '@/app/utils/CONSTANTS';
 import {useEffect, useState} from 'react';
-import {ToggleColStyled} from '@/app/components/common/os-div-row-col/styled-component';
-import {Switch} from '@/app/components/common/antd/Switch';
-import {TabContainerStyle} from './styled-components';
-import {
-  useAppDispatch,
-  useAppSelector,
-} from '../../../../../../../../redux/hook';
 import {
   getAllGeneralSetting,
   insertUpdateGeneralSetting,
 } from '../../../../../../../../redux/actions/generalSetting';
+import {getUserByTokenAccess} from '../../../../../../../../redux/actions/user';
 import {
-  getUserByTokenAccess,
-  updateAdvancedSetting,
-} from '../../../../../../../../redux/actions/user';
+  useAppDispatch,
+  useAppSelector,
+} from '../../../../../../../../redux/hook';
+import {TabContainerStyle} from './styled-components';
 
 const ConverSationProcess = () => {
   const [attachDocType, setAttachDocType] = useState<any>();
@@ -55,6 +50,16 @@ const ConverSationProcess = () => {
 
   return (
     <TabContainerStyle>
+      <Row justify={'end'}>
+        <Col>
+          <OsButton
+            text="Save"
+            buttontype="PRIMARY"
+            loading={loading}
+            clickHandler={updateGeneralSetting}
+          />
+        </Col>
+      </Row>
       <Row>
         <Col span={24}>
           <Space
@@ -230,22 +235,6 @@ const ConverSationProcess = () => {
           </Space>
         </Col>
       </Row>
-      <footer
-        style={{
-          width: 'max-content',
-          float: 'right',
-          position: 'absolute',
-          bottom: '0%',
-          right: '0%',
-        }}
-      >
-        <OsButton
-          text="Save"
-          buttontype="PRIMARY"
-          loading={loading}
-          clickHandler={updateGeneralSetting}
-        />
-      </footer>
     </TabContainerStyle>
   );
 };

@@ -333,6 +333,17 @@ const SyncQuoteLineItemField = () => {
 
   return (
     <TabContainerStyle>
+      <Row justify={'end'}>
+        <Col>
+          <OsButton
+            text="Save"
+            buttontype="PRIMARY"
+            loading={loading}
+            clickHandler={updateTableColumnValues}
+          />
+        </Col>
+      </Row>
+
       <Row>
         <Col span={24}>
           <Space
@@ -385,22 +396,6 @@ const SyncQuoteLineItemField = () => {
           </Space>
         </Col>
       </Row>
-      <footer
-        style={{
-          width: 'max-content',
-          float: 'right',
-          position: 'absolute',
-          bottom: '0%',
-          right: '0%',
-        }}
-      >
-        <OsButton
-          text="Save"
-          buttontype="PRIMARY"
-          clickHandler={updateTableColumnValues}
-          loading={loading}
-        />
-      </footer>
     </TabContainerStyle>
   );
 };
