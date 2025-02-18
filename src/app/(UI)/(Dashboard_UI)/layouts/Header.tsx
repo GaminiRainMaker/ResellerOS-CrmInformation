@@ -476,19 +476,6 @@ const CustomHeader = () => {
                 />
               }
             /> */}
-                <AvatarStyled
-                  background={token?.colorInfoBg}
-                  icon={
-                    <QuestionOutlined
-                      style={{color: 'grey'}}
-                      onClick={() => {
-                        setOpenSupportModel(true);
-                      }}
-                      width={24}
-                      color={token?.colorInfoBorder}
-                    />
-                  }
-                />
 
                 <Space
                   direction="horizontal"
