@@ -244,6 +244,7 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
               >
                 <CommonSelect
                   showSearch
+                  allowClear
                   placeholder="Search for a parent partner"
                   options={masterPartnerOption}
                   onSearch={(value: string) => {
