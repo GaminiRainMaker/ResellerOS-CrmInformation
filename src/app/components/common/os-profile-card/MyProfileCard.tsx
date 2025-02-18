@@ -4,20 +4,19 @@
 'use client';
 
 import {CustomUpload} from '@/app/(UI)/(Dashboard_UI)/layouts/Header';
-import {getBase64} from '@/app/utils/upload';
+import {convertFileToBase64} from '@/app/utils/base';
 import {
   BriefcaseIcon,
   CameraIcon,
   EnvelopeIcon,
   PhoneIcon,
 } from '@heroicons/react/24/outline';
-import {notification} from 'antd';
+import {message, notification} from 'antd';
 import ImgCrop from 'antd-img-crop';
 import _debounce from 'lodash/debounce';
 import {useSearchParams} from 'next/navigation';
 import {FC, Suspense, useCallback, useEffect, useState} from 'react';
-import {uploadToAwsForUserImage} from '../../../../../redux/actions/upload';
-import {getUserByIdLogin} from '../../../../../redux/actions/user';
+import {uploalImageonAzure} from '../../../../../redux/actions/upload';
 import {useAppDispatch} from '../../../../../redux/hook';
 import {Col} from '../antd/Grid';
 import {Space} from '../antd/Space';
@@ -25,6 +24,8 @@ import useThemeToken from '../hooks/useThemeToken';
 import {AvatarStyled} from '../os-table/styled-components';
 import Typography from '../typography';
 import {MyProfileCardStyle} from './styled-components';
+import {getUserByIdLogin} from '../../../../../redux/actions/user';
+import {getCompanyByUserId} from '../../../../../redux/actions/company';
 
 const MyProfileCard: FC<any> = ({data, isCompanyData}) => {
   const [token] = useThemeToken();
@@ -75,21 +76,35 @@ const MyProfileCard: FC<any> = ({data, isCompanyData}) => {
         type: 'info',
       });
     }
-    const datas = await getBase64(newFileList);
-    const mediaType = newFileList?.type.split('/')[0];
-
-    const UpdatedData = {
-      base64: datas,
-      type: mediaType,
-      file: newFileList,
-      userTypes: 'user',
-      userIds: getUserID,
-    };
-    dispatch(uploadToAwsForUserImage(UpdatedData)).then((d: any) => {
-      if (d?.payload) {
-        dispatch(getUserByIdLogin(getUserID));
-      }
-    });
+    let UpdatedData: any = {};
+    convertFileToBase64(newFileList)
+      .then(async (base64String: string) => {
+        if (isCompanyData) {
+          UpdatedData = {
+            document: base64String,
+            userType: 'company',
+            id: data?.company_id,
+          };
+        } else {
+          UpdatedData = {
+            document: base64String,
+            userType: 'user',
+            id: getUserID,
+          };
+        }
+        await dispatch(uploalImageonAzure(UpdatedData)).then((payload: any) => {
+          if (payload?.payload) {
+            if (UpdatedData?.userType === 'user') {
+              dispatch(getUserByIdLogin(getUserID));
+            } else if (UpdatedData?.userType === 'company') {
+              dispatch(getCompanyByUserId({user_id: getUserID}));
+            }
+          }
+        });
+      })
+      .catch((error: any) => {
+        message.error('Error converting file to base64', error);
+      });
   };
 
   const handleNotification = (list: any) => {
@@ -166,13 +181,15 @@ const MyProfileCard: FC<any> = ({data, isCompanyData}) => {
             <span style={{position: 'relative'}}>
               <AvatarStyled
                 cursor="unset"
-                src={data?.profile_image}
+                src={data?.profile_image || data?.company_logo}
                 icon={`${
                   data?.user_name?.toString()?.charAt(0)?.toUpperCase() ??
                   data?.user_name?.toString()?.charAt(0)?.toUpperCase() ??
                   data?.company_name?.toString()?.charAt(0)?.toUpperCase()
                 }`}
-                background={data?.profile_image ? '' : '#1EB159'}
+                background={
+                  data?.profile_image || data?.company_logo ? '' : '#1EB159'
+                }
                 size={94}
               />
               {(loginAccount || isCompanyData) && (

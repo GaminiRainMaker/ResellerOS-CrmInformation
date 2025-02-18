@@ -53,6 +53,8 @@ const MyCompany = () => {
         company_name: company?.company_name,
         user_role: '',
         job_title: '',
+        profile_image: company?.company_logo,
+        company_id: company?.id,
       });
     }
   }, [company]);

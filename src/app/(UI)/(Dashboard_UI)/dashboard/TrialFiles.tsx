@@ -68,6 +68,7 @@ const TrialFiles = () => {
   const rowSelection = {
     onChange: (selectedRowKeys: any,) => {
       setSelectedRowIds(selectedRowKeys);
+      onSelectChange(selectedRowKeys)
     },
   };
 
@@ -96,6 +97,7 @@ const TrialFiles = () => {
         columns={columns}
         dataSource={files}
         pagination={false}
+        
       />
       <Button
         type="primary"
