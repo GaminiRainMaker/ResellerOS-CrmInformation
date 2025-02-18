@@ -17,6 +17,7 @@ export const API = {
     getPDFFileDataForSales:
       '/auth/fetchDataWithIntellengenceForPDFFileForSalesForceExport',
     fetchAndParseExcel: '/auth/fetchAndParseExcel',
+    MasterPartnerFetchAndParseExcel: '/auth/masterPartnerFetchAndParseExcel',
     sendEmailForSuport: '/auth/sendEmailForSuport',
     VerifyEmail: '/auth/verifyEmail',
   },
@@ -127,6 +128,11 @@ export const API = {
   CONTRACT: {
     INDEX: '/contract',
     QUERY: '/contract/query',
+  },
+  COMPANY: {
+    INDEX: '/company',
+    QUERY: '/company/query',
+    GetCompanyByUserId: '/company/getCompanyByUserId',
   },
   FORMULA: {
     INDEX: '/Formulas',
@@ -239,6 +245,9 @@ export const API = {
       'partner/getAllPartnerandProgramApprovedDataSalesForce',
     getAllApprovedPartnerForQuoteConfiq:
       'partner/getAllApprovedPartnerForQuoteConfiq',
+    CreateOrUpdateMasterPartner: 'partner/createOrUpdateMasterPartner',
+    getAllApprovedPartnerFoFormulas: 'partner/getAllApprovedPartnerFoFormulas',
+    getAllPartnersForParentPartner: 'partner/getAllPartnersForParentPartner',
   },
   PARTNER_PROGRAM: {
     INDEX: '/partnerProgram',

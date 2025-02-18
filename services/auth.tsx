@@ -24,6 +24,7 @@ export const AUTH_API = {
   getPDFFileDataForSales: (data: any) =>
     post(API.AUTH.getPDFFileDataForSales, data),
   fetchAndParseExcel: (data: any) => post(API.AUTH.fetchAndParseExcel, data),
+  masterPartnerFetchAndParseExcel: (data: any) => post(API.AUTH.MasterPartnerFetchAndParseExcel, data),
   getFields: (data: any) => post(API.AUTH.getFields, data),
   sendEmailForSuport: (data: any) => post(API.AUTH.sendEmailForSuport, data),
   verifyEmail: (data: any) => post(API.AUTH.VerifyEmail, data),

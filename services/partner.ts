@@ -51,4 +51,16 @@ export const PARTNER_API = {
     post(API.PARTNER.getAllApprovedPartnerForQuoteConfiq, data) as Promise<
       AxiosResponse<[]>
     >,
+  createOrUpdateMasterPartner: (data: any) =>
+    post(API.PARTNER.CreateOrUpdateMasterPartner, data) as Promise<
+      AxiosResponse<[]>
+    >,
+  getAllApprovedPartnerFoFormulas: (data: any) =>
+    post(API.PARTNER.getAllApprovedPartnerFoFormulas, data) as Promise<
+      AxiosResponse<[]>
+    >,
+  getAllPartnersForParentPartner: (data: any) =>
+    post(API.PARTNER.getAllPartnersForParentPartner, data) as Promise<
+      AxiosResponse<[]>
+    >,
 };

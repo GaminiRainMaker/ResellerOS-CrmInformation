@@ -4,7 +4,7 @@ import {CONTRACT_API} from '../../services/contract';
 
 export const insertContract = createAsyncThunk(
   'contract/insertContract',
-  async (data: any, thunkApi) => {
+  async (data: any, thunkApi: any) => {
     try {
       const res = await CONTRACT_API.post(data);
       return res.data;
@@ -16,7 +16,7 @@ export const insertContract = createAsyncThunk(
 
 export const getAllContract = createAsyncThunk(
   'contract/getAllContract',
-  async (data, thunkApi) => {
+  async (thunkApi: any) => {
     try {
       const res = await CONTRACT_API.get();
       return res.data;

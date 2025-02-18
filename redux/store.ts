@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {Action, AnyAction, configureStore} from '@reduxjs/toolkit';
-import thunk, {ThunkAction, ThunkDispatch} from 'redux-thunk';
+import {ThunkAction, ThunkDispatch, thunk} from 'redux-thunk';
 import address from './slices/address';
 import billingContact from './slices/billingAddress';
 import bundle from './slices/bundle';
@@ -45,6 +45,7 @@ import formulas from './slices/formulas';
 import salesForceCredentials from './slices/salesForceCredentials';
 import canvas from './slices/canvas';
 import license from './slices/license';
+import company from './slices/company';
 
 // Configure redux store
 const store = configureStore({
@@ -93,8 +94,9 @@ const store = configureStore({
     salesForceCredentials,
     canvas,
     license,
+    company,
   },
-  middleware: [thunk],
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
   devTools: true,
 });
 

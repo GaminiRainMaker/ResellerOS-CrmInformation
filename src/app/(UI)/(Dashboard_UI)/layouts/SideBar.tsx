@@ -48,6 +48,7 @@ const SideBar = () => {
   const {userInformation} = useAppSelector((state) => state.user);
   const {isCanvas} = useAppSelector((state) => state.canvas);
   const searchParams = useSearchParams()!;
+  // const [canvasState, setCanvasState] = useState<boolean>(true);
   const salesForceUrl = searchParams.get('instance_url');
   const {activeLicense} = useAppSelector((state) => state.license);
 

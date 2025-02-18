@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-nested-ternary */
 
 'use client';
@@ -28,19 +29,15 @@ import {
 import {Checkbox, Form} from 'antd';
 import {TabsProps} from 'antd/lib';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
+// eslint-disable-next-line import/order
 import {
   deleteOpportunity,
   getOpportunityById,
   updateOpportunity,
 } from '../../../../../redux/actions/opportunity';
-import {updateQuoteCustomerId} from '../../../../../redux/actions/quote';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {tabItems} from '../allQuote/constants';
 import OsModal from '@/app/components/common/os-modal';
-import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import {PlusIcon} from '@heroicons/react/24/outline';
-import GlobalLoader from '@/app/components/common/os-global-loader';
 import CommonSelect from '@/app/components/common/os-select';
 import {
   countrupickList,
@@ -53,15 +50,19 @@ import {
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 import OsInput from '@/app/components/common/os-input';
-import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
+import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
+import NewRegistrationForm from '../dealReg/NewRegistrationForm';
+import {tabItems} from '../allQuote/constants';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {updateQuoteCustomerId} from '../../../../../redux/actions/quote';
 
 const OpportunityDetails = () => {
   const [token] = useThemeToken();
   const router = useRouter();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const opportunityId = searchParams.get('id');
   const {loading, opportunityById: opportunityData} = useAppSelector(
     (state) => state.Opportunity,
@@ -125,7 +126,7 @@ const OpportunityDetails = () => {
       dataIndex: 'line_number',
       key: 'line_number',
       render: (text: string) => (
-        <OsInput disabled={true} style={{height: '36px'}} defaultValue={text} />
+        <OsInput disabled style={{height: '36px'}} defaultValue={text} />
       ),
       width: 111,
     },
@@ -145,7 +146,7 @@ const OpportunityDetails = () => {
           formatter={currencyFormatter}
           parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
           defaultValue={text ?? 0.0}
-          disabled={true}
+          disabled
           style={{height: '36px', textAlignLast: 'right'}}
           min={1}
         />
@@ -163,7 +164,7 @@ const OpportunityDetails = () => {
           precision={2}
           formatter={currencyFormatter}
           parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
-          disabled={true}
+          disabled
           style={{height: '36px', textAlignLast: 'right', width: '100%'}}
           defaultValue={text ?? 0.0}
         />
@@ -182,7 +183,7 @@ const OpportunityDetails = () => {
           parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
           min={0}
           style={{height: '36px', textAlignLast: 'right', width: '100%'}}
-          disabled={true}
+          disabled
           defaultValue={text ?? 0.0}
         />
       ),
@@ -206,7 +207,7 @@ const OpportunityDetails = () => {
       width: 285,
       render: (text: any, record: any) => (
         <CommonSelect
-          disabled={true}
+          disabled
           style={{width: '200px', height: '36px'}}
           placeholder="Select"
           defaultValue={text ?? record?.Product?.product_family}
@@ -221,7 +222,7 @@ const OpportunityDetails = () => {
       width: 200,
       render: (text: string) => (
         <CommonSelect
-          disabled={true}
+          disabled
           style={{width: '100%', height: '36px'}}
           placeholder="Select"
           defaultValue={text}
@@ -238,7 +239,7 @@ const OpportunityDetails = () => {
       render: (text: string) => (
         <OsInputNumber
           min={0}
-          disabled={true}
+          disabled
           style={{height: '36px', textAlignLast: 'center', width: '100%'}}
           precision={2}
           formatter={currencyFormatter}
@@ -363,7 +364,7 @@ const OpportunityDetails = () => {
       width: 250,
       render: (text: any, record: any) => (
         <CommonSelect
-          disabled={true}
+          disabled
           style={{width: '200px', height: '36px'}}
           placeholder="Select"
           defaultValue={text ?? record?.taa_flag}
@@ -378,7 +379,7 @@ const OpportunityDetails = () => {
       width: 250,
       render: (text: any, record: any) => (
         <CommonSelect
-          disabled={true}
+          disabled
           style={{width: '200px', height: '36px'}}
           placeholder="Select"
           defaultValue={text ?? record?.epeat_flag}
@@ -393,7 +394,7 @@ const OpportunityDetails = () => {
       width: 250,
       render: (text: any, record: any) => (
         <CommonSelect
-          disabled={true}
+          disabled
           style={{width: '200px', height: '36px'}}
           placeholder="Select"
           defaultValue={text ?? record?.country_of_origin}
@@ -408,7 +409,7 @@ const OpportunityDetails = () => {
       width: 250,
       render: (text: any, record: any) => (
         <CommonSelect
-          disabled={true}
+          disabled
           style={{width: '200px', height: '36px'}}
           placeholder="Select"
           defaultValue={text ?? record?.energy_star_flag}
@@ -713,9 +714,9 @@ const OpportunityDetails = () => {
       dataIndex: 'customer_name',
       key: 'customer_name',
       width: 187,
-      render: (text: string, record: any) => {
-        return <Checkbox disabled checked={record?.id === oppSyncValue} />;
-      },
+      render: (text: string, record: any) => (
+        <Checkbox disabled checked={record?.id === oppSyncValue} />
+      ),
     },
     {
       title: (
@@ -1028,7 +1029,7 @@ const OpportunityDetails = () => {
   ];
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <Space direction="vertical" size={12} style={{width: '100%'}}>
         <OsBreadCrumb items={menuItems} />
 
@@ -1218,7 +1219,7 @@ const OpportunityDetails = () => {
         description="Are you sure you want to delete this opportunity?"
         heading="Delete Opportunity"
       />
-    </>
+    </Suspense>
   );
 };
 

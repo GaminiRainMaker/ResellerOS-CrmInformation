@@ -39,7 +39,5 @@
     "src/app/(UI)/(Dashboard_UI)/crmContact",
     "axios/interceptors/transformers/responseTransformers.js"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules", ".next", "next.config.js"]
 }

@@ -50,7 +50,7 @@ const uploadImage = async (
         params: target,
         leavePartsOnError: false,
       });
-      parallelUploadS3.on('httpUploadProgress', (progress: any) => {});
+      parallelUploadS3.on('httpUploadProgress', () => {});
       const data: any = await parallelUploadS3.done();
       return data.Location;
     }
@@ -74,6 +74,7 @@ const uploadImage = async (
     }
     // return data.Location;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.log(error);
   }
 };

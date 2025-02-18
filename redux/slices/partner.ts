@@ -18,6 +18,9 @@ import {
   getAllPartnerById,
   getAllApprovedPartnerForQuoteConfiq,
   getAllPartnerandProgramApprovedDataSalesForce,
+  createOrUpdateMasterPartner,
+  getAllApprovedPartnerFoFormulas,
+  getAllPartnersForParentPartner,
 } from '../actions/partner';
 
 type PartnerState = {
@@ -26,6 +29,7 @@ type PartnerState = {
   insertPartnerData: any;
   error: string | null;
   data: any;
+  setGetAllPartnerandProgramFilterDataForAdmin: any;
   partner: any;
   partnerRequestData: any;
   AllPartnerandProgramFilterData: any;
@@ -37,6 +41,7 @@ const initialState: PartnerState = {
   insertPartnerData: {},
   error: null,
   data: [],
+  setGetAllPartnerandProgramFilterDataForAdmin: [],
   partner: [],
   partnerRequestData: {},
   AllPartnerandProgramFilterData: [],
@@ -172,7 +177,7 @@ const partnerSlice = createSlice({
         getAllPartnerandProgramFilterDataForAdmin.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.setGetAllPartnerandProgramFilterDataForAdmin = action.payload;
         },
       )
       .addCase(
@@ -333,6 +338,60 @@ const partnerSlice = createSlice({
       )
       .addCase(
         getAllPartnerandProgramApprovedDataSalesForce.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getAllApprovedPartnerFoFormulas.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getAllApprovedPartnerFoFormulas.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.allPartnersById = action.payload;
+        },
+      )
+      .addCase(
+        getAllApprovedPartnerFoFormulas.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(createOrUpdateMasterPartner.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        createOrUpdateMasterPartner.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.allPartnersById = action.payload;
+        },
+      )
+      .addCase(
+        createOrUpdateMasterPartner.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getAllPartnersForParentPartner.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getAllPartnersForParentPartner.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.allPartnersById = action.payload;
+        },
+      )
+      .addCase(
+        getAllPartnersForParentPartner.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

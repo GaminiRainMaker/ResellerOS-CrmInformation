@@ -6,15 +6,14 @@ import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import CustomTabs from '@/app/components/common/os-custom-tab/AdminSectionTab';
 import Typography from '@/app/components/common/typography';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import MyProfile from './myProfile';
 import MyTeam from './myTeam';
 import PartnerPassword from './partnerPassword';
-import {useAppSelector} from '../../../../../redux/hook';
-import React from 'react';
+import MyCompany from './company';
 
 const AccountInfo = () => {
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const [token] = useThemeToken();
   const router = useRouter();
   const getRole = searchParams.get('role');
@@ -56,6 +55,12 @@ const AccountInfo = () => {
             <MyTeam />
           ),
           route: `/accountInfo?id=${getId}&organization=${organization}&tab=myTeam&isSuperAdminProfile=${isSuperAdminProfile}`,
+        },
+        {
+          key: 3,
+          name: 'Company',
+          superChild: <MyCompany />,
+          route: `/accountInfo?id=${getId}&organization=${organization}&tab=myCompany&isSuperAdminProfile=${isSuperAdminProfile}`,
         },
       ],
     },
@@ -160,7 +165,7 @@ const AccountInfo = () => {
   ];
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       {getRole === 'admin' || getRole === 'superAdmin' ? (
         <>
           <Row justify="space-between" align="middle">
@@ -173,7 +178,7 @@ const AccountInfo = () => {
       ) : (
         <CustomTabs tabs={tabsData} isTrialActive={isLicenseActivate} />
       )}
-    </>
+    </Suspense>
   );
 };
 

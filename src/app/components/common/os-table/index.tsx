@@ -47,16 +47,16 @@ const OsTable: FC<any> = ({
   tableSelectionType = 'checkbox',
   loading = false,
   scrolly = 1000,
-  tablePageSize = 10,
+  tablePageSize = 5,
   drag = false,
-  defaultPageSize = 10,
+  defaultPageSize = 5,
   ...rest
 }) => {
   const [token] = useThemeToken();
   const [columns, setColumns] = useState(rest?.columns);
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 10,
+    pageSize: 5,
 
     total: 0,
   });

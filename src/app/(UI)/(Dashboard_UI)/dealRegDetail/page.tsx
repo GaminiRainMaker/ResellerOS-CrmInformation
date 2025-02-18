@@ -1,3 +1,7 @@
+/* eslint-disable consistent-return */
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable @typescript-eslint/no-use-before-define */
+
 'use client';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
@@ -17,15 +21,15 @@ import {
   processScript,
 } from '@/app/utils/script';
 import {PlusIcon} from '@heroicons/react/24/outline';
-import {MenuProps, notification} from 'antd';
+import {notification} from 'antd';
 import Form from 'antd/es/form';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useRef, useState} from 'react';
+import {Suspense, useEffect, useRef, useState} from 'react';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import {
   dealRegFormScript,
   deleteDealregForm,
   getDealRegByOpportunityId,
-  queryDealReg,
   updateDealRegStatus,
 } from '../../../../../redux/actions/dealReg';
 import {getScriptTimer} from '../../../../../redux/actions/generalSetting';
@@ -42,7 +46,6 @@ import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import DealRegCustomTabs, {DealRegCustomTabsHandle} from './DealRegCustomTabs';
 import ElectronBot from './ElectronBot';
 import SubmitDealRegForms from './SubmitDealRegForms';
-import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 
 const DealRegDetail = () => {
   const [getFormData] = Form.useForm();
@@ -54,13 +57,12 @@ const DealRegDetail = () => {
     data: DealRegData,
     loading: dealRegLoading,
     getDealRegForNewLoading,
-    finalUpdatedDealRegData,
   } = useAppSelector((state) => state.dealReg);
   const [showModal, setShowModal] = useState(false);
   const [showSubmitFormModal, setShowSubmitFormModal] = useState(false);
   const [electronBotModal, showElectronBotModal] = useState(false);
   const [isSubmitLoginForm, showIsSubmitLoginForm] = useState(false);
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getOpportunityId = searchParams && searchParams.get('opportunityId');
   const [formData, setFormData] = useState<any>();
   const {userInformation} = useAppSelector((state) => state.user);
@@ -95,7 +97,7 @@ const DealRegDetail = () => {
         setDealregAppTimer(d?.payload?.data);
       }
     });
-  }, []);
+  }, [dispatch, getOpportunityId, isCanvas]);
 
   useEffect(() => {
     dispatch(setDealReg(DealRegData?.[0]));
@@ -177,12 +179,12 @@ const DealRegDetail = () => {
           dealRegId: SubmitDealRegFormData?.id,
           token: salesForceToken,
           baseURL: salesForceinstanceUrl,
-          userId: userId,
+          userId,
           partnerId: SubmitDealRegFormData?.partner_id,
           partnerProgramId: SubmitDealRegFormData?.partner_program_id,
         };
 
-        let salesforceData: any = {};
+        const salesforceData: any = {};
         if (isCanvas) {
           try {
             // Fetch Salesforce deal registration and credentials
@@ -218,7 +220,7 @@ const DealRegDetail = () => {
             SECRET_KEY as string,
           );
           const desktopAppData = {
-            isCanvas: isCanvas,
+            isCanvas,
             userId: userInformation?.id ?? userId,
             script: JSON.stringify(scriptEncryption),
             scriptTimer: dealregAppTimer,
@@ -279,7 +281,7 @@ const DealRegDetail = () => {
   const createScript = async (dealData: any, isSalesForce: any) => {
     try {
       // Initialize finalMainData with a shallow copy of dealData
-      let finalMainData = {...dealData};
+      const finalMainData = {...dealData};
       if (isSalesForce) {
         // Process and decrypt unique form data
         const uniqueDataRaw = dealData?.data?.unique_form_data?.replace(
@@ -418,7 +420,7 @@ const DealRegDetail = () => {
   };
 
   return (
-    <div>
+    <Suspense fallback={<div>Loading...</div>}>
       <Row justify="space-between" align="middle">
         <Col>
           <OsBreadCrumb items={OsBreadCrumbItems as any} />
@@ -511,7 +513,7 @@ const DealRegDetail = () => {
           showIsSubmitLoginForm(true);
           submitDealRegForm?.submit();
         }}
-        primaryButtonText={'Submit Form'}
+        primaryButtonText="Submit Form"
         thirdButtonText="Submit Login Form"
       />
 
@@ -538,9 +540,9 @@ const DealRegDetail = () => {
         showModalDelete={showModalDelete}
         deleteSelectedIds={deleteSelectedIds}
         heading="Delete Dealreg Form"
-        description={'Are you sure you want to delete this form?'}
+        description="Are you sure you want to delete this form?"
       />
-    </div>
+    </Suspense>
   );
 };
 

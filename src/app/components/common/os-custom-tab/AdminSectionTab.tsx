@@ -1,21 +1,25 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable arrow-body-style */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+
+'use client';
+
 import Col from 'antd/es/grid/col';
 import Row from 'antd/es/grid/row';
 import {usePathname, useRouter, useSearchParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
+import {FC, Suspense, useEffect, useState} from 'react';
+import TextArea from 'antd/es/input/TextArea';
+import {message, notification} from 'antd';
+import {convertFileToBase64} from '@/app/utils/base';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
 import {CustomTabStyle} from './styled-components';
 import OsButton from '../os-button';
 import {OSDraggerStyleForSupport} from '../os-upload/styled-components';
-import TextArea from 'antd/es/input/TextArea';
 import GlobalLoader from '../os-global-loader';
-import {Divider, message, notification} from 'antd';
-import {convertFileToBase64} from '@/app/utils/base';
 import {
   uploadDocumentOnAzure,
   uploadToAws,
@@ -25,12 +29,10 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {sendEmailForSuport} from '../../../../../redux/actions/auth';
 
 const AdminCustomTabs: FC<any> = (tabs) => {
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getTab = searchParams.get('tab');
   const pathname = usePathname();
-  const {userInformation, searchDataa, loginUserInformation} = useAppSelector(
-    (state) => state.user,
-  );
+  const {userInformation} = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
 
   const [activekeysall, setActivekeysall] = useState<number>(1);
@@ -97,6 +99,10 @@ const AdminCustomTabs: FC<any> = (tabs) => {
             tabIndex = 0;
             superChildIndex = 1;
             break;
+          case 'myCompany':
+            tabIndex = 0;
+            superChildIndex = 2;
+            break;
           case 'partnerPassword':
             tabIndex = 1;
             superChildIndex = 0;
@@ -140,7 +146,7 @@ const AdminCustomTabs: FC<any> = (tabs) => {
   const beforeUpload = async (file: File) => {
     const obj: any = {...file};
     setLoadingSpin(true);
-    let pathUsedToUpload = file?.type?.split('.')?.includes('document')
+    const pathUsedToUpload = file?.type?.split('.')?.includes('document')
       ? uploadDocumentOnAzure
       : file?.type?.split('.')?.includes('image/jpeg') ||
           file?.type?.split('/')?.includes('image')
@@ -178,7 +184,7 @@ const AdminCustomTabs: FC<any> = (tabs) => {
     }
 
     setLoadingSpin(true);
-    let newArrForUploadded: any = [];
+    const newArrForUploadded: any = [];
 
     if (uploadedData && uploadedData?.length > 0) {
       uploadedData?.map((items: any) => {
@@ -186,7 +192,7 @@ const AdminCustomTabs: FC<any> = (tabs) => {
       });
     }
 
-    let newObj = {
+    const newObj = {
       issue: addIssueToSupport,
       attach: newArrForUploadded,
       // organizationName: userInformation?.organization,
@@ -314,68 +320,71 @@ const AdminCustomTabs: FC<any> = (tabs) => {
   };
 
   return (
-    <Row>
-      <Col xs={24} sm={8} md={5} span={5}>
-        <CustomTabStyle token={token}>
-          <div style={{width: '100%'}}>
-            {tabs?.tabs?.map((itemtab: any) => {
-              return (
-                <Space
-                  direction="vertical"
-                  key={itemtab?.key}
-                  size={12}
-                  style={{width: '100%'}}
-                >
-                  <Typography name="Body 4/Medium">{itemtab?.title}</Typography>
-                  <div style={{marginBottom: '15px', cursor: 'pointer'}}>
-                    {itemtab?.childitem?.map((itemild: any) => {
-                      return (
-                        <>
-                          <Typography
-                            style={{
-                              padding: '12px 24px',
-                              background:
-                                itemild?.key === activekeysall &&
-                                tabs?.isTrialActive &&
-                                (getTab === 'myTeam' ||
-                                  getTab === 'partnerPassword')
-                                  ? 'grey'
-                                  : activekeysall === itemild?.key
-                                    ? token.colorInfo
-                                    : '',
-
-                              color:
-                                activekeysall === itemild?.key
-                                  ? token.colorBgContainer
-                                  : token.colorTextDisabled,
-                              borderRadius: '12px',
-                            }}
-                            as="div"
-                            cursor="pointer"
-                            name="Button 1"
-                            onClick={() => {
-                              router?.push(itemild?.route);
-                              setTempChild(itemild?.superChild);
-                              setActivekeysall(itemild?.key);
-                            }}
-                            key={`${itemild?.key}`}
-                          >
-                            {itemild?.name}
-                          </Typography>
-                        </>
-                      );
-                    })}
-                  </div>
-                </Space>
-              );
-            })}
-          </div>
-        </CustomTabStyle>
-      </Col>
-      <Col xs={24} sm={16} md={19} span={19}>
-        {getSuperChild()}
-      </Col>
-    </Row>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Row>
+        <Col xs={24} sm={8} md={5} span={5}>
+          <CustomTabStyle token={token}>
+            <div style={{width: '100%'}}>
+              {tabs?.tabs?.map((itemtab: any) => {
+                return (
+                  <Space
+                    direction="vertical"
+                    key={itemtab?.key}
+                    size={12}
+                    style={{width: '100%'}}
+                  >
+                    <Typography name="Body 4/Medium">
+                      {itemtab?.title}
+                    </Typography>
+                    <div style={{marginBottom: '15px', cursor: 'pointer'}}>
+                      {itemtab?.childitem?.map((itemild: any) => {
+                        return (
+                          <>
+                            <Typography
+                              style={{
+                                padding: '12px 24px',
+                                background:
+                                  itemild?.key === activekeysall &&
+                                  tabs?.isTrialActive &&
+                                  (getTab === 'myTeam' ||
+                                    getTab === 'partnerPassword')
+                                    ? 'grey'
+                                    : activekeysall === itemild?.key
+                                      ? token.colorInfo
+                                      : '',
+                                color:
+                                  activekeysall === itemild?.key
+                                    ? token.colorBgContainer
+                                    : token.colorTextDisabled,
+                                borderRadius: '12px',
+                              }}
+                              as="div"
+                              cursor="pointer"
+                              name="Button 1"
+                              onClick={() => {
+                                router?.push(itemild?.route);
+                                setTempChild(itemild?.superChild);
+                                setActivekeysall(itemild?.key);
+                              }}
+                              key={`${itemild?.key}`}
+                            >
+                              {itemild?.name}
+                            </Typography>
+                          </>
+                        );
+                      })}
+                    </div>
+                  </Space>
+                );
+              })}
+            </div>
+          </CustomTabStyle>
+        </Col>
+        <Col xs={24} sm={16} md={19} span={19}>
+          {getSuperChild()}
+        </Col>
+      </Row>
+    </Suspense>
   );
 };
 

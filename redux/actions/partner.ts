@@ -190,3 +190,39 @@ export const getAllApprovedPartnerForQuoteConfiq = createAsyncThunk(
     }
   },
 );
+
+export const getAllApprovedPartnerFoFormulas = createAsyncThunk(
+  'partner/getAllApprovedPartnerFoFormulas',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await PARTNER_API.getAllApprovedPartnerFoFormulas(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+
+export const createOrUpdateMasterPartner = createAsyncThunk(
+  'partner/createOrUpdateMasterPartner',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await PARTNER_API.createOrUpdateMasterPartner(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+
+export const getAllPartnersForParentPartner = createAsyncThunk(
+  'partner/getAllPartnersForParentPartner',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await PARTNER_API.getAllPartnersForParentPartner(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

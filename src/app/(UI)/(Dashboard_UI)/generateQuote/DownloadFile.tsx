@@ -1,3 +1,12 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable jsx-a11y/iframe-has-title */
+/* eslint-disable eqeqeq */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable array-callback-return */
+
+'use client';
+
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
@@ -8,7 +17,13 @@ import Typography from '@/app/components/common/typography';
 import {Form, Space} from 'antd';
 import axios from 'axios';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
+import {FC, Suspense, useEffect, useState} from 'react';
+import {
+  getFormattedValuesForBundlesOnly,
+  getFormattedValuesForLineItems,
+  getFormattedValuesForWithAndWithoutBundles,
+  getFormattedValuesForWithAndWithoutBundlesForExcelFile,
+} from '@/app/utils/base';
 import {insertAttachmentDocument} from '../../../../../redux/actions/attachmentDocument';
 import {getAllFormStack} from '../../../../../redux/actions/formStackSync';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
@@ -17,18 +32,12 @@ import {
   uploadToAws,
 } from '../../../../../redux/actions/upload';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {parentpqli, salesForceWithArrrr} from '@/app/utils/saleforce';
-import {
-  getFormattedValuesForBundlesOnly,
-  getFormattedValuesForLineItems,
-  getFormattedValuesForWithAndWithoutBundles,
-  getFormattedValuesForWithAndWithoutBundlesForExcelFile,
-} from '@/app/utils/base';
+
 const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
   const [token] = useThemeToken();
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const [pdfUrl, setPdfUrl] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -42,11 +51,12 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
     dispatch(getAllFormStack(''));
     dispatch(getAllGeneralSetting(''));
   }, []);
+  const [objectAfterFOrMappedFunc, setObjectAfterFOrMappedFunc] =
+    useState<any>();
   const [formStackOptions, setFormStackOptions] = useState<any>();
 
-  console.log('243242231', objectForSyncingValues);
   useEffect(() => {
-    let newArrOfOption: any = [];
+    const newArrOfOption: any = [];
     formStackSyncData &&
       formStackSyncData?.length > 0 &&
       formStackSyncData?.map((FormstackDataItem: any) => {
@@ -55,7 +65,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
           FormstackDataItem?.type_of_file === 'With and without bundle' &&
           objectForSyncingValues?.QuoteLineItems?.length > 0
         ) {
-          let newObj = {
+          const newObj = {
             value: FormstackDataItem.doc_id,
             key: FormstackDataItem.doc_key,
             data: FormstackDataItem.syncJson,
@@ -72,7 +82,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
           FormstackDataItem?.type_of_file === 'Bundle Only' &&
           objectForSyncingValues?.QuoteLineItems?.length === 0
         ) {
-          let newObj = {
+          const newObj = {
             value: FormstackDataItem.doc_id,
             key: FormstackDataItem.doc_key,
             data: FormstackDataItem.syncJson,
@@ -90,7 +100,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
           FormstackDataItem?.type_of_file === 'Line Items Only' &&
           objectForSyncingValues?.QuoteLineItems?.length > 0
         ) {
-          let newObj = {
+          const newObj = {
             value: FormstackDataItem.doc_id,
             key: FormstackDataItem.doc_key,
             data: FormstackDataItem.syncJson,
@@ -124,12 +134,73 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
       ),
     }));
 
+  useEffect(() => {
+    let newObjForAddValues: any = {};
+    if (objectForSyncingValues) {
+      let billingAdress = objectForSyncingValues?.addressForAll?.find(
+        (items: any) => items?.id === objectForSyncingValues?.billing_id,
+      );
+      let shippingAdress = objectForSyncingValues?.addressForAll?.find(
+        (items: any) => items?.id === objectForSyncingValues?.shipping_id,
+      );
+      let billingContactId =
+        objectForSyncingValues?.billing_phone?.split('_')?.[1];
+      let shippingContactId =
+        objectForSyncingValues?.shipping_phone?.split('_')?.[1];
+
+      let billingContact = objectForSyncingValues?.allContactDetails?.find(
+        (items: any) => items?.id == billingContactId,
+      );
+      let shippingContact = objectForSyncingValues?.allContactDetails?.find(
+        (items: any) => items?.id == shippingContactId,
+      );
+
+      newObjForAddValues.quote_unique_in =
+        objectForSyncingValues?.quote_unique_in;
+      newObjForAddValues.quote_expiration =
+        objectForSyncingValues?.expiration_date;
+      newObjForAddValues.billing_to__name =
+        objectForSyncingValues?.Customer?.name;
+      newObjForAddValues.contact_name = objectForSyncingValues?.Customer?.name;
+      newObjForAddValues.billing_adrress = billingAdress?.shiping_address_line;
+      newObjForAddValues.billing_city = billingAdress?.shiping_city;
+      newObjForAddValues.billing_state = billingAdress?.shiping_state;
+      newObjForAddValues.billing_zip = billingAdress?.shiping_pin_code;
+      newObjForAddValues.billing_country = billingAdress?.shiping_country;
+      newObjForAddValues.billing_phone = shippingContact?.billing_phone;
+      newObjForAddValues.billing_email = shippingContact?.billing_email;
+
+      newObjForAddValues.shipping_to_name =
+        objectForSyncingValues?.Customer?.name;
+      newObjForAddValues.contact_name = objectForSyncingValues?.Customer?.name;
+      newObjForAddValues.shipping_adrress =
+        shippingAdress?.shiping_address_line;
+      newObjForAddValues.shipping_city = shippingAdress?.shiping_city;
+      newObjForAddValues.shipping_state = shippingAdress?.shiping_state;
+      newObjForAddValues.shipping_zip = shippingAdress?.shiping_pin_code;
+      newObjForAddValues.shipping_country = shippingAdress?.shiping_country;
+      newObjForAddValues.shipping_phone = billingContact?.billing_phone;
+      newObjForAddValues.shipping_email = billingContact?.billing_email;
+
+      newObjForAddValues.owner_name = objectForSyncingValues?.Customer?.name;
+      newObjForAddValues.description = 'description';
+      newObjForAddValues.term = 'new terms';
+
+      newObjForAddValues.CustomerAddress = `${billingAdress?.shiping_address_line}-${billingAdress?.shiping_state}-${billingAdress?.shiping_pin_code}-${billingAdress?.shiping_country}`;
+      newObjForAddValues.CustomerCity = billingAdress?.shiping_city;
+
+      newObjForAddValues.DistributorAddress = `${shippingAdress?.shiping_address_line}-${shippingAdress?.shiping_state}-${shippingAdress?.shiping_pin_code}-${shippingAdress?.shiping_country}`;
+      newObjForAddValues.DistributorCity = shippingAdress?.shiping_city;
+    }
+    setObjectAfterFOrMappedFunc(newObjForAddValues);
+  }, [objectForSyncingValues]);
+
   const dowloadFunction = async (data: any, type: string) => {
-    let findTheItem = formStackSyncData?.find(
+    const findTheItem = formStackSyncData?.find(
       (item: any) => item?.doc_key === data?.key,
     );
 
-    let resultValues: any = {};
+    const resultValues: any = {};
     let lineItemsArray: any = [];
     if (
       findTheItem?.type_of_file === 'With and without bundle' &&
@@ -167,19 +238,16 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
       }
     });
 
-    let sottedFOr = lineItemsArray?.lineItemss
+    const sottedFOr = lineItemsArray?.lineItemss
       ? lineItemsArray?.lineItemss
       : lineItemsArray;
-    let sortedLineItems = sottedFOr?.sort((a: any, b: any) => {
-      return a.Id - b.Id;
-    });
+    const sortedLineItems = sottedFOr?.sort((a: any, b: any) => a.Id - b.Id);
 
-    for (let key in formattedData) {
+    for (const key in formattedData) {
       if (objectForSyncingValues[formattedData[key]]) {
         resultValues[key] = objectForSyncingValues[formattedData[key]];
       }
     }
-    resultValues.quotelineitem = sortedLineItems;
 
     if (findTheItem?.type_of_file === 'Line Items Only') {
       let totalExtendedPrice: any = 0;
@@ -193,65 +261,32 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
         Number(objectForSyncingValues?.quote_shipping);
     }
 
-    let billingAdress = objectForSyncingValues?.addressForAll?.find(
+    const billingAdress = objectForSyncingValues?.addressForAll?.find(
       (items: any) => items?.id === objectForSyncingValues?.billing_id,
     );
-    let shippingAdress = objectForSyncingValues?.addressForAll?.find(
+    const shippingAdress = objectForSyncingValues?.addressForAll?.find(
       (items: any) => items?.id === objectForSyncingValues?.shipping_id,
     );
-    let billingContactId =
+    const billingContactId =
       objectForSyncingValues?.billing_phone?.split('#')?.[1];
-    let shippingContactId =
+    const shippingContactId =
       objectForSyncingValues?.shipping_phone?.split('#')?.[1];
 
-    let billingContact = objectForSyncingValues?.allContactDetails?.find(
+    const billingContact = objectForSyncingValues?.allContactDetails?.find(
       (items: any) => items?.id == billingContactId,
     );
-    let shippingContact = objectForSyncingValues?.allContactDetails?.find(
+    const shippingContact = objectForSyncingValues?.allContactDetails?.find(
       (items: any) => items?.id == shippingContactId,
     );
 
-    resultValues.quote_num = objectForSyncingValues?.quote_unique_in;
-    resultValues.expiration_date = objectForSyncingValues?.expiration_date;
-    resultValues.sold_to_name = objectForSyncingValues?.Customer?.name;
-    resultValues.contact_name = objectForSyncingValues?.Customer?.name;
-    resultValues.sold_to_street = billingAdress?.shiping_address_line;
-    resultValues.sold_to_city = billingAdress?.shiping_city;
-    resultValues.sold_to_state = billingAdress?.shiping_state;
-    resultValues.sold_to_zipcode = billingAdress?.shiping_pin_code;
-    resultValues.sold_to_country = billingAdress?.shiping_country;
-    resultValues.sold_to_phone = shippingContact?.billing_phone;
-    resultValues.sold_to_email = shippingContact?.billing_email;
+    delete resultValues.quotelineitem;
+    resultValues.quotelineitem = sortedLineItems;
 
-    resultValues.ship_to_name = objectForSyncingValues?.Customer?.name;
-    resultValues.contact_name = objectForSyncingValues?.Customer?.name;
-    resultValues.ship_to_street = shippingAdress?.shiping_address_line;
-    resultValues.ship_to_city = shippingAdress?.shiping_city;
-    resultValues.ship_to_state = shippingAdress?.shiping_state;
-    resultValues.ship_to_zipcode = shippingAdress?.shiping_pin_code;
-    resultValues.ship_to_country = shippingAdress?.shiping_country;
-    resultValues.ship_to_phone = billingContact?.billing_phone;
-    resultValues.ship_to_email = billingContact?.billing_email;
-
-    resultValues.owner_name = objectForSyncingValues?.Customer?.name;
-    resultValues.description = 'description';
-    resultValues.term = 'new terms';
-
-    resultValues.CustomerAddress = `${billingAdress?.shiping_address_line}-${billingAdress?.shiping_state}-${billingAdress?.shiping_pin_code}-${billingAdress?.shiping_country}`;
-    resultValues.CustomerCity = billingAdress?.shiping_city;
-    // resultValues.Phone_SoldTo = '(333)333-3333';
-    // resultValues.Email_SoldTo = 'email@gmail.com';
-    // resultValues.Phone_shipTo = '(333)333-3333';
-    // resultValues.email_shipTo = 'email@gmail.com';
-    resultValues.DistributorAddress = `${shippingAdress?.shiping_address_line}-${shippingAdress?.shiping_state}-${shippingAdress?.shiping_pin_code}-${shippingAdress?.shiping_country}`;
-    resultValues.DistributorCity = shippingAdress?.shiping_city;
-
-    console.log('3454324324324', resultValues);
     Number(objectForSyncingValues?.quote_shipping);
 
     try {
       setLoading(true);
-      let pathName =
+      const pathName =
         type === 'download'
           ? `https://www.webmerge.me/merge/${data?.value}/${data?.key}?downoad=1`
           : `https://www.webmerge.me/merge/${data?.value}/${data?.key}`;
@@ -275,12 +310,13 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
           const url123 = URL.createObjectURL(blob);
           setPdfUrl(url123);
         } else {
+          // eslint-disable-next-line @typescript-eslint/no-shadow
           const blob = new Blob([response.data], {
             type: 'application/octet-stream',
           });
 
-          const blobToBase64 = (blobs: any) => {
-            return new Promise((resolve, reject) => {
+          const blobToBase64 = (blobs: any) =>
+            new Promise((resolve, reject) => {
               const reader = new FileReader();
               reader.onloadend = () => resolve(reader.result);
               reader.onerror = (error) => {
@@ -288,18 +324,18 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
               };
               reader.readAsDataURL(blobs);
             });
-          };
           console.log('blob?.type', blob?.type);
-          let pathUsedToUpload =
+          const pathUsedToUpload =
             blob?.type === 'application/octet-stream'
               ? uploadExcelFileToAws
               : uploadToAws;
           const base64String = await blobToBase64(blob);
           dispatch(pathUsedToUpload({document: base64String})).then(
             (payload: any) => {
+              // eslint-disable-next-line @typescript-eslint/no-shadow
               const pdfUrl = payload?.payload?.data?.Location;
               if (pdfUrl) {
-                let newObjForAttach: any = {
+                const newObjForAttach: any = {
                   doc_url: pdfUrl,
                   quote_id: getQuoteID,
                   type: 'Customer Quote',
@@ -329,10 +365,8 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
     }
   };
 
-  console.log('34543534534', formStackOptions, objectForSyncingValues);
-
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <GlobalLoader
         loading={formStackSyncLoading || GeneralSettingLoading || loading}
       >
@@ -374,14 +408,14 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
                 style={{width: '100%', display: 'flex', justifyContent: 'end'}}
               >
                 {' '}
-                <Row justify={'end'}>
+                <Row justify="end">
                   <OsButton
                     text="Preview"
                     buttontype="SECONDARY"
                     clickHandler={() => dowloadFunction(selectedDoc, 'preview')}
                   />
                 </Row>
-                <Row justify={'end'}>
+                <Row justify="end">
                   <OsButton
                     text="Download"
                     buttontype="PRIMARY"
@@ -429,7 +463,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
           </div>
         )}
       </GlobalLoader>
-    </>
+    </Suspense>
   );
 };
 

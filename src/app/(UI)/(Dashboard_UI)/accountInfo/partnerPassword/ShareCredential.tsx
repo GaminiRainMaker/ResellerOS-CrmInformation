@@ -1,3 +1,9 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable no-nested-ternary */
+
+'use client';
+
 import {Checkbox} from '@/app/components/common/antd/Checkbox';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
@@ -7,18 +13,18 @@ import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
 import {EnvelopeIcon} from '@heroicons/react/24/outline';
 import {useSearchParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
+import {FC, Suspense, useEffect, useState} from 'react';
+import GlobalLoader from '@/app/components/common/os-global-loader';
 import {queryAllUsers} from '../../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {getSharedPartnerPasswordForOrganization} from '../../../../../../redux/actions/sharedPartnerPassword';
-import GlobalLoader from '@/app/components/common/os-global-loader';
 
 const ShareCredential: FC<any> = ({
   setShareCredentialsIds,
   shareCredentialsIds,
   partnerPasswordId,
 }) => {
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const getOrganization = searchParams.get('organization');
@@ -39,7 +45,7 @@ const ShareCredential: FC<any> = ({
     dispatch(getSharedPartnerPasswordForOrganization(partnerPasswordId))?.then(
       (payload: any) => {
         if (payload?.payload) {
-          let newArr: any = [];
+          const newArr: any = [];
           payload?.payload?.map((items: any) => {
             newArr?.push(items?.shared_with);
           });
@@ -47,11 +53,11 @@ const ShareCredential: FC<any> = ({
         }
       },
     );
-  }, []);
+  }, [dispatch, getOrganization, partnerPasswordId]);
 
   useEffect(() => {
     setTimeout(() => {
-      let newArr: any = [];
+      const newArr: any = [];
       if (userData) {
         userData?.map((item: any) => {
           if (
@@ -77,7 +83,7 @@ const ShareCredential: FC<any> = ({
       updatedArr.push({
         partner_password_id: partnerPasswordId || 0,
         shared_by: userInformation?.id || 0,
-        shared_with: shared_with,
+        shared_with,
         organization: userInformation?.organization,
       });
     } else {
@@ -88,13 +94,13 @@ const ShareCredential: FC<any> = ({
   };
 
   return (
-    <GlobalLoader loading={loading}>
-      <Row gutter={[16, 16]}>
-        {requireThePass?.length > 0 ? (
-          <>
-            {' '}
-            {requireThePass?.map((item: any, index: number) => {
-              return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <GlobalLoader loading={loading}>
+        <Row gutter={[16, 16]}>
+          {requireThePass?.length > 0 ? (
+            <>
+              {' '}
+              {requireThePass?.map((item: any, index: number) => (
                 <Col key={item?.id} style={{width: '100%'}} span={8}>
                   <OsContactCardStyle key={`${index}`}>
                     <Row justify="space-between" align="middle">
@@ -147,21 +153,21 @@ const ShareCredential: FC<any> = ({
                     </Row>
                   </OsContactCardStyle>
                 </Col>
-              );
-            })}
-          </>
-        ) : (
-          <>
-            {' '}
-            {!loading && (
-              <Typography name="Body 2/Regular">
-                There is no user to provide with this password.
-              </Typography>
-            )}
-          </>
-        )}
-      </Row>
-    </GlobalLoader>
+              ))}
+            </>
+          ) : (
+            <>
+              {' '}
+              {!loading && (
+                <Typography name="Body 2/Regular">
+                  There is no user to provide with this password.
+                </Typography>
+              )}
+            </>
+          )}
+        </Row>
+      </GlobalLoader>
+    </Suspense>
   );
 };
 

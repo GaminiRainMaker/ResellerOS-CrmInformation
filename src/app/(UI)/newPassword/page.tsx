@@ -1,4 +1,5 @@
 import AuthLayout from '@/app/components/layouts/auth-layouts/AuthLayout';
+import {Suspense} from 'react';
 import eyeIcon from '../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
 
 const NewPasword = () => {
@@ -20,12 +21,14 @@ const NewPasword = () => {
   ];
 
   return (
-    <AuthLayout
-      heading="Set New Password"
-      description="Please update your password here!"
-      inputFields={inputFields}
-      buttonText="Update Password"
-    />
+    <Suspense fallback={<div>Loading...</div>}>
+      <AuthLayout
+        heading="Set New Password"
+        description="Please update your password here!"
+        inputFields={inputFields}
+        buttonText="Update Password"
+      />
+    </Suspense>
   );
 };
 

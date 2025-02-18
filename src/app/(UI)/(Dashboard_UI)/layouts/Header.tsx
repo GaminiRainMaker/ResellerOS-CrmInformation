@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable import/no-duplicates */
 /* eslint-disable import/no-cycle */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable array-callback-return */
@@ -21,11 +24,8 @@ import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import styled from '@emotion/styled';
 import {usePathname} from 'next/navigation';
-import OsModal from '@/app/components/common/os-modal';
-import {OSDraggerStyleForSupport} from '@/app/components/common/os-upload/styled-components';
 import TrialBanner from '@/app/components/common/trialBanner/TrialBanner';
 import {convertFileToBase64} from '@/app/utils/base';
-import {QuestionOutlined} from '@ant-design/icons';
 import {
   ArrowLeftStartOnRectangleIcon,
   BellIcon,
@@ -47,6 +47,13 @@ import Cookies from 'js-cookie';
 import Image from 'next/image';
 import {useRouter, useSearchParams} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
+import {QuestionOutlined} from '@ant-design/icons';
+import OsModal from '@/app/components/common/os-modal';
+import {
+  OSDraggerStyle,
+  OSDraggerStyleForSupport,
+} from '@/app/components/common/os-upload/styled-components';
+import OsInput from '@/app/components/common/os-input';
 import creditCard from '../../../../../public/assets/static/card-pos.svg';
 import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
@@ -54,8 +61,9 @@ import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/o
 import {sendEmailForSuport} from '../../../../../redux/actions/auth';
 import {getCountOfNotification} from '../../../../../redux/actions/notifications';
 import {
-  uploadDocumentOnAzure,
+  uploadExcelFileToAws,
   uploadToAws,
+  uploadDocumentOnAzure,
   uploalImageonAzure,
 } from '../../../../../redux/actions/upload';
 import {getGloabalySearchDataa} from '../../../../../redux/actions/user';
@@ -105,7 +113,7 @@ const CustomHeader = () => {
   const router = useRouter();
   const {TextArea} = Input;
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
 
   const pathname = usePathname();
   const loginAccount = searchParams.get('self');
@@ -343,7 +351,7 @@ const CustomHeader = () => {
   const beforeUpload = async (file: File) => {
     const obj: any = {...file};
     setLoadingSpin(true);
-    let pathUsedToUpload = file?.type?.split('.')?.includes('document')
+    const pathUsedToUpload = file?.type?.split('.')?.includes('document')
       ? uploadDocumentOnAzure
       : file?.type?.split('.')?.includes('image/jpeg') ||
           file?.type?.split('/')?.includes('image')
@@ -381,7 +389,7 @@ const CustomHeader = () => {
       return;
     }
     setLoadingSpin(true);
-    let newArrForUploadded: any = [];
+    const newArrForUploadded: any = [];
 
     if (uploadedData && uploadedData?.length > 0) {
       uploadedData?.map((items: any) => {
@@ -389,7 +397,7 @@ const CustomHeader = () => {
       });
     }
 
-    let newObj = {
+    const newObj = {
       issue: addIssueToSupport,
       attach: newArrForUploadded,
       // organizationName: userInformation?.organization,
@@ -410,7 +418,7 @@ const CustomHeader = () => {
     SetAddIssueToSupport('');
     setUpoadedData([]);
   };
-  
+
   return (
     <Layout>
       <Row
@@ -459,6 +467,29 @@ const CustomHeader = () => {
                 {userInformation?.Role === 'reseller' && (
                   <TrialBanner PrimaryTextTypography="Body 3/Regular" />
                 )}
+                {/* <AvatarStyled
+              background={token?.colorInfoBg}
+              icon={
+                <WrenchScrewdriverIcon
+                  width={24}
+                  color={token?.colorInfoBorder}
+                />
+              }
+            /> */}
+                <AvatarStyled
+                  background={token?.colorInfoBg}
+                  icon={
+                    <QuestionOutlined
+                      style={{color: 'grey'}}
+                      onClick={() => {
+                        setOpenSupportModel(true);
+                      }}
+                      width={24}
+                      color={token?.colorInfoBorder}
+                    />
+                  }
+                />
+
                 <Space
                   direction="horizontal"
                   size={24}
@@ -755,32 +786,30 @@ const CustomHeader = () => {
                   <Row>
                     {uploadedData &&
                       uploadedData?.length > 0 &&
-                      uploadedData?.map((items: any) => {
-                        return (
-                          <Col
-                            span={6}
-                            style={{
-                              width: '300px',
-                              height: '100px',
-                              background:
-                                'var(--foundation-n-pri-2-n-30, #f0f4f7)',
-                              margin: '5px',
-                              borderRadius: '5px',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              display: 'flex',
-                              padding: '10px',
-                              border: ' 1px solid #3da5d9',
-                              borderStyle: 'dashed',
-                            }}
-                            onClick={() => {
-                              window?.open(items?.urlAdded);
-                            }}
-                          >
-                            {items?.name?.toString()?.slice(0, 30)}
-                          </Col>
-                        );
-                      })}
+                      uploadedData?.map((items: any) => (
+                        <Col
+                          span={6}
+                          style={{
+                            width: '300px',
+                            height: '100px',
+                            background:
+                              'var(--foundation-n-pri-2-n-30, #f0f4f7)',
+                            margin: '5px',
+                            borderRadius: '5px',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            display: 'flex',
+                            padding: '10px',
+                            border: ' 1px solid #3da5d9',
+                            borderStyle: 'dashed',
+                          }}
+                          onClick={() => {
+                            window?.open(items?.urlAdded);
+                          }}
+                        >
+                          {items?.name?.toString()?.slice(0, 30)}
+                        </Col>
+                      ))}
                   </Row>
                 </div>
                 <div style={{width: '200px'}}>

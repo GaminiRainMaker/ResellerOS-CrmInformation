@@ -1,18 +1,22 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable import/no-extraneous-dependencies */
+
+'use client';
+
 import {CustomUpload} from '@/app/(UI)/(Dashboard_UI)/layouts/Header';
-import {getBase64} from '@/app/utils/upload';
+import {convertFileToBase64} from '@/app/utils/base';
 import {
   BriefcaseIcon,
   CameraIcon,
   EnvelopeIcon,
   PhoneIcon,
 } from '@heroicons/react/24/outline';
-import {notification} from 'antd';
+import {message, notification} from 'antd';
 import ImgCrop from 'antd-img-crop';
 import _debounce from 'lodash/debounce';
 import {useSearchParams} from 'next/navigation';
-import {FC, useCallback, useEffect, useState} from 'react';
-import {uploadToAwsForUserImage} from '../../../../../redux/actions/upload';
-import {getUserByIdLogin} from '../../../../../redux/actions/user';
+import {FC, Suspense, useCallback, useEffect, useRef, useState} from 'react';
+import {uploalImageonAzure} from '../../../../../redux/actions/upload';
 import {useAppDispatch} from '../../../../../redux/hook';
 import {Col} from '../antd/Grid';
 import {Space} from '../antd/Space';
@@ -20,15 +24,20 @@ import useThemeToken from '../hooks/useThemeToken';
 import {AvatarStyled} from '../os-table/styled-components';
 import Typography from '../typography';
 import {MyProfileCardStyle} from './styled-components';
+import {getUserByIdLogin} from '../../../../../redux/actions/user';
+import {getCompanyByUserId} from '../../../../../redux/actions/company';
 
-const MyProfileCard: FC<any> = ({data}) => {
+const MyProfileCard: FC<any> = ({data, isCompanyData}) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const [userRole, setUserRole] = useState<string>('');
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getUserID = searchParams.get('id');
   const loginAccount = searchParams.get('self');
+  const propsDataRef = useRef<any>(null);
+
   useEffect(() => {
+    propsDataRef.current = data;
     setUserRole(
       data?.master_admin && data?.role === 'superAdmin'
         ? 'Master Super Admin'
@@ -70,21 +79,41 @@ const MyProfileCard: FC<any> = ({data}) => {
         type: 'info',
       });
     }
-    const datas = await getBase64(newFileList);
-    const mediaType = newFileList?.type.split('/')[0];
+    let UpdatedData: any = {};
+    const latestData = propsDataRef.current; // Use the latest data from ref
 
-    const UpdatedData = {
-      base64: datas,
-      type: mediaType,
-      file: newFileList,
-      userTypes: 'user',
-      userIds: getUserID,
-    };
-    dispatch(uploadToAwsForUserImage(UpdatedData)).then((d: any) => {
-      if (d?.payload) {
-        dispatch(getUserByIdLogin(getUserID));
-      }
-    });
+    if (latestData) {
+      convertFileToBase64(newFileList)
+        .then(async (base64String: string) => {
+          if (isCompanyData) {
+            UpdatedData = {
+              document: base64String,
+              userType: 'company',
+              id: latestData?.company_id,
+            };
+          } else {
+            UpdatedData = {
+              document: base64String,
+              userType: 'user',
+              id: getUserID,
+            };
+          }
+          await dispatch(uploalImageonAzure(UpdatedData)).then(
+            (payload: any) => {
+              if (payload?.payload) {
+                if (UpdatedData?.userType === 'user') {
+                  dispatch(getUserByIdLogin(getUserID));
+                } else if (UpdatedData?.userType === 'company') {
+                  dispatch(getCompanyByUserId({user_id: getUserID}));
+                }
+              }
+            },
+          );
+        })
+        .catch((error: any) => {
+          message.error('Error converting file to base64', error);
+        });
+    }
   };
 
   const handleNotification = (list: any) => {
@@ -142,27 +171,37 @@ const MyProfileCard: FC<any> = ({data}) => {
   const debounceFn = useCallback(_debounce(handleNotification, 500), []);
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <MyProfileCardStyle
         justify="space-between"
         align="middle"
         style={{width: '100%'}}
         gutter={[0, 16]}
       >
-        <Col xs={24} sm={24} md={24} lg={12} xl={7} xxl={7}>
+        <Col
+          xs={24}
+          sm={24}
+          md={24}
+          lg={12}
+          xl={isCompanyData ? 12 : 7}
+          xxl={isCompanyData ? 12 : 7}
+        >
           <Space size={20}>
             <span style={{position: 'relative'}}>
               <AvatarStyled
                 cursor="unset"
-                src={data?.profile_image}
+                src={data?.profile_image || data?.company_logo}
                 icon={`${
                   data?.user_name?.toString()?.charAt(0)?.toUpperCase() ??
-                  data?.user_name?.toString()?.charAt(0)?.toUpperCase()
+                  data?.user_name?.toString()?.charAt(0)?.toUpperCase() ??
+                  data?.company_name?.toString()?.charAt(0)?.toUpperCase()
                 }`}
-                background={data?.profile_image ? '' : '#1EB159'}
+                background={
+                  data?.profile_image || data?.company_logo ? '' : '#1EB159'
+                }
                 size={94}
               />
-              {loginAccount && (
+              {(loginAccount || isCompanyData) && (
                 <span
                   style={{
                     position: 'absolute',
@@ -196,32 +235,42 @@ const MyProfileCard: FC<any> = ({data}) => {
                 name="Heading 3/Medium"
                 color={token?.colorPrimaryText}
               >
-                {data?.first_name && data?.last_name
-                  ? `${data.first_name} ${data.last_name}`
-                  : data?.first_name
-                    ? data.first_name
-                    : data?.user_name}
+                {isCompanyData
+                  ? data?.company_name
+                  : data?.first_name && data?.last_name
+                    ? `${data.first_name} ${data.last_name}`
+                    : data?.first_name
+                      ? data.first_name
+                      : data?.user_name}
               </Typography>
-              <Typography name="Body 4/Bold" color={token?.colorInfo}>
-                {data?.job_title ?? ''}
-              </Typography>
-              <span
-                style={{
-                  padding: '4px 12px',
-                  borderRadius: '50px',
-                  background: token?.colorInfoHover,
-                }}
-              >
-                <Typography name="Body 3/Regular" color={token?.colorLinkHover}>
-                  {userRole ?? ''}
-                </Typography>
-              </span>
+              {!isCompanyData && (
+                <>
+                  <Typography name="Body 4/Bold" color={token?.colorInfo}>
+                    {data?.job_title ?? ''}
+                  </Typography>
+
+                  <span
+                    style={{
+                      padding: '4px 12px',
+                      borderRadius: '50px',
+                      background: token?.colorInfoHover,
+                    }}
+                  >
+                    <Typography
+                      name="Body 3/Regular"
+                      color={token?.colorLinkHover}
+                    >
+                      {userRole ?? ''}
+                    </Typography>
+                  </span>
+                </>
+              )}
             </Space>
           </Space>
         </Col>
 
-        {proileDetailData?.map((proileDetailDataItem) => {
-          return (
+        {!isCompanyData &&
+          proileDetailData?.map((proileDetailDataItem) => (
             <Col
               xs={24}
               sm={24}
@@ -259,10 +308,9 @@ const MyProfileCard: FC<any> = ({data}) => {
                 </Space>
               </Space>
             </Col>
-          );
-        })}
+          ))}
       </MyProfileCardStyle>
-    </>
+    </Suspense>
   );
 };
 

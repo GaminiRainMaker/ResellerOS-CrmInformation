@@ -19,7 +19,7 @@ import {
 } from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import {getAllOpportunityByOrganization} from '../../../../../../redux/actions/opportunity';
 import {getAllQuotesByOrganization} from '../../../../../../redux/actions/quote';
 import {
@@ -37,7 +37,7 @@ const MyProfile = () => {
   const [userDetailForm] = Form.useForm();
   const [changePasswordForm] = Form.useForm();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
   const getUserID = searchParams.get('id');
   const getOrganization = searchParams.get('organization');
   const getRole = searchParams.get('role');
@@ -113,7 +113,7 @@ const MyProfile = () => {
     const userData = userDetailForm?.getFieldsValue();
     if (userData) {
       dispatch(updateUserById({...userData, id: Number(getUserID)})).then(
-        (d) => {
+        (d: any) => {
           if (d?.payload) {
             dispatch(getUserByIdLogin(getUserID));
           }
@@ -132,7 +132,7 @@ const MyProfile = () => {
           id: Number(getUserID),
         }),
       )
-        .then((d) => {
+        .then((d: any) => {
           changePasswordForm?.resetFields();
         })
         .catch((error: any) => {
@@ -144,7 +144,7 @@ const MyProfile = () => {
   };
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <GlobalLoader loading={loading}>
         <Row justify="space-between" style={{width: '100%'}} gutter={[16, 16]}>
           <MyProfileCard data={UserDataById} />
@@ -270,7 +270,7 @@ const MyProfile = () => {
           </Space>
         </Row>
       </GlobalLoader>
-    </>
+    </Suspense>
   );
 };
 export default MyProfile;

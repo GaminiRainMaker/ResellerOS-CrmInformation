@@ -17,7 +17,7 @@ import {Tag} from '../antd/Tag';
 import OsInput from '../os-input';
 import {formatStatus} from '@/app/utils/CONSTANTS';
 
-const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
+const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
   const [token] = useThemeToken();
   const {data: quoteConfigData} = useAppSelector((state) => state.quoteConfig);
   const removeFile = (uid: number | undefined | string) => {

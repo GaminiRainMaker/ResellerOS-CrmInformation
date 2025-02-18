@@ -53,8 +53,8 @@ export const uploadDocumentOnAzure = createAsyncThunk(
 
 export const uploadToAwsForUserImage = createAsyncThunk(
   'upload/uploadImage',
-  async (data: any, thunkApi) => {
-    const {base64, type, file, userTypes, userIds} = data;
+  async (data: any, thunkApi: any) => {
+    const {base64, type, file, userTypes, userIds, companyId} = data;
     try {
       if (type === 'video') {
         const config: any = {
@@ -99,6 +99,7 @@ export const uploadToAwsForUserImage = createAsyncThunk(
           image: base64,
           userType: userTypes,
           userId: userIds,
+          companyId: companyId,
         };
         const {data: data3} = await UPLOAD_API.postIMage(obj);
         return data3.Location;

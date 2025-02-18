@@ -338,6 +338,7 @@ export const countrupickList = [
   {label: 'Zimbabwe', value: 'Zimbabwe'},
 ];
 export const changeTheALpabetsFromFormula = (formula: any) => {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   function extractColumnLetters(formula: any) {
     // Regex to match cell references and capture the column part
     const cellRefRegex = /\b([A-Z]+)(\d+)\b/g;
@@ -345,6 +346,7 @@ export const changeTheALpabetsFromFormula = (formula: any) => {
     let match;
 
     // Find all matches and extract column letters
+    // eslint-disable-next-line no-cond-assign
     while ((match = cellRefRegex.exec(formula)) !== null) {
       columnLetters.add(match[1]);
     }
@@ -355,6 +357,7 @@ export const changeTheALpabetsFromFormula = (formula: any) => {
 
   // Function to replace old column letters with a new column letter
   function replaceColumnLetters(
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     formula: any,
     oldColumnLetters: any,
     newColumnLetter: any,
@@ -363,6 +366,7 @@ export const changeTheALpabetsFromFormula = (formula: any) => {
       // Regex to match the old column letter and capture the row number
       const columnRegex = new RegExp(`\\b${oldCol}(\\d+)\\b`, 'g');
       // Replace all occurrences of the old column letter with the new column letter
+      // eslint-disable-next-line no-param-reassign
       formula = formula.replace(columnRegex, `${newColumnLetter}$1`);
     });
 
@@ -586,6 +590,24 @@ export const SaleForceQuoteLineItemColumnSync = [
 
 export const quoteColumns = [
   {value: 'quote_id', label: 'Quote Id'},
+  {value: 'quote_unique_in', label: 'Quote Number'},
+  {value: 'quote_expiration', label: 'Expiration Date'},
+  {value: 'billing_to__name', label: 'Billing to Name'},
+  {value: 'billing_adrress', label: 'Billing Adrress'},
+  {value: 'billing_city', label: 'Billing City'},
+  {value: 'billing_state', label: 'Billing State'},
+  {value: 'billing_zip', label: 'Billing Zip'},
+  {value: 'billing_country', label: 'Billing Country'},
+  {value: 'billing_phone', label: 'Billing Phone'},
+  {value: 'billing_email', label: 'Billing Email'},
+  {value: 'shipping_to_name', label: 'Shipping to Name'},
+  {value: 'shipping_adrress', label: 'Shipping Adrress'},
+  {value: 'shipping_city', label: 'Shipping City'},
+  {value: 'shipping_state', label: 'Shipping State'},
+  {value: 'shipping_zip', label: 'Shipping Zip'},
+  {value: 'shipping_country', label: 'Shipping Country'},
+  {value: 'shipping_phone', label: 'Shipping Phone'},
+  {value: 'shipping_email', label: 'Shipping Email'},
   {value: 'cage_code', label: 'Stages'},
   {value: 'createdAt', label: 'Created At'},
   {value: 'customer_address', label: 'Customer Address'},

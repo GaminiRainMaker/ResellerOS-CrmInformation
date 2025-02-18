@@ -1,16 +1,17 @@
-// Add this at the top of the file
+/* eslint-disable no-nested-ternary */
+
 'use client';
 
 import ConfigProvider from 'antd/es/config-provider';
 import {Plus_Jakarta_Sans} from 'next/font/google';
 import './globals.css';
 // eslint-disable-next-line import/no-extraneous-dependencies
+import NextScript from 'next/script';
+import {useSearchParams} from 'next/navigation';
+import {Suspense, useEffect, useState} from 'react';
 import Providers from './Provider';
 import theme from './style/theme';
-import NextScript from 'next/script';
 import CanvasRedirectWrapper from './CanvasRedirect';
-import {useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
 
 const jakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -19,41 +20,41 @@ const jakartaSans = Plus_Jakarta_Sans({
 });
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
-  // Using useSearchParams inside the component
-  const [locationdata, setLOcationData] = useState<any>('lifeboat');
   const searchParams = useSearchParams();
-  const locationToRedirect = searchParams.get('location');
+  const [locationdata, setLOcationData] = useState<string | null>(null);
+
   useEffect(() => {
-    if (
-      locationToRedirect &&
-      locationToRedirect !== null &&
-      locationToRedirect !== undefined
-    ) {
+    const locationToRedirect = searchParams.get('location');
+    if (locationToRedirect) {
       setLOcationData(locationToRedirect);
+    } else {
+      setLOcationData('lifeboat');
     }
-  }, [locationToRedirect]);
+  }, [searchParams]);
+
   return (
-    <ConfigProvider theme={theme}>
-      <html lang="en">
-        <body className={`${jakartaSans.variable}`}>
-          <Providers>
-            <CanvasRedirectWrapper>{children}</CanvasRedirectWrapper>
-            {locationdata === 'lifeboat' ? (
-              <NextScript
-                src="/canvas-all-quote-ai.js"
-                strategy="beforeInteractive"
-              />
-            ) : locationdata === 'OrderAI' ? (
-              <NextScript
-                src="/canvas-all-orderai"
-                strategy="beforeInteractive"
-              />
-            ) : (
-              <NextScript src="/canvas-all.js" strategy="beforeInteractive" />
-            )}
-          </Providers>
-        </body>
-      </html>
-    </ConfigProvider>
+    <Suspense fallback={<div>Loading...</div>}>
+      <ConfigProvider theme={theme}>
+        <html lang="en">
+          <body className={`${jakartaSans.variable}`}>
+            <Providers>
+              <CanvasRedirectWrapper>{children}</CanvasRedirectWrapper>
+              {locationdata && (
+                <NextScript
+                  src={
+                    locationdata === 'lifeboat'
+                      ? '/canvas-all-quote-ai.js'
+                      : locationdata === 'OrderAI'
+                        ? '/canvas-all-orderai'
+                        : '/canvas-all.js'
+                  }
+                  strategy="beforeInteractive"
+                />
+              )}
+            </Providers>
+          </body>
+        </html>
+      </ConfigProvider>
+    </Suspense>
   );
 }
