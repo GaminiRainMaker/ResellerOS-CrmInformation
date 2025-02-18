@@ -292,6 +292,30 @@ const Partners: React.FC = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
+          Parent Partner Name
+        </Typography>
+      ),
+      dataIndex: 'master_partner_id',
+      key: 'master_partner_id',
+      render: (text: string, record: any) => (
+        <CustomTextCapitalization text={record?.master_partner?.partner} />
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          URL
+        </Typography>
+      ),
+      dataIndex: 'url',
+      key: 'url',
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
           Created Date
         </Typography>
       ),
