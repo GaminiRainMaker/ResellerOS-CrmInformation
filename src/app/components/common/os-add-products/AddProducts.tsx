@@ -60,6 +60,29 @@ const AddProducts: FC<OsAddProductInterface> = ({
           <Row gutter={[16, 16]}>
             <Col span={24}>
               <Form.Item
+                label="Product Name"
+                name="product_name"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please select the product Name!',
+                  },
+                ]}
+              >
+                <OsInput placeholder="Write here!" />
+
+                {/* <CommonSelect
+                  style={{width: '100%'}}
+                  placeholder="Select"
+                  options={selectDataForProduct}
+                /> */}
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={[16, 16]}>
+            <Col span={24}>
+              <Form.Item
                 label="Product Family"
                 name="product_family"
                 rules={[

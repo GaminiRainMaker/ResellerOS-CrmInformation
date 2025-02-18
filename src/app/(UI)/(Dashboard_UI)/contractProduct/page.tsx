@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/exhaustive-deps */
 
@@ -44,6 +45,9 @@ const ContractProductMain: React.FC = () => {
   const {data: contactProductData, loading} = useAppSelector(
     (state) => state.contractProduct,
   );
+
+  const [showButtonForContract, setShowButtonForContract] =
+    useState<boolean>(false);
   const {data: contactData} = useAppSelector((state) => state.contract);
 
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
@@ -81,6 +85,7 @@ const ContractProductMain: React.FC = () => {
     ),
   };
 
+  console.log('32423423', showButtonForContract);
   const ContractProductColumns = [
     {
       title: 'Contract Product Name',
@@ -296,6 +301,7 @@ const ContractProductMain: React.FC = () => {
               onFinish={updatebillDetails}
               form={form}
               drawer={false}
+              setShowButtonForContract={setShowButtonForContract}
             />
           )
         }
@@ -307,7 +313,11 @@ const ContractProductMain: React.FC = () => {
         }}
         footer
         primaryButtonText={
-          finalOptionsForContract?.length === 0 ? 'Add Contract' : 'Add'
+          showButtonForContract
+            ? finalOptionsForContract?.length === 0
+              ? 'Add Contract'
+              : 'Add'
+            : ''
         }
         onOk={() => {
           if (finalOptionsForContract?.length === 0) {
@@ -357,6 +367,7 @@ const ContractProductMain: React.FC = () => {
           contractObject={contractObject}
           optionsForContract={finalOptionsForContract}
           onFinish={updatebillDetails}
+          setShowButtonForContract={setShowButtonForContract}
           form={form}
           drawer
         />
