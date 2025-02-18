@@ -37,7 +37,7 @@ const MyProfileCard: FC<any> = ({data, isCompanyData}) => {
   const propsDataRef = useRef<any>(null);
 
   useEffect(() => {
-    propsDataRef.current = data; 
+    propsDataRef.current = data;
     setUserRole(
       data?.master_admin && data?.role === 'superAdmin'
         ? 'Master Super Admin'
