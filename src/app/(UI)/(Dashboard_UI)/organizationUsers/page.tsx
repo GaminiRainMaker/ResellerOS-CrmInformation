@@ -21,7 +21,10 @@ import OsModal from '@/app/components/common/os-modal';
 import GrantLicense from './GrantLicense';
 import {Form, message} from 'antd';
 import dayjs from 'dayjs';
-import {assignLicense} from '../../../../../redux/actions/license';
+import {
+  assignLicense,
+  revokeLicense,
+} from '../../../../../redux/actions/license';
 
 const OrganizationUsers = () => {
   const dispatch = useAppDispatch();
@@ -31,8 +34,10 @@ const OrganizationUsers = () => {
   const getOrganization = searchParams.get('organization');
   const router = useRouter();
   const {data: userData, loading} = useAppSelector((state) => state.user);
+  const {loading: LicenseLoading} = useAppSelector((state) => state.license);
   const [showLicenseModal, setShowLicenseModal] = useState<boolean>(false);
   const [recordData, setRecordData] = useState<any>();
+  const [activeKey, setActiveKey] = useState<string>('1');
 
   const [query, setQuery] = useState<{
     organization: string | null;
@@ -168,65 +173,138 @@ const OrganizationUsers = () => {
     ),
   );
 
-  const licenseFormSubmit = () => {
-    const licenseFormValue = licenseForm.getFieldsValue();
-    const {licenseType, expirationTime, features} = licenseFormValue;
+  const assignLicenseForm = async () => {
+    try {
+      const licenseFormValue = licenseForm.getFieldsValue();
+      const {licenseType, expirationTime, features} = licenseFormValue;
 
-    // Validation logic
-    if (!licenseType) {
-      message.error('License Type is required!');
-      return;
-    }
-    if (licenseType === 'Paid' && !expirationTime) {
-      message.error('Expiration Time is required for Paid licenses!');
-      return;
-    }
-    if (!features || features.length === 0) {
-      message.error('At least one feature must be selected!');
-      return;
-    }
-
-    // Calculate expiration date
-    let expirationDate: Date | null = null;
-
-    if (licenseType === 'Paid') {
-      switch (expirationTime) {
-        case '7 days':
-          expirationDate = dayjs().add(7, 'day').toDate();
-          break;
-        case '15 days':
-          expirationDate = dayjs().add(15, 'day').toDate();
-          break;
-        case '1 month':
-          expirationDate = dayjs().add(1, 'month').toDate();
-          break;
-        case '6 months':
-          expirationDate = dayjs().add(6, 'month').toDate();
-          break;
-        case '1 year':
-          expirationDate = dayjs().add(1, 'year').toDate();
-          break;
-        default:
-          message.error('Invalid expiration time selected!');
-          return;
+      // Validation logic
+      if (!licenseType) {
+        message.error('License Type is required!');
+        return;
       }
-    }
+      if (licenseType === 'Paid' && !expirationTime) {
+        message.error('Expiration Time is required for Paid licenses!');
+        return;
+      }
+      if (!features || features.length === 0) {
+        message.error('At least one feature must be selected!');
+        return;
+      }
 
-    // Transform licenseFeature array into separate objects
-    const licenseObjects = features.map((feature: string) => ({
-      license_type: licenseType,
-      expiration_date: expirationDate,
-      feature_name: feature,
-      org_id: recordData.organization,
-      user_id: recordData.id,
-      status: 'active',
-    }));
-    if (licenseObjects) {
-      dispatch(assignLicense(licenseObjects)).then((d: any) => {
-        if (d?.payload) {
-          setShowLicenseModal(false);
+      // Calculate expiration date
+      let expirationDate: Date | null = null;
+
+      if (licenseType === 'Paid') {
+        switch (expirationTime) {
+          case '7 days':
+            expirationDate = dayjs().add(7, 'day').toDate();
+            break;
+          case '15 days':
+            expirationDate = dayjs().add(15, 'day').toDate();
+            break;
+          case '1 month':
+            expirationDate = dayjs().add(1, 'month').toDate();
+            break;
+          case '6 months':
+            expirationDate = dayjs().add(6, 'month').toDate();
+            break;
+          case '1 year':
+            expirationDate = dayjs().add(1, 'year').toDate();
+            break;
+          default:
+            message.error('Invalid expiration time selected!');
+            return;
         }
-      });
+      }
+
+      // Transform licenseFeature array into separate objects
+      const licenseObjects = features.map((feature: string) => ({
+        license_type: licenseType,
+        expiration_date: expirationDate,
+        feature_name: feature,
+        org_id: recordData.organization,
+        user_id: recordData.id,
+        status: 'active',
+      }));
+
+      // Dispatch API request with error handling
+      if (licenseObjects.length > 0) {
+        const response: any = await dispatch(assignLicense(licenseObjects));
+
+        if (response?.error) {
+          console.error('API Error:', response.error);
+          message.error(
+            response.error.message ||
+              'Failed to assign licenses. Please try again.',
+          );
+          licenseForm?.resetFields();
+          return;
+        }
+
+        if (response?.payload) {
+          message.success('License assigned successfully!');
+          setShowLicenseModal(false);
+          licenseForm?.resetFields();
+        } else {
+          message.error('Unexpected error occurred. Please try again.');
+          licenseForm?.resetFields();
+        }
+      }
+    } catch (error) {
+      console.error('Unexpected Error:', error);
+      licenseForm?.resetFields();
+      message.error('Something went wrong. Please try again later.');
+    }
+  };
+
+  const revokeLicenseForm = async () => {
+    try {
+      const licenseFormValue = licenseForm.getFieldsValue();
+      const {features_type} = licenseFormValue;
+
+      // Validation logic
+      if (!features_type || features_type.length === 0) {
+        message.error('At least one feature must be selected!======?');
+        return;
+      }
+
+      // Transform licenseFeature array into separate objects
+      const licenseObjects = features_type.map((feature: string) => ({
+        feature_name: feature,
+        user_id: recordData.id,
+      }));
+
+      // Dispatch API request with error handling
+      if (licenseObjects.length > 0) {
+        const response: any = await dispatch(revokeLicense(licenseObjects));
+
+        if (response?.error) {
+          console.error('API Error:', response.error);
+          message.error(
+            response.error.message ||
+              'Failed to revoke licenses. Please try again.',
+          );
+          licenseForm?.resetFields();
+          return;
+        }
+
+        if (response?.payload) {
+          message.success('License revoked successfully!');
+          setShowLicenseModal(false);
+          licenseForm?.resetFields();
+          setActiveKey('1');
+        } else {
+          message.error('Unexpected error occurred. Please try again.');
+          licenseForm?.resetFields();
+          setActiveKey('1');
+        }
+      }
+    } catch (error) {
+      console.error('Unexpected Error:', error);
+      licenseForm?.resetFields();
+      setActiveKey('1');
+      message.error('Something went wrong. Please try again later.');
     }
   };
 
@@ -315,10 +393,17 @@ const OrganizationUsers = () => {
         </div>
       </Space>
       <OsModal
-        loading={false}
-        title="Grant Licenses"
+        loading={LicenseLoading}
+        title="Licenses Management"
         bodyPadding={22}
-        body={<GrantLicense form={licenseForm} onFinish={licenseFormSubmit} />}
+        body={
+          <GrantLicense
+            form={licenseForm}
+            onFinish={activeKey === '1' ? assignLicenseForm : revokeLicenseForm}
+            activeKey={activeKey}
+            setActiveKey={setActiveKey}
+          />
+        }
         width={583}
         open={showLicenseModal}
         onOk={licenseForm?.submit}
