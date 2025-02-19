@@ -9,10 +9,10 @@ import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-s
 import Typography from '@/app/components/common/typography';
 import {Form, Steps} from 'antd';
 import {useState} from 'react';
-import FileCard from './FileCard';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {updateUserById} from '../../../../../redux/actions/user';
 import {insertCompany} from '../../../../../redux/actions/company';
+import {updateUserById} from '../../../../../redux/actions/user';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import FileCard from './FileCard';
 
 const TrialFlow = () => {
   const [uploadFileData, setUploadFileData] = useState<any>([]);
@@ -25,7 +25,6 @@ const TrialFlow = () => {
   const onFinish = async () => {
     try {
       setLoading(true);
-
       if (trialFlowStep === '1') {
         const trialFormValue = form.getFieldsValue();
         if (trialFormValue && Object.keys(trialFormValue).length > 0) {
