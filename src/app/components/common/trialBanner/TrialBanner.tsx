@@ -49,7 +49,12 @@ const TrialBanner: React.FC<{
       const quoteLicense = activeLicensesByOrg?.activeLicenses?.find(
         (l: any) => l.feature_name === 'QuoteAI',
       );
-      setCurrentQuoteLicense(quoteLicense || null);
+
+      if (quoteLicense?.license_type === 'LifeTime') {
+        setCurrentQuoteLicense('Lifetime');
+      } else {
+        setCurrentQuoteLicense(quoteLicense || null);
+      }
     }
   }, [activeLicensesByOrg]);
 
@@ -72,7 +77,7 @@ const TrialBanner: React.FC<{
     }
   }, [pathname]); // Reset when navigating
 
-  // if (isHidden || remainingDays === null || remainingDays <= 0) return null;
+  console.log('currentQuoteLicense', currentQuoteLicense);
 
   return (
     <Layout>
@@ -81,19 +86,37 @@ const TrialBanner: React.FC<{
           display: 'flex',
           padding: '15px',
           borderRadius: '4px',
-          border: `1px solid ${token?.colorError}`,
+          border: `1px solid ${currentQuoteLicense === 'Lifetime' ? token?.colorSuccess : token?.colorError}`,
           width: 'fit-content',
         }}
         message={
-          <Typography color={token?.colorError} name={PrimaryTextTypography}>
-            {licenseMessage
-              ? licenseMessage
-              : `Your ${currentQuoteLicense?.license_type === 'demo' ? 'Trial' : ' extended Trial'} expires in 
-            ${remainingDays} Days!`}
+          <Typography
+            color={
+              currentQuoteLicense === 'Lifetime'
+                ? token?.colorSuccess
+                : token?.colorError
+            }
+            name={PrimaryTextTypography}
+          >
+            {currentQuoteLicense === 'Lifetime'
+              ? 'LifeTime License!'
+              : licenseMessage
+                ? licenseMessage
+                : `Your ${currentQuoteLicense?.license_type === 'demo' ? 'Trial' : 'extended Trial'} expires in 
+      ${remainingDays} Days!`}
           </Typography>
         }
-        type="error"
-        icon={<CheckBadgeIcon width={24} color={token?.colorError} />}
+        type={currentQuoteLicense === 'Lifetime' ? 'success' : 'error'}
+        icon={
+          <CheckBadgeIcon
+            width={24}
+            color={
+              currentQuoteLicense === 'Lifetime'
+                ? token?.colorSuccess
+                : token?.colorError
+            }
+          />
+        }
       />
     </Layout>
   );
