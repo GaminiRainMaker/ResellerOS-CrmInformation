@@ -8,23 +8,23 @@ import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import EmptyContainer from '@/app/components/common/os-empty-container';
+import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {EyeIcon, PencilSquareIcon} from '@heroicons/react/24/outline';
+import {Form, message} from 'antd';
+import {Option} from 'antd/es/mentions';
+import dayjs from 'dayjs';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import {Option} from 'antd/es/mentions';
-import {queryAllUsers} from '../../../../../redux/actions/user';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import OsModal from '@/app/components/common/os-modal';
-import GrantLicense from './GrantLicense';
-import {Form, message} from 'antd';
-import dayjs from 'dayjs';
 import {
   assignLicense,
   revokeLicense,
 } from '../../../../../redux/actions/license';
+import {queryAllUsers} from '../../../../../redux/actions/user';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import GrantLicense from './GrantLicense';
 
 const OrganizationUsers = () => {
   const dispatch = useAppDispatch();
@@ -263,19 +263,24 @@ const OrganizationUsers = () => {
       const licenseFormValue = licenseForm.getFieldsValue();
       const {features_type} = licenseFormValue;
 
-      // Validation logic
+      // Determine which licenses should be revoked
+      let licensesToRevoke: string[] = [];
+
       if (!features_type || features_type.length === 0) {
-        message.error('At least one feature must be selected!======?');
-        return;
+        // If nothing is selected, revoke both QuoteAI and DealRegAI
+        licensesToRevoke = ['QuoteAI', 'DealRegAI'];
+      } else if (features_type.includes('QuoteAI')) {
+        licensesToRevoke = ['DealRegAI']; // Revoke DealRegAI if QuoteAI is selected
+      } else if (features_type.includes('DealRegAI')) {
+        licensesToRevoke = ['QuoteAI']; // Revoke QuoteAI if DealRegAI is selected
       }
 
-      // Transform licenseFeature array into separate objects
-      const licenseObjects = features_type.map((feature: string) => ({
+      // Transform selected licenses into API request format
+      const licenseObjects = licensesToRevoke.map((feature) => ({
         feature_name: feature,
         user_id: recordData.id,
       }));
 
-      // Dispatch API request with error handling
       if (licenseObjects.length > 0) {
         const response: any = await dispatch(revokeLicense(licenseObjects));
 
@@ -291,20 +296,20 @@ const OrganizationUsers = () => {
 
         if (response?.payload) {
           message.success('License revoked successfully!');
-          setShowLicenseModal(false);
-          licenseForm?.resetFields();
-          setActiveKey('1');
         } else {
           message.error('Unexpected error occurred. Please try again.');
-          licenseForm?.resetFields();
-          setActiveKey('1');
         }
+
+        // Reset form and close modal
+        setShowLicenseModal(false);
+        licenseForm?.resetFields();
+        setActiveKey('1');
       }
     } catch (error) {
       console.error('Unexpected Error:', error);
+      message.error('Something went wrong. Please try again later.');
       licenseForm?.resetFields();
       setActiveKey('1');
-      message.error('Something went wrong. Please try again later.');
     }
   };
 
@@ -399,19 +404,28 @@ const OrganizationUsers = () => {
         body={
           <GrantLicense
             form={licenseForm}
-            onFinish={activeKey === '1' ? assignLicenseForm : revokeLicenseForm}
-            activeKey={activeKey}
+            onFinish={
+              activeKey === '1'
+                ? assignLicenseForm
+                : activeKey === '2'
+                  ? revokeLicenseForm
+                  : null
+            }
             setActiveKey={setActiveKey}
+            recordData={recordData}
+            activeKey={activeKey}
           />
         }
-        width={583}
+        width={600}
         open={showLicenseModal}
         onOk={licenseForm?.submit}
         onCancel={() => {
           setShowLicenseModal(false);
           licenseForm?.resetFields();
+          setActiveKey('1');
+          setRecordData({});
         }}
-        primaryButtonText="Save"
+        primaryButtonText={activeKey === '3' ? '' : 'Save'}
       />
     </>
   );
