@@ -663,7 +663,7 @@ export const processScript = (finalObj: {
                       newScript.push(
                         `await ${currentPage === 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}',{ exact: true }).waitFor({ state: 'visible', timeout: 50000 });`,
                       );
-                    } else {
+                    } else if (currentLine.includes('getByLabel')) {
                       newScript.push(
                         `await ${currentPage === 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : exactLineLabel || label}').waitFor({ state: 'visible', timeout: 50000 });`,
                       );
