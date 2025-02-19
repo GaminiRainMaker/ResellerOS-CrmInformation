@@ -431,7 +431,7 @@ const CustomHeader = () => {
         align="middle"
         gutter={[0, 8]}
       >
-        <Col span={12}>
+        <Col span={10}>
           <Row justify="space-between" gutter={[0, 16]}>
             <Col>
               <Image src={HeaderLogo} alt="HeaderLogo" />

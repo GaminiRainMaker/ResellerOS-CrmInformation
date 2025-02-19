@@ -246,16 +246,14 @@ const GrantLicense = ({
   ); // Ensures proper type inference
 
   return (
-    <>
-      <Form
-        layout="vertical"
-        requiredMark={false}
-        form={form}
-        onFinish={onFinish}
-      >
-        <OsTabs defaultActiveKey="1" onChange={onChange} items={items} />
-      </Form>
-    </>
+    <Form
+      layout="vertical"
+      requiredMark={false}
+      form={form}
+      onFinish={onFinish}
+    >
+      <OsTabs defaultActiveKey="1" onChange={onChange} items={items} />
+    </Form>
   );
 };
 

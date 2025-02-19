@@ -102,7 +102,7 @@ const TrialBanner: React.FC<{
               ? 'LifeTime License!'
               : licenseMessage
                 ? licenseMessage
-                : `Your ${currentQuoteLicense?.license_type === 'demo' ? 'Trial' : 'extended Trial'} expires in 
+                : `Your ${currentQuoteLicense?.license_type === 'demo' ? 'Trial' : currentQuoteLicense?.license_type === 'Paid' ? 'Subscription' : 'extended Trial'} expires in 
       ${remainingDays} Days!`}
           </Typography>
         }
