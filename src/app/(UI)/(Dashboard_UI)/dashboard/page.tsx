@@ -514,7 +514,7 @@ const Dashboard = () => {
         </Col>
         <Col>
           <OsButton
-            text="Quotes Demo Flow"
+            text="Quote Demo Flow"
             buttontype="PRIMARY"
             clickHandler={() => {
               setShowDownloadFileModal(true);
@@ -662,7 +662,7 @@ const Dashboard = () => {
       />
       <OsModal
         loading={false}
-        title="Quotes Demo Flow"
+        title="Quote Demo Flow"
         bodyPadding={22}
         body={
           <TrialFlow

@@ -157,16 +157,60 @@ const TrialFlow = ({trialFlowStep, form, onFinish}: any) => {
         labelPlacement="vertical"
         items={[
           {
-            title: <p style={{lineHeight: '20px'}}>Complete My Profile</p>,
+            title: (
+              <p
+                style={{
+                  lineHeight: '20px',
+                  fontFamily: 'var(--font-jakarta-sans)',
+                  fontSize: '12px',
+                  fontWeight: 400,
+                }}
+              >
+                Complete My Profile
+              </p>
+            ),
           },
           {
-            title: <p style={{lineHeight: '20px'}}>Download Example Quotes</p>,
+            title: (
+              <p
+                style={{
+                  lineHeight: '20px',
+                  fontFamily: 'var(--font-jakarta-sans)',
+                  fontSize: '12px',
+                  fontWeight: 400,
+                }}
+              >
+                Download Example Quotes
+              </p>
+            ),
           },
           {
-            title: <p style={{lineHeight: '20px'}}>Watch the Intro Video</p>,
+            title: (
+              <p
+                style={{
+                  lineHeight: '20px',
+                  fontFamily: 'var(--font-jakarta-sans)',
+                  fontSize: '12px',
+                  fontWeight: 400,
+                }}
+              >
+                Watch the Intro Video
+              </p>
+            ),
           },
           {
-            title: <p style={{lineHeight: '20px'}}>Try It!</p>,
+            title: (
+              <p
+                style={{
+                  lineHeight: '20px',
+                  fontFamily: 'var(--font-jakarta-sans)',
+                  fontSize: '12px',
+                  fontWeight: 400,
+                }}
+              >
+                Try It!
+              </p>
+            ),
           },
         ]}
       />
