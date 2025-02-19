@@ -53,6 +53,19 @@ const AddProduct = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
+           Product Name
+        </Typography>
+      ),
+      dataIndex: 'product_name',
+      key: 'product_name',
+      width: 173,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
           Product Code
         </Typography>
       ),
