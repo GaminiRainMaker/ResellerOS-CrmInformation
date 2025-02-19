@@ -1125,6 +1125,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
                   form?.setFieldValue('singleQuote', true);
                   form.submit();
                 }}
+                loading={finalLoading}
               />
             </Col>
             <Col>
@@ -1141,6 +1142,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
                   form?.setFieldValue('singleQuote', false);
                   form.submit();
                 }}
+                loading={finalLoading}
               />
             </Col>
           </Row>

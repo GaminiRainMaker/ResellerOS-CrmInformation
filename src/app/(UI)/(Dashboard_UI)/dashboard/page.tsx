@@ -29,7 +29,6 @@ import {getQuotesByUserAndTimeframe} from '../../../../../redux/actions/quote';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import ContactSales from './ContactSales';
 import {CustomCardStyle} from './styled-components';
-import TrialFlow from './TrialFlow';
 
 const Dashboard = () => {
   const [token] = useThemeToken();
@@ -514,15 +513,6 @@ const Dashboard = () => {
         </Col>
         <Col>
           <OsButton
-            text="Quote Demo Flow"
-            buttontype="PRIMARY"
-            clickHandler={() => {
-              setShowDownloadFileModal(true);
-            }}
-          />
-        </Col>
-        <Col>
-          <OsButton
             text="Testing Azure AI"
             buttontype="PRIMARY"
             clickHandler={() => {
@@ -659,44 +649,6 @@ const Dashboard = () => {
         }}
         showDailogModal={showTrailModal}
         setShowDailogModal={setShowTrailModal}
-      />
-      <OsModal
-        loading={false}
-        title="Quote Demo Flow"
-        bodyPadding={22}
-        body={
-          <TrialFlow
-            trialFlowStep={trialFlowStep}
-            setTrialFlowStep={setTrialFlowStep}
-            form={trialForm}
-            onFinish={trialOnFinish}
-          />
-        }
-        width={800}
-        open={showDownloadFileModal}
-        onCancel={() => {
-          setShowDownloadFileModal(false);
-          trialForm.resetFields();
-          setTrialFlowStep('1');
-        }}
-        primaryButtonText={
-          String(trialFlowStep) === '1'
-            ? 'Save & Next'
-            : String(trialFlowStep) === '4'
-              ? 'Finish'
-              : 'Next'
-        }
-        onOk={() => {
-          trialForm.submit();
-        }}
-        thirdButtonText={trialFlowStep > '1' ? 'Back' : ''}
-        thirdButtonfunction={() => {
-          setTrialFlowStep((prevStep) => {
-            const nextStep =
-              Number(prevStep) > 1 ? String(Number(prevStep) - 1) : prevStep;
-            return nextStep;
-          });
-        }}
       />
     </GlobalLoader>
   );
