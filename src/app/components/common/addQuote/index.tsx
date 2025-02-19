@@ -41,6 +41,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsButton from '../os-button';
 import OsUpload from '../os-upload';
 import {AddQuoteInterface, FormattedData} from './types';
+import {Col, Row} from '../antd/Grid';
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
@@ -56,6 +57,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
   isGenerateQuotePage = false,
   opportunityId,
   customerId,
+  isTrialModal,
 }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -1078,28 +1080,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
 
   return (
     <>
-      <OsButton
-        text={buttonText}
-        buttontype="PRIMARY"
-        icon={<PlusIcon />}
-        clickHandler={() => {
-          if (buttonText === 'Generate') {
-            uploadForm?.submit();
-          } else {
-            setShowModal((p) => !p);
-          }
-        }}
-      />
-      <OsModal
-        loading={finalLoading}
-        bodyPadding={22}
-        disabledButton={
-          typeOfAddQuote === 1
-            ? !(uploadFileData?.length > 0)
-            : allValuesForManual
-        }
-        destroyOnClose
-        body={
+      {isTrialModal ? (
+        <>
           <OsUpload
             beforeUpload={beforeUpload}
             uploadFileData={uploadFileData}
@@ -1128,34 +1110,123 @@ const AddQuote: FC<AddQuoteInterface> = ({
             advancedUpload={advancedUpload}
             setAdvancedSetting={setAdvancedSetting}
             AdvancedSetting={AdvancedSetting}
+            isTrialModal
           />
-        }
-        width={1000}
-        primaryButtonText={
-          typeOfAddQuote === 1
-            ? 'Generate Single Quote'
-            : 'Generate Manually Quote'
-        }
-        thirdButtonText={
-          typeOfAddQuote === 2
-            ? null
-            : !existingQuoteId
-              ? 'Save & Generate Individual Quotes'
-              : null
-        }
-        open={showModal}
-        onOk={() => {
-          form?.setFieldValue('singleQuote', true);
-          form.submit();
-        }}
-        thirdButtonfunction={() => {
-          form?.setFieldValue('singleQuote', false);
-          form.submit();
-        }}
-        onCancel={() => {
-          resetFields();
-        }}
-      />
+          <Row justify={'space-between'} style={{margin: '20px 0px'}}>
+            <Col>
+              <OsButton
+                text={
+                  typeOfAddQuote === 1
+                    ? 'Generate Single Quote'
+                    : 'Generate Manually Quote'
+                }
+                buttontype="SECONDARY"
+                clickHandler={() => {
+                  form?.setFieldValue('singleQuote', true);
+                  form.submit();
+                }}
+              />
+            </Col>
+            <Col>
+              <OsButton
+                text={
+                  typeOfAddQuote === 2
+                    ? ''
+                    : !existingQuoteId
+                      ? 'Save & Generate Individual Quotes'
+                      : ''
+                }
+                buttontype="PRIMARY"
+                clickHandler={() => {
+                  form?.setFieldValue('singleQuote', false);
+                  form.submit();
+                }}
+              />
+            </Col>
+          </Row>
+        </>
+      ) : (
+        <>
+          <OsButton
+            text={buttonText}
+            buttontype="PRIMARY"
+            icon={<PlusIcon />}
+            clickHandler={() => {
+              if (buttonText === 'Generate') {
+                uploadForm?.submit();
+              } else {
+                setShowModal((p) => !p);
+              }
+            }}
+          />
+          <OsModal
+            loading={finalLoading}
+            bodyPadding={22}
+            disabledButton={
+              typeOfAddQuote === 1
+                ? !(uploadFileData?.length > 0)
+                : allValuesForManual
+            }
+            destroyOnClose
+            body={
+              <OsUpload
+                beforeUpload={beforeUpload}
+                uploadFileData={uploadFileData}
+                setUploadFileData={setUploadFileData}
+                addQuoteLineItem={
+                  AdvancedSetting ? addQuoteLineItemAdvanced : addQuoteLineItem
+                }
+                // addQuoteLineItem={addQuoteLineItemAdvanced}
+                addQuoteManually={addQuoteManually}
+                form={form}
+                cardLoading={loading}
+                setShowToggleTable={setShowToggleTable}
+                showToggleTable={showToggleTable}
+                Quotecolumns={Quotecolumns}
+                existingQuoteId={existingQuoteId}
+                setExistingQuoteId={setExistingQuoteId}
+                isGenerateQuote={isGenerateQuote}
+                quoteDetails={quoteDetails}
+                typeOfAddQuote={typeOfAddQuote}
+                setTypeOfAddQuote={setTypeOfAddQuote}
+                setAllValuesForManual={setAllValuesForManual}
+                opportunityDetailId={opportunityId}
+                customerDetailId={customerId}
+                lineItemSyncingData={lineItemSyncingData}
+                setAdvancedUpload={setAdvancedUpload}
+                advancedUpload={advancedUpload}
+                setAdvancedSetting={setAdvancedSetting}
+                AdvancedSetting={AdvancedSetting}
+              />
+            }
+            width={1000}
+            primaryButtonText={
+              typeOfAddQuote === 1
+                ? 'Generate Single Quote'
+                : 'Generate Manually Quote'
+            }
+            thirdButtonText={
+              typeOfAddQuote === 2
+                ? null
+                : !existingQuoteId
+                  ? 'Save & Generate Individual Quotes'
+                  : null
+            }
+            open={showModal}
+            onOk={() => {
+              form?.setFieldValue('singleQuote', true);
+              form.submit();
+            }}
+            thirdButtonfunction={() => {
+              form?.setFieldValue('singleQuote', false);
+              form.submit();
+            }}
+            onCancel={() => {
+              resetFields();
+            }}
+          />
+        </>
+      )}
     </>
   );
 };

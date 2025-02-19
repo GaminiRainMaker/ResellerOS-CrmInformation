@@ -29,12 +29,13 @@ import {getQuotesByUserAndTimeframe} from '../../../../../redux/actions/quote';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import ContactSales from './ContactSales';
 import {CustomCardStyle} from './styled-components';
-import TrialFiles from './TrialFiles';
+import TrialFlow from './TrialFlow';
 
 const Dashboard = () => {
   const [token] = useThemeToken();
   const {abbreviate} = useAbbreviationHook(0);
   const [form] = Form.useForm();
+  const [trialForm] = Form.useForm();
   const dispatch = useAppDispatch();
   const {loading} = useAppSelector((state) => state.auth);
   const {loading: quoteLoading} = useAppSelector((state) => state.quote);
@@ -46,6 +47,7 @@ const Dashboard = () => {
     useState<boolean>(false);
   const [timeframe, setTimeframe] = useState('Month');
   const [currentData, setCurrentData] = useState<any>();
+  const [trialFlowStep, setTrialFlowStep] = useState<string>('1');
 
   useEffect(() => {
     if (userInformation?.id) {
@@ -183,6 +185,22 @@ const Dashboard = () => {
       );
     }
     return null;
+  };
+  const trialOnFinish = () => {
+    if (trialFlowStep === '1') {
+      const trialFormValue = trialForm.getFieldsValue();
+      console.log('trialFormValue', trialFormValue);
+    } else {
+      if (trialFlowStep === '4') {
+        setShowDownloadFileModal(false);
+        setTrialFlowStep('1');
+      }
+    }
+    setTrialFlowStep((prevStep) => {
+      const nextStep =
+        Number(prevStep) < 4 ? String(Number(prevStep) + 1) : prevStep;
+      return nextStep;
+    });
   };
 
   return (
@@ -496,7 +514,7 @@ const Dashboard = () => {
         </Col>
         <Col>
           <OsButton
-            text="Download Trial Quotes Files"
+            text="Quotes Demo Flow"
             buttontype="PRIMARY"
             clickHandler={() => {
               setShowDownloadFileModal(true);
@@ -644,13 +662,40 @@ const Dashboard = () => {
       />
       <OsModal
         loading={false}
-        title="Trial Quotes Files"
+        title="Quotes Demo Flow"
         bodyPadding={22}
-        body={<TrialFiles />}
-        width={583}
+        body={
+          <TrialFlow
+            trialFlowStep={trialFlowStep}
+            setTrialFlowStep={setTrialFlowStep}
+            form={trialForm}
+            onFinish={trialOnFinish}
+          />
+        }
+        width={800}
         open={showDownloadFileModal}
         onCancel={() => {
           setShowDownloadFileModal(false);
+          trialForm.resetFields();
+          setTrialFlowStep('1');
+        }}
+        primaryButtonText={
+          String(trialFlowStep) === '1'
+            ? 'Save & Next'
+            : String(trialFlowStep) === '4'
+              ? 'Finish'
+              : 'Next'
+        }
+        onOk={() => {
+          trialForm.submit();
+        }}
+        thirdButtonText={trialFlowStep > '1' ? 'Back' : ''}
+        thirdButtonfunction={() => {
+          setTrialFlowStep((prevStep) => {
+            const nextStep =
+              Number(prevStep) > 1 ? String(Number(prevStep) - 1) : prevStep;
+            return nextStep;
+          });
         }}
       />
     </GlobalLoader>
