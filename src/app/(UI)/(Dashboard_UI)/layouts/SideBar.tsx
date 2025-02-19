@@ -48,9 +48,7 @@ const SideBar = () => {
   const {userInformation} = useAppSelector((state) => state.user);
   const {isCanvas} = useAppSelector((state) => state.canvas);
   const searchParams = useSearchParams()!;
-  // const [canvasState, setCanvasState] = useState<boolean>(true);
   const salesForceUrl = searchParams.get('instance_url');
-  const {activeLicense} = useAppSelector((state) => state.license);
 
   type MenuItem = Required<MenuProps>['items'][number];
 
@@ -62,15 +60,17 @@ const SideBar = () => {
           DealReg: payload?.payload?.is_dealReg,
         };
         if (payload && userInformation?.Role === 'reseller') {
-          dispatch(checkQuoteAIAccess({user_id: payload?.payload?.id})).then(
-            (data) => {
-              if (data?.payload) {
-                if (data?.payload?.error) {
-                  router?.push(`/dashboard`);
-                }
+          dispatch(checkQuoteAIAccess({user_id: payload?.payload?.id}))
+            .then((data) => {
+              if (!data?.payload || data?.payload?.error) {
+                console.error(data?.payload?.error || 'Unknown error', 'ERROR');
+                router.push(`/dashboard`);
               }
-            },
-          );
+            })
+            .catch((err) => {
+              console.error(err, 'ERROR');
+              router.push(`/dashboard`);
+            });
         }
 
         localStorage.setItem('userInfo', JSON.stringify(relevantData));

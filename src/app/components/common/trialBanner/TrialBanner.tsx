@@ -77,8 +77,6 @@ const TrialBanner: React.FC<{
     }
   }, [pathname]); // Reset when navigating
 
-  console.log('currentQuoteLicense', currentQuoteLicense);
-
   return (
     <Layout>
       <Alert
