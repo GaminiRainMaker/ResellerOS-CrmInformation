@@ -192,8 +192,8 @@ const Dashboard = () => {
       console.log('trialFormValue', trialFormValue);
     } else {
       if (trialFlowStep === '4') {
+        setTrialFlowStep('0');
         setShowDownloadFileModal(false);
-        setTrialFlowStep('1');
       }
     }
     setTrialFlowStep((prevStep) => {
