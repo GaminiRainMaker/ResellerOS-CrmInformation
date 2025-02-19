@@ -11,6 +11,7 @@ import MyProfile from './myProfile';
 import MyTeam from './myTeam';
 import PartnerPassword from './partnerPassword';
 import MyCompany from './company';
+import { useAppSelector } from '../../../../../redux/hook';
 
 const AccountInfo = () => {
   const searchParams = useSearchParams();
