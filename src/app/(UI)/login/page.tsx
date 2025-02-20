@@ -1,12 +1,8 @@
 'use client';
 
 import AuthLayout from '@/app/components/layouts/auth-layouts/AuthLayout';
-import { useRouter } from 'next/navigation';
-import React, { Suspense } from 'react';
 import eyeIcon from '../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
 import smsIcon from '../../../../public/assets/static/iconsax-svg/Svg/All/outline/sms.svg';
-import { loginUser } from '../../../../redux/actions/user';
-import { useAppDispatch } from '../../../../redux/hook';
 
 const LogIn = () => {
   const inputFields = [

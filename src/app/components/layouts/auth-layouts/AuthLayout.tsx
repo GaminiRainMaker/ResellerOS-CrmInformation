@@ -2,7 +2,7 @@
 
 import { Content } from 'antd/es/layout/layout';
 import Image from 'next/image';
-import { FC, Suspense } from 'react';
+import { FC } from 'react';
 
 import loginAvatar from '../../../../../public/assets/static/AvatarFullImg.svg';
 import { Col, Row } from '../../common/antd/Grid';

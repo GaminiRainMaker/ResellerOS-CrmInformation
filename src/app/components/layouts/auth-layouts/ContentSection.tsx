@@ -8,7 +8,7 @@
 
 import { Form, notification } from 'antd';
 import Image from 'next/image';
-import React, { FC, useEffect, useState, Suspense } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
 import Cookies from 'js-cookie';
