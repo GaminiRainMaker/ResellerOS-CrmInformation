@@ -33,13 +33,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     }
   }, [searchParams]);
 
-  useEffect(() => {
-    const token: any = Cookies.get('token');
-    if (!token) {
-      redirect("/login")
-    }
+  // useEffect(() => {
+  //   const token: any = Cookies.get('token');
+  //   if (!token) {
+  //     redirect("/login")
+  //   }
 
-  }, []);
+  // }, []);
 
 
 
