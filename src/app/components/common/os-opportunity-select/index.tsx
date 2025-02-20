@@ -1,19 +1,19 @@
 /* eslint-disable react/no-unstable-nested-components */
-import {PlusIcon} from '@heroicons/react/24/outline';
-import {Form} from 'antd';
-import {FC, useEffect, useState} from 'react';
+import { PlusIcon } from '@heroicons/react/24/outline';
+import { Form } from 'antd';
+import { FC, useEffect, useState } from 'react';
 import {
   getAllOpportunity,
   insertOpportunity,
 } from '../../../../../redux/actions/opportunity';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {Space} from '../antd/Space';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import { Space } from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import AddOpportunity from '../os-add-opportunity';
 import OsModal from '../os-modal';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
-import {OsOpportunitySelectInterface} from './os-opportunity-select-interface';
+import { OsOpportunitySelectInterface } from './os-opportunity-select-interface';
 
 const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
   customerValue,
@@ -26,22 +26,28 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
-  const {opportunity, loading} = useAppSelector(
+  const { opportunity, loading } = useAppSelector(
     (state) => state.Opportunity,
   );
   const [showModal, setShowModal] = useState<boolean>(false);
   const [opportunityFilterOption, setOpportunityFilterOption] = useState<any>();
   const [form1] = Form.useForm();
+  const [opportunityData, setopportunityData] = useState<any>()
 
   useEffect(() => {
-    dispatch(getAllOpportunity());
+    dispatch(getAllOpportunity())?.then((payload: any) => {
+      setopportunityData(payload?.payload)
+    })
   }, [customerValue]);
 
+
   useEffect(() => {
+
     form?.resetFields(['opportunity_id', 'contact_id']);
-    const filterUsers = opportunity?.filter(
-      (item: any) => item?.customer_id === customerValue,
+    const filterUsers = opportunityData?.filter(
+      (item: any) => item?.customer_id == customerValue,
     );
+
 
     const opportunityOptions = filterUsers?.map((opportunity: any) => ({
       value: opportunity.id,
@@ -53,9 +59,9 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
     }));
 
     setOpportunityFilterOption(opportunityOptions);
-  }, [JSON.stringify(opportunity), customerValue]);
+  }, [JSON.stringify(opportunityData), opportunityData, customerValue]);
 
-  
+
   const onFinish = () => {
     const FormDAta = form1.getFieldsValue();
     const finalData = {
@@ -87,26 +93,26 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
       <Form.Item
         label="Opportunity"
         name="opportunity_id"
-        rules={[{required: isRequired, message: 'Please Select Opportunity!'}]}
+        rules={[{ required: isRequired, message: 'Please Select Opportunity!' }]}
       >
         <CommonSelect
           placeholder="Select"
           disabled={!customerValue || isDisable}
           allowClear
-          style={{width: '100%'}}
+          style={{ width: '100%' }}
           options={opportunityFilterOption}
           dropdownRender={(menu) => (
             <>
               {isAddNewOpportunity && (
                 <Space
-                  style={{cursor: 'pointer'}}
+                  style={{ cursor: 'pointer' }}
                   size={8}
                   onClick={() => setShowModal(true)}
                 >
                   <PlusIcon
                     width={24}
                     color={token?.colorInfoBorder}
-                    style={{marginTop: '5px'}}
+                    style={{ marginTop: '5px' }}
                   />
                   <Typography
                     color={token?.colorPrimaryText}

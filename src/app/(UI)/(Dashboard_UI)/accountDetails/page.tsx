@@ -4,22 +4,23 @@
 
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
+import { Col, Row } from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
-import {OsCard} from '@/app/components/common/os-card';
+import { OsCard } from '@/app/components/common/os-card';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import DetailAnalyticCard from '@/app/components/common/os-table/DetailAnalyticCard';
 import Typography from '@/app/components/common/typography';
 import {
   CheckCircleIcon,
   PencilSquareIcon,
+  PlusIcon,
   TagIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
 
-import {Checkbox} from '@/app/components/common/antd/Checkbox';
-import {Space} from '@/app/components/common/antd/Space';
+import { Checkbox } from '@/app/components/common/antd/Checkbox';
+import { Space } from '@/app/components/common/antd/Space';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import AddAddress from '@/app/components/common/os-add-address';
 import OsButton from '@/app/components/common/os-button';
@@ -34,23 +35,26 @@ import {
   transformAddressData,
   transformExistAddressData,
 } from '@/app/utils/base';
-import {Form, message, Radio} from 'antd';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {Suspense, useEffect, useState} from 'react';
+import { Form, message, Radio } from 'antd';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {
   deleteAddress,
   insertAddAddress,
 } from '../../../../../redux/actions/address';
-import {getCustomerBYId} from '../../../../../redux/actions/customer';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {setBillingContact} from '../../../../../redux/slices/billingAddress';
+import { getCustomerBYId } from '../../../../../redux/actions/customer';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import { setBillingContact } from '../../../../../redux/slices/billingAddress';
 import DetailCard from './DetailCard';
+import AddOpportunity from '@/app/components/common/os-add-opportunity';
+import { insertOpportunity } from '../../../../../redux/actions/opportunity';
+import AddQuote from '@/app/components/common/addQuote';
 
 const AccountDetails = () => {
   const [token] = useThemeToken();
   const router = useRouter();
-  const {abbreviate} = useAbbreviationHook(0);
+  const { abbreviate } = useAbbreviationHook(0);
   const [showAddressModal, setShowAddressModal] = useState<boolean>(false);
   const [showDrawer, setShowDrawer] = useState<boolean>(false);
   const [isSaveAndCreate, setIsSaveAndCreate] = useState<boolean>(false);
@@ -59,13 +63,21 @@ const AccountDetails = () => {
   const [activeKey, setActiveKey] = useState<string>('1');
   const [recordId, setRecordId] = useState<any>();
   const [recordData, setRecordData] = useState<any>();
+  const [showModalForOpp, setShowModalForOpp] = useState<boolean>(false);
+
+  const { loading: QuoteLoading } = useAppSelector((state) => state.quote);
+
+  const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
+
+  const [uploadFileData, setUploadFileData] = useState<any>([]);
+
   const [form] = Form.useForm();
-  const {loading, customerDataById: customerData} = useAppSelector(
+  const { loading, customerDataById: customerData } = useAppSelector(
     (state) => state.customer,
   );
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
-  const getCustomerID = searchParams && searchParams.get('id');
+  const getCustomerID: any = searchParams && searchParams.get('id');
 
   const quotes =
     customerData &&
@@ -202,7 +214,7 @@ const AccountDetails = () => {
       key: 'status',
       width: 187,
       render: (text: string, record: any) => (
-        <span style={{display: 'flex', justifyContent: 'center'}}>
+        <span style={{ display: 'flex', justifyContent: 'center' }}>
           <OsStatusWrapper value={text} />
         </span>
       ),
@@ -257,7 +269,7 @@ const AccountDetails = () => {
       key: 'stages',
       width: 130,
       render: (text: string) => (
-        <span style={{display: 'flex', justifyContent: 'center'}}>
+        <span style={{ display: 'flex', justifyContent: 'center' }}>
           <OsStatusWrapper value={text} />
         </span>
       ),
@@ -401,7 +413,7 @@ const AccountDetails = () => {
             height={24}
             width={24}
             color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
+            style={{ cursor: 'pointer' }}
             onClick={() => {
               setRecordId(record?.id);
               setRecordData(record);
@@ -427,7 +439,7 @@ const AccountDetails = () => {
             height={24}
             width={24}
             color={token.colorError}
-            style={{cursor: 'pointer'}}
+            style={{ cursor: 'pointer' }}
             onClick={() => {
               setShowModalDelete(true);
               setDeleteIds(record?.id);
@@ -508,7 +520,7 @@ const AccountDetails = () => {
   };
 
   const deleteSelectedIds = async () => {
-    dispatch(deleteAddress({id: deleteIds})).then((res) => {
+    dispatch(deleteAddress({ id: deleteIds })).then((res) => {
       if (res?.payload) {
         dispatch(getCustomerBYId(getCustomerID));
       }
@@ -516,6 +528,29 @@ const AccountDetails = () => {
     setDeleteIds([]);
     setShowModalDelete(false);
   };
+
+
+
+  const onFinishOpp = async () => {
+    const FormDAta = form.getFieldsValue();
+    const finalData = {
+      ...FormDAta,
+      customer_id: getCustomerID,
+    };
+
+
+    await dispatch(insertOpportunity(finalData)).then((d: any) => {
+      if (d?.payload) {
+        // dispatch(queryOpportunity(searchQuery));
+        // dispatch(getAllOpportunity());
+        dispatch(getCustomerBYId(getCustomerID));
+
+        setShowModalForOpp(false);
+        form.resetFields();
+      }
+    });
+  };
+
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -526,7 +561,7 @@ const AccountDetails = () => {
           <DetailCard />
         </Col>
         <Col xs={24} sm={16} md={16} lg={18}>
-          <div style={{display: 'flex', flexDirection: 'column', gap: 24}}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
             <Row justify="space-between" gutter={[16, 16]}>
               {analyticsData?.map((item: any) => (
                 <Col xs={24} sm={24} md={24} lg={10} xl={8} xxl={8}>
@@ -562,10 +597,30 @@ const AccountDetails = () => {
                 defaultPageSize={5}
               />
             </OsCard>
-            <Row justify="start">
-              <Typography name="Heading 3/Medium">Opportunities</Typography>
-            </Row>
+            <Row justify="space-between" align="middle">
+              <Col>
+                <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
+                  Opportunities
+                </Typography>
+              </Col>
+              <Col>
+                <div
+                  style={{
+                    display: 'flex',
+                    width: '40%',
+                    gap: '8px',
+                  }}
+                >
+                  <OsButton
+                    text="Add Opportunity"
+                    buttontype="PRIMARY"
+                    icon={<PlusIcon />}
+                    clickHandler={() => setShowModalForOpp((p) => !p)}
+                  />
 
+                </div>
+              </Col>
+            </Row>
             <OsCard>
               <OsTableWithOutDrag
                 loading={loading}
@@ -576,9 +631,25 @@ const AccountDetails = () => {
               />
             </OsCard>
 
-            <Row justify="start">
-              <Typography name="Heading 3/Medium">Quotes</Typography>
+            <Row justify="space-between" align="middle" style={{ marginTop: '10px' }}>
+              <Col>
+                <Typography name="Heading 3/Medium">All Quotes</Typography>
+              </Col>
+              <Col style={{ float: 'right' }}>
+                <AddQuote
+                  uploadFileData={uploadFileData}
+                  setUploadFileData={setUploadFileData}
+                  loading={QuoteLoading}
+                  buttonText="Add Quote"
+                  setShowToggleTable={setShowToggleTable}
+                  showToggleTable={showToggleTable}
+                  Quotecolumns={Quotecolumns}
+                  // opportunityId={26}
+                  customerId={getCustomerID}
+                />
+              </Col>
             </Row>
+
 
             <OsCard>
               <OsTableWithOutDrag
@@ -644,7 +715,7 @@ const AccountDetails = () => {
         width={450}
         footer={
           <OsButton
-            btnStyle={{width: '100%'}}
+            btnStyle={{ width: '100%' }}
             buttontype="PRIMARY"
             text="Update Changes"
             clickHandler={form.submit}
@@ -660,6 +731,29 @@ const AccountDetails = () => {
           recordData={recordData}
         />
       </OsDrawer>
+
+
+      <OsModal
+        loading={loading}
+        body={
+          <AddOpportunity
+            form={form}
+            onFinish={onFinish}
+            // setCustomerValue={setCustomerValue}
+            customerValue={getCustomerID}
+            showCustomerSelect={true}
+          />
+        }
+        width={600}
+        open={showModalForOpp}
+        onCancel={() => {
+          setShowModalForOpp(false);
+          form.resetFields();
+        }}
+        onOk={onFinishOpp}
+        primaryButtonText="Save"
+        footerPadding={30}
+      />
 
       <DeleteModal
         loading={loading}

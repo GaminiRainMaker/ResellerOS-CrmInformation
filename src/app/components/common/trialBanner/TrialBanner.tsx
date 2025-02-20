@@ -1,25 +1,25 @@
-import {CheckBadgeIcon} from '@heroicons/react/24/outline';
-import {Alert, Layout} from 'antd';
+import { CheckBadgeIcon } from '@heroicons/react/24/outline';
+import { Alert, Layout } from 'antd';
 import dayjs from 'dayjs';
-import {usePathname} from 'next/navigation';
-import React, {useEffect, useState} from 'react';
-import {getActiveLicensesByOrgUserId} from '../../../../../redux/actions/license';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { usePathname } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { getActiveLicensesByOrgUserId } from '../../../../../redux/actions/license';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
-import {StyleName} from '../typography/typography.interface';
-import {setLicense} from '../../../../../redux/slices/license';
+import { StyleName } from '../typography/typography.interface';
+import { setLicense } from '../../../../../redux/slices/license';
 
 const TrialBanner: React.FC<{
   PrimaryTextTypography?: StyleName;
-}> = ({PrimaryTextTypography = 'Heading 3/Bold'}) => {
+}> = ({ PrimaryTextTypography = 'Heading 3/Bold' }) => {
   const dispatch = useAppDispatch();
   const pathname = usePathname();
   const [remainingDays, setRemainingDays] = useState<number | null>(null);
   const [isHidden, setIsHidden] = useState<boolean>(false);
   const [token] = useThemeToken();
-  const {userInformation} = useAppSelector((state) => state.user);
-  const {loading: licenseLoading, activeLicensesByOrg} = useAppSelector(
+  const { userInformation } = useAppSelector((state) => state.user);
+  const { loading: licenseLoading, activeLicensesByOrg } = useAppSelector(
     (state) => state.license,
   );
   const [licenseMessage, setLicenseMessage] = useState<string>('');
@@ -29,7 +29,7 @@ const TrialBanner: React.FC<{
 
   useEffect(() => {
     if (userInformation?.id) {
-      dispatch(getActiveLicensesByOrgUserId({user_id: userInformation.id}))
+      dispatch(getActiveLicensesByOrgUserId({ user_id: userInformation.id }))
         .then((data) => {
           const activeLicenses = data?.payload?.activeLicenses;
           if (activeLicenses?.length > 0) {

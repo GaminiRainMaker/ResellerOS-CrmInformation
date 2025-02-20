@@ -2,8 +2,8 @@
 
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
@@ -12,18 +12,18 @@ import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {EyeIcon, PencilSquareIcon} from '@heroicons/react/24/outline';
-import {Form, message} from 'antd';
-import {Option} from 'antd/es/mentions';
+import { EyeIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
+import { Form, message } from 'antd';
+import { Option } from 'antd/es/mentions';
 import dayjs from 'dayjs';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import {
   assignLicense,
   revokeLicense,
 } from '../../../../../redux/actions/license';
-import {queryAllUsers} from '../../../../../redux/actions/user';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { queryAllUsers } from '../../../../../redux/actions/user';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import GrantLicense from './GrantLicense';
 
 const OrganizationUsers = () => {
@@ -33,11 +33,13 @@ const OrganizationUsers = () => {
   const searchParams = useSearchParams();
   const getOrganization = searchParams.get('organization');
   const router = useRouter();
-  const {data: userData, loading} = useAppSelector((state) => state.user);
-  const {loading: LicenseLoading} = useAppSelector((state) => state.license);
+  const { data: userData, loading } = useAppSelector((state) => state.user);
+  const { loading: LicenseLoading } = useAppSelector((state) => state.license);
   const [showLicenseModal, setShowLicenseModal] = useState<boolean>(false);
   const [recordData, setRecordData] = useState<any>();
   const [activeKey, setActiveKey] = useState<string>('1');
+  const [grantLicenses, setGrantLicenses] = useState<any>()
+
 
   const [query, setQuery] = useState<{
     organization: string | null;
@@ -105,7 +107,7 @@ const OrganizationUsers = () => {
             height={24}
             width={24}
             color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
+            style={{ cursor: 'pointer' }}
             onClick={() => {
               router.push(
                 `/accountInfo?id=${record?.id}&organization=${getOrganization}&role=superAdmin`,
@@ -121,7 +123,7 @@ const OrganizationUsers = () => {
               setRecordData(record);
             }}
             color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
+            style={{ cursor: 'pointer' }}
           />
         </Space>
       ),
@@ -176,7 +178,7 @@ const OrganizationUsers = () => {
   const assignLicenseForm = async () => {
     try {
       const licenseFormValue = licenseForm.getFieldsValue();
-      const {licenseType, expirationTime, features} = licenseFormValue;
+      const { licenseType, expirationTime, features } = licenseFormValue;
 
       // Validation logic
       if (!licenseType) {
@@ -236,7 +238,7 @@ const OrganizationUsers = () => {
           console.error('API Error:', response.error);
           message.error(
             response.error.message ||
-              'Failed to assign licenses. Please try again.',
+            'Failed to assign licenses. Please try again.',
           );
           licenseForm?.resetFields();
           return;
@@ -261,7 +263,7 @@ const OrganizationUsers = () => {
   const revokeLicenseForm = async () => {
     try {
       const licenseFormValue = licenseForm.getFieldsValue();
-      const {features_type} = licenseFormValue;
+      const { features_type } = licenseFormValue;
 
       // Determine which licenses should be revoked
       let licensesToRevoke: string[] = [];
@@ -288,7 +290,7 @@ const OrganizationUsers = () => {
           console.error('API Error:', response.error);
           message.error(
             response.error.message ||
-              'Failed to revoke licenses. Please try again.',
+            'Failed to revoke licenses. Please try again.',
           );
           licenseForm?.resetFields();
           return;
@@ -315,7 +317,7 @@ const OrganizationUsers = () => {
 
   return (
     <>
-      <Space direction="vertical" size={24} style={{width: '100%'}}>
+      <Space direction="vertical" size={24} style={{ width: '100%' }}>
         <Row justify="space-between" align="middle">
           <Col>
             <OsBreadCrumb items={menuItems} />
@@ -340,7 +342,7 @@ const OrganizationUsers = () => {
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">User Name</Typography>
                   <CommonSelect
-                    style={{width: '200px'}}
+                    style={{ width: '200px' }}
                     placeholder="Search here"
                     showSearch
                     onSearch={(e) => {
@@ -399,7 +401,7 @@ const OrganizationUsers = () => {
       </Space>
       <OsModal
         loading={LicenseLoading}
-        title="Licenses Management"
+        title="Grant Licenses"
         bodyPadding={22}
         body={
           <GrantLicense

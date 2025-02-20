@@ -1,15 +1,15 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable consistent-return */
 /* eslint-disable react-hooks/exhaustive-deps */
-import {convertFileToBase64, sendDataToNanonets} from '@/app/utils/base';
-import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
-import {Form, message, notification} from 'antd';
-import React, {useEffect, useState} from 'react';
-import {getQuotesByExistingQuoteFilter} from '../../../../../redux/actions/quote';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {Col, Row} from '../antd/Grid';
-import {Space} from '../antd/Space';
-import {Switch} from '../antd/Switch';
+import { convertFileToBase64, sendDataToNanonets } from '@/app/utils/base';
+import { FolderArrowDownIcon } from '@heroicons/react/24/outline';
+import { Form, message, notification } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { getQuotesByExistingQuoteFilter } from '../../../../../redux/actions/quote';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import { Col, Row } from '../antd/Grid';
+import { Space } from '../antd/Space';
+import { Switch } from '../antd/Switch';
 import useThemeToken from '../hooks/useThemeToken';
 import OsCustomerSelect from '../os-customer-select';
 import GlobalLoader from '../os-global-loader';
@@ -17,7 +17,7 @@ import OsOpportunitySelect from '../os-opportunity-select';
 import OsTable from '../os-table';
 import Typography from '../typography';
 import UploadCard from './UploadCard';
-import {OSDraggerStyle} from './styled-components';
+import { OSDraggerStyle } from './styled-components';
 import {
   fetchAndParseExcel,
   getPDFFileData,
@@ -26,7 +26,7 @@ import {
   uploadExcelFileToAws,
   uploadToAws,
 } from '../../../../../redux/actions/upload';
-import {getUserByTokenAccess} from '../../../../../redux/actions/user';
+import { getUserByTokenAccess } from '../../../../../redux/actions/user';
 
 const OsUpload: React.FC<any> = ({
   beforeUpload,
@@ -61,15 +61,23 @@ const OsUpload: React.FC<any> = ({
   const [loading, setLoading] = useState<boolean>(false);
   // const [AdvancedSetting, setAdvancedSetting] = useState<boolean>(false);
 
-  const {getExistingQuoteFilterData, getExistingQuoteFilterLoading} =
+  const { getExistingQuoteFilterData, getExistingQuoteFilterLoading } =
     useAppSelector((state) => state.quote);
   useEffect(() => {
     const newrrr: any = [...fileList];
     if (uploadFileData && uploadFileData?.length > 0) {
-      newrrr?.push({nsss: uploadFileData?.data?.result?.[0]?.input});
+      newrrr?.push({ nsss: uploadFileData?.data?.result?.[0]?.input });
     }
     setFileList(newrrr);
   }, [uploadFileData]);
+
+
+  useEffect(() => {
+    if (customerDetailId) {
+      setCustomerValue(customerDetailId)
+
+    }
+  }, [customerDetailId])
 
   useEffect(() => {
     if (quoteDetails && Object.keys(quoteDetails).length > 0) {
@@ -90,19 +98,19 @@ const OsUpload: React.FC<any> = ({
   }, []);
 
   const beforeUploadDataForExcel = async (file: File) => {
-    const obj: any = {...file};
+    const obj: any = { ...file };
     let resultantValues: any;
     let uploadedUrl: any;
     await convertFileToBase64(file)
       .then(async (base64String: string) => {
         obj.base64 = base64String;
         obj.name = file?.name;
-        await dispatch(uploadExcelFileToAws({document: base64String})).then(
+        await dispatch(uploadExcelFileToAws({ document: base64String })).then(
           async (payload: any) => {
             const doc_url = payload?.payload?.data;
             uploadedUrl = payload?.payload?.data;
             if (doc_url) {
-              await dispatch(fetchAndParseExcel({Url: doc_url}))?.then(
+              await dispatch(fetchAndParseExcel({ Url: doc_url }))?.then(
                 (payload: any) => {
                   let newArrCheck: any = [];
 
@@ -205,9 +213,9 @@ const OsUpload: React.FC<any> = ({
                     indexFrom > 0
                       ? bestTabsRawData?.slice(bestRowIndex + 1, indexFrom)
                       : bestTabsRawData?.slice(
-                          allTimeBestRow + 1,
-                          bestTabsRawData?.length,
-                        );
+                        allTimeBestRow + 1,
+                        bestTabsRawData?.length,
+                      );
 
                   let requiredOutput: any;
                   if (undefinedValesExist) {
@@ -338,14 +346,14 @@ const OsUpload: React.FC<any> = ({
   };
 
   const beforeUploadDataForExcelFile = async (file: File) => {
-    const obj: any = {...file};
+    const obj: any = { ...file };
     let resultantValues: any;
     let uploadedUrl: any;
     await convertFileToBase64(file)
       .then(async (base64String: string) => {
         obj.base64 = base64String;
         obj.name = file?.name;
-        await dispatch(uploadExcelFileToAws({document: base64String})).then(
+        await dispatch(uploadExcelFileToAws({ document: base64String })).then(
           async (payload: any) => {
             const doc_url = payload?.payload?.data;
             uploadedUrl = payload?.payload?.data;
@@ -368,14 +376,14 @@ const OsUpload: React.FC<any> = ({
   };
 
   const beforeUploadDataForPDFFile = async (file: File) => {
-    const obj: any = {...file};
+    const obj: any = { ...file };
     let resultantValues: any;
     let uploadedUrl: any;
     await convertFileToBase64(file)
       .then(async (base64String: string) => {
         obj.base64 = base64String;
         obj.name = file?.name;
-        await dispatch(uploadToAws({document: base64String})).then(
+        await dispatch(uploadToAws({ document: base64String })).then(
           async (payload: any) => {
             const doc_url = payload?.payload?.data;
             uploadedUrl = payload?.payload?.data;
@@ -401,7 +409,7 @@ const OsUpload: React.FC<any> = ({
   }
 
   const beforeUploadDataForPdf = async (file: File, modelToProcess: any) => {
-    const obj: any = {...file};
+    const obj: any = { ...file };
     let resultantValues: any;
     let uploadedUrl: any;
     await convertFileToBase64(file)
@@ -409,13 +417,13 @@ const OsUpload: React.FC<any> = ({
         obj.base64 = base64String;
         obj.name = file?.name;
 
-        await dispatch(uploadToAws({document: base64String})).then(
+        await dispatch(uploadToAws({ document: base64String })).then(
           async (payload: any) => {
             const doc_url = payload?.payload?.data;
             uploadedUrl = payload?.payload?.data;
             if (doc_url) {
               await dispatch(
-                getPDFFileData({pdfUrl: doc_url, processBy: modelToProcess}),
+                getPDFFileData({ pdfUrl: doc_url, processBy: modelToProcess }),
               )?.then((payload: any) => {
                 let newArrCheck: any = [];
 
@@ -663,7 +671,7 @@ const OsUpload: React.FC<any> = ({
     setLoading(true);
 
     for (let i = 0; i < uploadFileData.length; i++) {
-      let obj: any = {...uploadFileData[i]};
+      let obj: any = { ...uploadFileData[i] };
 
       if (obj?.manualquote) {
         if (!obj?.distributor_name && !obj?.oem_name) {
@@ -695,7 +703,7 @@ const OsUpload: React.FC<any> = ({
             obj?.model_id,
             obj?.file,
           );
-          obj = {...obj, ...dataa, ...response};
+          obj = { ...obj, ...dataa, ...response };
         } else {
           // eslint-disable-next-line no-await-in-loop
           const dataa = await beforeUploadDataForPDFFile(obj?.file);
@@ -705,12 +713,12 @@ const OsUpload: React.FC<any> = ({
             obj?.file,
           );
 
-          obj = {...obj, ...response, ...dataa};
+          obj = { ...obj, ...response, ...dataa };
         }
       } else {
         const dataa = await beforeUploadDataForPDFFile(obj?.file);
 
-        obj = {...obj, ...dataa};
+        obj = { ...obj, ...dataa };
       }
 
       newArr.push(obj);
@@ -757,7 +765,7 @@ const OsUpload: React.FC<any> = ({
     setLoading(true);
 
     for (let i = 0; i < uploadFileData.length; i++) {
-      let obj: any = {...uploadFileData[i]};
+      let obj: any = { ...uploadFileData[i] };
 
       if (obj?.manualquote) {
         if (!obj?.distributor_name && !obj?.oem_name) {
@@ -782,16 +790,16 @@ const OsUpload: React.FC<any> = ({
         if (obj?.file?.type.includes('spreadsheetml')) {
           const dataa = await beforeUploadDataForExcel(obj?.file);
 
-          obj = {...obj, ...dataa};
+          obj = { ...obj, ...dataa };
         } else {
           const dataa = await beforeUploadDataForPdf(obj?.file, obj?.model_id);
 
-          obj = {...obj, ...dataa};
+          obj = { ...obj, ...dataa };
         }
       } else {
         const dataa = await beforeUploadDataForPDFFile(obj?.file);
 
-        obj = {...obj, ...dataa};
+        obj = { ...obj, ...dataa };
       }
 
       newArr.push(obj);
@@ -821,9 +829,10 @@ const OsUpload: React.FC<any> = ({
       }),
     );
   }, [customerValue, opportunityValue, opportunityDetailId]);
+
   return (
     <GlobalLoader loading={cardLoading || loading}>
-      <Space size={24} direction="vertical" style={{width: '100%'}}>
+      <Space size={24} direction="vertical" style={{ width: '100%' }}>
         <OSDraggerStyle
           beforeUpload={beforeUpload}
           showUploadList={false}
@@ -838,7 +847,7 @@ const OsUpload: React.FC<any> = ({
           >
             <Typography
               name="Body 4/Medium"
-              style={{textDecoration: 'underline', cursor: 'pointer'}}
+              style={{ textDecoration: 'underline', cursor: 'pointer' }}
               color={token?.colorPrimary}
             >
               Click to Upload
@@ -860,8 +869,9 @@ const OsUpload: React.FC<any> = ({
           form={form}
           onFinish={AdvancedSetting ? onFinishAdvanced : onFinish}
         >
-          {!isGenerateQuote && !opportunityDetailId && (
-            <Row gutter={[16, 16]}>
+          <Row gutter={[16, 16]}>
+            {!isGenerateQuote && !customerDetailId && (
+
               <Col sm={24} md={12}>
                 <OsCustomerSelect
                   form={form}
@@ -871,6 +881,10 @@ const OsUpload: React.FC<any> = ({
                   isRequired={existingQuoteId ? false : true}
                 />
               </Col>
+            )}
+            {!isGenerateQuote && !opportunityDetailId && (
+
+
 
               <Col sm={24} md={12}>
                 <OsOpportunitySelect
@@ -881,8 +895,10 @@ const OsUpload: React.FC<any> = ({
                   isRequired={existingQuoteId ? false : true}
                 />
               </Col>
-            </Row>
-          )}
+
+            )}
+          </Row>
+
         </Form>
 
         {!isGenerateQuote && (

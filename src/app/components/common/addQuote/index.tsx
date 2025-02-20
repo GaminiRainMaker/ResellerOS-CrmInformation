@@ -13,13 +13,13 @@ import {
   getValuesOFLineItemsThoseNotAddedBefore,
   handleDate,
 } from '@/app/utils/base';
-import {PlusIcon} from '@heroicons/react/24/outline';
-import {Form, message} from 'antd';
-import {usePathname, useRouter} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
+import { PlusIcon } from '@heroicons/react/24/outline';
+import { Form, message } from 'antd';
+import { usePathname, useRouter } from 'next/navigation';
+import { FC, useEffect, useState } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
-import {queryLineItemSyncingForSalesForce} from '../../../../../redux/actions/LineItemSyncing';
-import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
+import { queryLineItemSyncingForSalesForce } from '../../../../../redux/actions/LineItemSyncing';
+import { insertOpportunityLineItem } from '../../../../../redux/actions/opportunityLineItem';
 import {
   getBulkProductIsExisting,
   insertProductsInBulk,
@@ -30,17 +30,17 @@ import {
   insertQuote,
   updateQuoteWithNewlineItemAddByID,
 } from '../../../../../redux/actions/quote';
-import {insertQuoteFile} from '../../../../../redux/actions/quoteFile';
-import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
+import { insertQuoteFile } from '../../../../../redux/actions/quoteFile';
+import { insertQuoteLineItem } from '../../../../../redux/actions/quotelineitem';
 import {
   uploadExcelFileToAws,
   uploadToAws,
 } from '../../../../../redux/actions/upload';
-import {getUserByTokenAccess} from '../../../../../redux/actions/user';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { getUserByTokenAccess } from '../../../../../redux/actions/user';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import OsButton from '../os-button';
 import OsUpload from '../os-upload';
-import {AddQuoteInterface, FormattedData} from './types';
+import { AddQuoteInterface, FormattedData } from './types';
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
@@ -60,8 +60,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
   const [showModal, setShowModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const {userInformation} = useAppSelector((state) => state.user);
-  const {data: syncTableData} = useAppSelector((state) => state.syncTable);
+  const { userInformation } = useAppSelector((state) => state.user);
+  const { data: syncTableData } = useAppSelector((state) => state.syncTable);
   const [form] = Form.useForm();
   const pathname = usePathname();
   const [loading, setLoading] = useState<boolean>(false);
@@ -74,6 +74,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
   const [AdvancedSetting, setAdvancedSetting] = useState<boolean>(false);
 
   // const [lineItemSyncingData, setLineItemSyncingData] = useState<any>();
+
 
   useEffect(() => {
     pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.js'; // Use static public path
@@ -110,7 +111,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
   }, [existingQuoteId, existingGenerateQuoteId]);
 
   const beforeUpload = (file: File) => {
-    const obj: any = {...file};
+    const obj: any = { ...file };
     const pathUsedToUpload = file?.type?.split('.')?.includes('spreadsheetml')
       ? uploadExcelFileToAws
       : uploadToAws;
@@ -135,7 +136,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
               obj.totalPages = totalNumberPages;
 
               // Now we can proceed with uploading the file and setting the data
-              dispatch(pathUsedToUpload({document: base64String})).then(
+              dispatch(pathUsedToUpload({ document: base64String })).then(
                 (payload: any) => {
                   const pdfUrl = payload?.payload?.data?.Location;
                   obj.pdf_url = pdfUrl;
@@ -153,7 +154,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           reader.readAsArrayBuffer(file);
         } else {
           // If it's not a PDF, just proceed with uploading
-          dispatch(pathUsedToUpload({document: base64String})).then(
+          dispatch(pathUsedToUpload({ document: base64String })).then(
             (payload: any) => {
               const pdfUrl = payload?.payload?.data?.Location;
               obj.pdf_url = pdfUrl;
@@ -168,7 +169,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
       });
   };
   const addQuoteLineItem = async (
-    customerId: string,
+    customerIds: string,
     opportunityId: string,
     updatedArr: any,
     singleQuote: boolean,
@@ -269,7 +270,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
           pdf_url: newArrWithoutManual[i]?.pdf_url,
           user_id: userInformation.id,
-          customer_id: customerId,
+          customer_id: customerIds ? customerIds : customerId,
           opportunity_id: opportunityId,
           organization: userInformation.organization,
           status: 'Drafts',
@@ -311,7 +312,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           const response = await dispatch(insertQuote([newObj]));
           // eslint-disable-next-line no-unsafe-optional-chaining
 
-          quotesArr[i] = {...response?.payload?.data[0], ...quotesArr[i]};
+          quotesArr[i] = { ...response?.payload?.data[0], ...quotesArr[i] };
         }
       } else {
         const payload = await dispatch(getQuoteById(quoteId));
@@ -387,9 +388,9 @@ const AddQuote: FC<AddQuoteInterface> = ({
             lineItem?.map((itemssProduct: any) => {
               const productCode = itemssProduct?.product_code
                 ? itemssProduct?.product_code &&
-                  itemssProduct?.product_code !== null &&
-                  itemssProduct?.product_code !== undefined &&
-                  itemssProduct?.product_code?.toString()?.replace(/\s/g, '')
+                itemssProduct?.product_code !== null &&
+                itemssProduct?.product_code !== undefined &&
+                itemssProduct?.product_code?.toString()?.replace(/\s/g, '')
                 : 'NEWCODE0123';
               const itemsToAdd = allProductCodeDataa?.find(
                 (productItemFind: any) =>
@@ -459,7 +460,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
         resultArrForAllArr?.map((itemss: any) => {
           const singleObjects = itemss.reduce(
             (obj: any, item: any) =>
-              Object.assign(obj, {[item.key]: item.value}),
+              Object.assign(obj, { [item.key]: item.value }),
             {},
           );
           finalOpportunityArray?.push(singleObjects);
@@ -493,7 +494,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           file_name: newArrWithManual?.[0]?.file_name,
           total_page_count: newArrWithManual[0]?.totalPages,
           user_id: userInformation.id,
-          customer_id: customerId,
+          customer_id: customerIds ? customerIds : customerId,
           opportunity_id: opportunityId,
           organization: userInformation.organization,
           status: 'Drafts',
@@ -552,7 +553,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           organization: userInformation?.organization,
           user_id: userInformation?.id,
           status: 'Drafts',
-          customer_id: customerId,
+          customer_id: customerIds ? customerIds : customerId,
           opportunity_id: opportunityId,
           date: handleDate(),
         };
@@ -602,7 +603,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
   };
 
   const addQuoteLineItemAdvanced = async (
-    customerId: string,
+    customerIds: string,
     opportunityId: string,
     updatedArr: any,
     singleQuote: boolean,
@@ -613,6 +614,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
     const newArrWithManual: any = [];
     const newArrWithoutManual: any = [];
     let countOfExportFiles: number = 0;
+
+
 
     if (updatedArr && updatedArr?.length > 0) {
       updatedArr?.map((items: any) => {
@@ -641,7 +644,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           };
           newArrWithManual?.push(newObj);
         } else {
-          newArrWithoutManual?.push({...items, model_id: model});
+          newArrWithoutManual?.push({ ...items, model_id: model });
         }
       });
     }
@@ -705,7 +708,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
           pdf_url: newArrWithoutManual[i]?.pdf_url,
           user_id: userInformation.id,
-          customer_id: customerId,
+          customer_id: customerIds ? customerIds : customerId,
           opportunity_id: opportunityId,
           organization: userInformation.organization,
           status: 'Drafts',
@@ -746,7 +749,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           const response = await dispatch(insertQuote([newObj]));
           // eslint-disable-next-line no-unsafe-optional-chaining
 
-          quotesArr[i] = {...response?.payload?.data[0], ...quotesArr[i]};
+          quotesArr[i] = { ...response?.payload?.data[0], ...quotesArr[i] };
         }
       } else {
         const payload = await dispatch(getQuoteById(quoteId));
@@ -829,9 +832,9 @@ const AddQuote: FC<AddQuoteInterface> = ({
             lineItem?.map((itemssProduct: any) => {
               const productCode = itemssProduct?.product_code
                 ? itemssProduct?.product_code &&
-                  itemssProduct?.product_code !== null &&
-                  itemssProduct?.product_code !== undefined &&
-                  itemssProduct?.product_code?.toString()?.replace(/\s/g, '')
+                itemssProduct?.product_code !== null &&
+                itemssProduct?.product_code !== undefined &&
+                itemssProduct?.product_code?.toString()?.replace(/\s/g, '')
                 : 'NEWCODE0123';
               const itemsToAdd = allProductCodeDataa?.find(
                 (productItemFind: any) =>
@@ -901,7 +904,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
         resultArrForAllArr?.map((itemss: any) => {
           const singleObjects = itemss.reduce(
             (obj: any, item: any) =>
-              Object.assign(obj, {[item.key]: item.value}),
+              Object.assign(obj, { [item.key]: item.value }),
             {},
           );
           finalOpportunityArray?.push(singleObjects);
@@ -936,7 +939,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           file_name: newArrWithManual?.[0]?.file_name,
           total_page_count: newArrWithManual?.[0]?.totalPages,
           user_id: userInformation.id,
-          customer_id: customerId,
+          customer_id: customerIds ? customerIds : customerId,
           opportunity_id: opportunityId,
           organization: userInformation.organization,
           status: 'Drafts',
@@ -994,7 +997,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           organization: userInformation?.organization,
           user_id: userInformation?.id,
           status: 'Drafts',
-          customer_id: customerId,
+          customer_id: customerIds ? customerIds : customerId,
           opportunity_id: opportunityId,
           date: handleDate(),
         };
@@ -1057,7 +1060,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
     oem: string,
     distributer: string,
     fileName: string,
-  ) => {};
+  ) => { };
 
   const resetFields = () => {
     setShowModal(false);

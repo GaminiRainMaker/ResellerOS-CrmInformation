@@ -1,19 +1,19 @@
 'use client';
 
-import {Divider} from '@/app/components/common/antd/Divider';
-import {Col, Row} from '@/app/components/common/antd/Grid';
+import { Divider } from '@/app/components/common/antd/Divider';
+import { Col, Row } from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
 import CommonStageSelect from '@/app/components/common/os-stage-select';
 import Typography from '@/app/components/common/typography';
-import {StageValue} from '@/app/utils/CONSTANTS';
-import {currencyAmountFormatter} from '@/app/utils/base';
-import {Form} from 'antd';
-import {useState} from 'react';
+import { StageValue } from '@/app/utils/CONSTANTS';
+import { currencyAmountFormatter } from '@/app/utils/base';
+import { Form } from 'antd';
+import { useState } from 'react';
 import OsCustomerSelect from '../os-customer-select';
 import OsInputNumber from '../os-input/InputNumber';
-import {SelectFormItem} from '../os-oem-select/oem-select-styled';
-import {AddOpportunityInterface} from './os-add-opportunity-interface';
+import { SelectFormItem } from '../os-oem-select/oem-select-styled';
+import { AddOpportunityInterface } from './os-add-opportunity-interface';
 
 const AddOpportunity: React.FC<AddOpportunityInterface> = ({
   onFinish,
@@ -23,9 +23,11 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
   setCustomerValue,
   showCustomerSelect,
   stageValue,
+  
 }) => {
   const [token] = useThemeToken();
   const [stageNewValue, setStageNewValue] = useState<string>();
+
 
   return (
     <>
@@ -66,7 +68,7 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
               isAddNewCustomer
               isRequired
             />
-            <Divider style={{border: '1px solid #C7CDD5'}} />
+            <Divider style={{ border: '1px solid #C7CDD5' }} />
           </>
         )}
 
@@ -130,7 +132,7 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
             >
               <CommonStageSelect
                 disabled={false}
-                style={{width: '100%', marginTop: '10px'}}
+                style={{ width: '100%', marginTop: '10px' }}
                 options={StageValue}
                 onChange={(e: string) => {
                   setStageNewValue(e);
