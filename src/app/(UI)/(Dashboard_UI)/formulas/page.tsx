@@ -4,16 +4,16 @@
 
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {Checkbox, Form} from 'antd';
-import React, {useEffect, useState} from 'react';
+import { Checkbox, Form } from 'antd';
+import React, { useEffect, useState } from 'react';
 import OsButton from '@/app/components/common/os-button';
 import {
   PencilSquareIcon,
@@ -32,8 +32,8 @@ import {
   deleteFormula,
   getAllFormulas,
 } from '../../../../../redux/actions/formulas';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {getAllApprovedPartnerFoFormulas} from '../../../../../redux/actions/partner';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import { getAllApprovedPartnerFoFormulas } from '../../../../../redux/actions/partner';
 
 const FormulaMain: React.FC = () => {
   const [token] = useThemeToken();
@@ -41,7 +41,7 @@ const FormulaMain: React.FC = () => {
   const dispatch = useAppDispatch();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [loadingContract, setLoadingContract] = useState<boolean>(false);
-  const {data: formulaData} = useAppSelector((state) => state.formulas);
+  const { data: formulaData } = useAppSelector((state) => state.formulas);
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deleteId, setDeleteId] = useState<any>();
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
@@ -77,9 +77,9 @@ const FormulaMain: React.FC = () => {
 
   const getPartnerListData = async () => {
     await dispatch(
-      getAllApprovedPartnerFoFormulas({newArrCheckTONotExist: []}),
+      getAllApprovedPartnerFoFormulas({ newArrCheckTONotExist: [] }),
     )?.then((payload: any) => {
-      let arrOfPartnerss: any = [];
+      const arrOfPartnerss: any = [];
       if (payload?.payload) {
         payload?.payload?.map((items: any) => {
           arrOfPartnerss?.push({
@@ -172,13 +172,13 @@ const FormulaMain: React.FC = () => {
               setOpenDrawer(true);
             }}
             color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
+            style={{ cursor: 'pointer' }}
           />
           <TrashIcon
             height={24}
             width={24}
             color={token.colorError}
-            style={{cursor: 'pointer'}}
+            style={{ cursor: 'pointer' }}
             onClick={() => {
               setDeleteId(record?.id);
               setShowModalDelete(true);
@@ -235,14 +235,14 @@ const FormulaMain: React.FC = () => {
 
   return (
     <>
-      <Space size={24} direction="vertical" style={{width: '100%'}}>
+      <Space size={24} direction="vertical" style={{ width: '100%' }}>
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
               All Stored Formulas
             </Typography>
           </Col>
-          <Col style={{display: 'flex', alignItems: 'center'}}>
+          <Col style={{ display: 'flex', alignItems: 'center' }}>
             <OsButton
               text="Add Formula"
               buttontype="PRIMARY"
@@ -316,11 +316,11 @@ const FormulaMain: React.FC = () => {
         open={openDrawer}
         width={450}
         footer={
-          <Row style={{width: '100%', float: 'right'}}>
+          <Row style={{ width: '100%', float: 'right' }}>
             {' '}
             <OsButton
               loading={loadingContract}
-              btnStyle={{width: '100%'}}
+              btnStyle={{ width: '100%' }}
               buttontype="PRIMARY"
               text="Update Changes"
               clickHandler={() => {
