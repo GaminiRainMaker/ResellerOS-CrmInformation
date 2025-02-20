@@ -40,7 +40,6 @@ const TrialFiles = () => {
       const file = files.find((file) => file.key === key);
       console.log('first', file, key, selectedRowKeys);
       if (file) {
-        debugger;
         const link = document.createElement('a');
         link.href = file.url;
         link.setAttribute('download', file.name);

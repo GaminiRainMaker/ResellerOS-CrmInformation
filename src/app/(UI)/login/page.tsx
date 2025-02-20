@@ -2,7 +2,7 @@
 
 import AuthLayout from '@/app/components/layouts/auth-layouts/AuthLayout';
 import { useRouter } from 'next/navigation';
-import React, { Suspense } from 'react';
+import React from 'react';
 import eyeIcon from '../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
 import smsIcon from '../../../../public/assets/static/iconsax-svg/Svg/All/outline/sms.svg';
 import { loginUser } from '../../../../redux/actions/user';
@@ -20,11 +20,13 @@ const LogIn = () => {
           password: formValues?.password,
         }),
       ).then((d: any) => {
-        if (d?.is_email_active) {
-          router.push('/');
-        } else {
-          router.push('/');
-        }
+        setTimeout(() => {
+          if (d?.is_email_active) {
+            router.push('/');
+          } else {
+            router.push('/');
+          }
+        }, 0); // Delay navigation to avoid hydration mismatch
       });
     }
   };
@@ -47,17 +49,15 @@ const LogIn = () => {
   ];
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <AuthLayout
-        heading="Welcome Back!"
-        description="Enter your credentials to access your account."
-        registerNow
-        rememberPassword
-        buttonText="Log In"
-        inputFields={inputFields}
-        onClick={onClick}
-      />
-    </Suspense>
+    <AuthLayout
+      heading="Welcome Back!"
+      description="Enter your credentials to access your account."
+      registerNow
+      rememberPassword
+      buttonText="Log In"
+      inputFields={inputFields}
+      onClick={onClick}
+    />
   );
 };
 
