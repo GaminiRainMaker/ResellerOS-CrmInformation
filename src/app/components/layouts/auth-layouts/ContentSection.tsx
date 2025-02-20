@@ -249,9 +249,10 @@ const ContentSection: FC<AuthLayoutInterface> = ({
               ? '/userManagement'
               : payload?.payload?.is_email_invite
                 ? `/newPassword?${payload?.payload?.id}`
-                : payload?.payload?.role === 'reseller' &&
-                  payload?.payload?.is_quote
-                  ? '/crmInAccount'
+                : payload?.payload?.role === 'reseller'
+                  ? payload?.payload?.quoteLength
+                    ? '/crmInAccount'
+                    : '/demoBoard'
                   : '/dashboard',
           );
         } else {

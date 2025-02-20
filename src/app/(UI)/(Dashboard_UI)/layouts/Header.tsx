@@ -8,11 +8,11 @@
 
 'use client';
 
-import {Dropdown} from '@/app/components/common/antd/DropDown';
-import {Col, Row} from '@/app/components/common/antd/Grid';
+import { Dropdown } from '@/app/components/common/antd/DropDown';
+import { Col, Row } from '@/app/components/common/antd/Grid';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {Divider} from '@/app/components/common/antd/Divider';
-import {Space} from '@/app/components/common/antd/Space';
+import { Divider } from '@/app/components/common/antd/Divider';
+import { Space } from '@/app/components/common/antd/Space';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -20,12 +20,12 @@ import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import SearchSelect from '@/app/components/common/os-select/SearchSelect';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
+import { AvatarStyled } from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import styled from '@emotion/styled';
-import {usePathname} from 'next/navigation';
+import { redirect, usePathname } from 'next/navigation';
 import TrialBanner from '@/app/components/common/trialBanner/TrialBanner';
-import {convertFileToBase64} from '@/app/utils/base';
+import { convertFileToBase64 } from '@/app/utils/base';
 import {
   ArrowLeftStartOnRectangleIcon,
   BellIcon,
@@ -42,12 +42,12 @@ import {
   notification,
   Upload,
 } from 'antd';
-import {MenuProps} from 'antd/es/menu';
+import { MenuProps } from 'antd/es/menu';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
-import {useRouter, useSearchParams} from 'next/navigation';
-import React, {useEffect, useState} from 'react';
-import {QuestionOutlined} from '@ant-design/icons';
+import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { QuestionOutlined } from '@ant-design/icons';
 import OsModal from '@/app/components/common/os-modal';
 import {
   OSDraggerStyle,
@@ -58,16 +58,16 @@ import creditCard from '../../../../../public/assets/static/card-pos.svg';
 import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
 import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
-import {sendEmailForSuport} from '../../../../../redux/actions/auth';
-import {getCountOfNotification} from '../../../../../redux/actions/notifications';
+import { sendEmailForSuport } from '../../../../../redux/actions/auth';
+import { getCountOfNotification } from '../../../../../redux/actions/notifications';
 import {
   uploadExcelFileToAws,
   uploadToAws,
   uploadDocumentOnAzure,
   uploalImageonAzure,
 } from '../../../../../redux/actions/upload';
-import {getGloabalySearchDataa} from '../../../../../redux/actions/user';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { getGloabalySearchDataa } from '../../../../../redux/actions/user';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 
 export const CustomUpload = styled(Upload)`
   .ant-upload-list-text {
@@ -111,13 +111,13 @@ export const CustomUpload = styled(Upload)`
 const CustomHeader = () => {
   const [token] = useThemeToken();
   const router = useRouter();
-  const {TextArea} = Input;
+  const { TextArea } = Input;
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
 
   const pathname = usePathname();
   const loginAccount = searchParams.get('self');
-  const {userInformation, searchDataa, loginUserInformation} = useAppSelector(
+  const { userInformation, searchDataa, loginUserInformation } = useAppSelector(
     (state) => state.user,
   );
   const {
@@ -125,7 +125,7 @@ const CustomHeader = () => {
     data: notificationData,
     loading: notificationLoading,
   } = useAppSelector((state) => state.notification);
-  const {isCanvas} = useAppSelector((state) => state.canvas);
+  const { isCanvas } = useAppSelector((state) => state.canvas);
   const salesForceUrl = searchParams.get('instance_url');
   const [userRole, setUserRole] = useState<string>('');
   const [searchFinalData, setSearchFinalData] = useState<any>();
@@ -296,7 +296,7 @@ const CustomHeader = () => {
       const allDataArr: any = [];
       const optionsForSearch: any = [];
       searchDataa?.data?.map((itemGlob: any) => {
-        const newObj = {...itemGlob, typeRoute: searchDataa?.type};
+        const newObj = { ...itemGlob, typeRoute: searchDataa?.type };
 
         const optionObj = {
           label: (
@@ -339,7 +339,7 @@ const CustomHeader = () => {
       const validPrevData = Array.isArray(prevData) ? prevData : [];
 
       // Create a new array with the updated data
-      const newArr = [...validPrevData, {name: namess, urlAdded: location}];
+      const newArr = [...validPrevData, { name: namess, urlAdded: location }];
 
       // Log the updated array before setting the state
 
@@ -349,12 +349,12 @@ const CustomHeader = () => {
   };
 
   const beforeUpload = async (file: File) => {
-    const obj: any = {...file};
+    const obj: any = { ...file };
     setLoadingSpin(true);
     const pathUsedToUpload = file?.type?.split('.')?.includes('document')
       ? uploadDocumentOnAzure
       : file?.type?.split('.')?.includes('image/jpeg') ||
-          file?.type?.split('/')?.includes('image')
+        file?.type?.split('/')?.includes('image')
         ? uploalImageonAzure
         : uploadToAws;
 
@@ -363,7 +363,7 @@ const CustomHeader = () => {
         obj.base64 = base64String;
         obj.name = file?.name;
 
-        await dispatch(pathUsedToUpload({document: base64String})).then(
+        await dispatch(pathUsedToUpload({ document: base64String })).then(
           (payload: any) => {
             setDataFunc(file?.name, payload?.payload?.data);
           },
@@ -444,7 +444,7 @@ const CustomHeader = () => {
                   }}
                   showSearch
                   value={query?.searchText}
-                  style={{width: '100%'}}
+                  style={{ width: '100%' }}
                   placeholder="Search"
                   allowClear
                   prefixIcon={<Image src={SearchImg} alt="SearchImg" />}
@@ -490,7 +490,7 @@ const CustomHeader = () => {
                     background={token?.colorInfoBg}
                     icon={
                       <QuestionOutlined
-                        style={{color: 'grey'}}
+                        style={{ color: 'grey' }}
                         onClick={() => {
                           setOpenSupportModel(true);
                         }}
@@ -506,7 +506,7 @@ const CustomHeader = () => {
                       marginLeft: 200,
                       marginTop: 20,
                     }}
-                    menu={{items}}
+                    menu={{ items }}
                     dropdownRender={() => (
                       <div style={dropDownStyle}>
                         {notificationCount?.length > 0 ? (
@@ -560,10 +560,10 @@ const CustomHeader = () => {
                                     logo={
                                       notificationDataItem?.type ===
                                         'subscription' ||
-                                      notificationDataItem?.type === 'quote'
+                                        notificationDataItem?.type === 'quote'
                                         ? null
                                         : notificationDataItem?.User
-                                            ?.profile_image
+                                          ?.profile_image
                                     }
                                     fallbackIcon={fallBackIconsss}
                                     iconBg={fallBackBg}
@@ -579,7 +579,7 @@ const CustomHeader = () => {
                                     justifyContent="start"
                                     maxWidth={320}
                                     marginBottom={10}
-                                    isNotification={true}
+                                    isNotification
                                   />
                                 );
                               },
@@ -588,7 +588,7 @@ const CustomHeader = () => {
                         ) : (
                           <Typography
                             name="Body 3/Medium"
-                            style={{display: 'flex', justifyContent: 'center'}}
+                            style={{ display: 'flex', justifyContent: 'center' }}
                           >
                             No New Notifications
                           </Typography>
@@ -624,7 +624,7 @@ const CustomHeader = () => {
                   </Dropdown>
 
                   <Dropdown
-                    menu={{items}}
+                    menu={{ items }}
                     dropdownRender={(menu: any) => (
                       <div style={contentStyle}>
                         <Space>
@@ -637,7 +637,7 @@ const CustomHeader = () => {
                           <Space direction="vertical" size={0}>
                             <Typography name="Body 3/Regular">
                               {userInformation?.first_name &&
-                              userInformation?.last_name
+                                userInformation?.last_name
                                 ? `${userInformation.first_name} ${userInformation.last_name}`
                                 : userInformation?.first_name
                                   ? userInformation.first_name
@@ -662,28 +662,31 @@ const CustomHeader = () => {
                           },
                         })}
                         <Divider />
-                        <Space
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            cursor: 'pointer',
-                          }}
-                          onClick={() => {
-                            localStorage.removeItem('userInfo');
-                            Cookies.remove('token');
-                            Cookies.remove('id');
-                            router.push('/login');
-                          }}
-                        >
-                          <ArrowLeftStartOnRectangleIcon
-                            width={24}
-                            style={{marginTop: '5px'}}
-                            color={token?.colorError}
-                          />
-                          <Typography name="Body 3/Regular" cursor="pointer">
-                            Logout
-                          </Typography>
-                        </Space>
+                        <a onClick={() => {
+                          localStorage.removeItem('userInfo');
+                          Cookies.remove('token');
+                          Cookies.remove('id');
+                          router.push('/login');
+                        }}>
+                          <Space
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              cursor: 'pointer',
+                            }}
+                          >
+
+                            <ArrowLeftStartOnRectangleIcon
+                              width={24}
+                              style={{ marginTop: '5px' }}
+                              color={token?.colorError}
+                            />
+                            <Typography name="Body 3/Regular" cursor="pointer" >
+                              Logout
+                            </Typography>
+                          </Space>
+                        </a>
+
                       </div>
                     )}
                   >
@@ -703,7 +706,7 @@ const CustomHeader = () => {
                             maxWidth={20}
                           >
                             {userInformation?.first_name &&
-                            userInformation?.last_name
+                              userInformation?.last_name
                               ? `${userInformation.first_name} ${userInformation.last_name}`
                               : userInformation?.first_name
                                 ? userInformation.first_name
@@ -719,7 +722,7 @@ const CustomHeader = () => {
                         <Image
                           src={DownArrow}
                           alt="DownArrow"
-                          style={{cursor: 'pointer'}}
+                          style={{ cursor: 'pointer' }}
                         />
                       </Space>
                     </a>
@@ -742,7 +745,7 @@ const CustomHeader = () => {
               <Divider />
               <Space
                 content="center"
-                style={{display: 'flex', justifyContent: 'center'}}
+                style={{ display: 'flex', justifyContent: 'center' }}
               >
                 <Typography name="Body 2/Medium">
                   Please provide detail for your issue.
@@ -751,8 +754,8 @@ const CustomHeader = () => {
               <Space
                 content="center"
                 direction="vertical"
-                style={{width: '100%', marginTop: '20px'}}
-                // style={{display: 'flex', justifyContent: 'center'}}
+                style={{ width: '100%', marginTop: '20px' }}
+              // style={{display: 'flex', justifyContent: 'center'}}
               >
                 <Typography name="Body 3/Medium">Issue Details:</Typography>
                 <TextArea
@@ -767,7 +770,7 @@ const CustomHeader = () => {
                   }}
                 />
                 {errorForSupport && (
-                  <div style={{color: 'red'}}>Issue details is required!</div>
+                  <div style={{ color: 'red' }}>Issue details is required!</div>
                 )}
                 <div>
                   <Row>
@@ -799,7 +802,7 @@ const CustomHeader = () => {
                       ))}
                   </Row>
                 </div>
-                <div style={{width: '200px'}}>
+                <div style={{ width: '200px' }}>
                   {' '}
                   <OSDraggerStyleForSupport
                     beforeUpload={beforeUpload}
@@ -808,11 +811,11 @@ const CustomHeader = () => {
                     accept=".pdf,.jpg,.jpeg,.png,.docx,.pdf"
                   >
                     {' '}
-                    <span style={{color: '#3da5d9'}}>Upload a file</span>
+                    <span style={{ color: '#3da5d9' }}>Upload a file</span>
                   </OSDraggerStyleForSupport>
                 </div>
               </Space>
-              <div style={{display: 'flex', justifyContent: 'right'}}>
+              <div style={{ display: 'flex', justifyContent: 'right' }}>
                 <OsButton
                   buttontype="PRIMARY"
                   text="Submit"
@@ -830,7 +833,7 @@ const CustomHeader = () => {
           SetAddIssueToSupport('');
           setUpoadedData([]);
         }}
-        // open={true}
+      // open={true}
       />
     </Layout>
   );

@@ -52,6 +52,7 @@ const OsUpload: React.FC<any> = ({
   lineItemSyncingData,
   setAdvancedSetting,
   AdvancedSetting,
+  isTrialModal,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -901,7 +902,7 @@ const OsUpload: React.FC<any> = ({
 
         </Form>
 
-        {!isGenerateQuote && (
+        {!isGenerateQuote && !isTrialModal && (
           <>
             <Space size={30} direction="horizontal" align="center">
               <Typography name="Body 4/Medium">

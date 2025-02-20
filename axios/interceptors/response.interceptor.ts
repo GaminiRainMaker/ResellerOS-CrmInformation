@@ -23,6 +23,7 @@ export const errorResponseInterceptor = (error: AxiosError) => {
     });
   }
   if (error?.response?.status == 601) {
+    // eslint-disable-next-line prefer-promise-reject-errors
     return Promise.reject({
       success: false,
       message: error,

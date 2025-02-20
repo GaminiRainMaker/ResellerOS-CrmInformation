@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unstable-nested-components */
+
 'use client';
 
 import { Col, Row } from '@/app/components/common/antd/Grid';
@@ -29,12 +31,12 @@ import { getQuotesByUserAndTimeframe } from '../../../../../redux/actions/quote'
 import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import ContactSales from './ContactSales';
 import { CustomCardStyle } from './styled-components';
-import TrialFiles from './TrialFiles';
 
 const Dashboard = () => {
   const [token] = useThemeToken();
   const { abbreviate } = useAbbreviationHook(0);
   const [form] = Form.useForm();
+  const [trialForm] = Form.useForm();
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector((state) => state.auth);
   const { loading: quoteLoading } = useAppSelector((state) => state.quote);
@@ -46,13 +48,14 @@ const Dashboard = () => {
     useState<boolean>(false);
   const [timeframe, setTimeframe] = useState('Month');
   const [currentData, setCurrentData] = useState<any>();
+  const [trialFlowStep, setTrialFlowStep] = useState<string>('1');
 
   useEffect(() => {
     if (userInformation?.id) {
       dispatch(
         getQuotesByUserAndTimeframe({
           user_id: userInformation?.id,
-          timeframe: timeframe,
+          timeframe,
         }),
       ).then((data) => {
         if (data?.payload) {
@@ -133,9 +136,8 @@ const Dashboard = () => {
             feature_name: 'QuoteAI',
           }),
         );
-        console.log({ data });
         if (data?.payload?.message) {
-          location.reload();
+          window.location.reload();
           setShowTrailModal(false);
         }
         // else {
@@ -183,6 +185,20 @@ const Dashboard = () => {
       );
     }
     return null;
+  };
+  const trialOnFinish = () => {
+    if (trialFlowStep === '1') {
+      const trialFormValue = trialForm.getFieldsValue();
+      console.log('trialFormValue', trialFormValue);
+    } else if (trialFlowStep === '4') {
+      setTrialFlowStep('0');
+      setShowDownloadFileModal(false);
+    }
+    setTrialFlowStep((prevStep) => {
+      const nextStep =
+        Number(prevStep) < 4 ? String(Number(prevStep) + 1) : prevStep;
+      return nextStep;
+    });
   };
 
   return (
@@ -347,14 +363,14 @@ const Dashboard = () => {
       <br />
       <br />
       <Row
-        justify={'space-between'}
-        align={'middle'}
+        justify="space-between"
+        align="middle"
         style={{ width: '100%', marginBottom: '20px' }}
       >
         <Col>
           <Typography name="Heading 3/Bold">
             {' '}
-            This {timeframe}'s Metrics
+            This {timeframe}&apos;s Metrics
           </Typography>
         </Col>
         <Col>
@@ -365,7 +381,7 @@ const Dashboard = () => {
               style={{ width: '200px' }}
               placeholder="Select Dealreg Forms"
               onChange={(value) => setTimeframe(value)}
-              defaultValue={'Month'}
+              defaultValue="Month"
             />
           </Space>
         </Col>
@@ -381,15 +397,15 @@ const Dashboard = () => {
       >
         <Row>
           <Col span={6} >
-            <Typography name="Body 1/Bold">You've Converted</Typography>
+            <Typography name="Body 1/Bold">You&apos;ve Converted</Typography>
 
           </Col>
           <Col span={6} >
-            <Typography name="Body 1/Bold">You've Quoted</Typography>
+            <Typography name="Body 1/Bold">You&apos;ve Quoted</Typography>
 
           </Col>
           <Col span={6} >
-            <Typography name="Body 1/Bold">You've Earned</Typography>
+            <Typography name="Body 1/Bold">You&apos;ve Earned</Typography>
 
           </Col>
           <Col span={6} >
@@ -469,7 +485,7 @@ const Dashboard = () => {
             {abbreviate(currentData?.Quoted?.grossProfit ?? 0)}{' '}
           </Typography>
             <Typography name="Body 4/Regular">GROSS PROFIT</Typography></Col>
-          <Col span={6}></Col>
+          <Col span={6} />
           <Col span={4}>    <Typography name="Heading 3/Bold" as="div">
             {currentData?.AverageQuote?.averageProfitMargin}%{' '}
           </Typography>
@@ -636,9 +652,9 @@ const Dashboard = () => {
               Contact Sales
             </Typography>
             <Typography name="Body 3/Medium" color={token?.colorPrimaryText}>
-              For seamless access to our web application's premium features and
+              For seamless access to our web application&apos;s premium features and
               exclusive benefits, reach out to our dedicated sales team today.
-              Whether you're seeking enhanced functionality, personalized
+              Whether you&apos;re seeking enhanced functionality, personalized
               assistance, or specialized packages tailored to your needs, our
               experts are here to guide you through the subscription process.
               Contact us now to elevate your experience and maximize the value
@@ -646,69 +662,67 @@ const Dashboard = () => {
             </Typography>
           </span>
           <Row justify="space-between" gutter={[16, 16]}>
-            {ContactData?.map((ContactDataItem) => {
-              return (
-                <Col
-                  xs={24}
-                  sm={24}
-                  md={24}
-                  lg={12}
-                  xl={8}
-                  xxl={8}
-                  key={ContactDataItem?.key}
-                >
-                  <Space direction="vertical" size={4}>
-                    <Typography name="Body 1/Bold" color={token?.colorPrimary}>
-                      {ContactDataItem?.title}
-                    </Typography>
-                    <Space>
-                      {ContactDataItem?.data1 && (
-                        <Space align="center">
-                          <AvatarStyled
-                            icon={ContactDataItem?.icon}
-                            background={token?.colorInfoHover}
-                            size={36}
-                          />
+            {ContactData?.map((ContactDataItem) => (
+              <Col
+                xs={24}
+                sm={24}
+                md={24}
+                lg={12}
+                xl={8}
+                xxl={8}
+                key={ContactDataItem?.key}
+              >
+                <Space direction="vertical" size={4}>
+                  <Typography name="Body 1/Bold" color={token?.colorPrimary}>
+                    {ContactDataItem?.title}
+                  </Typography>
+                  <Space>
+                    {ContactDataItem?.data1 && (
+                      <Space align="center">
+                        <AvatarStyled
+                          icon={ContactDataItem?.icon}
+                          background={token?.colorInfoHover}
+                          size={36}
+                        />
 
-                          <Typography
-                            key={ContactDataItem?.key}
-                            name="Body 3/Medium"
-                            color={'#575757'}
-                            ellipsis
-                            maxWidth={250}
-                            as="div"
-                            tooltip
-                          >
-                            {ContactDataItem?.data1}
-                          </Typography>
-                        </Space>
-                      )}
-                      {ContactDataItem?.data2 && (
-                        <Space align="center">
-                          <AvatarStyled
-                            icon={ContactDataItem?.icon}
-                            background={token?.colorInfoHover}
-                            size={36}
-                          />
+                        <Typography
+                          key={ContactDataItem?.key}
+                          name="Body 3/Medium"
+                          color="#575757"
+                          ellipsis
+                          maxWidth={250}
+                          as="div"
+                          tooltip
+                        >
+                          {ContactDataItem?.data1}
+                        </Typography>
+                      </Space>
+                    )}
+                    {ContactDataItem?.data2 && (
+                      <Space align="center">
+                        <AvatarStyled
+                          icon={ContactDataItem?.icon}
+                          background={token?.colorInfoHover}
+                          size={36}
+                        />
 
-                          <Typography
-                            key={ContactDataItem?.key}
-                            name="Body 3/Medium"
-                            color={'#575757'}
-                            ellipsis
-                            maxWidth={200}
-                            as="div"
-                            tooltip
-                          >
-                            {ContactDataItem?.data2}
-                          </Typography>
-                        </Space>
-                      )}
-                    </Space>
+                        <Typography
+                          key={ContactDataItem?.key}
+                          name="Body 3/Medium"
+                          color="#575757"
+                          ellipsis
+                          maxWidth={200}
+                          as="div"
+                          tooltip
+                        >
+                          {ContactDataItem?.data2}
+                        </Typography>
+                      </Space>
+                    )}
                   </Space>
-                </Col>
-              );
-            })}
+                </Space>
+              </Col>
+            ))}
           </Row>
         </Space>
       </CustomCardStyle>
@@ -737,17 +751,6 @@ const Dashboard = () => {
         }}
         showDailogModal={showTrailModal}
         setShowDailogModal={setShowTrailModal}
-      />
-      <OsModal
-        loading={false}
-        title="Trial Quotes Files"
-        bodyPadding={22}
-        body={<TrialFiles />}
-        width={583}
-        open={showDownloadFileModal}
-        onCancel={() => {
-          setShowDownloadFileModal(false);
-        }}
       />
     </GlobalLoader>
   );
