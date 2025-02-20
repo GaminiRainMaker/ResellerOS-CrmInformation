@@ -2,35 +2,13 @@
 
 import AuthLayout from '@/app/components/layouts/auth-layouts/AuthLayout';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { Suspense } from 'react';
 import eyeIcon from '../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
 import smsIcon from '../../../../public/assets/static/iconsax-svg/Svg/All/outline/sms.svg';
 import { loginUser } from '../../../../redux/actions/user';
 import { useAppDispatch } from '../../../../redux/hook';
 
 const LogIn = () => {
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-
-  const onClick = (formValues: any) => {
-    if (formValues?.password && formValues?.email) {
-      dispatch(
-        loginUser({
-          email: formValues?.email,
-          password: formValues?.password,
-        }),
-      ).then((d: any) => {
-        setTimeout(() => {
-          if (d?.is_email_active) {
-            router.push('/');
-          } else {
-            router.push('/');
-          }
-        }, 0); // Delay navigation to avoid hydration mismatch
-      });
-    }
-  };
-
   const inputFields = [
     {
       name: 'email',
@@ -56,7 +34,6 @@ const LogIn = () => {
       rememberPassword
       buttonText="Log In"
       inputFields={inputFields}
-      onClick={onClick}
     />
   );
 };

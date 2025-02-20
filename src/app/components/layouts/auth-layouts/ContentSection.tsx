@@ -45,7 +45,6 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   registerNow,
   rememberPassword,
   buttonText,
-  onClick,
   inputFields,
 }) => {
   const [token] = useThemeToken();
@@ -338,7 +337,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   };
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <>
       <ContentSectionWrapper direction="vertical" size={72}>
         <Image src={OSResellerLogo} alt="OSResellerLogo" />
         <Space direction="vertical" size={72}>
@@ -555,7 +554,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           router.push('/');
         }}
       />
-    </Suspense>
+    </>
   );
 };
 
