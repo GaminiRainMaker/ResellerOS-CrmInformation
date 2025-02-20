@@ -50,19 +50,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <body className={`${jakartaSans.variable}`}>
             <Providers>
               <CanvasRedirectWrapper>{children}</CanvasRedirectWrapper>
-              {/* {locationdata && ( */}
-              <Script
-                onLoad={() => console.log('Salesforce script loaded.')}
-                src={
-                  locationdata === 'lifeboat'
-                    ? '/canvas-all-quote-ai.js'
-                    : locationdata === 'OrderAI'
-                      ? '/canvas-all-orderai'
-                      : '/canvas-all.js'
-                }
-                strategy="beforeInteractive"
-              />
-              {/* )} */}
+              {locationdata && (
+                <Script
+                  onLoad={() => console.log('Salesforce script loaded.')}
+                  src={
+                    locationdata === 'lifeboat'
+                      ? '/canvas-all-quote-ai.js'
+                      : locationdata === 'OrderAI'
+                        ? '/canvas-all-orderai'
+                        : '/canvas-all.js'
+                  }
+                  strategy="beforeInteractive"
+                />
+              )}
             </Providers>
           </body>
         </html>
