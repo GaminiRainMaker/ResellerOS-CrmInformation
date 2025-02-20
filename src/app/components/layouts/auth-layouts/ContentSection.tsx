@@ -6,6 +6,12 @@
 
 'use client';
 
+import dynamic from 'next/dynamic';
+const OsInputPassword = dynamic(() => import('../../common/os-input/InputPassword'), { ssr: false })
+const OsInput = dynamic(() => import('../../common/os-input'), { ssr: false })
+const OsButton = dynamic(() => import('../../common/os-button'), { ssr: false })
+const DailogModal = dynamic(() => import('../../common/os-modal/DialogModal'), { ssr: false })
+const Typography = dynamic(() => import('../../common/typography'), { ssr: false })
 import { Form, notification } from 'antd';
 import Image from 'next/image';
 import React, { FC, useEffect, useState } from 'react';
@@ -30,11 +36,7 @@ import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import { setUserInformation } from '../../../../../redux/slices/user';
 import { Space } from '../../common/antd/Space';
 import useThemeToken from '../../common/hooks/useThemeToken';
-import OsButton from '../../common/os-button';
-import OsInput from '../../common/os-input';
-import OsInputPassword from '../../common/os-input/InputPassword';
-import DailogModal from '../../common/os-modal/DialogModal';
-import Typography from '../../common/typography';
+
 import { AuthLayoutInterface } from './authLayout.interface';
 import { ContentSectionWrapper, CustomCheckbox } from './styled-components';
 

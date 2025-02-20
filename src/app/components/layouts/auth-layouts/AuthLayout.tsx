@@ -3,6 +3,7 @@
 
 import dynamic from 'next/dynamic';
 const ContentSection = dynamic(() => import('./ContentSection'), { ssr: false })
+const Typography = dynamic(() => import('../../common/typography'), { ssr: false })
 
 import { Content } from 'antd/es/layout/layout';
 import Image from 'next/image';
@@ -12,7 +13,6 @@ import loginAvatar from '../../../../../public/assets/static/AvatarFullImg.svg';
 import { Col, Row } from '../../common/antd/Grid';
 import { Space } from '../../common/antd/Space';
 import useThemeToken from '../../common/hooks/useThemeToken';
-import Typography from '../../common/typography';
 import { AuthLayoutInterface } from './authLayout.interface';
 
 const AuthLayout: FC<AuthLayoutInterface> = ({
