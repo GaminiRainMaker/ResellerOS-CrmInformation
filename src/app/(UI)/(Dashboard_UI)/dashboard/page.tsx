@@ -1,7 +1,7 @@
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
@@ -9,12 +9,12 @@ import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
 import DailogModal from '@/app/components/common/os-modal/DialogModal';
 import CommonSelect from '@/app/components/common/os-select';
-import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
+import { AvatarStyled } from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
-import {calculateMetrics} from '@/app/utils/script';
-import {EnvelopeIcon, MapPinIcon, PhoneIcon} from '@heroicons/react/24/outline';
-import {Form} from 'antd';
-import {useEffect, useState} from 'react';
+import { calculateMetrics } from '@/app/utils/script';
+import { EnvelopeIcon, MapPinIcon, PhoneIcon } from '@heroicons/react/24/outline';
+import { Form } from 'antd';
+import { useEffect, useState } from 'react';
 import {
   Bar,
   BarChart,
@@ -23,23 +23,23 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import {contactSales} from '../../../../../redux/actions/auth';
-import {activateTrailPhase} from '../../../../../redux/actions/license';
-import {getQuotesByUserAndTimeframe} from '../../../../../redux/actions/quote';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { contactSales } from '../../../../../redux/actions/auth';
+import { activateTrailPhase } from '../../../../../redux/actions/license';
+import { getQuotesByUserAndTimeframe } from '../../../../../redux/actions/quote';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import ContactSales from './ContactSales';
-import {CustomCardStyle} from './styled-components';
+import { CustomCardStyle } from './styled-components';
 import TrialFiles from './TrialFiles';
 
 const Dashboard = () => {
   const [token] = useThemeToken();
-  const {abbreviate} = useAbbreviationHook(0);
+  const { abbreviate } = useAbbreviationHook(0);
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const {loading} = useAppSelector((state) => state.auth);
-  const {loading: quoteLoading} = useAppSelector((state) => state.quote);
-  const {loading: licenseLoading} = useAppSelector((state) => state.license);
-  const {userInformation} = useAppSelector((state) => state.user);
+  const { loading } = useAppSelector((state) => state.auth);
+  const { loading: quoteLoading } = useAppSelector((state) => state.quote);
+  const { loading: licenseLoading } = useAppSelector((state) => state.license);
+  const { userInformation } = useAppSelector((state) => state.user);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showTrailModal, setShowTrailModal] = useState<boolean>(false);
   const [showDownloadFileModal, setShowDownloadFileModal] =
@@ -133,7 +133,7 @@ const Dashboard = () => {
             feature_name: 'QuoteAI',
           }),
         );
-        console.log({data});
+        console.log({ data });
         if (data?.payload?.message) {
           location.reload();
           setShowTrailModal(false);
@@ -157,7 +157,7 @@ const Dashboard = () => {
     },
   ];
 
-  const CustomTooltip = ({active, payload}: any) => {
+  const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
         <div
@@ -170,14 +170,14 @@ const Dashboard = () => {
             fontSize: '14px',
           }}
         >
-          <p style={{fontWeight: '600', margin: '0 0 4px 0'}}>Per Quote</p>
-          <p style={{margin: '0', color: '#6B7280'}}>
+          <p style={{ fontWeight: '600', margin: '0 0 4px 0' }}>Per Quote</p>
+          <p style={{ margin: '0', color: '#6B7280' }}>
             Other Revenue:{' '}
-            <span style={{color: '#6B7280'}}>${payload[0]?.value}</span>
+            <span style={{ color: '#6B7280' }}>${payload[0]?.value}</span>
           </p>
-          <p style={{margin: '0', color: '#1E40AF'}}>
+          <p style={{ margin: '0', color: '#1E40AF' }}>
             Gross Profit:{' '}
-            <span style={{color: '#1E40AF'}}>${payload[1]?.value}</span>
+            <span style={{ color: '#1E40AF' }}>${payload[1]?.value}</span>
           </p>
         </div>
       );
@@ -349,7 +349,7 @@ const Dashboard = () => {
       <Row
         justify={'space-between'}
         align={'middle'}
-        style={{width: '100%', marginBottom: '20px'}}
+        style={{ width: '100%', marginBottom: '20px' }}
       >
         <Col>
           <Typography name="Heading 3/Bold">
@@ -362,7 +362,7 @@ const Dashboard = () => {
             <Typography name="Body 4/Medium">Timeframe:</Typography>
             <CommonSelect
               options={selectOption}
-              style={{width: '200px'}}
+              style={{ width: '200px' }}
               placeholder="Select Dealreg Forms"
               onChange={(value) => setTimeframe(value)}
               defaultValue={'Month'}
@@ -380,9 +380,105 @@ const Dashboard = () => {
         }}
       >
         <Row>
+          <Col span={6} >
+            <Typography name="Body 1/Bold">You've Converted</Typography>
+
+          </Col>
+          <Col span={6} >
+            <Typography name="Body 1/Bold">You've Quoted</Typography>
+
+          </Col>
+          <Col span={6} >
+            <Typography name="Body 1/Bold">You've Earned</Typography>
+
+          </Col>
+          <Col span={6} >
+            <Typography name="Body 1/Bold">Average per Quoted</Typography>
+
+          </Col>
+        </Row>
+        <Row>
+          <Col span={18} >
+            <Row style={{ margin: "20px" }}>
+              <Col span={8} >
+                <Typography name="Heading 2/Bold" as="div">
+                  {currentData?.Converted?.vendorQuotes}
+                </Typography>
+                <Typography name="Body 4/Regular">VENDOR QUOTES</Typography>
+              </Col>
+              <Col span={8}>
+                <Typography name="Heading 2/Bold" as="div">
+                  {currentData?.Quoted?.totalCustomers}
+                </Typography>
+                <Typography name="Body 4/Regular">CUSTOMERS</Typography>
+              </Col>
+              <Col span={8}>
+                <Typography name="Heading 2/Bold" as="div">
+                  {currentData?.Earned?.hoursOfTime}{' '}
+                </Typography>
+                <Typography name="Body 4/Regular">HOURS OF TIME</Typography>
+              </Col>
+            </Row>
+            <Row style={{ margin: "20px" }}>
+              <Col span={8}>
+                <Typography name="Heading 2/Bold" as="div">
+                  {currentData?.Converted?.totalPages}
+                </Typography>
+                <Typography name="Body 4/Regular">PAGES</Typography>
+              </Col>
+              <Col span={8}>
+                <Typography name="Heading 2/Bold" as="div">
+                  ${abbreviate(currentData?.Quoted?.totalRevenue ?? 0)}{' '}
+                </Typography>
+                <Typography name="Body 4/Regular">REVENUE</Typography>
+              </Col>
+              <Col span={8}>
+                <Typography name="Heading 2/Bold" as="div">
+                  {abbreviate(currentData?.Quoted?.grossProfit ?? 0)}{' '}
+                </Typography>
+                <Typography name="Body 4/Regular">GROSS PROFIT</Typography>
+              </Col>
+
+            </Row>
+          </Col>
+          <Col span={6} >
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart
+                data={averagePerQuoteData}
+                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+              >
+                <XAxis type="category" dataKey="name" />
+                <YAxis
+                  type="number"
+                  tickFormatter={(value) => `$${value.toLocaleString()}`}
+                />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="revenue" stackId="a" fill="#A0AEC0" />
+                <Bar dataKey="profit" stackId="a" fill="#2196F3" />
+              </BarChart>
+            </ResponsiveContainer>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col span={6}><Typography name="Heading 2/Bold" as="div">
+            {currentData?.Converted?.totalLineItems}
+          </Typography>
+            <Typography name="Body 4/Regular">LINE ITEMS</Typography></Col>
+          <Col span={8}>     <Typography name="Heading 2/Bold" as="div">
+            {abbreviate(currentData?.Quoted?.grossProfit ?? 0)}{' '}
+          </Typography>
+            <Typography name="Body 4/Regular">GROSS PROFIT</Typography></Col>
+          <Col span={6}></Col>
+          <Col span={4}>    <Typography name="Heading 3/Bold" as="div">
+            {currentData?.AverageQuote?.averageProfitMargin}%{' '}
+          </Typography>
+            <Typography name="Body 4/Regular">PROFIT MARGIN</Typography></Col>
+        </Row>
+        {/* <Row>
           <Col sm={24} md={14}>
             <Typography name="Body 1/Bold">You've Converted</Typography>
-            <Row gutter={[16, 16]} style={{marginTop: '10px'}}>
+            <Row gutter={[16, 16]} style={{ marginTop: '10px' }}>
               <Col span={12}>
                 <Typography name="Heading 2/Bold" as="div">
                   {currentData?.Converted?.vendorQuotes}
@@ -405,7 +501,7 @@ const Dashboard = () => {
             <br />
             <br />
             <Typography name="Body 1/Bold">You've Quoted</Typography>
-            <Row gutter={[16, 16]} style={{marginTop: '10px'}}>
+            <Row gutter={[16, 16]} style={{ marginTop: '10px' }}>
               <Col span={12}>
                 <Typography name="Heading 2/Bold" as="div">
                   {currentData?.Quoted?.totalCustomers}
@@ -428,7 +524,7 @@ const Dashboard = () => {
             <br />
             <br />
             <Typography name="Body 1/Bold">You've Earned</Typography>
-            <Row gutter={[16, 16]} style={{marginTop: '10px'}}>
+            <Row gutter={[16, 16]} style={{ marginTop: '10px' }}>
               <Col span={12}>
                 <Typography name="Heading 2/Bold" as="div">
                   {currentData?.Earned?.hoursOfTime}{' '}
@@ -448,7 +544,7 @@ const Dashboard = () => {
             <ResponsiveContainer width="100%" height={250}>
               <BarChart
                 data={averagePerQuoteData}
-                margin={{top: 20, right: 30, left: 20, bottom: 5}}
+                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
               >
                 <XAxis type="category" dataKey="name" />
                 <YAxis
@@ -476,7 +572,7 @@ const Dashboard = () => {
               </Col>
             </Row>
           </Col>
-        </Row>
+        </Row> */}
       </div>
 
       <Row justify="space-between">
@@ -503,7 +599,7 @@ const Dashboard = () => {
             }}
           />
         </Col>
-        <Col>
+        {/* <Col>
           <OsButton
             text="Testing Azure AI"
             buttontype="PRIMARY"
@@ -520,7 +616,7 @@ const Dashboard = () => {
               window?.open('/azzureAi?excel=true');
             }}
           />
-        </Col>
+        </Col> */}
         <Col>
           <OsButton
             text="Contact Us"

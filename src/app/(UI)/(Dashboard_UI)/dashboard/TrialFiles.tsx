@@ -5,7 +5,7 @@ import React, {useState} from 'react';
 const files = [
   {
     key: '1',
-    name: 'Carahsoft - 100 lines',
+    name: 'Carahsoft pdf',
     url: 'https://prodresellerosstorage.blob.core.windows.net/prodreselleros/Carahsoft%20Dell%20Sample%20pdf%20for%20Demo.pdf?sp=r&st=2025-02-13T07:46:02Z&se=2050-02-13T15:46:02Z&spr=https&sv=2022-11-02&sr=b&sig=nXYrFBVnsji7AVv8JTozYXhYuE82kGJ%2F7rwyCaOCByY%3D',
   },
   {
@@ -15,7 +15,7 @@ const files = [
   },
   {
     key: '3',
-    name: 'Carahsoft Excel Spreadsheet',
+    name: 'Carahsoft Excel',
     url: 'https://prodresellerosstorage.blob.core.windows.net/prodreselleros/Carahsoft%20Dell%20Sample%20Excel%20for%20Demo.xlsx?sp=r&st=2025-02-13T07:48:15Z&se=2050-02-13T15:48:15Z&spr=https&sv=2022-11-02&sr=b&sig=dl7%2Ba%2F9uiNjovUpPZL4Am%2FpvN%2Fu3k42R8tgS3LwOXUs%3D',
   },
   {
