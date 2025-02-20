@@ -12,7 +12,7 @@ import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import { EyeIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, MinusIcon, PencilSquareIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { Form, message } from 'antd';
 import { Option } from 'antd/es/mentions';
 import dayjs from 'dayjs';
@@ -25,6 +25,8 @@ import {
 import { queryAllUsers } from '../../../../../redux/actions/user';
 import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import GrantLicense from './GrantLicense';
+import { handleDate } from '@/app/utils/base';
+import OsButton from '@/app/components/common/os-button';
 
 const OrganizationUsers = () => {
   const dispatch = useAppDispatch();
@@ -38,7 +40,16 @@ const OrganizationUsers = () => {
   const [showLicenseModal, setShowLicenseModal] = useState<boolean>(false);
   const [recordData, setRecordData] = useState<any>();
   const [activeKey, setActiveKey] = useState<string>('1');
-  const [grantLicenses, setGrantLicenses] = useState<any>()
+
+  const [licenseTypes, setLicenseType] = useState('LifeTime');
+  const [licenseTakenFor, setLicenseTakenFor] = useState('Self');
+  const [activeLicense, setActiveLicense] = useState<any>();
+  const [expireDate, setExpireDate] = useState<any>({})
+  const [licenseForComp, setLicenseForComp] = useState<any>()
+
+  const [seatsForComp, setSeatsForComp] = useState<any>()
+
+
 
 
   const [query, setQuery] = useState<{
@@ -131,7 +142,7 @@ const OrganizationUsers = () => {
   ];
 
   useEffect(() => {
-    dispatch(queryAllUsers(searchQuery));
+    dispatch(queryAllUsers(searchQuery))
   }, [getOrganization, searchQuery]);
 
   const locale = {
@@ -177,19 +188,32 @@ const OrganizationUsers = () => {
 
   const assignLicenseForm = async () => {
     try {
+
+
+      let newObj: any = {
+        features: licenseForComp,
+        expirationTime: `${expireDate?.days}_${expireDate?.typeOf}`,
+        licenseType: licenseTypes,
+        type_of_license: licenseTakenFor,
+        quote_seats: seatsForComp?.QuoteAI,
+        dealreg_seats: seatsForComp?.DealRegAI
+
+        // se
+      }
+
       const licenseFormValue = licenseForm.getFieldsValue();
       const { licenseType, expirationTime, features } = licenseFormValue;
 
       // Validation logic
-      if (!licenseType) {
+      if (!newObj?.licenseType) {
         message.error('License Type is required!');
         return;
       }
-      if (licenseType === 'Paid' && !expirationTime) {
+      if (newObj?.licenseType === 'Paid' && !newObj?.expirationTime) {
         message.error('Expiration Time is required for Paid licenses!');
         return;
       }
-      if (!features || features.length === 0) {
+      if (!newObj?.features || newObj?.features.length === 0) {
         message.error('At least one feature must be selected!');
         return;
       }
@@ -197,37 +221,42 @@ const OrganizationUsers = () => {
       // Calculate expiration date
       let expirationDate: Date | null = null;
 
-      if (licenseType === 'Paid') {
-        switch (expirationTime) {
-          case '7 days':
-            expirationDate = dayjs().add(7, 'day').toDate();
-            break;
-          case '15 days':
-            expirationDate = dayjs().add(15, 'day').toDate();
-            break;
-          case '1 month':
-            expirationDate = dayjs().add(1, 'month').toDate();
-            break;
-          case '6 months':
-            expirationDate = dayjs().add(6, 'month').toDate();
-            break;
-          case '1 year':
-            expirationDate = dayjs().add(1, 'year').toDate();
-            break;
-          default:
-            message.error('Invalid expiration time selected!');
-            return;
-        }
+      if (newObj?.licenseType === 'Paid') {
+        expirationDate = dayjs().add(expireDate?.days, expireDate?.typeOf).toDate();
+
+        // switch (expirationTime) {
+        //   case '7 days':
+        //     expirationDate = dayjs().add(7, 'day').toDate();
+        //     break;
+        //   case '15 days':
+        //     expirationDate = dayjs().add(15, 'day').toDate();
+        //     break;
+        //   case '1 month':
+        //     expirationDate = dayjs().add(1, 'month').toDate();
+        //     break;
+        //   case '6 months':
+        //     expirationDate = dayjs().add(6, 'month').toDate();
+        //     break;
+        //   case '1 year':
+        //     expirationDate = dayjs().add(1, 'year').toDate();
+        //     break;
+        //   default:
+        //     message.error('Invalid expiration time selected!');
+        //     return;
+        // }
       }
 
       // Transform licenseFeature array into separate objects
-      const licenseObjects = features.map((feature: string) => ({
-        license_type: licenseType,
+      const licenseObjects = newObj?.features?.map((feature: string) => ({
+        license_type: newObj?.licenseType,
         expiration_date: expirationDate,
         feature_name: feature,
         org_id: recordData.organization,
         user_id: recordData.id,
         status: 'active',
+        type_of_license: licenseTakenFor,
+        quote_seats: seatsForComp?.QuoteAI,
+        dealreg_seats: seatsForComp?.DealRegAI
       }));
 
       // Dispatch API request with error handling
@@ -253,6 +282,8 @@ const OrganizationUsers = () => {
           licenseForm?.resetFields();
         }
       }
+      await dispatch(queryAllUsers(searchQuery))
+
     } catch (error) {
       console.error('Unexpected Error:', error);
       licenseForm?.resetFields();
@@ -260,27 +291,28 @@ const OrganizationUsers = () => {
     }
   };
 
-  const revokeLicenseForm = async () => {
+  const revokeLicenseForm = async (type: any, recordId: any) => {
     try {
-      const licenseFormValue = licenseForm.getFieldsValue();
-      const { features_type } = licenseFormValue;
+      // const licenseFormValue = licenseForm.getFieldsValue();
+      // const { features_type } = licenseFormValue;
 
       // Determine which licenses should be revoked
       let licensesToRevoke: string[] = [];
+      licensesToRevoke = [type];
 
-      if (!features_type || features_type.length === 0) {
-        // If nothing is selected, revoke both QuoteAI and DealRegAI
-        licensesToRevoke = ['QuoteAI', 'DealRegAI'];
-      } else if (features_type.includes('QuoteAI')) {
-        licensesToRevoke = ['DealRegAI']; // Revoke DealRegAI if QuoteAI is selected
-      } else if (features_type.includes('DealRegAI')) {
-        licensesToRevoke = ['QuoteAI']; // Revoke QuoteAI if DealRegAI is selected
-      }
+      // if (!features_type || features_type.length === 0) {
+      //   // If nothing is selected, revoke both QuoteAI and DealRegAI
+      //   licensesToRevoke = [type];
+      // } else if (features_type.includes('QuoteAI')) {
+      //   licensesToRevoke = ['DealRegAI']; // Revoke DealRegAI if QuoteAI is selected
+      // } else if (features_type.includes('DealRegAI')) {
+      //   licensesToRevoke = ['QuoteAI']; // Revoke QuoteAI if DealRegAI is selected
+      // }
 
       // Transform selected licenses into API request format
       const licenseObjects = licensesToRevoke.map((feature) => ({
         feature_name: feature,
-        user_id: recordData.id,
+        user_id: recordId,
       }));
 
       if (licenseObjects.length > 0) {
@@ -306,6 +338,8 @@ const OrganizationUsers = () => {
         setShowLicenseModal(false);
         licenseForm?.resetFields();
         setActiveKey('1');
+        await dispatch(queryAllUsers(searchQuery))
+
       }
     } catch (error) {
       console.error('Unexpected Error:', error);
@@ -314,6 +348,55 @@ const OrganizationUsers = () => {
       setActiveKey('1');
     }
   };
+
+
+
+  const LicenseColumns = [
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Feature Name
+        </Typography>
+      ),
+      dataIndex: 'feature_name',
+      key: 'feature_name',
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: <Typography name="Body 4/Medium">License Type</Typography>,
+      dataIndex: 'license_type',
+      key: 'license_type',
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: <Typography name="Body 4/Medium">Expiration Date</Typography>,
+      dataIndex: 'expiration_date',
+      key: 'expiration_date',
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">
+          {text ? handleDate(text, true) : '--'}
+        </Typography>
+      ),
+    },
+    {
+      title: <Typography name="Body 4/Medium">Revoke License</Typography>,
+      dataIndex: 'expiration_date',
+      key: 'expiration_date',
+      render: (text: any, record: any) => (
+        <OsButton clickHandler={() => {
+          console.log("324332432", record)
+          revokeLicenseForm(record?.feature_name, record?.user_id)
+        }}
+          text="Revoke"
+          buttontype="PRIMARY"
+        />
+      ),
+    },
+  ];
 
   return (
     <>
@@ -396,6 +479,31 @@ const OrganizationUsers = () => {
             dataSource={userData}
             scroll
             loading={loading}
+            expandable={{
+              // eslint-disable-next-line react/no-unstable-nested-components
+              expandedRowRender: (record: any) => (
+                <OsTable
+                  columns={LicenseColumns}
+                  dataSource={record?.Licenses}
+                  scroll
+                  paginationProps={false}
+                />
+              ),
+              rowExpandable: (record: any) => record.name !== 'Not Expandable',
+              expandIcon: ({ expanded, onExpand, record }: any) =>
+                expanded ? (
+                  <MinusIcon
+                    width={20}
+                    onClick={(e: any) => onExpand(record, e)}
+                  />
+                ) : (
+                  <PlusIcon
+                    width={20}
+                    onClick={(e: any) => onExpand(record, e)}
+                  />
+                ),
+            }}
+
           />
         </div>
       </Space>
@@ -406,21 +514,34 @@ const OrganizationUsers = () => {
         body={
           <GrantLicense
             form={licenseForm}
-            onFinish={
-              activeKey === '1'
-                ? assignLicenseForm
-                : activeKey === '2'
-                  ? revokeLicenseForm
-                  : null
+            onFinish={assignLicenseForm
+              // activeKey === '1'
+              //   ? assignLicenseForm
+              //   : activeKey === '2'
+              //     ? revokeLicenseForm
+              //     : null
             }
             setActiveKey={setActiveKey}
             recordData={recordData}
             activeKey={activeKey}
+
+            licenseTypes={licenseTypes}
+            setLicenseType={setLicenseType}
+            licenseTakenFor={licenseTakenFor}
+            setLicenseTakenFor={setLicenseTakenFor}
+            activeLicense={activeLicense}
+            setActiveLicense={setActiveLicense}
+            expireDate={expireDate}
+            setExpireDate={setExpireDate}
+            licenseForComp={licenseForComp}
+            setLicenseForComp={setLicenseForComp}
+            seatsForComp={seatsForComp}
+            setSeatsForComp={setSeatsForComp}
           />
         }
         width={600}
         open={showLicenseModal}
-        onOk={licenseForm?.submit}
+        onOk={assignLicenseForm}
         onCancel={() => {
           setShowLicenseModal(false);
           licenseForm?.resetFields();
