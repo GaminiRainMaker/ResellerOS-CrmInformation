@@ -1,5 +1,9 @@
 'use client';
 
+
+import dynamic from 'next/dynamic';
+const ContentSection = dynamic(() => import('./ContentSection'), { ssr: false })
+
 import { Content } from 'antd/es/layout/layout';
 import Image from 'next/image';
 import { FC } from 'react';
@@ -9,7 +13,6 @@ import { Col, Row } from '../../common/antd/Grid';
 import { Space } from '../../common/antd/Space';
 import useThemeToken from '../../common/hooks/useThemeToken';
 import Typography from '../../common/typography';
-import ContentSection from './ContentSection';
 import { AuthLayoutInterface } from './authLayout.interface';
 
 const AuthLayout: FC<AuthLayoutInterface> = ({
