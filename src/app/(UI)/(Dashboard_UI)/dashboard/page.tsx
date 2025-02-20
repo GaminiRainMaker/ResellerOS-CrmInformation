@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unstable-nested-components */
+
 'use client';
 
 import { Col, Row } from '@/app/components/common/antd/Grid';
@@ -29,7 +31,6 @@ import { getQuotesByUserAndTimeframe } from '../../../../../redux/actions/quote'
 import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import ContactSales from './ContactSales';
 import { CustomCardStyle } from './styled-components';
-import TrialFiles from './TrialFiles';
 
 const Dashboard = () => {
   const [token] = useThemeToken();
@@ -135,9 +136,8 @@ const Dashboard = () => {
             feature_name: 'QuoteAI',
           }),
         );
-        console.log({ data });
         if (data?.payload?.message) {
-          location.reload();
+          window.location.reload();
           setShowTrailModal(false);
         }
         // else {
@@ -370,7 +370,7 @@ const Dashboard = () => {
         <Col>
           <Typography name="Heading 3/Bold">
             {' '}
-            This {timeframe}'s Metrics
+            This {timeframe}&apos;s Metrics
           </Typography>
         </Col>
         <Col>
@@ -397,15 +397,15 @@ const Dashboard = () => {
       >
         <Row>
           <Col span={6} >
-            <Typography name="Body 1/Bold">You've Converted</Typography>
+            <Typography name="Body 1/Bold">You&apos;ve Converted</Typography>
 
           </Col>
           <Col span={6} >
-            <Typography name="Body 1/Bold">You've Quoted</Typography>
+            <Typography name="Body 1/Bold">You&apos;ve Quoted</Typography>
 
           </Col>
           <Col span={6} >
-            <Typography name="Body 1/Bold">You've Earned</Typography>
+            <Typography name="Body 1/Bold">You&apos;ve Earned</Typography>
 
           </Col>
           <Col span={6} >
@@ -652,9 +652,9 @@ const Dashboard = () => {
               Contact Sales
             </Typography>
             <Typography name="Body 3/Medium" color={token?.colorPrimaryText}>
-              For seamless access to our web application's premium features and
+              For seamless access to our web application&apos;s premium features and
               exclusive benefits, reach out to our dedicated sales team today.
-              Whether you're seeking enhanced functionality, personalized
+              Whether you&apos;re seeking enhanced functionality, personalized
               assistance, or specialized packages tailored to your needs, our
               experts are here to guide you through the subscription process.
               Contact us now to elevate your experience and maximize the value
