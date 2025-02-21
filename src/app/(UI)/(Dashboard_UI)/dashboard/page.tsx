@@ -738,7 +738,7 @@ const Dashboard = () => {
           form.resetFields();
         }}
         onOk={form.submit}
-        primaryButtonText="Send Query"
+        primaryButtonText="Submit"
         footerPadding={30}
       />
 
@@ -754,7 +754,7 @@ const Dashboard = () => {
       <DailogModal
         loading={licenseLoading}
         title="Extended Trial Version"
-        subTitle="Are you sure to enable the extended trial?"
+        subTitle="Would you like to try ResellerOS for another 7 days?"
         primaryButtonText="Yes"
         secondaryButtonText="No"
         onOk={() => {

@@ -4,15 +4,15 @@
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable consistent-return */
-import {FC, useCallback, useState} from 'react';
+import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import ReactDragListView from 'react-drag-listview';
-import {Resizable} from 'react-resizable';
+import { Resizable } from 'react-resizable';
 import useThemeToken from '../hooks/useThemeToken';
 import GlobalLoader from '../os-global-loader';
-import {CustomTable} from './styled-components';
+import { CustomTable } from './styled-components';
 
 const ResizableTitle = (props: any) => {
-  const {onResize, width, ...restProps} = props;
+  const { onResize, width, ...restProps } = props;
 
   if (!width) {
     return <th {...restProps} />;
@@ -31,7 +31,7 @@ const ResizableTitle = (props: any) => {
         />
       }
       onResize={onResize}
-      draggableOpts={{enableUserSelectHack: false}}
+      draggableOpts={{ enableUserSelectHack: false }}
     >
       <th {...restProps} />
     </Resizable>
@@ -50,7 +50,9 @@ const OsTable: FC<any> = ({
   tablePageSize = 5,
   drag = false,
   defaultPageSize = 5,
+  tableScroll = null,
   ...rest
+
 }) => {
   const [token] = useThemeToken();
   const [columns, setColumns] = useState(rest?.columns);
@@ -60,6 +62,19 @@ const OsTable: FC<any> = ({
 
     total: 0,
   });
+
+
+
+
+  useEffect(() => {
+    if (tableScroll) {
+      const tableContainer = document.querySelector(".ant-table-body")
+      if (tableContainer) {
+        tableContainer.scrollLeft = tableScroll
+
+      }
+    }
+  }, [tableScroll])
 
   const dragProps = {
     onDragEnd: useCallback(
@@ -85,7 +100,7 @@ const OsTable: FC<any> = ({
 
   const handleResize = useCallback(
     (index: any) =>
-      (e: any, {size}: any) => {
+      (e: any, { size }: any) => {
         setColumns((prevColumns: any) => {
           const nextColumns = [...prevColumns];
           nextColumns[index] = {
@@ -153,12 +168,12 @@ const OsTable: FC<any> = ({
         }}
         scroll={
           scrolly
-            ? {y: scrolly as number}
+            ? { y: scrolly as number }
             : scrollx
-              ? {y: scrollx as number}
+              ? { y: scrollx as number }
               : undefined
         }
-        // paginationBorder={paginationProps}
+      // paginationBorder={paginationProps}
       />
     </ReactDragListView.DragColumn>
   );

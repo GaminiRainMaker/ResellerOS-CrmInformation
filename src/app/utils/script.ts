@@ -441,16 +441,19 @@ export const processScript = (finalObj: {
           const match = currentLine.match(locatorRegex);
 
           if (match) {
-            const locators = [
-              ...currentLine.matchAll(/page\.locator\((['"`])([^'"`]+)\1\)/g),
-            ];
+            const locatorName = match[2]; // Extract the locator name
 
-            // Get the last locator value
-            const lastLocator = locators.length
-              ? locators[locators.length - 1]
-              : null;
-            const locatorName = lastLocator; // Extract the locator name
-            // Replace all special characters with an empty string
+            // const locators = [
+            //   ...currentLine.matchAll(/page\.locator\((['"`])([^'"`]+)\1\)/g),
+            // ];
+            // // Get the last locator value
+            // const lastLocator =
+            //   locators.length > 0 ? locators[locators.length - 1] : null;
+            // const locatorName = lastLocator; // Extract the locator name
+            // // Replace all special characters with an empty string
+            // lineName = locatorName
+            //   ? locatorName?.replace(/[^a-zA-Z0-9]/g, '')
+            //   : null;
             lineName = locatorName.replace(/[^a-zA-Z0-9]/g, '');
           }
 
