@@ -18,7 +18,7 @@ const FileCard: FC<any> = () => {
   const files = [
     {
       key: '1',
-      name: 'Carahsoft - 100 lines',
+      name: 'Carahsoft',
       url: 'https://prodresellerosstorage.blob.core.windows.net/prodreselleros/Carahsoft%20Dell%20Sample%20pdf%20for%20Demo.pdf?sp=r&st=2025-02-13T07:46:02Z&se=2050-02-13T15:46:02Z&spr=https&sv=2022-11-02&sr=b&sig=nXYrFBVnsji7AVv8JTozYXhYuE82kGJ%2F7rwyCaOCByY%3D',
       type: 'PDF',
     },
@@ -44,44 +44,56 @@ const FileCard: FC<any> = () => {
 
   return (
     <>
-      {files?.map((item: any, index: number) => (
-        <div key={item?.key}>
-          <Row
-            key={item?.key}
-            justify="space-between"
-            gutter={[0, 16]}
-            align={'middle'}
-          >
-            <Col span={16}>
-              <Space size={12}>
-                {item?.type === 'PDF' ? (
-                  <Image src={PdfImg} alt="PdfImg" />
-                ) : (
-                  <Image src={XlsImg} alt="XlsImg" />
-                )}
-                <div
-                  style={{
-                    textWrap: 'wrap',
-                    width: '150px',
-                    fontWeight: '500px',
-                    fontSize: '14px',
-                  }}
-                >
-                  {formatStatus(item?.name)}
-                </div>
-              </Space>
-            </Col>
-            <Col span={8}>
-              <a href={item?.url} target="_blank" rel="noopener noreferrer">
-                <Button type="primary" icon={<DownloadOutlined />}>
-                  Download
-                </Button>
-              </a>
-            </Col>
-          </Row>
-          <Divider style={{margin: '0px', marginBottom:'5px'}} />
-        </div>
-      ))}
+      <Row gutter={[16, 16]}>
+        <Col span={24}>
+          <Space direction="vertical" size={0}>
+            <Typography name="Body 2/Bold">Download Example Quotes</Typography>
+            <Typography name="Caption Regular">
+              Download these sample quotes to see how they work.
+            </Typography>
+          </Space>
+        </Col>
+        <Col span={24}>
+          {files?.map((item: any, index: number) => (
+            <div key={item?.key}>
+              <Row
+                key={item?.key}
+                justify="space-between"
+                gutter={[0, 16]}
+                align={'middle'}
+              >
+                <Col span={16}>
+                  <Space size={12}>
+                    {item?.type === 'PDF' ? (
+                      <Image src={PdfImg} alt="PdfImg" />
+                    ) : (
+                      <Image src={XlsImg} alt="XlsImg" />
+                    )}
+                    <div
+                      style={{
+                        textWrap: 'wrap',
+                        width: '150px',
+                        fontWeight: '500px',
+                        fontSize: '14px',
+                      }}
+                    >
+                      {formatStatus(item?.name)}
+                    </div>
+                  </Space>
+                </Col>
+                <Col span={8}>
+                  <a href={item?.url} target="_blank" rel="noopener noreferrer">
+                    <Button type="primary" icon={<DownloadOutlined />}>
+                      Download
+                    </Button>
+                  </a>
+                </Col>
+              </Row>
+              <Divider style={{margin: '0px', marginBottom: '5px'}} />
+            </div>
+          ))}{' '}
+        </Col>
+      </Row>
     </>
   );
 };

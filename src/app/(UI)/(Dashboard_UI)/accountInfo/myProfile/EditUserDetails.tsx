@@ -98,14 +98,6 @@ const EditUserDetails: FC<UserProfileInterface> = ({
             <OsInput disabled={isEditable} />
           </SelectFormItem>
         </Col>
-        <Col span={12}>
-          <SelectFormItem
-            label={<Typography name="Body 4/Medium">Company Name</Typography>}
-            name="company_name"
-          >
-            <OsInput disabled={isEditable} />
-          </SelectFormItem>
-        </Col>
       </Row>
     </Form>
   );
