@@ -4,8 +4,8 @@
 'use client';
 
 import AddQuote from '@/app/components/common/addQuote';
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import AddOpportunity from '@/app/components/common/os-add-opportunity';
@@ -26,10 +26,10 @@ import {
   getResultedValue,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
-import {Checkbox, Form} from 'antd';
-import {TabsProps} from 'antd/lib';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {Suspense, useEffect, useState} from 'react';
+import { Checkbox, Form } from 'antd';
+import { TabsProps } from 'antd/lib';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
 // eslint-disable-next-line import/order
 import {
   deleteOpportunity,
@@ -37,7 +37,7 @@ import {
   updateOpportunity,
 } from '../../../../../redux/actions/opportunity';
 import OsModal from '@/app/components/common/os-modal';
-import {PlusIcon} from '@heroicons/react/24/outline';
+import { PlusIcon } from '@heroicons/react/24/outline';
 import CommonSelect from '@/app/components/common/os-select';
 import {
   countrupickList,
@@ -51,11 +51,11 @@ import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHo
 import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 import OsInput from '@/app/components/common/os-input';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
-import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
+import { getProfitabilityByQuoteId } from '../../../../../redux/actions/profitability';
 import NewRegistrationForm from '../dealReg/NewRegistrationForm';
-import {tabItems} from '../allQuote/constants';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {updateQuoteCustomerId} from '../../../../../redux/actions/quote';
+import { tabItems } from '../allQuote/constants';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import { updateQuoteCustomerId } from '../../../../../redux/actions/quote';
 
 const OpportunityDetails = () => {
   const [token] = useThemeToken();
@@ -64,16 +64,16 @@ const OpportunityDetails = () => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const opportunityId = searchParams.get('id');
-  const {loading, opportunityById: opportunityData} = useAppSelector(
+  const { loading, opportunityById: opportunityData } = useAppSelector(
     (state) => state.Opportunity,
   );
-  const {abbreviate} = useAbbreviationHook(0);
+  const { abbreviate } = useAbbreviationHook(0);
 
   const [oppSyncValue, setOppSyncValue] = useState<any>();
   const [oppSyncValueHave, setOppSyncValueHave] = useState<any>();
   const [oppSyncValueLoading, setOppSyncValueLoading] = useState<boolean>(true);
 
-  const {userInformation} = useAppSelector((state) => state.user);
+  const { userInformation } = useAppSelector((state) => state.user);
   const [formValue, setFormValue] = useState<any>();
   const [showDrawer, setShowDrawer] = useState(false);
   const [deleteIds, setDeleteIds] = useState<any>();
@@ -93,7 +93,7 @@ const OpportunityDetails = () => {
 
   const isDealReg = userInformation?.DealReg ?? false;
 
-  const {loading: QuoteLoading} = useAppSelector((state) => state.quote);
+  const { loading: QuoteLoading } = useAppSelector((state) => state.quote);
   useEffect(() => {
     dispatch(getOpportunityById(opportunityId));
   }, []);
@@ -126,7 +126,7 @@ const OpportunityDetails = () => {
       dataIndex: 'line_number',
       key: 'line_number',
       render: (text: string) => (
-        <OsInput disabled style={{height: '36px'}} defaultValue={text} />
+        <OsInput disabled style={{ height: '36px' }} defaultValue={text} />
       ),
       width: 111,
     },
@@ -147,7 +147,7 @@ const OpportunityDetails = () => {
           parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
           defaultValue={text ?? 0.0}
           disabled
-          style={{height: '36px', textAlignLast: 'right'}}
+          style={{ height: '36px', textAlignLast: 'right' }}
           min={1}
         />
       ),
@@ -165,7 +165,7 @@ const OpportunityDetails = () => {
           formatter={currencyFormatter}
           parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
           disabled
-          style={{height: '36px', textAlignLast: 'right', width: '100%'}}
+          style={{ height: '36px', textAlignLast: 'right', width: '100%' }}
           defaultValue={text ?? 0.0}
         />
       ),
@@ -182,7 +182,7 @@ const OpportunityDetails = () => {
           formatter={currencyFormatter}
           parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
           min={0}
-          style={{height: '36px', textAlignLast: 'right', width: '100%'}}
+          style={{ height: '36px', textAlignLast: 'right', width: '100%' }}
           disabled
           defaultValue={text ?? 0.0}
         />
@@ -195,7 +195,7 @@ const OpportunityDetails = () => {
       key: 'description',
       width: 290,
       render: (text: number) => (
-        <Typography name="Body 4/Medium" style={{color: '#0D0D0D'}}>
+        <Typography name="Body 4/Medium" style={{ color: '#0D0D0D' }}>
           {text}
         </Typography>
       ),
@@ -208,7 +208,7 @@ const OpportunityDetails = () => {
       render: (text: any, record: any) => (
         <CommonSelect
           disabled
-          style={{width: '200px', height: '36px'}}
+          style={{ width: '200px', height: '36px' }}
           placeholder="Select"
           defaultValue={text ?? record?.Product?.product_family}
           options={selectDataForProduct}
@@ -223,7 +223,7 @@ const OpportunityDetails = () => {
       render: (text: string) => (
         <CommonSelect
           disabled
-          style={{width: '100%', height: '36px'}}
+          style={{ width: '100%', height: '36px' }}
           placeholder="Select"
           defaultValue={text}
           options={pricingMethod}
@@ -240,7 +240,7 @@ const OpportunityDetails = () => {
         <OsInputNumber
           min={0}
           disabled
-          style={{height: '36px', textAlignLast: 'center', width: '100%'}}
+          style={{ height: '36px', textAlignLast: 'center', width: '100%' }}
           precision={2}
           formatter={currencyFormatter}
           parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
@@ -257,7 +257,7 @@ const OpportunityDetails = () => {
       render: (text: number) => (
         <Typography
           name="Body 4/Medium"
-          style={{display: 'flex', justifyContent: 'end'}}
+          style={{ display: 'flex', justifyContent: 'end' }}
         >
           {abbreviate(text ?? 0)}
         </Typography>
@@ -272,7 +272,7 @@ const OpportunityDetails = () => {
       render: (text: number) => (
         <Typography
           name="Body 4/Medium"
-          style={{display: 'flex', justifyContent: 'end'}}
+          style={{ display: 'flex', justifyContent: 'end' }}
         >
           ${abbreviate(text) ?? 0}
         </Typography>
@@ -287,7 +287,7 @@ const OpportunityDetails = () => {
       render: (text: number) => (
         <Typography
           name="Body 4/Medium"
-          style={{display: 'flex', justifyContent: 'end'}}
+          style={{ display: 'flex', justifyContent: 'end' }}
         >
           {abbreviate(text) ?? 0}
         </Typography>
@@ -303,7 +303,7 @@ const OpportunityDetails = () => {
       render: (text: number) => (
         <Typography
           name="Body 4/Medium"
-          style={{display: 'flex', justifyContent: 'end'}}
+          style={{ display: 'flex', justifyContent: 'end' }}
         >
           {abbreviate(text ?? 0)}
         </Typography>
@@ -365,7 +365,7 @@ const OpportunityDetails = () => {
       render: (text: any, record: any) => (
         <CommonSelect
           disabled
-          style={{width: '200px', height: '36px'}}
+          style={{ width: '200px', height: '36px' }}
           placeholder="Select"
           defaultValue={text ?? record?.taa_flag}
           options={TAAFlagPickList}
@@ -380,7 +380,7 @@ const OpportunityDetails = () => {
       render: (text: any, record: any) => (
         <CommonSelect
           disabled
-          style={{width: '200px', height: '36px'}}
+          style={{ width: '200px', height: '36px' }}
           placeholder="Select"
           defaultValue={text ?? record?.epeat_flag}
           options={EPEATFlagPickList}
@@ -395,7 +395,7 @@ const OpportunityDetails = () => {
       render: (text: any, record: any) => (
         <CommonSelect
           disabled
-          style={{width: '200px', height: '36px'}}
+          style={{ width: '200px', height: '36px' }}
           placeholder="Select"
           defaultValue={text ?? record?.country_of_origin}
           options={countrupickList}
@@ -410,7 +410,7 @@ const OpportunityDetails = () => {
       render: (text: any, record: any) => (
         <CommonSelect
           disabled
-          style={{width: '200px', height: '36px'}}
+          style={{ width: '200px', height: '36px' }}
           placeholder="Select"
           defaultValue={text ?? record?.energy_star_flag}
           options={EnergyStarFlagpicklist}
@@ -508,53 +508,53 @@ const OpportunityDetails = () => {
       const quoteItems =
         activeTab === '3'
           ? opportunityData?.Quotes?.filter((item: any) =>
-              userInformation?.Admin
-                ? item?.status?.includes('In Progress')
-                : userInformation?.id === item?.user_id &&
-                  item?.status?.includes('In Progress'),
-            )
+            userInformation?.Admin
+              ? item?.status?.includes('In Progress')
+              : userInformation?.id === item?.user_id &&
+              item?.status?.includes('In Progress'),
+          )
           : activeTab === '5'
             ? opportunityData?.Quotes?.filter((item: any) =>
-                userInformation?.Admin
-                  ? item?.status?.includes('Needs Review') &&
-                    item?.user_id !== userInformation?.id
-                  : item?.status?.includes('Needs Review') &&
-                    item?.approver_id === userInformation?.id,
-              )
+              userInformation?.Admin
+                ? item?.status?.includes('Needs Review') &&
+                item?.user_id !== userInformation?.id
+                : item?.status?.includes('Needs Review') &&
+                item?.approver_id === userInformation?.id,
+            )
             : activeTab === '4'
               ? opportunityData?.Quotes?.filter((item: any) =>
-                  userInformation?.Admin
-                    ? item?.status?.includes('Needs Review')
-                    : item?.status?.includes('Needs Review') &&
-                      item?.completed_by === userInformation?.id,
-                )
+                userInformation?.Admin
+                  ? item?.status?.includes('Needs Review')
+                  : item?.status?.includes('Needs Review') &&
+                  item?.completed_by === userInformation?.id,
+              )
               : activeTab === '1'
                 ? userInformation?.Admin
                   ? opportunityData?.Quotes
                   : opportunityData?.Quotes?.filter(
-                      (item: any) => item?.user_id === userInformation?.id,
-                    )
+                    (item: any) => item?.user_id === userInformation?.id,
+                  )
                 : activeTab === '6'
                   ? opportunityData?.Quotes?.filter((item: any) =>
-                      userInformation?.Admin
-                        ? item?.status?.includes('Approved')
-                        : item?.status?.includes('Approved') &&
-                          item?.user_id === userInformation?.id,
-                    )
+                    userInformation?.Admin
+                      ? item?.status?.includes('Approved')
+                      : item?.status?.includes('Approved') &&
+                      item?.user_id === userInformation?.id,
+                  )
                   : activeTab === '7'
                     ? opportunityData?.Quotes?.filter((item: any) =>
-                        userInformation?.Admin
-                          ? item?.status?.includes('Rejected')
-                          : item?.status?.includes('Rejected') &&
-                            item?.user_id === userInformation?.id,
-                      )
+                      userInformation?.Admin
+                        ? item?.status?.includes('Rejected')
+                        : item?.status?.includes('Rejected') &&
+                        item?.user_id === userInformation?.id,
+                    )
                     : activeTab === '2'
                       ? opportunityData?.Quotes?.filter((item: any) =>
-                          userInformation?.Admin
-                            ? item?.status?.includes('Drafts')
-                            : userInformation?.id === item?.user_id &&
-                              item?.status?.includes('Drafts'),
-                        )
+                        userInformation?.Admin
+                          ? item?.status?.includes('Drafts')
+                          : userInformation?.id === item?.user_id &&
+                          item?.status?.includes('Drafts'),
+                      )
                       : [];
       setActiveQuotes(quoteItems);
       setOppSyncValue(opportunityData?.synced_quote);
@@ -579,9 +579,9 @@ const OpportunityDetails = () => {
     const finalData = userInformation?.Admin
       ? dealRegData
       : dealRegData?.filter(
-          (dealRegDataItem: any) =>
-            dealRegDataItem?.user_id === userInformation?.id,
-        );
+        (dealRegDataItem: any) =>
+          dealRegDataItem?.user_id === userInformation?.id,
+      );
 
     const filteredDealRegData =
       status === 'All'
@@ -621,7 +621,7 @@ const OpportunityDetails = () => {
           name="Heading 3/Medium"
           cursor="pointer"
           color={token?.colorPrimaryText}
-          onClick={() => {}}
+          onClick={() => { }}
         >
           {OpportunityObjectData?.title}
         </Typography>
@@ -657,7 +657,7 @@ const OpportunityDetails = () => {
   };
 
   const deleteSelectedIds = async () => {
-    const data = {Ids: deleteIds};
+    const data = { Ids: deleteIds };
     await dispatch(deleteOpportunity(data));
     router.push('/crmOpportunity');
     setDeleteIds([]);
@@ -728,7 +728,7 @@ const OpportunityDetails = () => {
       key: 'status',
       width: 187,
       render: (text: string, record: any) => (
-        <span style={{display: 'flex', justifyContent: 'center'}}>
+        <span style={{ display: 'flex', justifyContent: 'center' }}>
           <OsStatusWrapper value={text} />
         </span>
       ),
@@ -768,7 +768,7 @@ const OpportunityDetails = () => {
       render: (text: string, record: any) => (
         <Typography
           name="Body 4/Regular"
-          style={{cursor: 'pointer'}}
+          style={{ cursor: 'pointer' }}
           hoverOnText
           color={token?.colorInfo}
           onClick={() => {
@@ -870,7 +870,7 @@ const OpportunityDetails = () => {
       key: 'status',
       width: 187,
       render: (text: string) => (
-        <div style={{display: 'flex', justifyContent: 'center'}}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           <OsStatusWrapper value={text} />
         </div>
       ),
@@ -1023,7 +1023,7 @@ const OpportunityDetails = () => {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <Space direction="vertical" size={12} style={{width: '100%'}}>
+      <Space direction="vertical" size={12} style={{ width: '100%' }}>
         <OsBreadCrumb items={menuItems} />
 
         <OpportunityAnalyticCard
@@ -1033,11 +1033,11 @@ const OpportunityDetails = () => {
           setDeleteIds={setDeleteIds}
           setShowModalDelete={setShowModalDelete}
         />
-        <Row justify="space-between" align="middle" style={{marginTop: '10px'}}>
+        <Row justify="space-between" align="middle" style={{ marginTop: '10px' }}>
           <Col>
             <Typography name="Heading 3/Medium">All Quotes</Typography>
           </Col>
-          <Col style={{float: 'right'}}>
+          <Col style={{ float: 'right' }}>
             <AddQuote
               uploadFileData={uploadFileData}
               setUploadFileData={setUploadFileData}
@@ -1059,7 +1059,7 @@ const OpportunityDetails = () => {
           }}
         >
           <OsTabs
-            style={{margin: '0px'}}
+            style={{ margin: '0px' }}
             onChange={(e) => {
               setActiveTab(e);
             }}
@@ -1098,9 +1098,9 @@ const OpportunityDetails = () => {
         <Row
           justify="space-between"
           align="middle"
-          style={{marginTop: '10px', display: 'flex'}}
+          style={{ marginTop: '10px', display: 'flex' }}
         >
-          <Col style={{marginBottom: '30px'}}>
+          <Col style={{ marginBottom: '30px' }}>
             <Typography name="Heading 3/Medium">Opportunity Lines</Typography>
           </Col>
           <OsTableWithOutDrag
@@ -1115,13 +1115,13 @@ const OpportunityDetails = () => {
             <Row
               justify="space-between"
               align="middle"
-              style={{marginTop: '10px'}}
+              style={{ marginTop: '10px' }}
             >
               <Col>
                 <Typography name="Heading 3/Medium">All DealReg</Typography>
               </Col>
               {/* {!isDealReg && ( */}
-              <Col style={{float: 'right'}}>
+              <Col style={{ float: 'right' }}>
                 <OsButton
                   text="New Registration"
                   buttontype="PRIMARY"
@@ -1137,7 +1137,7 @@ const OpportunityDetails = () => {
                 borderRadius: '12px',
               }}
             >
-              <OsTabs style={{margin: '0px'}} items={dealRegTabItems} />
+              <OsTabs style={{ margin: '0px' }} items={dealRegTabItems} />
             </Row>
           </>
         )}
@@ -1157,7 +1157,7 @@ const OpportunityDetails = () => {
         footer={
           <OsButton
             loading={loading}
-            btnStyle={{width: '100%'}}
+            btnStyle={{ width: '100%' }}
             buttontype="PRIMARY"
             text="Update Changes"
             clickHandler={form.submit}
@@ -1178,7 +1178,7 @@ const OpportunityDetails = () => {
         body={<NewRegistrationForm setShowModal={setShowModal} />}
         width={583}
         open={showModal}
-        onOk={() => {}}
+        onOk={() => { }}
         onCancel={() => {
           setShowModal((p) => !p);
         }}

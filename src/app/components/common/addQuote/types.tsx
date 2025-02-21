@@ -18,4 +18,5 @@ export interface AddQuoteInterface {
   isGenerateQuotePage?: boolean;
   opportunityId?: number;
   customerId?: number;
+  isTrialModal?: boolean;
 }

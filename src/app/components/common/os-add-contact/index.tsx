@@ -153,10 +153,10 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
               label={<Typography name="Body 4/Medium">Phone</Typography>}
               name="billing_phone"
               rules={[
-                {
-                  required: true,
-                  message: 'Please enter a phone number.',
-                },
+                // {
+                //   required: true,
+                //   message: 'Please enter a phone number.',
+                // },
                 {
                   pattern: /^\(\d{3}\) \d{3}-\d{4}$/, // Regex to match (XXX) XXX-XXXX format
                   message: 'Please enter a valid phone number.',

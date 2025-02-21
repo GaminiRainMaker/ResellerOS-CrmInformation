@@ -344,9 +344,14 @@ const AdminCustomTabs: FC<any> = (tabs) => {
                               style={{
                                 padding: '12px 24px',
                                 background:
-                                  activekeysall === itemild?.key
-                                    ? token.colorInfo
-                                    : '',
+                                  itemild?.key === activekeysall &&
+                                  tabs?.isTrialActive &&
+                                  (getTab === 'myTeam' ||
+                                    getTab === 'partnerPassword')
+                                    ? 'grey'
+                                    : activekeysall === itemild?.key
+                                      ? token.colorInfo
+                                      : '',
                                 color:
                                   activekeysall === itemild?.key
                                     ? token.colorBgContainer

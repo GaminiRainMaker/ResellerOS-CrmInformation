@@ -13,7 +13,7 @@
 
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
+import { Col, Row } from '@/app/components/common/antd/Grid';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsCollapse from '@/app/components/common/os-collapse';
@@ -47,9 +47,9 @@ import {
   TrashIcon,
   XCircleIcon,
 } from '@heroicons/react/24/outline';
-import {Badge, Form, notification} from 'antd';
-import {useSearchParams} from 'next/navigation';
-import React, {FC, Suspense, useEffect, useState} from 'react';
+import { Badge, Form, notification } from 'antd';
+import { useSearchParams } from 'next/navigation';
+import React, { FC, Suspense, useEffect, useState } from 'react';
 import OsDrawer from '@/app/components/common/os-drawer';
 import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
@@ -58,7 +58,7 @@ import {
   updateBundleBulk,
   updateBundleQuantity,
 } from '../../../../../../../redux/actions/bundle';
-import {updateProductFamily} from '../../../../../../../redux/actions/product';
+import { updateProductFamily } from '../../../../../../../redux/actions/product';
 import {
   deleteProfitabilityById,
   getProfitabilityByQuoteId,
@@ -67,12 +67,12 @@ import {
   updateProfitabilityValueForBulk,
   updateProfitabilitySelectValues,
 } from '../../../../../../../redux/actions/profitability';
-import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../../../redux/hook';
 import BundleSection from '../../BundleSection';
 import UpdatingLineItems from '../../UpdatingLineItems';
-import {getContractProductByContractVehicle} from '../../../../../../../redux/actions/contractProduct';
-import {getAllContract} from '../../../../../../../redux/actions/contract';
-import {getContractConfiguartion} from '../../../../../../../redux/actions/contractConfiguration';
+import { getContractProductByContractVehicle } from '../../../../../../../redux/actions/contractProduct';
+import { getAllContract } from '../../../../../../../redux/actions/contract';
+import { getContractConfiguartion } from '../../../../../../../redux/actions/contractConfiguration';
 
 const Profitablity: FC<any> = ({
   tableColumnDataShow,
@@ -100,26 +100,26 @@ const Profitablity: FC<any> = ({
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const isView = searchParams.get('isView');
-  const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
+  const { data: profitabilityDataByQuoteId, loading } = useAppSelector(
     (state) => state.profitability,
   );
 
   const [profitibilityDataa, setProfitibilityDataa] = useState<any>();
 
-  const {loading: bundleLoading} = useAppSelector((state) => state.bundle);
+  const { loading: bundleLoading } = useAppSelector((state) => state.bundle);
   const [finalProfitTableCol, setFinalProfitTableCol] = useState<any>([]);
-  const {abbreviate} = useAbbreviationHook(0);
+  const { abbreviate } = useAbbreviationHook(0);
   const [finalData, setFinalData] = useState<any>([]);
   const [finalFieldData, setFinalFieldData] = useState<any>({});
   const [keyPressed, setKeyPressed] = useState('');
   const [showBundleDrawer, setShowBundleDrawer] = useState<boolean>(false);
   const [bundleRecordId, setBundleRecordId] = useState<any>();
   const [pageChange, setPageChange] = useState<any>();
-  const {data: contractConfigurationData} = useAppSelector(
+  const { data: contractConfigurationData } = useAppSelector(
     (state) => state.contractConfiguration,
   );
-  const {userInformation} = useAppSelector((state) => state.user);
-  const {data: contactData} = useAppSelector((state) => state.contract);
+  const { userInformation } = useAppSelector((state) => state.user);
+  const { data: contactData } = useAppSelector((state) => state.contract);
 
   const [profittibilityLoading, setProfitibilityLoading] =
     useState<boolean>(false);
@@ -297,7 +297,7 @@ const Profitablity: FC<any> = ({
               : items?.QuoteLineItem?.length < 31
                 ? 30
                 : items?.QuoteLineItem?.length < 31 ||
-                    items?.QuoteLineItem?.length < 51
+                  items?.QuoteLineItem?.length < 51
                   ? 50
                   : 100,
 
@@ -333,7 +333,7 @@ const Profitablity: FC<any> = ({
     keyId: number,
   ) => {
     await dispatch(
-      updateProfitabilitySelectValues({[keyToUpdate]: values, id: keyId}),
+      updateProfitabilitySelectValues({ [keyToUpdate]: values, id: keyId }),
     );
     dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then(
       (payload: any) => {
@@ -461,7 +461,7 @@ const Profitablity: FC<any> = ({
     updatedSelectedFilter: string,
     type: string,
   ) => {
-    const updatedRecord = {...record, [field]: value};
+    const updatedRecord = { ...record, [field]: value };
     const result: any = calculateProfitabilityData(
       Number(updatedRecord?.quantity),
       updatedRecord?.pricing_method,
@@ -524,7 +524,7 @@ const Profitablity: FC<any> = ({
               <CommonSelect
                 allowClear
                 disabled={renderEditableInput('Contract Vehicle')}
-                style={{width: '100%', height: '34px'}}
+                style={{ width: '100%', height: '34px' }}
                 placeholder="Select"
                 defaultValue={valueForVeh}
                 options={contractVehicleOptions}
@@ -630,7 +630,7 @@ const Profitablity: FC<any> = ({
         height={24}
         width={24}
         color={token.colorError}
-        style={{cursor: 'pointer'}}
+        style={{ cursor: 'pointer' }}
         onClick={() => {
           if (isView === 'true') {
             notification.open({
@@ -655,7 +655,7 @@ const Profitablity: FC<any> = ({
       render: (text: string, record: any) => (
         <OsInput
           disabled={renderEditableInput('#Line')}
-          style={{height: '36px'}}
+          style={{ height: '36px' }}
           defaultValue={text}
           onKeyDown={(e) => handleKeyDown(e, record)}
           onBlur={(e) => handleBlur(record)}
@@ -691,7 +691,7 @@ const Profitablity: FC<any> = ({
           disabled={renderEditableInput('Quantity')}
           onKeyDown={(e) => handleKeyDown(e, record)}
           onBlur={(e) => handleBlur(record)}
-          style={{height: '36px', textAlignLast: 'right'}}
+          style={{ height: '36px', textAlignLast: 'right' }}
           min={1}
           onChange={(e) =>
             handleFieldChange(record, 'quantity', e, selectedFilter, 'input')
@@ -712,7 +712,7 @@ const Profitablity: FC<any> = ({
           formatter={currencyFormatter}
           parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
           disabled={renderEditableInput('MSRP ($)')}
-          style={{height: '36px', textAlignLast: 'right', width: '100%'}}
+          style={{ height: '36px', textAlignLast: 'right', width: '100%' }}
           onKeyDown={(e) => handleKeyDown(e, record)}
           onBlur={(e) => handleBlur(record)}
           defaultValue={text ?? 0.0}
@@ -734,7 +734,7 @@ const Profitablity: FC<any> = ({
           formatter={currencyFormatter}
           parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
           min={0}
-          style={{height: '36px', textAlignLast: 'right', width: '100%'}}
+          style={{ height: '36px', textAlignLast: 'right', width: '100%' }}
           onKeyDown={(e) => handleKeyDown(e, record)}
           onBlur={(e) => handleBlur(record)}
           disabled={renderEditableInput('Cost ($)')}
@@ -758,7 +758,7 @@ const Profitablity: FC<any> = ({
       key: 'description',
       width: 290,
       render: (text: number) => (
-        <Typography name="Body 4/Medium" style={{color: '#0D0D0D'}}>
+        <Typography name="Body 4/Medium" style={{ color: '#0D0D0D' }}>
           {text}
         </Typography>
       ),
@@ -783,7 +783,7 @@ const Profitablity: FC<any> = ({
                   'select',
                 )
               }
-              style={{width: '200px', height: '36px'}}
+              style={{ width: '200px', height: '36px' }}
               placeholder="Select"
               defaultValue={text ?? record?.Product?.product_family}
               options={selectDataForProduct}
@@ -811,7 +811,7 @@ const Profitablity: FC<any> = ({
           onBlur={(e) => handleBlur(record)}
           allowClear
           disabled={renderEditableInput('Pricing Method')}
-          style={{width: '100%', height: '36px'}}
+          style={{ width: '100%', height: '36px' }}
           placeholder="Select"
           defaultValue={text}
           onChange={(value) =>
@@ -839,7 +839,7 @@ const Profitablity: FC<any> = ({
           onKeyDown={(e) => handleKeyDown(e, record)}
           onBlur={(e) => handleBlur(record)}
           disabled={renderEditableInput('Amount')}
-          style={{height: '36px', textAlignLast: 'center', width: '100%'}}
+          style={{ height: '36px', textAlignLast: 'center', width: '100%' }}
           precision={2}
           formatter={currencyFormatter}
           parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
@@ -860,7 +860,7 @@ const Profitablity: FC<any> = ({
       render: (text: number, record: any) => (
         <Typography
           name="Body 4/Medium"
-          style={{display: 'flex', justifyContent: 'end'}}
+          style={{ display: 'flex', justifyContent: 'end' }}
         >
           {abbreviate(text ?? 0)}
         </Typography>
@@ -875,7 +875,7 @@ const Profitablity: FC<any> = ({
       render: (text: number, record: any) => (
         <Typography
           name="Body 4/Medium"
-          style={{display: 'flex', justifyContent: 'end'}}
+          style={{ display: 'flex', justifyContent: 'end' }}
         >
           ${abbreviate(text) ?? 0}
         </Typography>
@@ -890,7 +890,7 @@ const Profitablity: FC<any> = ({
       render: (text: number, record: any) => (
         <Typography
           name="Body 4/Medium"
-          style={{display: 'flex', justifyContent: 'end'}}
+          style={{ display: 'flex', justifyContent: 'end' }}
         >
           {abbreviate(text) ?? 0}
         </Typography>
@@ -906,7 +906,7 @@ const Profitablity: FC<any> = ({
       render: (text: number, record: any) => (
         <Typography
           name="Body 4/Medium"
-          style={{display: 'flex', justifyContent: 'end'}}
+          style={{ display: 'flex', justifyContent: 'end' }}
         >
           {abbreviate(text ?? 0)}
         </Typography>
@@ -974,7 +974,7 @@ const Profitablity: FC<any> = ({
               onClear={() =>
                 updatePickListValuesOnly('taa_flag', '', record?.id)
               }
-              style={{width: '200px', height: '36px'}}
+              style={{ width: '200px', height: '36px' }}
               placeholder="Select"
               defaultValue={text ?? record?.taa_flag}
               options={TAAFlagPickList}
@@ -1000,7 +1000,7 @@ const Profitablity: FC<any> = ({
               onClear={() =>
                 updatePickListValuesOnly('epeat_flag', '', record?.id)
               }
-              style={{width: '200px', height: '36px'}}
+              style={{ width: '200px', height: '36px' }}
               placeholder="Select"
               defaultValue={text ?? record?.epeat_flag}
               options={EPEATFlagPickList}
@@ -1034,7 +1034,7 @@ const Profitablity: FC<any> = ({
               onClear={() =>
                 updatePickListValuesOnly('country_of_origin', '', record?.id)
               }
-              style={{width: '200px', height: '36px'}}
+              style={{ width: '200px', height: '36px' }}
               placeholder="Select"
               defaultValue={text ?? record?.country_of_origin}
               options={countrupickList}
@@ -1082,7 +1082,7 @@ const Profitablity: FC<any> = ({
                 //   'select',
                 // )
               }
-              style={{width: '200px', height: '36px'}}
+              style={{ width: '200px', height: '36px' }}
               placeholder="Select"
               defaultValue={text ?? record?.energy_star_flag}
               options={EnergyStarFlagpicklist}
@@ -1335,7 +1335,7 @@ const Profitablity: FC<any> = ({
   const updateLineItems = async () => {
     const finalArr: any = [];
     selectTedRowData?.map((obj: any) => {
-      const newObj = {...obj};
+      const newObj = { ...obj };
       profabilityUpdationState?.forEach((update: any) => {
         if (newObj.hasOwnProperty(update?.field)) {
           newObj[update?.field] = update?.value;
@@ -1361,7 +1361,7 @@ const Profitablity: FC<any> = ({
       for (let i = 0; i < finalArr?.length; i++) {
         const itemss = finalArr[i];
         const response: any = await contractVehicleStatus(itemss);
-        const newObjConObj = {...itemss};
+        const newObjConObj = { ...itemss };
         delete newObjConObj.contract_price;
         delete newObjConObj.contract_status;
         delete newObjConObj.contract_vehicle;
@@ -1451,7 +1451,7 @@ const Profitablity: FC<any> = ({
 
   const deleteProfitabityData = () => {
     const Ids: any = selectTedRowData?.map((item: any) => item?.id);
-    dispatch(deleteProfitabilityById({Ids})).then((d) => {
+    dispatch(deleteProfitabilityById({ Ids })).then((d) => {
       if (d?.payload) {
         dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then(
           (payload: any) => {
@@ -1470,7 +1470,7 @@ const Profitablity: FC<any> = ({
   const removeBundleLineItemsFunction = () => {
     const Ids: any = selectTedRowData?.map((item: any) => item?.id);
     if (Ids) {
-      dispatch(removeBundleLineItems({Ids})).then((d) => {
+      dispatch(removeBundleLineItems({ Ids })).then((d) => {
         if (d?.payload) {
           dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then(
             (payload: any) => {
@@ -1514,7 +1514,7 @@ const Profitablity: FC<any> = ({
                           overflowCount={2000}
                         >
                           <Typography
-                            style={{padding: '5px 8px 0px 0px'}}
+                            style={{ padding: '5px 8px 0px 0px' }}
                             name="Body 4/Medium"
                             color={token?.colorBgContainer}
                             ellipsis
@@ -1540,7 +1540,7 @@ const Profitablity: FC<any> = ({
                             ellipsis
                             tooltip
                             as="div"
-                            style={{marginLeft: '2px'}}
+                            style={{ marginLeft: '2px' }}
                           >
                             $
                             {abbreviate(
@@ -1563,7 +1563,7 @@ const Profitablity: FC<any> = ({
                             ellipsis
                             tooltip
                             as="div"
-                            style={{marginLeft: '2px'}}
+                            style={{ marginLeft: '2px' }}
                           >
                             $
                             {abbreviate(
@@ -1586,13 +1586,13 @@ const Profitablity: FC<any> = ({
                             ellipsis
                             tooltip
                             as="div"
-                            style={{marginLeft: '2px'}}
+                            style={{ marginLeft: '2px' }}
                           >
                             {' '}
                             {abbreviate(
                               Number(
                                 finalDataItem?.totalGrossProfitPercentage ??
-                                  0.0,
+                                0.0,
                               ),
                             )}
                             %
@@ -1898,7 +1898,7 @@ const Profitablity: FC<any> = ({
                                     overflowCount={2000}
                                   >
                                     <Typography
-                                      style={{padding: '5px 8px 0px 0px'}}
+                                      style={{ padding: '5px 8px 0px 0px' }}
                                       name="Body 4/Medium"
                                       color={token?.colorBgContainer}
                                       ellipsis
@@ -1924,13 +1924,13 @@ const Profitablity: FC<any> = ({
                                       ellipsis
                                       tooltip
                                       as="div"
-                                      style={{marginLeft: '2px'}}
+                                      style={{ marginLeft: '2px' }}
                                     >
                                       $
                                       {abbreviate(
                                         Number(
                                           finalDataItem?.totalExtendedPrice ??
-                                            0.0,
+                                          0.0,
                                         ),
                                       )}
                                     </Typography>
@@ -1950,13 +1950,13 @@ const Profitablity: FC<any> = ({
                                       ellipsis
                                       tooltip
                                       as="div"
-                                      style={{marginLeft: '2px'}}
+                                      style={{ marginLeft: '2px' }}
                                     >
                                       $
                                       {abbreviate(
                                         Number(
                                           finalDataItem?.totalGrossProfit ??
-                                            0.0,
+                                          0.0,
                                         ),
                                       )}
                                     </Typography>
@@ -1976,13 +1976,13 @@ const Profitablity: FC<any> = ({
                                       ellipsis
                                       tooltip
                                       as="div"
-                                      style={{marginLeft: '2px'}}
+                                      style={{ marginLeft: '2px' }}
                                     >
                                       {' '}
                                       {abbreviate(
                                         Number(
                                           finalDataItem?.totalGrossProfitPercentage ??
-                                            0.0,
+                                          0.0,
                                         ),
                                       )}
                                       %
@@ -2193,7 +2193,7 @@ const Profitablity: FC<any> = ({
           footer={
             <OsButton
               loading={bundleLoading}
-              btnStyle={{width: '100%'}}
+              btnStyle={{ width: '100%' }}
               buttontype="PRIMARY"
               text="Update Changes"
               clickHandler={BundleForm.submit}

@@ -8,11 +8,11 @@
 
 'use client';
 
-import {Dropdown} from '@/app/components/common/antd/DropDown';
-import {Col, Row} from '@/app/components/common/antd/Grid';
+import { Dropdown } from '@/app/components/common/antd/DropDown';
+import { Col, Row } from '@/app/components/common/antd/Grid';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {Divider} from '@/app/components/common/antd/Divider';
-import {Space} from '@/app/components/common/antd/Space';
+import { Divider } from '@/app/components/common/antd/Divider';
+import { Space } from '@/app/components/common/antd/Space';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -20,11 +20,12 @@ import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import SearchSelect from '@/app/components/common/os-select/SearchSelect';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
+import { AvatarStyled } from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import styled from '@emotion/styled';
-import {usePathname} from 'next/navigation';
-
+import { redirect, usePathname } from 'next/navigation';
+import TrialBanner from '@/app/components/common/trialBanner/TrialBanner';
+import { convertFileToBase64 } from '@/app/utils/base';
 import {
   ArrowLeftStartOnRectangleIcon,
   BellIcon,
@@ -35,39 +36,38 @@ import {
 import {
   Avatar,
   Badge,
-  Layout,
-  Upload,
   Input,
+  Layout,
   message,
   notification,
+  Upload,
 } from 'antd';
-import {MenuProps} from 'antd/es/menu';
+import { MenuProps } from 'antd/es/menu';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
-import {useRouter, useSearchParams} from 'next/navigation';
-import React, {useEffect, useState} from 'react';
-import {QuestionOutlined} from '@ant-design/icons';
+import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { QuestionOutlined } from '@ant-design/icons';
 import OsModal from '@/app/components/common/os-modal';
 import {
   OSDraggerStyle,
   OSDraggerStyleForSupport,
 } from '@/app/components/common/os-upload/styled-components';
 import OsInput from '@/app/components/common/os-input';
-import {convertFileToBase64} from '@/app/utils/base';
 import creditCard from '../../../../../public/assets/static/card-pos.svg';
 import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
 import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
-import {getCountOfNotification} from '../../../../../redux/actions/notifications';
-import {getGloabalySearchDataa} from '../../../../../redux/actions/user';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { sendEmailForSuport } from '../../../../../redux/actions/auth';
+import { getCountOfNotification } from '../../../../../redux/actions/notifications';
 import {
   uploadExcelFileToAws,
   uploadToAws,
   uploadDocumentOnAzure,
   uploalImageonAzure,
 } from '../../../../../redux/actions/upload';
-import {sendEmailForSuport} from '../../../../../redux/actions/auth';
+import { getGloabalySearchDataa } from '../../../../../redux/actions/user';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 
 export const CustomUpload = styled(Upload)`
   .ant-upload-list-text {
@@ -111,13 +111,13 @@ export const CustomUpload = styled(Upload)`
 const CustomHeader = () => {
   const [token] = useThemeToken();
   const router = useRouter();
-  const {TextArea} = Input;
+  const { TextArea } = Input;
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
 
   const pathname = usePathname();
   const loginAccount = searchParams.get('self');
-  const {userInformation, searchDataa, loginUserInformation} = useAppSelector(
+  const { userInformation, searchDataa, loginUserInformation } = useAppSelector(
     (state) => state.user,
   );
   const {
@@ -125,9 +125,8 @@ const CustomHeader = () => {
     data: notificationData,
     loading: notificationLoading,
   } = useAppSelector((state) => state.notification);
-  const {isCanvas} = useAppSelector((state) => state.canvas);
+  const { isCanvas } = useAppSelector((state) => state.canvas);
   const salesForceUrl = searchParams.get('instance_url');
-
   const [userRole, setUserRole] = useState<string>('');
   const [searchFinalData, setSearchFinalData] = useState<any>();
   const [profileImg, setProfileImg] = useState<any>();
@@ -297,7 +296,7 @@ const CustomHeader = () => {
       const allDataArr: any = [];
       const optionsForSearch: any = [];
       searchDataa?.data?.map((itemGlob: any) => {
-        const newObj = {...itemGlob, typeRoute: searchDataa?.type};
+        const newObj = { ...itemGlob, typeRoute: searchDataa?.type };
 
         const optionObj = {
           label: (
@@ -326,6 +325,7 @@ const CustomHeader = () => {
       setSearchFinalData(optionsForSearch);
     }
   }, [searchDataa]);
+
   useEffect(() => {
     if (loginAccount) {
       setProfileImg(loginUserInformation?.profile_image);
@@ -339,7 +339,7 @@ const CustomHeader = () => {
       const validPrevData = Array.isArray(prevData) ? prevData : [];
 
       // Create a new array with the updated data
-      const newArr = [...validPrevData, {name: namess, urlAdded: location}];
+      const newArr = [...validPrevData, { name: namess, urlAdded: location }];
 
       // Log the updated array before setting the state
 
@@ -349,12 +349,12 @@ const CustomHeader = () => {
   };
 
   const beforeUpload = async (file: File) => {
-    const obj: any = {...file};
+    const obj: any = { ...file };
     setLoadingSpin(true);
     const pathUsedToUpload = file?.type?.split('.')?.includes('document')
       ? uploadDocumentOnAzure
       : file?.type?.split('.')?.includes('image/jpeg') ||
-          file?.type?.split('/')?.includes('image')
+        file?.type?.split('/')?.includes('image')
         ? uploalImageonAzure
         : uploadToAws;
 
@@ -363,7 +363,7 @@ const CustomHeader = () => {
         obj.base64 = base64String;
         obj.name = file?.name;
 
-        await dispatch(pathUsedToUpload({document: base64String})).then(
+        await dispatch(pathUsedToUpload({ document: base64String })).then(
           (payload: any) => {
             setDataFunc(file?.name, payload?.payload?.data);
           },
@@ -418,6 +418,7 @@ const CustomHeader = () => {
     SetAddIssueToSupport('');
     setUpoadedData([]);
   };
+
   return (
     <Layout>
       <Row
@@ -428,22 +429,22 @@ const CustomHeader = () => {
           background: 'white',
         }}
         align="middle"
-        gutter={[0, 16]}
+        gutter={[0, 8]}
       >
-        <Col span={12}>
+        <Col span={10}>
           <Row justify="space-between" gutter={[0, 16]}>
             <Col>
               <Image src={HeaderLogo} alt="HeaderLogo" />
             </Col>
             {!isCanvas && !salesForceUrl && (
-              <Col span={15}>
+              <Col span={12}>
                 <SearchSelect
                   onSearch={(e: any) => {
                     setQuery(e);
                   }}
                   showSearch
                   value={query?.searchText}
-                  style={{width: '100%'}}
+                  style={{ width: '100%' }}
                   placeholder="Search"
                   allowClear
                   prefixIcon={<Image src={SearchImg} alt="SearchImg" />}
@@ -456,16 +457,17 @@ const CustomHeader = () => {
 
         <Col>
           {!isCanvas && !salesForceUrl && (
-            <Space
-              direction="horizontal"
-              size={24}
+            <div
               style={{
                 display: 'flex',
-                justifyContent: 'end',
                 alignItems: 'center',
               }}
             >
-              {/* <AvatarStyled
+              <Space direction="horizontal" size={24}>
+                {userInformation?.Role === 'reseller' && (
+                  <TrialBanner PrimaryTextTypography="Body 3/Regular" />
+                )}
+                {/* <AvatarStyled
               background={token?.colorInfoBg}
               icon={
                 <WrenchScrewdriverIcon
@@ -474,217 +476,260 @@ const CustomHeader = () => {
                 />
               }
             /> */}
-              <AvatarStyled
-                background={token?.colorInfoBg}
-                icon={
-                  <QuestionOutlined
-                    style={{color: 'grey'}}
-                    onClick={() => {
-                      setOpenSupportModel(true);
-                    }}
-                    width={24}
-                    color={token?.colorInfoBorder}
-                  />
-                }
-              />
 
-              <Dropdown
-                trigger={['click']}
-                overlayStyle={{
-                  marginLeft: 200,
-                  marginTop: 20,
-                }}
-                menu={{items}}
-                dropdownRender={() => (
-                  <div style={dropDownStyle}>
-                    {notificationCount?.length > 0 ? (
-                      <GlobalLoader loading={notificationLoading}>
-                        {notificationCount?.map((notificationDataItem: any) => {
-                          let fallBackIconsss;
-                          let fallBackBg;
-                          if (notificationDataItem?.type === 'quote') {
-                            fallBackIconsss = (
-                              <ExclamationCircleIcon
-                                color={token?.colorError}
-                                width={24}
-                              />
-                            );
-                            fallBackBg = token?.colorErrorBg;
-                          } else if (
-                            notificationDataItem?.type === 'subscription'
-                          ) {
-                            fallBackIconsss = (
-                              <Image
-                                src={creditCard}
-                                alt="creditCard"
-                                style={{
-                                  cursor: 'pointer',
-                                  width: '24px',
-                                  height: '24px',
-                                }}
-                              />
-                            );
-                            fallBackBg = ' #E6E7EE';
-                          } else if (notificationDataItem?.type === 'partner') {
-                            fallBackIconsss = (
-                              <UsersIcon color={token?.colorInfo} width={24} />
-                            );
-                            fallBackBg = token?.colorInfoBgHover;
-                          }
-                          return (
-                            <TableNameColumn
-                              key={notificationDataItem?.id}
-                              primaryText={notificationDataItem?.title}
-                              secondaryText={notificationDataItem?.description}
-                              primaryTextTypography="Body 1/Medium"
-                              logo={
-                                notificationDataItem?.type === 'subscription' ||
-                                notificationDataItem?.type === 'quote'
-                                  ? null
-                                  : notificationDataItem?.User?.profile_image
-                              }
-                              fallbackIcon={fallBackIconsss}
-                              iconBg={fallBackBg}
-                              cursor="pointer"
-                              secondaryEllipsis
-                              onClick={() => {
-                                router.push(
-                                  userInformation?.Admin
-                                    ? `/superAdminPartner?tab=2`
-                                    : '/partners?tab=2',
-                                );
-                              }}
-                              justifyContent="start"
-                              maxWidth={320}
-                              marginBottom={10}
-                              isNotification
-                            />
-                          );
-                        })}
-                      </GlobalLoader>
-                    ) : (
-                      <Typography
-                        name="Body 3/Medium"
-                        style={{display: 'flex', justifyContent: 'center'}}
-                      >
-                        No New Notifications
-                      </Typography>
-                    )}
-                    <div
-                      style={{
-                        width: '100%',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        marginTop: '10px',
-                      }}
-                    >
-                      {' '}
-                      <OsButton
-                        text="See All"
-                        buttontype="PRIMARY"
-                        clickHandler={() => {
-                          router?.push('/notification');
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
-              >
-                <Badge count={notificationCounts}>
+                <Space
+                  direction="horizontal"
+                  size={24}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'end',
+                    alignItems: 'center',
+                  }}
+                >
                   <AvatarStyled
                     background={token?.colorInfoBg}
                     icon={
-                      <BellIcon width={24} color={token?.colorInfoBorder} />
+                      <QuestionOutlined
+                        style={{ color: 'grey' }}
+                        onClick={() => {
+                          setOpenSupportModel(true);
+                        }}
+                        width={24}
+                        color={token?.colorInfoBorder}
+                      />
                     }
                   />
-                </Badge>
-              </Dropdown>
 
-              <Dropdown
-                menu={{items}}
-                dropdownRender={(menu: any) => (
-                  <div style={contentStyle}>
-                    <Space>
-                      <Avatar
-                        src={profileImg}
-                        icon={<UserCircleIcon />}
-                        shape="circle"
-                        size="large"
-                      />
-                      <Space direction="vertical" size={0}>
-                        <Typography name="Body 3/Regular">
-                          {userInformation?.username || 'Josh Walker'}
-                        </Typography>
-                        <Typography
-                          name="Body 4/Medium"
-                          color={token?.colorInfo}
+                  <Dropdown
+                    trigger={['click']}
+                    overlayStyle={{
+                      marginLeft: 200,
+                      marginTop: 20,
+                    }}
+                    menu={{ items }}
+                    dropdownRender={() => (
+                      <div style={dropDownStyle}>
+                        {notificationCount?.length > 0 ? (
+                          <GlobalLoader loading={notificationLoading}>
+                            {notificationCount?.map(
+                              (notificationDataItem: any) => {
+                                let fallBackIconsss;
+                                let fallBackBg;
+                                if (notificationDataItem?.type === 'quote') {
+                                  fallBackIconsss = (
+                                    <ExclamationCircleIcon
+                                      color={token?.colorError}
+                                      width={24}
+                                    />
+                                  );
+                                  fallBackBg = token?.colorErrorBg;
+                                } else if (
+                                  notificationDataItem?.type === 'subscription'
+                                ) {
+                                  fallBackIconsss = (
+                                    <Image
+                                      src={creditCard}
+                                      alt="creditCard"
+                                      style={{
+                                        cursor: 'pointer',
+                                        width: '24px',
+                                        height: '24px',
+                                      }}
+                                    />
+                                  );
+                                  fallBackBg = ' #E6E7EE';
+                                } else if (
+                                  notificationDataItem?.type === 'partner'
+                                ) {
+                                  fallBackIconsss = (
+                                    <UsersIcon
+                                      color={token?.colorInfo}
+                                      width={24}
+                                    />
+                                  );
+                                  fallBackBg = token?.colorInfoBgHover;
+                                }
+                                return (
+                                  <TableNameColumn
+                                    key={notificationDataItem?.id}
+                                    primaryText={notificationDataItem?.title}
+                                    secondaryText={
+                                      notificationDataItem?.description
+                                    }
+                                    primaryTextTypography="Body 1/Medium"
+                                    logo={
+                                      notificationDataItem?.type ===
+                                        'subscription' ||
+                                        notificationDataItem?.type === 'quote'
+                                        ? null
+                                        : notificationDataItem?.User
+                                          ?.profile_image
+                                    }
+                                    fallbackIcon={fallBackIconsss}
+                                    iconBg={fallBackBg}
+                                    cursor="pointer"
+                                    secondaryEllipsis
+                                    onClick={() => {
+                                      router.push(
+                                        userInformation?.Admin
+                                          ? `/superAdminPartner?tab=2`
+                                          : '/partners?tab=2',
+                                      );
+                                    }}
+                                    justifyContent="start"
+                                    maxWidth={320}
+                                    marginBottom={10}
+                                    isNotification
+                                  />
+                                );
+                              },
+                            )}
+                          </GlobalLoader>
+                        ) : (
+                          <Typography
+                            name="Body 3/Medium"
+                            style={{ display: 'flex', justifyContent: 'center' }}
+                          >
+                            No New Notifications
+                          </Typography>
+                        )}
+                        <div
+                          style={{
+                            width: '100%',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            marginTop: '10px',
+                          }}
                         >
-                          {userInformation?.email || 'josh.walker@email.com'}
-                        </Typography>
-                      </Space>
-                    </Space>
-                    <Divider />
-                    <Typography name="Body 2/Medium">Account Info</Typography>
-                    {React.cloneElement(menu as React.ReactElement<any>, {
-                      style: {
-                        ...(menu as React.ReactElement<any>).props.style,
-                        ...menuStyle,
-                      },
-                    })}
-                    <Divider />
-                    <Space
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        cursor: 'pointer',
-                      }}
-                      onClick={() => {
-                        localStorage.removeItem('userInfo');
-                        Cookies.remove('token');
-                        Cookies.remove('id');
-                        router.push('/login');
-                      }}
-                    >
-                      <ArrowLeftStartOnRectangleIcon
-                        width={24}
-                        style={{marginTop: '5px'}}
-                        color={token?.colorError}
+                          {' '}
+                          <OsButton
+                            text="See All"
+                            buttontype="PRIMARY"
+                            clickHandler={() => {
+                              router?.push('/notification');
+                            }}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  >
+                    <Badge count={notificationCounts}>
+                      <AvatarStyled
+                        background={token?.colorInfoBg}
+                        icon={
+                          <BellIcon width={24} color={token?.colorInfoBorder} />
+                        }
                       />
-                      <Typography name="Body 3/Regular" cursor="pointer">
-                        Logout
-                      </Typography>
-                    </Space>
-                  </div>
-                )}
-              >
-                <a onClick={(e) => e.preventDefault()}>
-                  <Space>
-                    <Avatar
-                      src={profileImg}
-                      icon={<UserCircleIcon />}
-                      shape="circle"
-                      size="large"
-                    />
-                    <Space direction="vertical" size={0}>
-                      <Typography
-                        name="Body 3/Regular"
-                        color={token?.colorPrimaryText}
-                      >
-                        {userInformation?.username || '--'}
-                      </Typography>
-                      <Typography name="Body 3/Bold" color={token?.colorLink}>
-                        {userRole || '--'}
-                      </Typography>
-                    </Space>
-                    <Image
-                      src={DownArrow}
-                      alt="DownArrow"
-                      style={{cursor: 'pointer'}}
-                    />
-                  </Space>
-                </a>
-              </Dropdown>
-            </Space>
+                    </Badge>
+                  </Dropdown>
+
+                  <Dropdown
+                    menu={{ items }}
+                    dropdownRender={(menu: any) => (
+                      <div style={contentStyle}>
+                        <Space>
+                          <Avatar
+                            src={profileImg}
+                            icon={<UserCircleIcon />}
+                            shape="circle"
+                            size="large"
+                          />
+                          <Space direction="vertical" size={0}>
+                            <Typography name="Body 3/Regular">
+                              {userInformation?.first_name &&
+                                userInformation?.last_name
+                                ? `${userInformation.first_name} ${userInformation.last_name}`
+                                : userInformation?.first_name
+                                  ? userInformation.first_name
+                                  : (userInformation?.username ?? '--')}
+                            </Typography>
+                            <Typography
+                              name="Body 4/Medium"
+                              color={token?.colorInfo}
+                            >
+                              {userInformation?.email || '--'}
+                            </Typography>
+                          </Space>
+                        </Space>
+                        <Divider />
+                        <Typography name="Body 2/Medium">
+                          Account Info
+                        </Typography>
+                        {React.cloneElement(menu as React.ReactElement<any>, {
+                          style: {
+                            ...(menu as React.ReactElement<any>).props.style,
+                            ...menuStyle,
+                          },
+                        })}
+                        <Divider />
+                        <a onClick={() => {
+                          localStorage.removeItem('userInfo');
+                          Cookies.remove('token');
+                          Cookies.remove('id');
+                          router.push('/login');
+                        }}>
+                          <Space
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              cursor: 'pointer',
+                            }}
+                          >
+
+                            <ArrowLeftStartOnRectangleIcon
+                              width={24}
+                              style={{ marginTop: '5px' }}
+                              color={token?.colorError}
+                            />
+                            <Typography name="Body 3/Regular" cursor="pointer" >
+                              Logout
+                            </Typography>
+                          </Space>
+                        </a>
+
+                      </div>
+                    )}
+                  >
+                    <a onClick={(e) => e.preventDefault()}>
+                      <Space>
+                        <Avatar
+                          src={profileImg}
+                          icon={<UserCircleIcon />}
+                          shape="circle"
+                          size="large"
+                        />
+                        <Space direction="vertical" size={0}>
+                          <Typography
+                            name="Body 3/Regular"
+                            color={token?.colorPrimaryText}
+                            ellipsis
+                            maxWidth={20}
+                          >
+                            {userInformation?.first_name &&
+                              userInformation?.last_name
+                              ? `${userInformation.first_name} ${userInformation.last_name}`
+                              : userInformation?.first_name
+                                ? userInformation.first_name
+                                : (userInformation?.username ?? '--')}
+                          </Typography>
+                          <Typography
+                            name="Body 3/Bold"
+                            color={token?.colorLink}
+                          >
+                            {userRole || '--'}
+                          </Typography>
+                        </Space>
+                        <Image
+                          src={DownArrow}
+                          alt="DownArrow"
+                          style={{ cursor: 'pointer' }}
+                        />
+                      </Space>
+                    </a>
+                  </Dropdown>
+                </Space>
+              </Space>
+            </div>
           )}
         </Col>
       </Row>
@@ -700,7 +745,7 @@ const CustomHeader = () => {
               <Divider />
               <Space
                 content="center"
-                style={{display: 'flex', justifyContent: 'center'}}
+                style={{ display: 'flex', justifyContent: 'center' }}
               >
                 <Typography name="Body 2/Medium">
                   Please provide detail for your issue.
@@ -709,8 +754,8 @@ const CustomHeader = () => {
               <Space
                 content="center"
                 direction="vertical"
-                style={{width: '100%', marginTop: '20px'}}
-                // style={{display: 'flex', justifyContent: 'center'}}
+                style={{ width: '100%', marginTop: '20px' }}
+              // style={{display: 'flex', justifyContent: 'center'}}
               >
                 <Typography name="Body 3/Medium">Issue Details:</Typography>
                 <TextArea
@@ -725,7 +770,7 @@ const CustomHeader = () => {
                   }}
                 />
                 {errorForSupport && (
-                  <div style={{color: 'red'}}>Issue details is required!</div>
+                  <div style={{ color: 'red' }}>Issue details is required!</div>
                 )}
                 <div>
                   <Row>
@@ -757,7 +802,7 @@ const CustomHeader = () => {
                       ))}
                   </Row>
                 </div>
-                <div style={{width: '200px'}}>
+                <div style={{ width: '200px' }}>
                   {' '}
                   <OSDraggerStyleForSupport
                     beforeUpload={beforeUpload}
@@ -766,11 +811,11 @@ const CustomHeader = () => {
                     accept=".pdf,.jpg,.jpeg,.png,.docx,.pdf"
                   >
                     {' '}
-                    <span style={{color: '#3da5d9'}}>Upload a file</span>
+                    <span style={{ color: '#3da5d9' }}>Upload a file</span>
                   </OSDraggerStyleForSupport>
                 </div>
               </Space>
-              <div style={{display: 'flex', justifyContent: 'right'}}>
+              <div style={{ display: 'flex', justifyContent: 'right' }}>
                 <OsButton
                   buttontype="PRIMARY"
                   text="Submit"
@@ -788,7 +833,7 @@ const CustomHeader = () => {
           SetAddIssueToSupport('');
           setUpoadedData([]);
         }}
-        // open={true}
+      // open={true}
       />
     </Layout>
   );

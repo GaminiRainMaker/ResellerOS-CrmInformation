@@ -7,33 +7,33 @@
 
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
+import { Col, Row } from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
-import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
+import { SelectFormItem } from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {Form, Space} from 'antd';
+import { Form, Space } from 'antd';
 import axios from 'axios';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {FC, Suspense, useEffect, useState} from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { FC, Suspense, useEffect, useState } from 'react';
 import {
   getFormattedValuesForBundlesOnly,
   getFormattedValuesForLineItems,
   getFormattedValuesForWithAndWithoutBundles,
   getFormattedValuesForWithAndWithoutBundlesForExcelFile,
 } from '@/app/utils/base';
-import {insertAttachmentDocument} from '../../../../../redux/actions/attachmentDocument';
-import {getAllFormStack} from '../../../../../redux/actions/formStackSync';
-import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
+import { insertAttachmentDocument } from '../../../../../redux/actions/attachmentDocument';
+import { getAllFormStack } from '../../../../../redux/actions/formStackSync';
+import { getAllGeneralSetting } from '../../../../../redux/actions/generalSetting';
 import {
   uploadExcelFileToAws,
   uploadToAws,
 } from '../../../../../redux/actions/upload';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 
-const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
+const DownloadFile: FC<any> = ({ form, objectForSyncingValues }) => {
   const [token] = useThemeToken();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -42,9 +42,9 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
   const [pdfUrl, setPdfUrl] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedDoc, setSelectedDoc] = useState<any>();
-  const {loading: GeneralSettingLoading, data: GeneralSettingData} =
+  const { loading: GeneralSettingLoading, data: GeneralSettingData } =
     useAppSelector((state) => state.gereralSetting);
-  const {loading: formStackSyncLoading, data: formStackSyncData} =
+  const { loading: formStackSyncLoading, data: formStackSyncData } =
     useAppSelector((state) => state.formStackSync);
 
   useEffect(() => {
@@ -135,23 +135,23 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
     }));
 
   useEffect(() => {
-    let newObjForAddValues: any = {};
+    const newObjForAddValues: any = {};
     if (objectForSyncingValues) {
-      let billingAdress = objectForSyncingValues?.addressForAll?.find(
+      const billingAdress = objectForSyncingValues?.addressForAll?.find(
         (items: any) => items?.id === objectForSyncingValues?.billing_id,
       );
-      let shippingAdress = objectForSyncingValues?.addressForAll?.find(
+      const shippingAdress = objectForSyncingValues?.addressForAll?.find(
         (items: any) => items?.id === objectForSyncingValues?.shipping_id,
       );
-      let billingContactId =
+      const billingContactId =
         objectForSyncingValues?.billing_phone?.split('_')?.[1];
-      let shippingContactId =
+      const shippingContactId =
         objectForSyncingValues?.shipping_phone?.split('_')?.[1];
 
-      let billingContact = objectForSyncingValues?.allContactDetails?.find(
+      const billingContact = objectForSyncingValues?.allContactDetails?.find(
         (items: any) => items?.id == billingContactId,
       );
-      let shippingContact = objectForSyncingValues?.allContactDetails?.find(
+      const shippingContact = objectForSyncingValues?.allContactDetails?.find(
         (items: any) => items?.id == shippingContactId,
       );
 
@@ -330,7 +330,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
               ? uploadExcelFileToAws
               : uploadToAws;
           const base64String = await blobToBase64(blob);
-          dispatch(pathUsedToUpload({document: base64String})).then(
+          dispatch(pathUsedToUpload({ document: base64String })).then(
             (payload: any) => {
               // eslint-disable-next-line @typescript-eslint/no-shadow
               const pdfUrl = payload?.payload?.data?.Location;
@@ -385,7 +385,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
                   ]}
                 >
                   <CommonSelect
-                    style={{width: '100%'}}
+                    style={{ width: '100%' }}
                     placeholder="Select Document"
                     allowClear
                     options={formStackOptions}
@@ -405,7 +405,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
             {selectedDoc && (
               <Space
                 align="end"
-                style={{width: '100%', display: 'flex', justifyContent: 'end'}}
+                style={{ width: '100%', display: 'flex', justifyContent: 'end' }}
               >
                 {' '}
                 <Row justify="end">
@@ -429,16 +429,16 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
             )}
           </Form>
         ) : (
-          <div style={{display: 'flex', flexDirection: 'column'}}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
             <Typography
               name="Body 3/Bold"
               color={token?.colorLink}
-              style={{marginBottom: '6px'}}
+              style={{ marginBottom: '6px' }}
             >
               Note:
             </Typography>
             <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
-              <ul style={{listStyleType: 'disc', marginLeft: '20px'}}>
+              <ul style={{ listStyleType: 'disc', marginLeft: '20px' }}>
                 <li>
                   You haven't provided the secret key and API yet, or the
                   provided keys are invalid. Please verify and update them.
@@ -448,7 +448,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
                   <Typography
                     name="Body 4/Medium"
                     color={token?.colorLink}
-                    style={{textDecoration: 'underline'}}
+                    style={{ textDecoration: 'underline' }}
                     hoverOnText
                     onClick={() => {
                       router.push('/admin?tab=formstack');

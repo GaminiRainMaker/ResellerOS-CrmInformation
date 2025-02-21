@@ -3,16 +3,15 @@
 import Typography from '@/app/components/common/typography';
 import {
   CheckBadgeIcon,
-  ClockIcon,
   PencilSquareIcon,
   PhoneIcon,
   PlusIcon,
   TrashIcon,
-  UserGroupIcon,
+  UserGroupIcon
 } from '@heroicons/react/24/outline';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -24,33 +23,29 @@ import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
-import CommonStageSelect from '@/app/components/common/os-stage-select';
+import OsStatusWrapper from '@/app/components/common/os-status';
 import CommonTable from '@/app/components/common/os-table/CommonTable';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import OsTabs from '@/app/components/common/os-tabs';
-import {StageValue} from '@/app/utils/CONSTANTS';
-import {Form, MenuProps, notification, TabsProps} from 'antd';
-import {Option} from 'antd/es/mentions';
-import {useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
-import {queryContact} from '../../../../../redux/actions/billingContact';
-import {queryCustomer} from '../../../../../redux/actions/customer';
+import { Form, MenuProps, notification, TabsProps } from 'antd';
+import { Option } from 'antd/es/mentions';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { queryContact } from '../../../../../redux/actions/billingContact';
+import { queryCustomer } from '../../../../../redux/actions/customer';
 import {
   deleteOpportunity,
   getAllOpportunity,
-  getdeleteOpportunity,
   insertOpportunity,
   queryOpportunity,
-  updateOpportunity,
+  updateOpportunity
 } from '../../../../../redux/actions/opportunity';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import React from 'react';
-import OsStatusWrapper from '@/app/components/common/os-status';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 
 const CrmOpportunity: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  const {abbreviate} = useAbbreviationHook(0);
+  const { abbreviate } = useAbbreviationHook(0);
   const router = useRouter();
   const [form] = Form.useForm();
   const [activeTab, setActiveTab] = useState<any>('1');
@@ -64,10 +59,10 @@ const CrmOpportunity: React.FC = () => {
     opportunity,
     queryOpportunityData,
   } = useAppSelector((state) => state.Opportunity);
-  const {filteredData: customerData} = useAppSelector(
+  const { filteredData: customerData } = useAppSelector(
     (state) => state.customer,
   );
-  const {filteredData} = useAppSelector((state) => state.billingContact);
+  const { filteredData } = useAppSelector((state) => state.billingContact);
   const [activeOpportunity, setActiveOpportunity] = useState<any>();
   const [customerValue, setCustomerValue] = useState<number>();
   const [stageValue, setStageValue] = useState<string>('');
@@ -97,7 +92,7 @@ const CrmOpportunity: React.FC = () => {
   }, [searchQuery]);
 
   const deleteSelectedIds = async () => {
-    const data = {Ids: deleteIds};
+    const data = { Ids: deleteIds };
     await dispatch(deleteOpportunity(data)).then((d: any) => {
       if (d?.payload) {
         dispatch(queryOpportunity(query));
@@ -211,7 +206,7 @@ const CrmOpportunity: React.FC = () => {
       dataIndex: 'stages',
       key: 'stages',
       render: (text: string) => (
-        <div style={{display: 'flex', justifyContent: 'center'}}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           <OsStatusWrapper value={text} />
         </div>
       ),
@@ -230,7 +225,7 @@ const CrmOpportunity: React.FC = () => {
             height={24}
             width={24}
             color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
+            style={{ cursor: 'pointer' }}
             onClick={() => {
               setRecordId(record?.id);
               form.setFieldsValue({
@@ -247,7 +242,7 @@ const CrmOpportunity: React.FC = () => {
             height={24}
             width={24}
             color={token.colorError}
-            style={{cursor: 'pointer'}}
+            style={{ cursor: 'pointer' }}
             onClick={() => {
               setDeleteIds([record?.id]);
               setShowModalDelete(true);
@@ -422,7 +417,7 @@ const CrmOpportunity: React.FC = () => {
 
   return (
     <>
-      <Space size={24} direction="vertical" style={{width: '100%'}}>
+      <Space size={24} direction="vertical" style={{ width: '100%' }}>
         <Row
           justify="space-between"
           style={{
@@ -465,13 +460,13 @@ const CrmOpportunity: React.FC = () => {
                 clickHandler={() => setShowModal((p) => !p)}
               />
               <Space>
-                <OsDropdown menu={{items: dropDownItemss}} />
+                <OsDropdown menu={{ items: dropDownItemss }} />
               </Space>
             </div>
           </Col>
         </Row>
         <Row
-          style={{background: 'white', padding: '24px', borderRadius: '12px'}}
+          style={{ background: 'white', padding: '24px', borderRadius: '12px' }}
         >
           <OsTabs
             onChange={(e) => {
@@ -483,7 +478,7 @@ const CrmOpportunity: React.FC = () => {
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">Customer Account</Typography>
                   <CommonSelect
-                    style={{width: '200px'}}
+                    style={{ width: '200px' }}
                     placeholder="Search here"
                     showSearch
                     onSearch={(e) => {
@@ -510,7 +505,7 @@ const CrmOpportunity: React.FC = () => {
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">Opportunity</Typography>
                   <CommonSelect
-                    style={{width: '200px'}}
+                    style={{ width: '200px' }}
                     placeholder="Search here"
                     showSearch
                     onSearch={(e) => {
@@ -624,7 +619,7 @@ const CrmOpportunity: React.FC = () => {
         footer={
           <OsButton
             loading={loading}
-            btnStyle={{width: '100%'}}
+            btnStyle={{ width: '100%' }}
             buttontype="PRIMARY"
             text="Update Changes"
             clickHandler={form.submit}

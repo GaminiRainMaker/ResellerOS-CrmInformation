@@ -6,13 +6,19 @@
 
 'use client';
 
-import {Form, notification} from 'antd';
+import dynamic from 'next/dynamic';
+const OsInputPassword = dynamic(() => import('../../common/os-input/InputPassword'), { ssr: false })
+const OsInput = dynamic(() => import('../../common/os-input'), { ssr: false })
+const OsButton = dynamic(() => import('../../common/os-button'), { ssr: false })
+const DailogModal = dynamic(() => import('../../common/os-modal/DialogModal'), { ssr: false })
+const Typography = dynamic(() => import('../../common/typography'), { ssr: false })
+import { Form, notification } from 'antd';
 import Image from 'next/image';
-import React, {FC, useEffect, useState, Suspense} from 'react';
+import React, { FC, useEffect, useState } from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {CheckCircleIcon} from '@heroicons/react/24/outline';
+import { CheckCircleIcon } from '@heroicons/react/24/outline';
 import Cookies from 'js-cookie';
-import {usePathname, useRouter, useSearchParams} from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import OSResellerLogo from '../../../../../public/assets/static/ResellerOsText.svg';
 import eyeSlashIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye-slash.svg';
 import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
@@ -26,17 +32,13 @@ import {
   getUserByTokenAccess,
   updateUserPassword,
 } from '../../../../../redux/actions/user';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {setUserInformation} from '../../../../../redux/slices/user';
-import {Space} from '../../common/antd/Space';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import { setUserInformation } from '../../../../../redux/slices/user';
+import { Space } from '../../common/antd/Space';
 import useThemeToken from '../../common/hooks/useThemeToken';
-import OsButton from '../../common/os-button';
-import OsInput from '../../common/os-input';
-import OsInputPassword from '../../common/os-input/InputPassword';
-import DailogModal from '../../common/os-modal/DialogModal';
-import Typography from '../../common/typography';
-import {AuthLayoutInterface} from './authLayout.interface';
-import {ContentSectionWrapper, CustomCheckbox} from './styled-components';
+
+import { AuthLayoutInterface } from './authLayout.interface';
+import { ContentSectionWrapper, CustomCheckbox } from './styled-components';
 
 const ContentSection: FC<AuthLayoutInterface> = ({
   heading,
@@ -45,7 +47,6 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   registerNow,
   rememberPassword,
   buttonText,
-  onClick,
   inputFields,
 }) => {
   const [token] = useThemeToken();
@@ -56,7 +57,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   const getUserId = searchParams && searchParams.get('id');
   const [signUpData, setSignUpData] = useState<any>();
   const [showDailogModal, setShowDailogModal] = useState<boolean>(false);
-  const {loading} = useAppSelector((state) => state.auth);
+  const { loading } = useAppSelector((state) => state.auth);
   const rememberPass: any = Cookies.get('remeber');
   const Verifytoken = searchParams.get('verifytoken');
 
@@ -249,9 +250,10 @@ const ContentSection: FC<AuthLayoutInterface> = ({
               ? '/userManagement'
               : payload?.payload?.is_email_invite
                 ? `/newPassword?${payload?.payload?.id}`
-                : payload?.payload?.role === 'reseller' &&
-                    payload?.payload?.is_quote
-                  ? '/crmInAccount'
+                : payload?.payload?.role === 'reseller'
+                  ? payload?.payload?.quoteLength
+                    ? '/crmInAccount'
+                    : '/demoBoard'
                   : '/dashboard',
           );
         } else {
@@ -337,7 +339,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   };
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <>
       <ContentSectionWrapper direction="vertical" size={72}>
         <Image src={OSResellerLogo} alt="OSResellerLogo" />
         <Space direction="vertical" size={72}>
@@ -355,7 +357,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                 <Typography name="Heading 1/Medium">{heading}</Typography>
               )}
               {description && (
-                <Typography name="Body 3/Regular" style={{padding: '0px 20px'}}>
+                <Typography name="Body 3/Regular" style={{ padding: '0px 20px' }}>
                   {description}
                 </Typography>
               )}
@@ -408,7 +410,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                               alt="eyeIcon"
                               width={24}
                               height={24}
-                              style={{cursor: 'pointer'}}
+                              style={{ cursor: 'pointer' }}
                             />
                           ) : (
                             <Image
@@ -416,7 +418,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                               alt="eyeSlashIcon"
                               width={24}
                               height={24}
-                              style={{cursor: 'pointer'}}
+                              style={{ cursor: 'pointer' }}
                             />
                           )
                         }
@@ -438,7 +440,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                             alt={item.name}
                             width={24}
                             height={24}
-                            style={{cursor: 'pointer'}}
+                            style={{ cursor: 'pointer' }}
                           />
                         }
                       />
@@ -480,10 +482,10 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                 </Space>
               )}
 
-              <Form.Item style={{marginTop: '80px'}}>
+              <Form.Item style={{ marginTop: '80px' }}>
                 <OsButton
                   loading={loading}
-                  style={{marginTop: '80px'}}
+                  style={{ marginTop: '80px' }}
                   text={buttonText}
                   buttontype="PRIMARY"
                   htmlType="submit"
@@ -505,7 +507,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                       onClick={() => router?.push('/login')}
                       color={token?.colorLink}
                       cursor="pointer"
-                      style={{cursor: 'pointer'}}
+                      style={{ cursor: 'pointer' }}
                     >
                       {' '}
                       Login
@@ -522,7 +524,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                       name="Body 3/Bold"
                       color={token?.colorLink}
                       cursor="pointer"
-                      style={{cursor: 'pointer'}}
+                      style={{ cursor: 'pointer' }}
                       onClick={() => {
                         setSignUpData('');
                         router?.push('/signUp');
@@ -554,7 +556,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           router.push('/');
         }}
       />
-    </Suspense>
+    </>
   );
 };
 

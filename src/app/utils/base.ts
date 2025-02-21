@@ -109,25 +109,19 @@ export const calculateProfitabilityData = (
   };
 };
 
-export const useRemoveDollarAndCommahook = (value: any) => {
-  const cleanedD =
-    value &&
-    value
-      ?.replace(/\$|,/g, '')
-      ?.toString()
-      ?.replace(/[^0-9,\.]/g, '')
-      .replace(/^0+/, '');
-  const cleanedValue =
-    value &&
-    value
-      ?.replace(/\$|,/g, '') // Remove `$` and commas
-      ?.toString()
-      ?.replace(/[^0-9\.]/g, '') // Remove anything that's not a digit or period
-      ?.replace(/^0+(?=\d)/, '') // Remove leading zeros, but keep a single zero for numbers like "0.00"
-      .replace(/(\.\d{1})$/, '$1' + '0'); // Ensure the decimal has two digits (e.g., .1 -> .10)
 
-  const numberD = parseFloat(cleanedValue);
-  return cleanedValue;
+export const useRemoveDollarAndCommahook = (value: any): number => {
+  if (!value) return 0; // Ensure it doesn't return NaN or undefined
+
+  // Remove $ and commas, keep only numbers and decimal points
+  const cleanedValue = value
+    .toString()
+    .replace(/[$,]/g, '') // Remove `$` and `,`
+    .replace(/[^0-9.]/g, '') // Keep only digits and `.`
+    .replace(/^0+(?=\d)/, ''); // Remove leading zeros but keep "0.00"
+
+  const numberValue = parseFloat(cleanedValue);
+  return isNaN(numberValue) ? 0 : numberValue; // Ensure a valid number is returned
 };
 
 export const useRemoveDollarAndCommahookDataa = (value: any) => {
