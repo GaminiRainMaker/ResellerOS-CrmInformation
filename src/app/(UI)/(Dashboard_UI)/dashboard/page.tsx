@@ -609,7 +609,7 @@ const Dashboard = () => {
         </Col>
         <Col>
           <OsButton
-            text="Download Trial Quotes Files"
+            text="Download Trial Files"
             buttontype="PRIMARY"
             clickHandler={() => {
               setShowDownloadFileModal(true);
