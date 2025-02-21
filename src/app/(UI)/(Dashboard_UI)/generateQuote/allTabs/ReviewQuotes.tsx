@@ -5,8 +5,8 @@
 
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsCollapse from '@/app/components/common/os-collapse';
@@ -15,17 +15,17 @@ import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
 import RaiseConcern from '@/app/components/common/os-raise-concern';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
-import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
+import { AvatarStyled } from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import {
   convertToNumber,
   updateTables,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
-import {CheckIcon, XMarkIcon} from '@heroicons/react/24/outline';
-import {Form, notification} from 'antd';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
+import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Form, notification } from 'antd';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { FC, useEffect, useState } from 'react';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import CommonSelect from '@/app/components/common/os-select';
 import {
@@ -42,8 +42,8 @@ import {
   getQuoteFileCount,
   quoteFileVerification,
 } from '../../../../../../redux/actions/quoteFile';
-import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
-import {setConcernQuoteLineItemData} from '../../../../../../redux/slices/quotelineitem';
+import { useAppDispatch, useAppSelector } from '../../../../../../redux/hook';
+import { setConcernQuoteLineItemData } from '../../../../../../redux/slices/quotelineitem';
 
 const ReviewQuotes: FC<any> = ({
   tableColumnDataShow,
@@ -57,10 +57,10 @@ const ReviewQuotes: FC<any> = ({
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const isView = searchParams.get('isView');
-  const {abbreviate} = useAbbreviationHook(0);
+  const { abbreviate } = useAbbreviationHook(0);
   const [form] = Form.useForm();
-  const {userInformation} = useAppSelector((state) => state.user);
-  const {loading: quoteFileDataLoading, quoteFileUnverifiedById} =
+  const { userInformation } = useAppSelector((state) => state.user);
+  const { loading: quoteFileDataLoading, quoteFileUnverifiedById } =
     useAppSelector((state) => state.quoteFile);
   const [showRaiseConcernModal, setShowRaiseConcernModal] =
     useState<boolean>(false);
@@ -141,7 +141,7 @@ const ReviewQuotes: FC<any> = ({
 
           groupedData[name].totalAdjustedPrice += Number(
             (typeof Adjustted === 'number' ? Adjustted : 0) *
-              (typeof QuantityValue === 'number' ? QuantityValue : 0),
+            (typeof QuantityValue === 'number' ? QuantityValue : 0),
           );
         });
       }
@@ -162,7 +162,7 @@ const ReviewQuotes: FC<any> = ({
               : items?.QuoteLineItem?.length < 30
                 ? 30
                 : items?.QuoteLineItem?.length < 31 ||
-                    items?.QuoteLineItem?.length < 51
+                  items?.QuoteLineItem?.length < 51
                   ? 50
                   : 100,
         total: 0,
@@ -259,7 +259,7 @@ const ReviewQuotes: FC<any> = ({
             <CommonSelect
               disabled
               allowClear
-              style={{width: '200px', height: '36px'}}
+              style={{ width: '200px', height: '36px' }}
               placeholder="Select"
               defaultValue={text ?? record?.Product?.product_family}
             />
@@ -423,7 +423,7 @@ const ReviewQuotes: FC<any> = ({
             <CommonSelect
               disabled
               allowClear
-              style={{width: '200px', height: '36px'}}
+              style={{ width: '200px', height: '36px' }}
               placeholder="Select"
               defaultValue={text ?? record?.taa_flag}
               options={TAAFlagPickList}
@@ -442,7 +442,7 @@ const ReviewQuotes: FC<any> = ({
           children: (
             <CommonSelect
               disabled
-              style={{width: '200px', height: '36px'}}
+              style={{ width: '200px', height: '36px' }}
               placeholder="Select"
               defaultValue={text ?? record?.epeat_flag}
               options={EPEATFlagPickList}
@@ -461,7 +461,7 @@ const ReviewQuotes: FC<any> = ({
           children: (
             <CommonSelect
               disabled
-              style={{width: '200px', height: '36px'}}
+              style={{ width: '200px', height: '36px' }}
               placeholder="Select"
               defaultValue={text ?? record?.country_of_origin}
               options={countrupickList}
@@ -481,7 +481,7 @@ const ReviewQuotes: FC<any> = ({
             <CommonSelect
               disabled
               allowClear
-              style={{width: '200px', height: '36px'}}
+              style={{ width: '200px', height: '36px' }}
               placeholder="Select"
               defaultValue={text ?? record?.energy_star_flag}
               options={EnergyStarFlagpicklist}
@@ -727,7 +727,7 @@ const ReviewQuotes: FC<any> = ({
       setShowRaiseConcernModal(false);
       form?.resetFields();
     } else if (buttonType === 'fourth') {
-      await dispatch(quoteFileVerification({id: fileData?.id}));
+      await dispatch(quoteFileVerification({ id: fileData?.id }));
       await dispatch(getQuoteFileCount(Number(getQuoteID)));
       await dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
       setShowRaiseConcernModal(false);
@@ -801,6 +801,8 @@ const ReviewQuotes: FC<any> = ({
               reviewQuotesData?.map((finalDataItem: any, index: number) => (
                 <OsCollapse
                   key={index + 1}
+                  // defaultActiveKey={['0']}
+                  activeKey={['0']}
                   items={[
                     {
                       label: (
