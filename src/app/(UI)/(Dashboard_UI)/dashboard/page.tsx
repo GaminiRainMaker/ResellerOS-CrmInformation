@@ -600,7 +600,7 @@ const Dashboard = () => {
         </Col>
         <Col>
           <OsButton
-            text="Extended Trial Version"
+            text="Extend Trial"
             buttontype="PRIMARY"
             clickHandler={() => {
               setShowTrailModal(true);
@@ -753,7 +753,7 @@ const Dashboard = () => {
         bodyPadding={20} />
       <DailogModal
         loading={licenseLoading}
-        title="Extended Trial Version"
+        title="Extend Trial"
         subTitle="Would you like to try ResellerOS for another 7 days?"
         primaryButtonText="Yes"
         secondaryButtonText="No"
