@@ -789,18 +789,28 @@ const OsUpload: React.FC<any> = ({
           obj?.file?.type.includes('spreadsheetml'))
       ) {
         if (obj?.file?.type.includes('spreadsheetml')) {
+
           const dataa = await beforeUploadDataForExcel(obj?.file);
 
           obj = { ...obj, ...dataa };
         } else {
+
           const dataa = await beforeUploadDataForPdf(obj?.file, obj?.model_id);
 
           obj = { ...obj, ...dataa };
         }
       } else {
-        const dataa = await beforeUploadDataForPDFFile(obj?.file);
+        if (obj?.file?.type.includes('spreadsheetml')) {
 
-        obj = { ...obj, ...dataa };
+          const dataa = await beforeUploadDataForExcel(obj?.file);
+
+          obj = { ...obj, ...dataa };
+        } else {
+
+          const dataa = await beforeUploadDataForPDFFile(obj?.file);
+
+          obj = { ...obj, ...dataa };
+        };
       }
 
       newArr.push(obj);
