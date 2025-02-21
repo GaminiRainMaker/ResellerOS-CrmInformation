@@ -432,6 +432,7 @@ const Dashboard = () => {
                 <Typography name="Body 4/Regular">HOURS OF TIME</Typography>
               </Col>
             </Row>
+            <br />
             <Row style={{ margin: '20px' }}>
               <Col span={8}>
                 <Typography name="Heading 2/Bold" as="div">
@@ -452,8 +453,6 @@ const Dashboard = () => {
                 <Typography name="Body 4/Regular">GROSS PROFIT</Typography>
               </Col>
             </Row>
-            <br />
-            <br />
             <br />
             <Row style={{ margin: '20px' }}>
               <Col span={8}>
