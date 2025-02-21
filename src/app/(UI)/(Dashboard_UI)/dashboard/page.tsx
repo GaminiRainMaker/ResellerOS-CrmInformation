@@ -738,7 +738,7 @@ const Dashboard = () => {
           form.resetFields();
         }}
         onOk={form.submit}
-        primaryButtonText="Send Query"
+        primaryButtonText="Submit"
         footerPadding={30}
       />
 
