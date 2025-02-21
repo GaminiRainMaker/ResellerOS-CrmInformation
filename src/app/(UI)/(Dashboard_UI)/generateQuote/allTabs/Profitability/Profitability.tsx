@@ -119,6 +119,7 @@ const Profitablity: FC<any> = ({
   const { data: contractConfigurationData } = useAppSelector(
     (state) => state.contractConfiguration,
   );
+  const [tableScroll, setTableScroll] = useState<any>(null)
   const { userInformation } = useAppSelector((state) => state.user);
   const { data: contactData } = useAppSelector((state) => state.contract);
 
@@ -365,6 +366,8 @@ const Profitablity: FC<any> = ({
     setProfitibilityLoading(false);
   };
 
+
+
   useEffect(() => {
     if (activeTab == '2' || activeTab == '4') {
       globalProfitApis();
@@ -462,6 +465,9 @@ const Profitablity: FC<any> = ({
     updatedSelectedFilter: string,
     type: string,
   ) => {
+    const tableContainer = document.querySelector(".ant-table-body"); // Get the Ant Design table's scroll container
+
+    const scrollLeftVal = tableContainer ? tableContainer.scrollLeft : 0; // Save current scroll position
     const updatedRecord = { ...record, [field]: value };
     const result: any = calculateProfitabilityData(
       Number(updatedRecord?.quantity),
@@ -484,11 +490,12 @@ const Profitablity: FC<any> = ({
       updatedRecord.contract_status = response.contract_status;
       updatedRecord.contract_vehicle = response.contract_vehicle;
     }
-
+    setTableScroll(scrollLeftVal)
     setFinalFieldData(updatedRecord);
     if (type === 'select') {
       handleSave(updatedRecord);
     }
+
   };
 
   const rowSelection = {
@@ -1691,6 +1698,7 @@ const Profitablity: FC<any> = ({
                   children: (
                     <div key={JSON.stringify(finalDataItem?.QuoteLineItem)}>
                       <OsTable
+                        tableScroll={tableScroll}
                         loading={loading}
                         columns={[...finalProfitTableCol, ActionColumn]}
                         dataSource={finalDataItem?.QuoteLineItem}
@@ -1713,6 +1721,7 @@ const Profitablity: FC<any> = ({
           nonBundleData?.length > 0 &&
           nonBundleData.length > 0 && (
             <OsTable
+              tableScroll={tableScroll}
               loading={loading}
               columns={finalProfitTableCol}
               dataSource={nonBundleData}
@@ -2091,6 +2100,7 @@ const Profitablity: FC<any> = ({
                                 )}
                               >
                                 <OsTable
+                                  tableScroll={tableScroll}
                                   loading={loading}
                                   columns={
                                     isBundle
