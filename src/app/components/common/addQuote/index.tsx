@@ -1118,10 +1118,10 @@ const AddQuote: FC<AddQuoteInterface> = ({
           <Row justify="end" style={{ margin: '20px 0px' }}>
             <Col>
               <OsButton
-                text={"Generate Individual Quotes"}
+                text={"Generate Single Quote"}
                 buttontype="PRIMARY"
                 clickHandler={() => {
-                  form?.setFieldValue('singleQuote', false);
+                  form?.setFieldValue('singleQuote', true);
                   form.submit();
                 }}
                 loading={finalLoading}
