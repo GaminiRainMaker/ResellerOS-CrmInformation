@@ -41,7 +41,7 @@ const Dashboard = () => {
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector((state) => state.auth);
   const { loading: quoteLoading } = useAppSelector((state) => state.quote);
-  const { loading: licenseLoading } = useAppSelector((state) => state.license);
+  const { loading: licenseLoading, activeLicense } = useAppSelector((state) => state.license);
   const { userInformation } = useAppSelector((state) => state.user);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showTrailModal, setShowTrailModal] = useState<boolean>(false);
@@ -397,27 +397,23 @@ const Dashboard = () => {
         }}
       >
         <Row>
-          <Col span={6} >
+          <Col span={6}>
             <Typography name="Body 1/Bold">You&apos;ve Converted</Typography>
-
           </Col>
-          <Col span={6} >
+          <Col span={6}>
             <Typography name="Body 1/Bold">You&apos;ve Quoted</Typography>
-
           </Col>
-          <Col span={6} >
+          <Col span={6}>
             <Typography name="Body 1/Bold">You&apos;ve Earned</Typography>
-
           </Col>
-          <Col span={6} >
+          <Col span={6}>
             <Typography name="Body 1/Bold">Average per Quoted</Typography>
-
           </Col>
         </Row>
         <Row>
-          <Col span={18} >
-            <Row style={{ margin: "20px" }}>
-              <Col span={8} >
+          <Col span={18}>
+            <Row style={{ margin: '20px' }}>
+              <Col span={8}>
                 <Typography name="Heading 2/Bold" as="div">
                   {currentData?.Converted?.vendorQuotes}
                 </Typography>
@@ -436,7 +432,7 @@ const Dashboard = () => {
                 <Typography name="Body 4/Regular">HOURS OF TIME</Typography>
               </Col>
             </Row>
-            <Row style={{ margin: "20px" }}>
+            <Row style={{ margin: '20px' }}>
               <Col span={8}>
                 <Typography name="Heading 2/Bold" as="div">
                   {currentData?.Converted?.totalPages}
@@ -455,10 +451,33 @@ const Dashboard = () => {
                 </Typography>
                 <Typography name="Body 4/Regular">GROSS PROFIT</Typography>
               </Col>
-
             </Row>
+            <br />
+            <br />
+            <br />
+            <Row style={{ margin: '20px' }}>
+              <Col span={8}>
+                <Typography name="Heading 2/Bold" as="div">
+                  {currentData?.Converted?.totalLineItems}
+                </Typography>
+                <Typography name="Body 4/Regular">LINE ITEMS</Typography>
+              </Col>
+              <Col span={8}>
+                <Typography name="Heading 2/Bold" as="div">
+                  {abbreviate(currentData?.Quoted?.grossProfit ?? 0)}{' '}
+                </Typography>
+                <Typography name="Body 4/Regular">GROSS PROFIT</Typography>
+              </Col>
+              <Col span={8}>
+                <Typography name="Heading 3/Bold" as="div">
+                  {currentData?.AverageQuote?.averageProfitMargin}%{' '}
+                </Typography>
+                <Typography name="Body 4/Regular">PROFIT MARGIN</Typography>
+              </Col>
+            </Row>
+
           </Col>
-          <Col span={6} >
+          <Col span={6}>
             <ResponsiveContainer width="100%" height={250}>
               <BarChart
                 data={averagePerQuoteData}
@@ -477,21 +496,29 @@ const Dashboard = () => {
           </Col>
         </Row>
 
-        <Row>
-          <Col span={6}><Typography name="Heading 2/Bold" as="div">
-            {currentData?.Converted?.totalLineItems}
-          </Typography>
-            <Typography name="Body 4/Regular">LINE ITEMS</Typography></Col>
-          <Col span={8}>     <Typography name="Heading 2/Bold" as="div">
-            {abbreviate(currentData?.Quoted?.grossProfit ?? 0)}{' '}
-          </Typography>
-            <Typography name="Body 4/Regular">GROSS PROFIT</Typography></Col>
-          <Col span={6} />
-          <Col span={4}>    <Typography name="Heading 3/Bold" as="div">
-            {currentData?.AverageQuote?.averageProfitMargin}%{' '}
-          </Typography>
-            <Typography name="Body 4/Regular">PROFIT MARGIN</Typography></Col>
-        </Row>
+        {/* <Row style={{ margin: '20px' }}>
+          <Col span={8} >
+            <Typography name="Heading 2/Bold" as="div">
+              {currentData?.Converted?.totalLineItems}
+            </Typography>
+            <Typography name="Body 4/Regular">LINE ITEMS</Typography>
+          </Col>
+          <Col span={8}>
+            {' '}
+            <Typography name="Heading 2/Bold" as="div">
+              {abbreviate(currentData?.Quoted?.grossProfit ?? 0)}{' '}
+            </Typography>
+            <Typography name="Body 4/Regular">GROSS PROFIT</Typography>
+          </Col>
+          <Col span={8} />
+          <Col span={8}>
+            {' '}
+            <Typography name="Heading 3/Bold" as="div">
+              {currentData?.AverageQuote?.averageProfitMargin}%{' '}
+            </Typography>
+            <Typography name="Body 4/Regular">PROFIT MARGIN</Typography>
+          </Col>
+        </Row> */}
         {/* <Row>
           <Col sm={24} md={14}>
             <Typography name="Body 1/Bold">You've Converted</Typography>
@@ -598,18 +625,18 @@ const Dashboard = () => {
             Get In Touch
           </Typography>
         </Col>
-        <Col>
+        {activeLicense?.[0]?.license_type === 'demo' && <Col>
           <OsButton
-            text="Extended Trial Version"
+            text="Extend Trial"
             buttontype="PRIMARY"
             clickHandler={() => {
               setShowTrailModal(true);
             }}
           />
-        </Col>
+        </Col>}
         <Col>
           <OsButton
-            text="Download Trial Quotes Files"
+            text="Download Trial Files"
             buttontype="PRIMARY"
             clickHandler={() => {
               setShowDownloadFileModal(true);
@@ -653,13 +680,13 @@ const Dashboard = () => {
               Contact Sales
             </Typography>
             <Typography name="Body 3/Medium" color={token?.colorPrimaryText}>
-              For seamless access to our web application&apos;s premium features and
-              exclusive benefits, reach out to our dedicated sales team today.
-              Whether you&apos;re seeking enhanced functionality, personalized
-              assistance, or specialized packages tailored to your needs, our
-              experts are here to guide you through the subscription process.
-              Contact us now to elevate your experience and maximize the value
-              of our platform.
+              For seamless access to our web application&apos;s premium features
+              and exclusive benefits, reach out to our dedicated sales team
+              today. Whether you&apos;re seeking enhanced functionality,
+              personalized assistance, or specialized packages tailored to your
+              needs, our experts are here to guide you through the subscription
+              process. Contact us now to elevate your experience and maximize
+              the value of our platform.
             </Typography>
           </span>
           <Row justify="space-between" gutter={[16, 16]}>
@@ -750,10 +777,11 @@ const Dashboard = () => {
         onCancel={() => {
           setShowDownloadFileModal(false);
         }}
-        bodyPadding={20} />
+        bodyPadding={20}
+      />
       <DailogModal
         loading={licenseLoading}
-        title="Extended Trial Version"
+        title="Extend Trial"
         subTitle="Would you like to try ResellerOS for another 7 days?"
         primaryButtonText="Yes"
         secondaryButtonText="No"
@@ -763,7 +791,6 @@ const Dashboard = () => {
         showDailogModal={showTrailModal}
         setShowDailogModal={setShowTrailModal}
       />
-
     </GlobalLoader>
   );
 };
