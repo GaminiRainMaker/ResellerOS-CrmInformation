@@ -1115,31 +1115,10 @@ const AddQuote: FC<AddQuoteInterface> = ({
             AdvancedSetting={AdvancedSetting}
             isTrialModal
           />
-          <Row justify="space-between" style={{ margin: '20px 0px' }}>
+          <Row justify="end" style={{ margin: '20px 0px' }}>
             <Col>
               <OsButton
-                text={
-                  typeOfAddQuote === 1
-                    ? 'Generate Single Quote'
-                    : 'Generate Manually Quote'
-                }
-                buttontype="SECONDARY"
-                clickHandler={() => {
-                  form?.setFieldValue('singleQuote', true);
-                  form.submit();
-                }}
-                loading={finalLoading}
-              />
-            </Col>
-            <Col>
-              <OsButton
-                text={
-                  typeOfAddQuote === 2
-                    ? ''
-                    : !existingQuoteId
-                      ? 'Save & Generate Individual Quotes'
-                      : ''
-                }
+                text={"Generate Individual Quotes"}
                 buttontype="PRIMARY"
                 clickHandler={() => {
                   form?.setFieldValue('singleQuote', false);

@@ -31,6 +31,7 @@ import { getQuotesByUserAndTimeframe } from '../../../../../redux/actions/quote'
 import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import ContactSales from './ContactSales';
 import { CustomCardStyle } from './styled-components';
+import FileCard from '../demoBoard/FileCard';
 
 const Dashboard = () => {
   const [token] = useThemeToken();
@@ -740,6 +741,16 @@ const Dashboard = () => {
         primaryButtonText="Send Query"
         footerPadding={30}
       />
+
+      <OsModal
+        loading={false}
+        body={<FileCard />}
+        width={600}
+        open={showDownloadFileModal}
+        onCancel={() => {
+          setShowDownloadFileModal(false);
+        }}
+        bodyPadding={20} />
       <DailogModal
         loading={licenseLoading}
         title="Extended Trial Version"
@@ -752,6 +763,7 @@ const Dashboard = () => {
         showDailogModal={showTrailModal}
         setShowDailogModal={setShowTrailModal}
       />
+
     </GlobalLoader>
   );
 };

@@ -1,17 +1,17 @@
 'use client';
 
 import AddQuote from '@/app/components/common/addQuote';
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import OsButton from '@/app/components/common/os-button';
 import OsInput from '@/app/components/common/os-input';
-import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
+import { SelectFormItem } from '@/app/components/common/os-oem-select/oem-select-styled';
 import Typography from '@/app/components/common/typography';
-import {Form, Steps} from 'antd';
-import {useState} from 'react';
-import {insertCompany} from '../../../../../redux/actions/company';
-import {updateUserById} from '../../../../../redux/actions/user';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { Form, Steps } from 'antd';
+import { useState } from 'react';
+import { insertCompany } from '../../../../../redux/actions/company';
+import { updateUserById } from '../../../../../redux/actions/user';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import FileCard from './FileCard';
 
 const TrialFlow = () => {
@@ -19,7 +19,7 @@ const TrialFlow = () => {
   const [trialFlowStep, setTrialFlowStep] = useState<string>('1');
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const {userInformation} = useAppSelector((state) => state.user);
+  const { userInformation } = useAppSelector((state) => state.user);
   const [loading, setLoading] = useState(false);
 
   const onFinish = async () => {
@@ -62,9 +62,9 @@ const TrialFlow = () => {
   };
 
   return (
-    <div style={{background: 'white', borderRadius: '10px', padding: '24px'}}>
+    <div style={{ background: 'white', borderRadius: '10px', padding: '24px' }}>
       <Form
-        style={{margin: '12px'}}
+        style={{ margin: '12px' }}
         layout="vertical"
         requiredMark={false}
         form={form}
@@ -154,21 +154,7 @@ const TrialFlow = () => {
             </Row>
           </>
         ) : trialFlowStep === '2' ? (
-          <Row gutter={[16, 16]}>
-            <Col span={24}>
-              <Space direction="vertical" size={0}>
-                <Typography name="Body 2/Bold">
-                  Download Example Quotes
-                </Typography>
-                <Typography name="Caption Regular">
-                  Download these sample quotes to see how they work.
-                </Typography>
-              </Space>
-            </Col>
-            <Col span={24}>
-              <FileCard />
-            </Col>
-          </Row>
+          <FileCard />
         ) : trialFlowStep === '3' ? (
           <Row gutter={[16, 16]}>
             <Col span={24}>
