@@ -7,7 +7,7 @@
 
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
+import { Col, Row } from '@/app/components/common/antd/Grid';
 import OsCustomerSelect from '@/app/components/common/os-customer-select';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsInput from '@/app/components/common/os-input';
@@ -19,39 +19,39 @@ import {
   quoteReviewStatusOptions,
   formatStatus,
 } from '@/app/utils/CONSTANTS';
-import {currencyFormatter, formatDate} from '@/app/utils/base';
-import {Form} from 'antd';
-import {useSearchParams} from 'next/navigation';
-import {FC, Suspense, useEffect, useState} from 'react';
+import { currencyFormatter, formatDate } from '@/app/utils/base';
+import { Form } from 'antd';
+import { useSearchParams } from 'next/navigation';
+import { FC, Suspense, useEffect, useState } from 'react';
 import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 import CommonStageSelect from '@/app/components/common/os-stage-select';
 import OsButton from '@/app/components/common/os-button';
 import moment from 'moment';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
-import {getQuoteByIdForEditQuoteHeader} from '../../../../../redux/actions/quote';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import { getAllSyncTable } from '../../../../../redux/actions/syncTable';
+import { getQuoteByIdForEditQuoteHeader } from '../../../../../redux/actions/quote';
 import {
   getAllOpportunity,
   updateOpportunity,
 } from '../../../../../redux/actions/opportunity';
-import {getAllCustomer} from '../../../../../redux/actions/customer';
-import {getAddressByCustomerId} from '../../../../../redux/actions/address';
-import {getAllBillingContactByCustomerId} from '../../../../../redux/actions/billingContact';
+import { getAllCustomer } from '../../../../../redux/actions/customer';
+import { getAddressByCustomerId } from '../../../../../redux/actions/address';
+import { getAllBillingContactByCustomerId } from '../../../../../redux/actions/billingContact';
 
-const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
+const DrawerContent: FC<any> = ({ form, onFinish, totalValues }) => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const getQuoteId = searchParams.get('id');
   const isView = searchParams.get('isView');
   const [token] = useThemeToken();
 
-  const {data: dataAddress} = useAppSelector((state) => state.customer);
+  const { data: dataAddress } = useAppSelector((state) => state.customer);
   // const {quoteById, quoteByIdLoading} = useAppSelector((state) => state.quote);
   const [customerValue, setCustomerValue] = useState<number>();
   const [billingOptionsData, setBillingOptionData] = useState<any>();
-  const {data: syncTableData} = useAppSelector((state) => state.syncTable);
+  const { data: syncTableData } = useAppSelector((state) => state.syncTable);
   const [opportunityObject, setOpportunityObject] = useState<any>();
   const [quoteByIdData, setQuoteByIdData] = useState<any>();
 
@@ -254,12 +254,12 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
       },
     );
 
-    await dispatch(getAllCustomer({}))?.then((payload: any) => {});
+    await dispatch(getAllCustomer({}))?.then((payload: any) => { });
     await dispatch(getAllOpportunity())?.then((payload: any) => {
       const oppAdddetails = payload?.payload?.find(
         (itemsIn: any) => itemsIn?.id === opportuntityId,
       );
-      if (oppAdddetails?.synced_quote == getQuoteId) {
+      if (oppAdddetails?.synced_quote === getQuoteId) {
         setOpportunitySynced(true);
       } else {
         setOpportunitySynced(false);
@@ -294,20 +294,20 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
     });
 
     const singleObjects = newArrayForOpporQuoteLineItem.reduce(
-      (obj: any, item: any) => Object.assign(obj, {[item.key]: item.value}),
+      (obj: any, item: any) => Object.assign(obj, { [item.key]: item.value }),
       {},
     );
     setOpportunityObject(singleObjects);
   }, [syncTableData, getQuoteId]);
-  const disabledDate = (current: any) => {
+  const disabledDate = (current: any) =>
     // Disable dates before today
-    return current && current < moment().startOf('day');  };
+    current && current < moment().startOf('day');
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <GlobalLoader loading={quoteByIdLoading}>
         <Form
           layout="vertical"
-          wrapperCol={{flex: 1}}
+          wrapperCol={{ flex: 1 }}
           onFinish={onFinish}
           form={form}
           requiredMark={false}
@@ -337,7 +337,7 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
                       ? quoteReviewStatusOptions
                       : quoteStatusOptions
                   }
-                  style={{width: '150px'}}
+                  style={{ width: '150px' }}
                   onChange={(e: string) => {
                     setStageNewValue(e);
                   }}
@@ -345,7 +345,7 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
                 />
               </Form.Item>
             </Col>
-            <Col style={{marginBottom: '10px'}}>
+            <Col style={{ marginBottom: '10px' }}>
               {opportunitySynced ? (
                 <Typography name="Body 3/Regular">
                   Opportunity is synced to this quote
@@ -370,7 +370,7 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
               </Form.Item>
 
               <Form.Item label="Expiration Date" name="expiration_date">
-                <CommonDatePicker onBlur={undefined}        disabledDate={disabledDate}
+                <CommonDatePicker onBlur={undefined} disabledDate={disabledDate}
                 />
               </Form.Item>
               <OsCustomerSelect
@@ -380,7 +380,7 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
               />
               <Form.Item label="Opportunity" name="opportunity_id">
                 <CommonSelect
-                  style={{width: '100%'}}
+                  style={{ width: '100%' }}
                   placeholder="Contacts"
                   options={opportunityFilterOption}
                   disabled
@@ -403,7 +403,7 @@ const DrawerContent: FC<any> = ({form, onFinish, totalValues}) => {
 
               <Form.Item label="Contacts" name="contact_id">
                 <CommonSelect
-                  style={{width: '100%'}}
+                  style={{ width: '100%' }}
                   placeholder="Contacts"
                   options={billingOptionsData}
                   disabled={isView === 'true'}

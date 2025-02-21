@@ -25,9 +25,10 @@ import {updateQuoteById} from '../../../../../redux/actions/quote';
 
 const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
   const [token] = useThemeToken();
-  const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const getQuoteID = searchParams.get('id');
+  // const [totalValues, setTotalValues] = useState<any>();
+  const dispatch = useAppDispatch();
   const [totalRebateAmount, setTotalRebateAmount] = useState<any>();
   const {data: profitabilityDataByQuoteId} = useAppSelector(
     (state) => state.profitability,
@@ -194,6 +195,7 @@ const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
       );
     }
   }, [totalValues]);
+
 
   return (
     <Suspense fallback={<div>Loading...</div>}>

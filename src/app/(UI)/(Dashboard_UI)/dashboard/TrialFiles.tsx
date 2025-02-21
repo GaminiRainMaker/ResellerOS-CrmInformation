@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable no-restricted-syntax */
 import OsTable from '@/app/components/common/os-table';
-import {Table, Button, Modal} from 'antd';
-import React, {useState} from 'react';
+import { Table, Button, Modal } from 'antd';
+import React, { useState } from 'react';
 
 const files = [
   {
@@ -40,7 +42,6 @@ const TrialFiles = () => {
       const file = files.find((file) => file.key === key);
       console.log('first', file, key, selectedRowKeys);
       if (file) {
-        debugger;
         const link = document.createElement('a');
         link.href = file.url;
         link.setAttribute('download', file.name);
@@ -97,7 +98,7 @@ const TrialFiles = () => {
         columns={columns}
         dataSource={files}
         pagination={false}
-        
+
       />
       <Button
         type="primary"
@@ -118,7 +119,7 @@ const TrialFiles = () => {
           src={previewUrl}
           width="100%"
           height="500px"
-          style={{border: 'none'}}
+          style={{ border: 'none' }}
         />
       </Modal>
     </>

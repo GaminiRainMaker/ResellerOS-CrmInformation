@@ -432,6 +432,7 @@ export const processScript = (finalObj: {
               lineLabel = labelMatch[2].replace(/\s+/g, '').trim();
             }
           }
+          // Extract all locator values using regex
 
           const locatorRegex =
             currentPage === 1
@@ -440,7 +441,15 @@ export const processScript = (finalObj: {
           const match = currentLine.match(locatorRegex);
 
           if (match) {
-            const locatorName = match[2]; // Extract the locator name
+            const locators = [
+              ...currentLine.matchAll(/page\.locator\((['"`])([^'"`]+)\1\)/g),
+            ];
+
+            // Get the last locator value
+            const lastLocator = locators.length
+              ? locators[locators.length - 1]
+              : null;
+            const locatorName = lastLocator; // Extract the locator name
             // Replace all special characters with an empty string
             lineName = locatorName.replace(/[^a-zA-Z0-9]/g, '');
           }
@@ -663,7 +672,7 @@ export const processScript = (finalObj: {
                       newScript.push(
                         `await ${currentPage === 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : label}',{ exact: true }).waitFor({ state: 'visible', timeout: 50000 });`,
                       );
-                    } else {
+                    } else if (currentLine.includes('getByLabel')) {
                       newScript.push(
                         `await ${currentPage === 1 ? 'page' : 'page1'}.getByLabel('${dataObj.locater ? dataObj.locater : exactLineLabel || label}').waitFor({ state: 'visible', timeout: 50000 });`,
                       );

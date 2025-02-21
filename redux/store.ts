@@ -44,6 +44,7 @@ import LineItemSyncing from './slices/LineItemSyncing';
 import formulas from './slices/formulas';
 import salesForceCredentials from './slices/salesForceCredentials';
 import canvas from './slices/canvas';
+import license from './slices/license';
 import company from './slices/company';
 
 // Configure redux store
@@ -92,6 +93,7 @@ const store = configureStore({
     formulas,
     salesForceCredentials,
     canvas,
+    license,
     company,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),

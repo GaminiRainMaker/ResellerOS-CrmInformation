@@ -6,6 +6,7 @@ import {usePathname} from 'next/navigation';
 import CustomHeader from './layouts/Header';
 import SideBar from './layouts/SideBar';
 import {useAppSelector} from '../../../../redux/hook';
+import TrialBanner from '@/app/components/common/trialBanner/TrialBanner';
 
 const {Content} = Layout;
 export default function DashboardLayout({

@@ -3,15 +3,16 @@
 'use client';
 
 import ConfigProvider from 'antd/es/config-provider';
-import {Plus_Jakarta_Sans} from 'next/font/google';
+import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {useSearchParams} from 'next/navigation';
-import {Suspense, useEffect, useState} from 'react';
+import { redirect, useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
+import Script from 'next/script';
+import Cookies from 'js-cookie';
 import Providers from './Provider';
 import theme from './style/theme';
 import CanvasRedirectWrapper from './CanvasRedirect';
-import Script from 'next/script';
 
 const jakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -19,7 +20,7 @@ const jakartaSans = Plus_Jakarta_Sans({
   variable: '--font-jakarta-sans',
 });
 
-export default function RootLayout({children}: {children: React.ReactNode}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const searchParams = useSearchParams();
   const [locationdata, setLOcationData] = useState<string | null>(null);
 
@@ -31,6 +32,17 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
       setLOcationData('lifeboat');
     }
   }, [searchParams]);
+
+  // useEffect(() => {
+  //   const token: any = Cookies.get('token');
+  //   if (!token) {
+  //     redirect("/login")
+  //   }
+
+  // }, []);
+
+ 
+  
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
