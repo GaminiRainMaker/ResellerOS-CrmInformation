@@ -288,22 +288,6 @@ const GrantLicense = ({
 
 
 
-          {licenseTypes === 'LifeTime' && (
-            <Space
-              direction="vertical"
-              style={{ width: '100%', marginTop: '16px' }}
-              size={2}
-            >
-              <Typography name="Body 3/Medium">License Features</Typography>
-              <Form.Item name="features">
-                <CheckboxGroup>
-                  <Checkbox value="QuoteAI">QuoteAI</Checkbox>
-                  <Checkbox value="DealRegAI">DealRegAI</Checkbox>
-                </CheckboxGroup>
-              </Form.Item>
-            </Space>
-          )}
-
           {licenseTypes === 'Paid' && (
             <>
               <Space direction="vertical" size={2} style={{ marginBottom: "20px", width: '100%', marginTop: "20px" }}>
@@ -340,44 +324,43 @@ const GrantLicense = ({
                   /></Col>
 
                 </Row>
-                {/* </Form.Item> */}
-                <Space
-                  direction="vertical"
-                  style={{ marginTop: '16px', width: '100%' }}
-                  size={2}
-                >
-                  <Typography name="Body 3/Medium">License Features</Typography>
-                  {/* <Form.Item name="features"> */}
-                  <CheckboxGroup onChange={(e: any) => {
-                    setLicenseForComp(e)
-                  }}>
-                    <Checkbox value="QuoteAI">QuoteAI</Checkbox>
-                    <Checkbox value="DealRegAI">DealRegAI</Checkbox>
-                  </CheckboxGroup>
-                  {/* </Form.Item> */}
-                </Space>
-                {licenseTakenFor === "Organization" &&
-                  <Space direction='horizontal'>
-                    {licenseForComp?.includes('QuoteAI') &&
-
-                      <div>
-                        <Typography name="Body 3/Medium">Quote Ai Seats</Typography>
-                        <OsInput type='number' onChange={(e: any) => {
-                          setSeatsForComp({ ...seatsForComp, QuoteAI: e?.target?.value })
-                        }} />
-                      </div>}
-                    {licenseForComp?.includes('DealRegAI') &&
-
-                      <div>
-                        <Typography name="Body 3/Medium">DealReg Seats</Typography>
-                        <OsInput type='number' onChange={(e: any) => {
-                          setSeatsForComp({ ...seatsForComp, DealRegAI: e?.target?.value })
-                        }} />
-                      </div>}
-                  </Space>
-                }
               </Space></>
           )}
+
+          <Space
+            direction="vertical"
+            style={{ marginTop: '16px', width: '100%' }}
+            size={2}
+          >
+            <Typography name="Body 3/Medium">License Features</Typography>
+            {/* <Form.Item name="features"> */}
+            <CheckboxGroup onChange={(e: any) => {
+              setLicenseForComp(e)
+            }}>
+              <Checkbox value="QuoteAI">QuoteAI</Checkbox>
+              <Checkbox value="DealRegAI">DealRegAI</Checkbox>
+            </CheckboxGroup>
+          </Space>
+          {licenseTakenFor === "Organization" &&
+            <Space direction='horizontal'>
+              {licenseForComp?.includes('QuoteAI') &&
+
+                <div>
+                  <Typography name="Body 3/Medium">Quote Ai Seats</Typography>
+                  <OsInput type='number' onChange={(e: any) => {
+                    setSeatsForComp({ ...seatsForComp, QuoteAI: e?.target?.value })
+                  }} />
+                </div>}
+              {licenseForComp?.includes('DealRegAI') &&
+
+                <div>
+                  <Typography name="Body 3/Medium">DealReg Seats</Typography>
+                  <OsInput type='number' onChange={(e: any) => {
+                    setSeatsForComp({ ...seatsForComp, DealRegAI: e?.target?.value })
+                  }} />
+                </div>}
+            </Space>
+          }
         </Col>
       </Row>
 
