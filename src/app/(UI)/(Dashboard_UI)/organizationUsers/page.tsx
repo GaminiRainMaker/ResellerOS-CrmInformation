@@ -12,19 +12,22 @@ import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import { EyeIcon, MinusIcon, PencilSquareIcon, PlusIcon } from '@heroicons/react/24/outline';
+import {
+  EyeIcon,
+  MinusIcon,
+  PencilSquareIcon,
+  PlusIcon,
+} from '@heroicons/react/24/outline';
 import { Form, message } from 'antd';
 import { Option } from 'antd/es/mentions';
 import dayjs from 'dayjs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import {
-  assignLicense,
-  revokeLicense,
-} from '../../../../../redux/actions/license';
+import { revokeLicense } from '../../../../../redux/actions/license';
 import { queryAllUsers } from '../../../../../redux/actions/user';
 import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import GrantLicense from './GrantLicense';
+import { allocateLicensesToOrg } from '../../../../../redux/actions/orgLicenseAllocation';
 import { handleDate } from '@/app/utils/base';
 import OsButton from '@/app/components/common/os-button';
 
@@ -40,17 +43,6 @@ const OrganizationUsers = () => {
   const [showLicenseModal, setShowLicenseModal] = useState<boolean>(false);
   const [recordData, setRecordData] = useState<any>();
   const [activeKey, setActiveKey] = useState<string>('1');
-
-  const [licenseTypes, setLicenseType] = useState('LifeTime');
-  const [licenseTakenFor, setLicenseTakenFor] = useState('Self');
-  const [activeLicense, setActiveLicense] = useState<any>();
-  const [expireDate, setExpireDate] = useState<any>({})
-  const [licenseForComp, setLicenseForComp] = useState<any>()
-
-  const [seatsForComp, setSeatsForComp] = useState<any>()
-
-
-
 
   const [query, setQuery] = useState<{
     organization: string | null;
@@ -142,7 +134,7 @@ const OrganizationUsers = () => {
   ];
 
   useEffect(() => {
-    dispatch(queryAllUsers(searchQuery))
+    dispatch(queryAllUsers(searchQuery));
   }, [getOrganization, searchQuery]);
 
   const locale = {
@@ -188,102 +180,110 @@ const OrganizationUsers = () => {
 
   const assignLicenseForm = async () => {
     try {
-
-
-      let newObj: any = {
-        features: licenseForComp,
-        expirationTime: `${expireDate?.days}_${expireDate?.typeOf}`,
-        licenseType: licenseTypes,
-        type_of_license: licenseTakenFor,
-        quote_seats: seatsForComp?.QuoteAI,
-        dealreg_seats: seatsForComp?.DealRegAI
-
-        // se
-      }
-
       const licenseFormValue = licenseForm.getFieldsValue();
-      const { licenseType, expirationTime, features } = licenseFormValue;
+
+      const {
+        expirationTime,
+        features,
+        expirationTimeUnit,
+        licenseCategory,
+        quoteAISeats,
+        dealRegAISeats,
+        licenseType,
+      } = licenseFormValue;
 
       // Validation logic
-      if (!newObj?.licenseType) {
+      if (!licenseCategory) {
+        message.error('License Category is required!');
+        return;
+      }
+      if (!licenseType) {
         message.error('License Type is required!');
         return;
       }
-      if (newObj?.licenseType === 'Paid' && !newObj?.expirationTime) {
+      if (
+        licenseType === 'ExpirationTime' &&
+        !expirationTime &&
+        !expirationTimeUnit
+      ) {
         message.error('Expiration Time is required for Paid licenses!');
         return;
       }
-      if (!newObj?.features || newObj?.features.length === 0) {
+      if (!features || features.length === 0) {
         message.error('At least one feature must be selected!');
         return;
       }
-
+      // if (!quoteAISeats || !dealRegAISeats) {
+      //   message.error('At least one seat must be entered!');
+      //   return;
+      // }
       // Calculate expiration date
       let expirationDate: Date | null = null;
-
-      if (newObj?.licenseType === 'Paid') {
-        expirationDate = dayjs().add(expireDate?.days, expireDate?.typeOf).toDate();
-
-        // switch (expirationTime) {
-        //   case '7 days':
-        //     expirationDate = dayjs().add(7, 'day').toDate();
-        //     break;
-        //   case '15 days':
-        //     expirationDate = dayjs().add(15, 'day').toDate();
-        //     break;
-        //   case '1 month':
-        //     expirationDate = dayjs().add(1, 'month').toDate();
-        //     break;
-        //   case '6 months':
-        //     expirationDate = dayjs().add(6, 'month').toDate();
-        //     break;
-        //   case '1 year':
-        //     expirationDate = dayjs().add(1, 'year').toDate();
-        //     break;
-        //   default:
-        //     message.error('Invalid expiration time selected!');
-        //     return;
-        // }
+      if (licenseType === 'Lifetime') {
+        // If the license type is "Lifetime", set expirationDate to 100 years from today
+        expirationDate = dayjs().add(100, 'years').toDate();
+      } else if (
+        expirationTime &&
+        ['days', 'month', 'year'].includes(expirationTimeUnit)
+      ) {
+        // If expiration time and unit are provided, calculate the expiration date
+        expirationDate = dayjs()
+          .add(expirationTime, expirationTimeUnit as dayjs.ManipulateType)
+          .toDate();
+      } else {
+        // If invalid expiration time or unit, show error
+        message.error('Invalid expiration time or unit selected!');
+        return;
       }
 
       // Transform licenseFeature array into separate objects
-      const licenseObjects = newObj?.features?.map((feature: string) => ({
-        license_type: newObj?.licenseType,
+      const licenseObjects = features.map((feature: string) => ({
+        license_type: 'Paid',
         expiration_date: expirationDate,
         feature_name: feature,
         org_id: recordData.organization,
         user_id: recordData.id,
         status: 'active',
-        type_of_license: licenseTakenFor,
-        quote_seats: seatsForComp?.QuoteAI,
-        dealreg_seats: seatsForComp?.DealRegAI
+        license_category: licenseCategory,
+        total_licenses:
+          feature === 'QuoteAI'
+            ? quoteAISeats
+            : feature === 'DealRegAI'
+              ? dealRegAISeats
+              : 0,
       }));
+      console.log('licenseObjects', licenseObjects);
 
-      // Dispatch API request with error handling
+      return;
+      // Dispatch API request for each license object
       if (licenseObjects.length > 0) {
-        const response: any = await dispatch(assignLicense(licenseObjects));
+        try {
+          for (const license of licenseObjects) {
+            // const apiFunction =
+            //   licenseCategory === 'Organization' ? allocateLicensesToOrg : AssignLicenseUser; // Choose API function
+            const response: any = await dispatch(
+              allocateLicensesToOrg(license),
+            ); // Call API per record
 
-        if (response?.error) {
-          console.error('API Error:', response.error);
-          message.error(
-            response.error.message ||
-            'Failed to assign licenses. Please try again.',
-          );
-          licenseForm?.resetFields();
-          return;
-        }
+            if (response?.error) {
+              console.error('API Error:', response.error);
+              message.error(
+                response.error.message ||
+                'Failed to assign some licenses. Please try again.',
+              );
+              continue; // Skip to the next record instead of stopping execution
+            }
+          }
 
-        if (response?.payload) {
-          message.success('License assigned successfully!');
+          message.success('All licenses assigned successfully!');
           setShowLicenseModal(false);
           licenseForm?.resetFields();
-        } else {
-          message.error('Unexpected error occurred. Please try again.');
+        } catch (error) {
+          console.error('Unexpected Error:', error);
+          message.error('Something went wrong. Please try again.');
           licenseForm?.resetFields();
         }
       }
-      await dispatch(queryAllUsers(searchQuery))
-
     } catch (error) {
       console.error('Unexpected Error:', error);
       licenseForm?.resetFields();
@@ -291,28 +291,27 @@ const OrganizationUsers = () => {
     }
   };
 
-  const revokeLicenseForm = async (type: any, recordId: any) => {
+  const revokeLicenseForm = async () => {
     try {
-      // const licenseFormValue = licenseForm.getFieldsValue();
-      // const { features_type } = licenseFormValue;
+      const licenseFormValue = licenseForm.getFieldsValue();
+      const { features_type } = licenseFormValue;
 
       // Determine which licenses should be revoked
       let licensesToRevoke: string[] = [];
-      licensesToRevoke = [type];
 
-      // if (!features_type || features_type.length === 0) {
-      //   // If nothing is selected, revoke both QuoteAI and DealRegAI
-      //   licensesToRevoke = [type];
-      // } else if (features_type.includes('QuoteAI')) {
-      //   licensesToRevoke = ['DealRegAI']; // Revoke DealRegAI if QuoteAI is selected
-      // } else if (features_type.includes('DealRegAI')) {
-      //   licensesToRevoke = ['QuoteAI']; // Revoke QuoteAI if DealRegAI is selected
-      // }
+      if (!features_type || features_type.length === 0) {
+        // If nothing is selected, revoke both QuoteAI and DealRegAI
+        licensesToRevoke = ['QuoteAI', 'DealRegAI'];
+      } else if (features_type.includes('QuoteAI')) {
+        licensesToRevoke = ['DealRegAI']; // Revoke DealRegAI if QuoteAI is selected
+      } else if (features_type.includes('DealRegAI')) {
+        licensesToRevoke = ['QuoteAI']; // Revoke QuoteAI if DealRegAI is selected
+      }
 
       // Transform selected licenses into API request format
       const licenseObjects = licensesToRevoke.map((feature) => ({
         feature_name: feature,
-        user_id: recordId,
+        user_id: recordData.id,
       }));
 
       if (licenseObjects.length > 0) {
@@ -338,8 +337,6 @@ const OrganizationUsers = () => {
         setShowLicenseModal(false);
         licenseForm?.resetFields();
         setActiveKey('1');
-        await dispatch(queryAllUsers(searchQuery))
-
       }
     } catch (error) {
       console.error('Unexpected Error:', error);
@@ -348,8 +345,6 @@ const OrganizationUsers = () => {
       setActiveKey('1');
     }
   };
-
-
 
   const LicenseColumns = [
     {
@@ -387,10 +382,10 @@ const OrganizationUsers = () => {
       dataIndex: 'expiration_date',
       key: 'expiration_date',
       render: (text: any, record: any) => (
-        <OsButton clickHandler={() => {
-          console.log("324332432", record)
-          revokeLicenseForm(record?.feature_name, record?.user_id)
-        }}
+        <OsButton
+          clickHandler={() => {
+            // revokeLicenseForm(record?.feature_name, record?.user_id)
+          }}
           text="Revoke"
           buttontype="PRIMARY"
         />
@@ -503,52 +498,24 @@ const OrganizationUsers = () => {
                   />
                 ),
             }}
-
           />
         </div>
       </Space>
-      <OsModal
-        loading={LicenseLoading}
-        title="Grant Licenses"
-        bodyPadding={22}
-        body={
-          <GrantLicense
-            form={licenseForm}
-            onFinish={assignLicenseForm
-              // activeKey === '1'
-              //   ? assignLicenseForm
-              //   : activeKey === '2'
-              //     ? revokeLicenseForm
-              //     : null
-            }
-            setActiveKey={setActiveKey}
-            recordData={recordData}
-            activeKey={activeKey}
 
-            licenseTypes={licenseTypes}
-            setLicenseType={setLicenseType}
-            licenseTakenFor={licenseTakenFor}
-            setLicenseTakenFor={setLicenseTakenFor}
-            activeLicense={activeLicense}
-            setActiveLicense={setActiveLicense}
-            expireDate={expireDate}
-            setExpireDate={setExpireDate}
-            licenseForComp={licenseForComp}
-            setLicenseForComp={setLicenseForComp}
-            seatsForComp={seatsForComp}
-            setSeatsForComp={setSeatsForComp}
-          />
-        }
+      <OsModal
+        destroyOnClose
+        loading={LicenseLoading}
+        title="Licenses Management"
+        bodyPadding={22}
+        body={<GrantLicense form={licenseForm} onFinish={assignLicenseForm} />}
         width={600}
         open={showLicenseModal}
-        onOk={assignLicenseForm}
+        onOk={licenseForm?.submit}
         onCancel={() => {
           setShowLicenseModal(false);
           licenseForm?.resetFields();
-          setActiveKey('1');
-          setRecordData({});
         }}
-        primaryButtonText={activeKey === '3' ? '' : 'Save'}
+        primaryButtonText={'Save'}
       />
     </>
   );

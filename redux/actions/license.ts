@@ -14,6 +14,17 @@ export const assignLicense = createAsyncThunk(
   },
 );
 
+export const assignLicenseToOrgUser = createAsyncThunk(
+  'license/assignLicenseToOrgUser',
+  async (data: any, thunkApi) => {
+      const res = await LICENSE_API.assignLicenseToOrgUser(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);
+
 export const revokeLicense = createAsyncThunk(
   'license/revokeLicense',
   async (data: any, thunkApi) => {
