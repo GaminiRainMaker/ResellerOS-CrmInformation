@@ -370,14 +370,24 @@ const DrawerContent: FC<any> = ({ form, onFinish, totalValues }) => {
                 />
               )}
             </Col>
+            <Col span={24} style={{ marginTop: "10px", marginBottom: "15px" }}>
+              <Typography name="Body 4/Medium" as="div">
+                Quote #
+              </Typography>
+              <Typography name="Body 2/Regular">
+                {quoteByIdData?.quote_unique_in}
+                {/* {formatDate(quoteByIdData?.date, 'MM/DD/YYYY | HH:MM')} */}
 
+              </Typography>
+            </Col>
+            {/* <Form.Item label="Quote #" name="quote_unique_in">
+              <OsInput placeholder="ID" disabled />
+            </Form.Item> */}
             <Col span={24}>
               <Form.Item label="Quote Name" name="file_name">
                 <OsInput disabled={isView === 'true'} />
               </Form.Item>
-              <Form.Item label="Quote #" name="quote_unique_in">
-                <OsInput placeholder="ID" disabled />
-              </Form.Item>
+
 
               <Form.Item label="Expiration Date" name="expiration_date">
                 <CommonDatePicker onBlur={undefined} disabledDate={disabledDate}
