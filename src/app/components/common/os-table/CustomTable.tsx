@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable consistent-return */
-import {PaginationProps} from 'antd';
-import {FC, useState} from 'react';
+import { PaginationProps } from 'antd';
+import { FC, useState } from 'react';
 import useThemeToken from '../hooks/useThemeToken';
 import GlobalLoader from '../os-global-loader';
-import {CustomTable} from './styled-components';
+import { CustomTable } from './styled-components';
 
 const OsTableWithOutDrag: FC<any> = ({
   scrollx = 1000,
@@ -117,14 +117,14 @@ const OsTableWithOutDrag: FC<any> = ({
         pageSizeOptions: [5, 10, 20, 30, 50, 100],
         // hideOnSinglePage: true,
       }}
-      scroll={
-        scrolly
-          ? {y: scrolly as number}
-          : scrollx
-            ? {y: scrollx as number}
-            : undefined
-      }
-      // paginationBorder={paginationProps}
+    // scroll={
+    //   scrolly
+    //     ? { y: scrolly as number }
+    //     : scrollx
+    //       ? { y: scrollx as number }
+    //       : undefined
+    // }
+    // paginationBorder={paginationProps}
     />
   );
 };

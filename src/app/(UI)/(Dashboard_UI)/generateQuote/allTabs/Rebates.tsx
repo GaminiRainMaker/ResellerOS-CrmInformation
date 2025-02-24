@@ -4,7 +4,7 @@
 
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
+import { Col, Row } from '@/app/components/common/antd/Grid';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsCollapse from '@/app/components/common/os-collapse';
@@ -14,13 +14,14 @@ import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
-import {pricingMethod} from '@/app/utils/CONSTANTS';
-import {currencyFormatter} from '@/app/utils/base';
-import {Badge} from 'antd';
-import {FC, useEffect, useState} from 'react';
-import {useSearchParams} from 'next/navigation';
-import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
-import {getRebateQuoteLineItemByQuoteId} from '../../../../../../redux/actions/rebateQuoteLineitem';
+import { pricingMethod } from '@/app/utils/CONSTANTS';
+import { currencyFormatter } from '@/app/utils/base';
+import { Badge } from 'antd';
+import { FC, useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useAppDispatch, useAppSelector } from '../../../../../../redux/hook';
+import { getRebateQuoteLineItemByQuoteId } from '../../../../../../redux/actions/rebateQuoteLineitem';
+import OsTable from '@/app/components/common/os-table';
 
 const Rebates: FC<any> = ({
   tableColumnDataShow,
@@ -33,8 +34,8 @@ const Rebates: FC<any> = ({
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const dispatch = useAppDispatch();
-  const {abbreviate} = useAbbreviationHook(0);
-  const {data: RebateData, loading} = useAppSelector(
+  const { abbreviate } = useAbbreviationHook(0);
+  const { data: RebateData, loading } = useAppSelector(
     (state) => state.rebateQuoteLineItem,
   );
   const [rebateFinalData, setRebateFinalData] = useState<any>([]);
@@ -44,7 +45,7 @@ const Rebates: FC<any> = ({
   }, [getQuoteID]);
 
   const filterDataByValue = (data: any[], filterValue?: string) => {
-    const groupedData: {[key: string]: any} = {};
+    const groupedData: { [key: string]: any } = {};
     const arrayData: any[] = [];
 
     if (!data || data.length === 0) {
@@ -114,8 +115,8 @@ const Rebates: FC<any> = ({
         groupedData[name].totalGrossProfitPercentage =
           groupedData[name].totalExtendedPrice !== 0
             ? (groupedData[name].totalGrossProfit /
-                groupedData[name].totalExtendedPrice) *
-              100
+              groupedData[name].totalExtendedPrice) *
+            100
             : 0;
 
         groupedData[name].QuoteLineItem.push(item);
@@ -160,7 +161,7 @@ const Rebates: FC<any> = ({
     value: any,
     updatedSelectedFilter: string,
     type: string,
-  ) => {};
+  ) => { };
 
   const RebatesQuoteLineItemcolumns = [
     {
@@ -174,7 +175,7 @@ const Rebates: FC<any> = ({
           }}
           disabled
           value={text}
-          onChange={(v) => {}}
+          onChange={(v) => { }}
         />
       ),
       width: 111,
@@ -198,7 +199,7 @@ const Rebates: FC<any> = ({
       render: (text: string, record: any) => (
         <CommonSelect
           disabled
-          style={{width: '100%', height: '36px'}}
+          style={{ width: '100%', height: '36px' }}
           placeholder="Select"
           defaultValue={text}
           options={pricingMethod}
@@ -308,7 +309,7 @@ const Rebates: FC<any> = ({
     setFinaRebateTableCol(newArr);
   }, [tableColumnDataShow]);
 
-  const rowSelection = () => {};
+  const rowSelection = () => { };
 
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Rebates" />,
@@ -318,8 +319,33 @@ const Rebates: FC<any> = ({
     <>
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
         !selectedFilter ? (
-          <div key={JSON.stringify(rebateFinalData)}>
-            <OsTableWithOutDrag
+          <div style={{ overflowX: 'auto' }} key={JSON.stringify(rebateFinalData)}>
+            <OsTable
+              // key={tabItem?.key}
+              // loading={oppSyncValueLoading}
+              columns={finaRebateTableCol && finaRebateTableCol.length > 0
+                ? finaRebateTableCol.map((items: any) => ({
+                  ...items,
+                  title: (
+                    <Typography name="Body 4/Medium" className="dragHandler" color={token?.colorPrimaryText}>
+                      {items?.title}
+                    </Typography>
+                  ),
+                  width: 230,  // Set fixed width for the columns
+                }))
+                : []}
+              dataSource={rebateFinalData}
+              locale={locale}
+              rowSelection={rowSelection}
+              selectedRowsKeys={selectTedRowIds}
+              defaultPageSize={rebateFinalData?.length}
+              scroll={{
+                x: 'max-content', // Enable horizontal scroll
+                y: 1000  // Optional vertical scroll
+              }}
+              style={{ tableLayout: 'auto' }}  // Let the table manage column width
+            />
+            {/* <OsTableWithOutDrag
               loading={loading}
               columns={finaRebateTableCol}
               dataSource={rebateFinalData}
@@ -328,8 +354,9 @@ const Rebates: FC<any> = ({
               rowSelection={rowSelection}
               selectedRowsKeys={selectTedRowIds}
               defaultPageSize={rebateFinalData?.length}
-            />
+            /> */}
           </div>
+
         ) : (
           <>
             {selectedFilter && rebateFinalData?.length > 0 ? (
@@ -355,7 +382,7 @@ const Rebates: FC<any> = ({
                                 count={finalDataItem?.QuoteLineItem?.length}
                               >
                                 <Typography
-                                  style={{padding: '5px 8px 0px 0px'}}
+                                  style={{ padding: '5px 8px 0px 0px' }}
                                   name="Body 4/Medium"
                                   color={token?.colorBgContainer}
                                   ellipsis
@@ -381,7 +408,7 @@ const Rebates: FC<any> = ({
                                   ellipsis
                                   tooltip
                                   as="div"
-                                  style={{marginLeft: '2px'}}
+                                  style={{ marginLeft: '2px' }}
                                 >
                                   $
                                   {abbreviate(
@@ -406,7 +433,7 @@ const Rebates: FC<any> = ({
                                   ellipsis
                                   tooltip
                                   as="div"
-                                  style={{marginLeft: '2px'}}
+                                  style={{ marginLeft: '2px' }}
                                 >
                                   $
                                   {abbreviate(
@@ -431,13 +458,13 @@ const Rebates: FC<any> = ({
                                   ellipsis
                                   tooltip
                                   as="div"
-                                  style={{marginLeft: '2px'}}
+                                  style={{ marginLeft: '2px' }}
                                 >
                                   {' '}
                                   {abbreviate(
                                     Number(
                                       finalDataItem?.totalGrossProfitPercentage ??
-                                        0.0,
+                                      0.0,
                                     ),
                                   )}
                                   %
@@ -447,10 +474,36 @@ const Rebates: FC<any> = ({
                           </Row>
                         ),
                         children: (
-                          <div
-                            key={JSON.stringify(finalDataItem?.QuoteLineItem)}
+
+                          <div style={{ overflowX: 'auto' }} key={JSON.stringify(finalDataItem?.QuoteLineItem)}
                           >
-                            <OsTableWithOutDrag
+                            <OsTable
+                              // key={tabItem?.key}
+                              loading={loading}
+                              columns={finaRebateTableCol && finaRebateTableCol.length > 0
+                                ? finaRebateTableCol.map((items: any) => ({
+                                  ...items,
+                                  title: (
+                                    <Typography name="Body 4/Medium" className="dragHandler" color={token?.colorPrimaryText}>
+                                      {items?.title}
+                                    </Typography>
+                                  ),
+                                  width: 230,  // Set fixed width for the columns
+                                }))
+                                : []}
+                              dataSource={finalDataItem?.QuoteLineItem}
+                              locale={locale}
+                              rowSelection={rowSelection}
+                              selectedRowsKeys={selectTedRowIds}
+                              defaultPageSize={finalDataItem?.QuoteLineItem?.length
+                              }
+                              scroll={{
+                                x: 'max-content', // Enable horizontal scroll
+                                y: 1000  // Optional vertical scroll
+                              }}
+                              style={{ tableLayout: 'auto' }}  // Let the table manage column width
+                            />
+                            {/* <OsTableWithOutDrag
                               loading={loading}
                               columns={finaRebateTableCol}
                               dataSource={finalDataItem?.QuoteLineItem}
@@ -461,8 +514,9 @@ const Rebates: FC<any> = ({
                               defaultPageSize={
                                 finalDataItem?.QuoteLineItem?.length
                               }
-                            />
+                            /> */}
                           </div>
+
                         ),
                       },
                     ]}
