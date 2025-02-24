@@ -44,6 +44,7 @@ import {
 } from '../../../../../../redux/actions/quoteFile';
 import { useAppDispatch, useAppSelector } from '../../../../../../redux/hook';
 import { setConcernQuoteLineItemData } from '../../../../../../redux/slices/quotelineitem';
+import OsTable from '@/app/components/common/os-table';
 
 const ReviewQuotes: FC<any> = ({
   tableColumnDataShow,
@@ -75,6 +76,8 @@ const ReviewQuotes: FC<any> = ({
   const [conditionsForTheButtons, setConditionsForTheButtons] = useState<any>();
   const [fileData, setFileData] = useState<any>();
   const [reviewQuotesData, setReviewQuotesData] = useState<any>();
+  const [tableScroll, setTableScroll] = useState<any>(null)
+
   const [finalReviewCol, setFinalReviewCol] = useState<any>();
   const [fileVerificationLoading, setFileVerificationLoading] = useState(false);
   const [pageChange, setPageChange] = useState<any>();
@@ -694,9 +697,11 @@ const ReviewQuotes: FC<any> = ({
         shouldPush = true;
       }
       if (shouldPush) {
+
         newArr?.push(itemCol);
       }
     });
+
     setFinalReviewCol(newArr);
   }, [tableColumnDataShow]);
 
@@ -783,7 +788,31 @@ const ReviewQuotes: FC<any> = ({
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
         !selectedFilter ? (
           <div>
-            <OsTableWithOutDrag
+            {finalReviewCol && finalReviewCol?.length > 0 &&
+
+              <OsTable
+                tableScroll={tableScroll}
+                loading={quoteFileDataLoading}
+                columns={finalReviewCol && finalReviewCol.length > 0
+                  ? finalReviewCol.map((items: any) => ({
+                    ...items,
+                    title: (
+                      <Typography name="Body 4/Medium" className="dragHandler" color={token?.colorPrimaryText}>
+                        {items?.title}
+                      </Typography>
+                    ),
+                  }))
+                  : []}
+                dataSource={quoteFileUnverifiedById?.[0]?.QuoteLineItems}
+                scroll
+                locale={locale}
+                defaultPageSize={quoteFileUnverifiedById?.[0]?.QuoteLineItems?.length || 10}
+                setPageChange={setPageChange}
+                pageChange={pageChange}
+                uniqueId={quoteFileUnverifiedById?.[0]?.name}
+              />
+            }
+            {/* <OsTableWithOutDrag
               loading={quoteFileDataLoading}
               columns={finalReviewCol}
               dataSource={quoteFileUnverifiedById?.[0]?.QuoteLineItems}
@@ -792,7 +821,7 @@ const ReviewQuotes: FC<any> = ({
               defaultPageSize={
                 quoteFileUnverifiedById?.[0]?.QuoteLineItems?.length
               }
-            />
+            /> */}
           </div>
         ) : selectedFilter && reviewQuotesData?.length > 0 ? (
           <>
@@ -954,17 +983,43 @@ const ReviewQuotes: FC<any> = ({
                         </Row>
                       ),
                       children: (
-                        <OsTableWithOutDrag
-                          loading={quoteFileDataLoading}
-                          columns={finalReviewCol}
-                          dataSource={finalDataItem?.QuoteLineItem}
-                          scroll
-                          locale={locale}
-                          defaultPageSize={finalDataItem?.QuoteLineItem?.length}
-                          setPageChange={setPageChange}
-                          pageChange={pageChange}
-                          uniqueId={finalDataItem?.name}
-                        />
+                        <>
+                          {finalReviewCol && finalReviewCol?.length > 0 &&
+
+                            <OsTable
+                              tableScroll={tableScroll}
+                              loading={quoteFileDataLoading}
+                              columns={finalReviewCol && finalReviewCol.length > 0
+                                ? finalReviewCol.map((items: any) => ({
+                                  ...items,
+                                  title: (
+                                    <Typography name="Body 4/Medium" className="dragHandler" color={token?.colorPrimaryText}>
+                                      {items?.title}
+                                    </Typography>
+                                  ),
+                                }))
+                                : []}
+                              dataSource={finalDataItem?.QuoteLineItem || []}
+                              scroll
+                              locale={locale}
+                              defaultPageSize={finalDataItem?.QuoteLineItem?.length || 10}
+                              setPageChange={setPageChange}
+                              pageChange={pageChange}
+                              uniqueId={finalDataItem?.name}
+                            />
+                          }
+                          {/* <OsTableWithOutDrag
+                            loading={quoteFileDataLoading}
+                            columns={finalReviewCol}
+                            dataSource={finalDataItem?.QuoteLineItem}
+                            scroll
+                            locale={locale}
+                            defaultPageSize={finalDataItem?.QuoteLineItem?.length}
+                            setPageChange={setPageChange}
+                            pageChange={pageChange}
+                            uniqueId={finalDataItem?.name}
+                          /> */}
+                        </>
                       ),
                     },
                   ]}
@@ -1060,7 +1115,7 @@ const ReviewQuotes: FC<any> = ({
         }}
         singleButtonInCenter
       />
-    </GlobalLoader>
+    </GlobalLoader >
   );
 };
 
