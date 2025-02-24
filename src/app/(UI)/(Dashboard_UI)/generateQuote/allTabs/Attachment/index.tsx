@@ -8,25 +8,26 @@ import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
-import {TrashIcon} from '@heroicons/react/24/outline';
-import {Form, Space, notification} from 'antd';
-import {useSearchParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
+import { TrashIcon } from '@heroicons/react/24/outline';
+import { Form, Space, notification } from 'antd';
+import { useSearchParams } from 'next/navigation';
+import { FC, useEffect, useState } from 'react';
 import {
   deleteAttachDocumentById,
   getAllAttachmentDocument,
   insertAttachmentDocument,
 } from '../../../../../../../redux/actions/attachmentDocument';
-import {getProfitabilityByQuoteId} from '../../../../../../../redux/actions/profitability';
+import { getProfitabilityByQuoteId } from '../../../../../../../redux/actions/profitability';
 import {
   deleteQuoteFileById,
   getQuoteFileByQuoteId,
   getQuoteFileByQuoteIdAll,
   getQuoteFileCount,
 } from '../../../../../../../redux/actions/quoteFile';
-import {deleteLineItemsByQuoteFileId} from '../../../../../../../redux/actions/quotelineitem';
-import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
+import { deleteLineItemsByQuoteFileId } from '../../../../../../../redux/actions/quotelineitem';
+import { useAppDispatch, useAppSelector } from '../../../../../../../redux/hook';
 import Attachments from './Attachments';
+import OsTable from '@/app/components/common/os-table';
 
 const AttachmentDocument: FC<any> = ({
   typeForAttachmentFilter,
@@ -40,11 +41,11 @@ const AttachmentDocument: FC<any> = ({
   const isView = searchParams.get('isView');
   const [attachmentForm] = Form.useForm();
   const [api, contextHolder] = notification.useNotification();
-  const {data: attachmentDocumentData, loading} = useAppSelector(
+  const { data: attachmentDocumentData, loading } = useAppSelector(
     (state) => state.attachmentDocument,
   );
-  const {userInformation} = useAppSelector((state) => state.user);
-  const {getQuoteFileByQuoteIdAllData: quoteFileData} = useAppSelector(
+  const { userInformation } = useAppSelector((state) => state.user);
+  const { getQuoteFileByQuoteIdAllData: quoteFileData } = useAppSelector(
     (state) => state.quoteFile,
   );
   const [uploadFileData, setUploadFileData] = useState<any>([]);
@@ -124,7 +125,7 @@ const AttachmentDocument: FC<any> = ({
       render: (text: any, record: any) => (
         <Typography
           name="Body 4/Medium"
-          style={{color: token?.colorInfo}}
+          style={{ color: token?.colorInfo }}
           hoverOnText
           onClick={() => {
             window?.open(record?.url);
@@ -155,7 +156,7 @@ const AttachmentDocument: FC<any> = ({
             height={24}
             width={24}
             color={token.colorError}
-            style={{cursor: 'pointer'}}
+            style={{ cursor: 'pointer' }}
             onClick={() => {
               if (isView === 'true') {
                 notification.open({
@@ -163,7 +164,7 @@ const AttachmentDocument: FC<any> = ({
                   type: 'info',
                 });
               } else {
-                setDeletedData({id: record?.id, type: record?.type});
+                setDeletedData({ id: record?.id, type: record?.type });
                 setShowDeleteModal(true);
               }
             }}
@@ -213,11 +214,11 @@ const AttachmentDocument: FC<any> = ({
 
   const deleteSelectedIds = async () => {
     if (deletedData?.type === 'Vendor Quote') {
-      await dispatch(deleteQuoteFileById({id: deletedData?.id}));
+      await dispatch(deleteQuoteFileById({ id: deletedData?.id }));
       await dispatch(getQuoteFileByQuoteIdAll(getQuoteID));
       if (checkedValue) {
         await dispatch(
-          deleteLineItemsByQuoteFileId({id: deletedData?.id}),
+          deleteLineItemsByQuoteFileId({ id: deletedData?.id }),
         ).then((d) => {
           if (d?.payload) {
             dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
@@ -231,7 +232,7 @@ const AttachmentDocument: FC<any> = ({
       setCallApis(true);
       setShowDeleteModal(false);
     } else {
-      await dispatch(deleteAttachDocumentById({id: deletedData?.id}));
+      await dispatch(deleteAttachDocumentById({ id: deletedData?.id }));
       await dispatch(getAllAttachmentDocument(getQuoteID));
       setCallApis(true);
       setShowDeleteModal(false);
@@ -242,14 +243,39 @@ const AttachmentDocument: FC<any> = ({
     <>
       {contextHolder}
       {filteredData && (
-        <OsTableWithOutDrag
-          columns={InputDetailQuoteLineItemcolumns}
-          dataSource={filteredData}
-          scroll
-          loading={loadingShow}
-          locale={locale}
-          defaultPageSize={filteredData?.length}
-        />
+        <div style={{ overflowX: 'auto' }}>
+          <OsTable
+            // key={tabItem?.key}
+            // loading={oppSyncValueLoading}
+            columns={InputDetailQuoteLineItemcolumns && InputDetailQuoteLineItemcolumns.length > 0
+              ? InputDetailQuoteLineItemcolumns.map((items: any) => ({
+                ...items,
+                title: (
+                  <Typography name="Body 4/Medium" className="dragHandler" color={token?.colorPrimaryText}>
+                    {items?.title}
+                  </Typography>
+                ),
+                width: 230,  // Set fixed width for the columns
+              }))
+              : []}
+            dataSource={filteredData}
+            locale={locale}
+            defaultPageSize={filteredData?.length}
+            scroll={{
+              x: 'max-content', // Enable horizontal scroll
+              y: 1000  // Optional vertical scroll
+            }}
+            style={{ tableLayout: 'auto' }}  // Let the table manage column width
+          />
+        </div>
+        // <OsTableWithOutDrag
+        //   columns={InputDetailQuoteLineItemcolumns}
+        //   dataSource={filteredData}
+        //   scroll
+        //   loading={loadingShow}
+        //   locale={locale}
+        //   defaultPageSize={filteredData?.length}
+        // />
       )}
 
       <OsModal

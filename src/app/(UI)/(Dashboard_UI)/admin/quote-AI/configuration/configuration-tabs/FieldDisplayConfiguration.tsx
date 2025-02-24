@@ -4,17 +4,17 @@
 'use client';
 
 // import {Checkbox} from '@/app/components/common/antd/Checkbox';
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
-import {Switch} from '@/app/components/common/antd/Switch';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
+import { Switch } from '@/app/components/common/antd/Switch';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
-import {TrashIcon} from '@heroicons/react/24/outline';
-import {FC, useEffect, useState} from 'react';
+import { TrashIcon } from '@heroicons/react/24/outline';
+import { FC, useEffect, useState } from 'react';
 import {
   getAllTableColumn,
   updateTableColumnById,
@@ -23,13 +23,14 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../../../../redux/hook';
-import {TabContainerStyle} from './styled-components';
-import {Checkbox} from 'antd';
+import { TabContainerStyle } from './styled-components';
+import { Checkbox } from 'antd';
+import OsTable from '@/app/components/common/os-table';
 
 const FieldDisplayConfiguration: FC<any> = () => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
-  const {data: tableColumnData, loading} = useAppSelector(
+  const { data: tableColumnData, loading } = useAppSelector(
     (state) => state.tableColumn,
   );
   const [selectedTable, setSelectedTable] = useState<String>();
@@ -196,7 +197,7 @@ const FieldDisplayConfiguration: FC<any> = () => {
           height={24}
           width={24}
           color={token.colorError}
-          style={{cursor: 'pointer'}}
+          style={{ cursor: 'pointer' }}
           onClick={() => {
             // setDeleteIds([record?.id]);
             // setShowModalDelete(true);
@@ -214,7 +215,6 @@ const FieldDisplayConfiguration: FC<any> = () => {
     ...thirdFieldDisplayConfigurationFields,
   ];
 
-  console.log('selectedTableselectedTable', selectedTable);
 
   return (
     <>
@@ -271,7 +271,7 @@ const FieldDisplayConfiguration: FC<any> = () => {
                           onChange={(e) => {
                             setSelectedTable(e);
                           }}
-                          style={{width: '100%'}}
+                          style={{ width: '100%' }}
                         />
                       </Space>
                     ),
@@ -304,10 +304,10 @@ const FieldDisplayConfiguration: FC<any> = () => {
                       <Space
                         size={24}
                         direction="vertical"
-                        style={{width: '100%'}}
+                        style={{ width: '100%' }}
                       >
                         <>
-                          <div style={{display: 'flex', justifyContent: 'end'}}>
+                          <div style={{ display: 'flex', justifyContent: 'end' }}>
                             <OsButton
                               text="Save"
                               buttontype="PRIMARY"
@@ -317,10 +317,21 @@ const FieldDisplayConfiguration: FC<any> = () => {
                           </div>
 
                           {tableColumnDataShow && (
-                            <OsTableWithOutDrag
+                            <OsTable
                               loading={false}
+                              scroll
                               tableSelectionType="checkbox"
-                              columns={allColumns}
+                              columns={allColumns && allColumns.length > 0
+                                ? allColumns.map((items: any) => ({
+                                  ...items,
+                                  title: (
+                                    <Typography name="Body 4/Medium" className="dragHandler" color={token?.colorPrimaryText}>
+                                      {items?.title}
+                                    </Typography>
+                                  ),
+                                }))
+                                : []}
+                              // columns={allColumns}
                               dataSource={tableColumnDataShow}
                             />
                           )}

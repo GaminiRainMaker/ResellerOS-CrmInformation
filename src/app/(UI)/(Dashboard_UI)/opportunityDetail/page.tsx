@@ -29,7 +29,7 @@ import {
 import { Checkbox, Form } from 'antd';
 import { TabsProps } from 'antd/lib';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Suspense, useEffect, useState } from 'react';
+import { FC, Suspense, useEffect, useState } from 'react';
 // eslint-disable-next-line import/order
 import {
   deleteOpportunity,
@@ -57,7 +57,10 @@ import { tabItems } from '../allQuote/constants';
 import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import { updateQuoteCustomerId } from '../../../../../redux/actions/quote';
 
-const OpportunityDetails = () => {
+const OpportunityDetails: FC<any> = ({
+  scrollx = 1000,
+  scrolly = 1000,
+}) => {
   const [token] = useThemeToken();
   const router = useRouter();
   const [form] = Form.useForm();
@@ -886,14 +889,37 @@ const OpportunityDetails = () => {
       ),
       key: '1',
       children: (
-        <OsTable
-          columns={dealRegFormColumns}
-          dataSource={finalDealRegData}
-          scroll
-          loading={false}
-          paginationProps={false}
-          locale={dealRegLocal}
-        />
+        <div>
+          <OsTable
+            loading={false}
+            columns={dealRegFormColumns && dealRegFormColumns.length > 0
+              ? dealRegFormColumns.map((items: any) => ({
+                ...items,
+                title: (
+                  <Typography name="Body 4/Medium" className="dragHandler" color={token?.colorPrimaryText}>
+                    {items?.title}
+                  </Typography>
+                ),
+                width: 230,  // Set fixed width for the columns
+              }))
+              : []}
+            dataSource={finalDealRegData}
+            locale={dealRegLocal}
+            scroll={{
+              x: 'max-content', // Enable horizontal scroll
+              y: 1000  // Optional vertical scroll
+            }}
+            style={{ tableLayout: 'auto' }}  // Let the table manage column width
+          />
+        </div>
+        // <OsTable
+        //   columns={dealRegFormColumns}
+        //   dataSource={finalDealRegData}
+        //   scroll
+        //   loading={false}
+        //   paginationProps={false}
+        //   locale={dealRegLocal}
+        // />
       ),
     },
     {
@@ -904,14 +930,37 @@ const OpportunityDetails = () => {
       ),
       key: '9',
       children: (
-        <OsTable
-          columns={dealRegFormColumns}
-          dataSource={finalDealRegData}
-          scroll
-          loading={false}
-          paginationProps={false}
-          locale={dealRegLocal}
-        />
+        <div>
+          <OsTable
+            loading={false}
+            columns={dealRegFormColumns && dealRegFormColumns.length > 0
+              ? dealRegFormColumns.map((items: any) => ({
+                ...items,
+                title: (
+                  <Typography name="Body 4/Medium" className="dragHandler" color={token?.colorPrimaryText}>
+                    {items?.title}
+                  </Typography>
+                ),
+                width: 230,  // Set fixed width for the columns
+              }))
+              : []}
+            dataSource={finalDealRegData}
+            locale={dealRegLocal}
+            scroll={{
+              x: 'max-content', // Enable horizontal scroll
+              y: 1000  // Optional vertical scroll
+            }}
+            style={{ tableLayout: 'auto' }}  // Let the table manage column width
+          />
+        </div>
+        // <OsTable
+        //   columns={dealRegFormColumns}
+        //   dataSource={finalDealRegData}
+        //   scroll
+        //   loading={false}
+        //   paginationProps={false}
+        //   locale={dealRegLocal}
+        // />
       ),
     },
     {
@@ -925,14 +974,29 @@ const OpportunityDetails = () => {
       ),
       key: '2',
       children: (
-        <OsTable
-          columns={dealRegFormColumns}
-          dataSource={finalDealRegData}
-          scroll
-          loading={false}
-          paginationProps={false}
-          locale={dealRegLocal}
-        />
+        <div>
+          <OsTable
+            loading={false}
+            columns={dealRegFormColumns && dealRegFormColumns.length > 0
+              ? dealRegFormColumns.map((items: any) => ({
+                ...items,
+                title: (
+                  <Typography name="Body 4/Medium" className="dragHandler" color={token?.colorPrimaryText}>
+                    {items?.title}
+                  </Typography>
+                ),
+                width: 230,  // Set fixed width for the columns
+              }))
+              : []}
+            dataSource={finalDealRegData}
+            locale={dealRegLocal}
+            scroll={{
+              x: 'max-content', // Enable horizontal scroll
+              y: 1000  // Optional vertical scroll
+            }}
+            style={{ tableLayout: 'auto' }}  // Let the table manage column width
+          />
+        </div>
       ),
     },
     {
@@ -946,14 +1010,29 @@ const OpportunityDetails = () => {
       ),
       key: '3',
       children: (
-        <OsTable
-          columns={dealRegFormColumns}
-          dataSource={finalDealRegData}
-          scroll
-          loading={false}
-          paginationProps={false}
-          locale={dealRegLocal}
-        />
+        <div>
+          <OsTable
+            loading={false}
+            columns={dealRegFormColumns && dealRegFormColumns.length > 0
+              ? dealRegFormColumns.map((items: any) => ({
+                ...items,
+                title: (
+                  <Typography name="Body 4/Medium" className="dragHandler" color={token?.colorPrimaryText}>
+                    {items?.title}
+                  </Typography>
+                ),
+                width: 230,  // Set fixed width for the columns
+              }))
+              : []}
+            dataSource={finalDealRegData}
+            locale={dealRegLocal}
+            scroll={{
+              x: 'max-content', // Enable horizontal scroll
+              y: 1000  // Optional vertical scroll
+            }}
+            style={{ tableLayout: 'auto' }}  // Let the table manage column width
+          />
+        </div>
       ),
     },
     {
@@ -967,14 +1046,29 @@ const OpportunityDetails = () => {
       ),
       key: '4',
       children: (
-        <OsTable
-          columns={dealRegFormColumns}
-          dataSource={finalDealRegData}
-          scroll
-          loading={false}
-          paginationProps={false}
-          locale={dealRegLocal}
-        />
+        <div>
+          <OsTable
+            loading={false}
+            columns={dealRegFormColumns && dealRegFormColumns.length > 0
+              ? dealRegFormColumns.map((items: any) => ({
+                ...items,
+                title: (
+                  <Typography name="Body 4/Medium" className="dragHandler" color={token?.colorPrimaryText}>
+                    {items?.title}
+                  </Typography>
+                ),
+                width: 230,  // Set fixed width for the columns
+              }))
+              : []}
+            dataSource={finalDealRegData}
+            locale={dealRegLocal}
+            scroll={{
+              x: 'max-content', // Enable horizontal scroll
+              y: 1000  // Optional vertical scroll
+            }}
+            style={{ tableLayout: 'auto' }}  // Let the table manage column width
+          />
+        </div>
       ),
     },
     {
@@ -988,14 +1082,29 @@ const OpportunityDetails = () => {
       ),
       key: '5',
       children: (
-        <OsTable
-          columns={dealRegFormColumns}
-          dataSource={finalDealRegData}
-          scroll
-          loading={false}
-          paginationProps={false}
-          locale={dealRegLocal}
-        />
+        <div>
+          <OsTable
+            loading={false}
+            columns={dealRegFormColumns && dealRegFormColumns.length > 0
+              ? dealRegFormColumns.map((items: any) => ({
+                ...items,
+                title: (
+                  <Typography name="Body 4/Medium" className="dragHandler" color={token?.colorPrimaryText}>
+                    {items?.title}
+                  </Typography>
+                ),
+                width: 230,  // Set fixed width for the columns
+              }))
+              : []}
+            dataSource={finalDealRegData}
+            locale={dealRegLocal}
+            scroll={{
+              x: 'max-content', // Enable horizontal scroll
+              y: 1000  // Optional vertical scroll
+            }}
+            style={{ tableLayout: 'auto' }}  // Let the table manage column width
+          />
+        </div>
       ),
     },
     {
@@ -1009,14 +1118,29 @@ const OpportunityDetails = () => {
       ),
       key: '6',
       children: (
-        <OsTable
-          columns={dealRegFormColumns}
-          dataSource={finalDealRegData}
-          scroll
-          loading={false}
-          paginationProps={false}
-          locale={dealRegLocal}
-        />
+        <div>
+          <OsTable
+            loading={false}
+            columns={dealRegFormColumns && dealRegFormColumns.length > 0
+              ? dealRegFormColumns.map((items: any) => ({
+                ...items,
+                title: (
+                  <Typography name="Body 4/Medium" className="dragHandler" color={token?.colorPrimaryText}>
+                    {items?.title}
+                  </Typography>
+                ),
+                width: 230,  // Set fixed width for the columns
+              }))
+              : []}
+            dataSource={finalDealRegData}
+            locale={dealRegLocal}
+            scroll={{
+              x: 'max-content', // Enable horizontal scroll
+              y: 1000  // Optional vertical scroll
+            }}
+            style={{ tableLayout: 'auto' }}  // Let the table manage column width
+          />
+        </div>
       ),
     },
   ];
@@ -1080,13 +1204,37 @@ const OpportunityDetails = () => {
                 children: (
                   <>
                     {!oppSyncValueLoading && (
-                      <OsTable
-                        key={tabItem?.key}
-                        columns={Quotecolumns}
-                        dataSource={activeQuotes}
-                        loading={oppSyncValueLoading}
-                        locale={locale}
-                      />
+                      <div style={{ overflowX: 'auto' }}>
+                        <OsTable
+                          key={tabItem?.key}
+                          loading={oppSyncValueLoading}
+                          columns={Quotecolumns && Quotecolumns.length > 0
+                            ? Quotecolumns.map((items: any) => ({
+                              ...items,
+                              title: (
+                                <Typography name="Body 4/Medium" className="dragHandler" color={token?.colorPrimaryText}>
+                                  {items?.title}
+                                </Typography>
+                              ),
+                              width: 230,  // Set fixed width for the columns
+                            }))
+                            : []}
+                          dataSource={activeQuotes}
+                          locale={locale}
+                          scroll={{
+                            x: 'max-content', // Enable horizontal scroll
+                            y: 1000  // Optional vertical scroll
+                          }}
+                          style={{ tableLayout: 'auto' }}  // Let the table manage column width
+                        />
+                      </div>
+                      // <OsTable
+                      //   key={tabItem?.key}
+                      //   columns={Quotecolumns}
+                      //   dataSource={activeQuotes}
+                      //   loading={oppSyncValueLoading}
+                      //   locale={locale}
+                      // />
                     )}
                   </>
                 ),
@@ -1103,12 +1251,32 @@ const OpportunityDetails = () => {
           <Col style={{ marginBottom: '30px' }}>
             <Typography name="Heading 3/Medium">Opportunity Lines</Typography>
           </Col>
-          <OsTableWithOutDrag
-            loading={false}
-            columns={ProfitabilityQuoteLineItemcolumns}
-            dataSource={profitibiltyDataForSynced}
-            locale={oppLinesLOcal}
-          />
+          <div style={{ overflowX: 'auto' }}>
+            <OsTable
+              loading={false}
+              columns={ProfitabilityQuoteLineItemcolumns && ProfitabilityQuoteLineItemcolumns.length > 0
+                ? ProfitabilityQuoteLineItemcolumns.map((items: any) => ({
+                  ...items,
+                  title: (
+                    <Typography name="Body 4/Medium" className="dragHandler" color={token?.colorPrimaryText}>
+                      {items?.title}
+                    </Typography>
+                  ),
+                  width: 230,  // Set fixed width for the columns
+                }))
+                : []}
+              dataSource={profitibiltyDataForSynced}
+              locale={oppLinesLOcal}
+              scroll={{
+                x: 'max-content', // Enable horizontal scroll
+                y: 1000  // Optional vertical scroll
+              }}
+              style={{ tableLayout: 'auto' }}  // Let the table manage column width
+            />
+          </div>
+
+
+
         </Row>
         {isDealReg && (
           <>

@@ -50,6 +50,7 @@ import DetailCard from './DetailCard';
 import AddOpportunity from '@/app/components/common/os-add-opportunity';
 import { insertOpportunity } from '../../../../../redux/actions/opportunity';
 import AddQuote from '@/app/components/common/addQuote';
+import OsTable from '@/app/components/common/os-table';
 
 const AccountDetails = () => {
   const [token] = useThemeToken();
@@ -589,13 +590,41 @@ const AccountDetails = () => {
             </Row>
 
             <OsCard>
-              <OsTableWithOutDrag
+              <div style={{ overflowX: 'auto' }}                       >
+                <OsTable
+                  // key={tabItem?.key}
+                  loading={loading}
+                  columns={Addresscolumns && Addresscolumns.length > 0
+                    ? Addresscolumns.map((items: any) => ({
+                      ...items,
+                      title: (
+                        <Typography name="Body 4/Medium" className="dragHandler" color={token?.colorPrimaryText}>
+                          {items?.title}
+                        </Typography>
+                      ),
+                      width: 230,  // Set fixed width for the columns
+                    }))
+                    : []}
+                  dataSource={customerData?.Addresses}
+
+                  locale={locale}
+                  defaultPageSize={5}
+
+                  scroll={{
+                    x: 'max-content', // Enable horizontal scroll
+                    y: 1000  // Optional vertical scroll
+                  }}
+                  style={{ tableLayout: 'auto' }}  // Let the table manage column width
+                />
+                {/* <OsTableWithOutDrag
                 loading={loading}
                 columns={Addresscolumns}
                 dataSource={customerData?.Addresses}
                 locale={locale}
                 defaultPageSize={5}
-              />
+              /> */}
+              </div>
+
             </OsCard>
             <Row justify="space-between" align="middle">
               <Col>
@@ -622,13 +651,41 @@ const AccountDetails = () => {
               </Col>
             </Row>
             <OsCard>
-              <OsTableWithOutDrag
+              <div style={{ overflowX: 'auto' }}                       >
+                <OsTable
+                  // key={tabItem?.key}
+                  loading={loading}
+                  columns={OpportunityColumns && OpportunityColumns.length > 0
+                    ? OpportunityColumns.map((items: any) => ({
+                      ...items,
+                      title: (
+                        <Typography name="Body 4/Medium" className="dragHandler" color={token?.colorPrimaryText}>
+                          {items?.title}
+                        </Typography>
+                      ),
+                      width: 230,  // Set fixed width for the columns
+                    }))
+                    : []}
+                  dataSource={customerData?.Opportunities}
+
+                  locale={locale}
+                  defaultPageSize={5}
+
+                  scroll={{
+                    x: 'max-content', // Enable horizontal scroll
+                    y: 1000  // Optional vertical scroll
+                  }}
+                  style={{ tableLayout: 'auto' }}  // Let the table manage column width
+                />
+                {/* <OsTableWithOutDrag
                 loading={loading}
                 columns={OpportunityColumns}
                 dataSource={customerData?.Opportunities}
                 locale={locale}
                 defaultPageSize={5}
-              />
+              /> */}
+              </div>
+
             </OsCard>
 
             <Row justify="space-between" align="middle" style={{ marginTop: '10px' }}>
@@ -652,14 +709,43 @@ const AccountDetails = () => {
 
 
             <OsCard>
-              <OsTableWithOutDrag
+
+              <div style={{ overflowX: 'auto' }}                       >
+                <OsTable
+                  // key={tabItem?.key}
+                  loading={loading}
+                  columns={Quotecolumns && Quotecolumns.length > 0
+                    ? Quotecolumns.map((items: any) => ({
+                      ...items,
+                      title: (
+                        <Typography name="Body 4/Medium" className="dragHandler" color={token?.colorPrimaryText}>
+                          {items?.title}
+                        </Typography>
+                      ),
+                      width: 230,  // Set fixed width for the columns
+                    }))
+                    : []}
+                  dataSource={quotes}
+
+                  locale={locale}
+                  defaultPageSize={5}
+
+                  scroll={{
+                    x: 'max-content', // Enable horizontal scroll
+                    y: 1000  // Optional vertical scroll
+                  }}
+                  style={{ tableLayout: 'auto' }}  // Let the table manage column width
+                />
+                {/* <OsTableWithOutDrag
                 loading={loading}
                 columns={Quotecolumns}
                 dataSource={quotes}
                 scroll
                 locale={locale}
                 defaultPageSize={5}
-              />
+              /> */}
+              </div>
+
             </OsCard>
           </div>
         </Col>
