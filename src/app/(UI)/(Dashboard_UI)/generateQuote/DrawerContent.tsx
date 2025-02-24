@@ -67,15 +67,20 @@ const DrawerContent: FC<any> = ({ form, onFinish, totalValues }) => {
 
   const [opportunitySynced, setOpportunitySynced] = useState<boolean>(false);
 
+
   const syncTheOppWithQuote = async () => {
     const data = {
       id: quoteByIdData?.opportunity_id,
       amount: totalValues?.ExitPrice,
       synced_quote: getQuoteId,
     };
-    await dispatch(updateOpportunity(data));
+    await dispatch(updateOpportunity(data))?.then((payload: any) => {
+      if (payload?.payload) {
+        setOpportunitySynced(true)
+      }
+    })
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    getAlllApisData();
+    // getAlllApisData();
   };
 
   useEffect(() => {
@@ -259,7 +264,7 @@ const DrawerContent: FC<any> = ({ form, onFinish, totalValues }) => {
       const oppAdddetails = payload?.payload?.find(
         (itemsIn: any) => itemsIn?.id === opportuntityId,
       );
-      if (oppAdddetails?.synced_quote === getQuoteId) {
+      if (Number(oppAdddetails?.synced_quote) === Number(getQuoteId)) {
         setOpportunitySynced(true);
       } else {
         setOpportunitySynced(false);

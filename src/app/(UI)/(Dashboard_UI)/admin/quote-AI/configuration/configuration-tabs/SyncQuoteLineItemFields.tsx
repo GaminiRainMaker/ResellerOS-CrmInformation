@@ -1,17 +1,17 @@
 'use client';
 
-import {Col} from '@/app/components/common/antd/Grid';
-import {Switch} from '@/app/components/common/antd/Switch';
+import { Col } from '@/app/components/common/antd/Grid';
+import { Switch } from '@/app/components/common/antd/Switch';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
-import {quoteAndOpportunityLineItemOptions} from '@/app/utils/CONSTANTS';
-import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {Row, Space, notification} from 'antd';
-import {useEffect, useState} from 'react';
+import { quoteAndOpportunityLineItemOptions } from '@/app/utils/CONSTANTS';
+import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { Row, Space, notification } from 'antd';
+import { useEffect, useState } from 'react';
 import {
   deleteSyncTableRow,
   getAllSyncTable,
@@ -21,16 +21,17 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../../../../redux/hook';
-import {TabContainerStyle} from './styled-components';
+import { TabContainerStyle } from './styled-components';
+import OsTable from '@/app/components/common/os-table';
 
 const SyncQuoteLineItemField = () => {
   const [token] = useThemeToken();
 
   const dispatch = useAppDispatch();
-  const {data: syncTableData, loading} = useAppSelector(
+  const { data: syncTableData, loading } = useAppSelector(
     (state) => state.syncTable,
   );
-  const {userInformation} = useAppSelector((state) => state.user);
+  const { userInformation } = useAppSelector((state) => state.user);
 
   const [updateColumn, setUpdateColumn] = useState<any>();
   const [quoteLineItemFilteredOption, setQuoteLineItemFilteredOption] =
@@ -219,7 +220,7 @@ const SyncQuoteLineItemField = () => {
         <>
           {' '}
           <CommonSelect
-            style={{width: '100%', height: '36px'}}
+            style={{ width: '100%', height: '36px' }}
             placeholder="Select"
             value={record?.sender_table_col}
             onChange={(e) => {
@@ -252,7 +253,7 @@ const SyncQuoteLineItemField = () => {
       key: 'quantity',
       render: (text: string, record: any) => (
         <CommonSelect
-          style={{width: '100%', height: '36px'}}
+          style={{ width: '100%', height: '36px' }}
           placeholder="Select"
           defaultValue={text}
           value={record?.reciver_table_col}
@@ -318,7 +319,7 @@ const SyncQuoteLineItemField = () => {
           height={24}
           width={24}
           color={token.colorError}
-          style={{cursor: 'pointer'}}
+          style={{ cursor: 'pointer' }}
           onClick={() => {
             if (record?.id) {
               deleteRowSync(record?.id);
@@ -369,9 +370,35 @@ const SyncQuoteLineItemField = () => {
                     <Space
                       size={24}
                       direction="vertical"
-                      style={{width: '100%'}}
+                      style={{ width: '100%' }}
                     >
-                      <OsTableWithOutDrag
+                      <div style={{ overflowX: 'auto' }}                       >
+                        <OsTable
+                          // key={tabItem?.key}
+                          loading={false}
+                          columns={SyncQuoteLineItemFields && SyncQuoteLineItemFields.length > 0
+                            ? SyncQuoteLineItemFields.map((items: any) => ({
+                              ...items,
+                              title: (
+                                <Typography name="Body 4/Medium" className="dragHandler" color={token?.colorPrimaryText}>
+                                  {items?.title}
+                                </Typography>
+                              ),
+                              width: 230,  // Set fixed width for the columns
+                            }))
+                            : []}
+                          dataSource={updateColumn}
+                          tableSelectionType="checkbox"
+
+                          defaultPageSize={updateColumn?.length}
+
+                          scroll={{
+                            x: 'max-content', // Enable horizontal scroll
+                            y: 1000  // Optional vertical scroll
+                          }}
+                          style={{ tableLayout: 'auto' }}  // Let the table manage column width
+                        />
+                        {/* <OsTableWithOutDrag
                         loading={false}
                         // rowSelection={rowSelection}
                         tableSelectionType="checkbox"
@@ -379,8 +406,10 @@ const SyncQuoteLineItemField = () => {
                         dataSource={updateColumn}
                         scroll
                         defaultPageSize={updateColumn?.length}
-                      />
-                      <div style={{width: 'max-content', float: 'right'}}>
+                      /> */}
+                      </div>
+
+                      <div style={{ width: 'max-content', float: 'right' }}>
                         <OsButton
                           text="Add Field"
                           buttontype="PRIMARY"
