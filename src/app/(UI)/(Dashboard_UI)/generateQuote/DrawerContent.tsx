@@ -19,7 +19,7 @@ import {
   quoteReviewStatusOptions,
   formatStatus,
 } from '@/app/utils/CONSTANTS';
-import { currencyFormatter, formatDate } from '@/app/utils/base';
+import { currencyFormatter, formatDate, handleDate } from '@/app/utils/base';
 import { Form } from 'antd';
 import { useSearchParams } from 'next/navigation';
 import { FC, Suspense, useEffect, useState } from 'react';
@@ -323,7 +323,12 @@ const DrawerContent: FC<any> = ({ form, onFinish, totalValues }) => {
                 Quote Generate Date
               </Typography>
               <Typography name="Body 2/Regular">
-                {formatDate(quoteByIdData?.createdAt, 'MM/DD/YYYY | HH:MM')}
+                {quoteByIdData?.file_name ??
+                  (quoteByIdData?.date
+                    ? handleDate(quoteByIdData?.date, true)
+                    : '--')}
+                {/* {formatDate(quoteByIdData?.date, 'MM/DD/YYYY | HH:MM')} */}
+
               </Typography>
             </Col>
 
