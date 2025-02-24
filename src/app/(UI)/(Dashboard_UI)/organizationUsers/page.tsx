@@ -30,6 +30,7 @@ import GrantLicense from './GrantLicense';
 import { allocateLicensesToOrg } from '../../../../../redux/actions/orgLicenseAllocation';
 import { handleDate } from '@/app/utils/base';
 import OsButton from '@/app/components/common/os-button';
+import { Checkbox } from '@/app/components/common/antd/Checkbox';
 
 const OrganizationUsers = () => {
   const dispatch = useAppDispatch();
@@ -42,7 +43,7 @@ const OrganizationUsers = () => {
   const { loading: LicenseLoading } = useAppSelector((state) => state.license);
   const [showLicenseModal, setShowLicenseModal] = useState<boolean>(false);
   const [recordData, setRecordData] = useState<any>();
-  const [activeKey, setActiveKey] = useState<string>('1');
+  const [licenseRevokeRecord, setLicenseRevokeRecord] = useState<any>();
 
   const [query, setQuery] = useState<{
     organization: string | null;
@@ -93,6 +94,19 @@ const OrganizationUsers = () => {
       width: 173,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Org Admin
+        </Typography>
+      ),
+      dataIndex: 'org_admin',
+      key: 'org_admin',
+      width: 173,
+      render: (text: string, record: any) => (
+        <Checkbox checked={record?.is_admin} disabled />
       ),
     },
     {
@@ -252,9 +266,7 @@ const OrganizationUsers = () => {
               ? dealRegAISeats
               : 0,
       }));
-      console.log('licenseObjects', licenseObjects);
 
-      return;
       // Dispatch API request for each license object
       if (licenseObjects.length > 0) {
         try {
@@ -276,6 +288,7 @@ const OrganizationUsers = () => {
           }
 
           message.success('All licenses assigned successfully!');
+          dispatch(queryAllUsers(searchQuery));
           setShowLicenseModal(false);
           licenseForm?.resetFields();
         } catch (error) {
@@ -291,58 +304,34 @@ const OrganizationUsers = () => {
     }
   };
 
-  const revokeLicenseForm = async () => {
+  const revokeLicenseForm = async (record: any) => {
     try {
-      const licenseFormValue = licenseForm.getFieldsValue();
-      const { features_type } = licenseFormValue;
+      const obj = {
+        license_id: record?.id,
+        user_id: record?.user_id,
+      };
 
-      // Determine which licenses should be revoked
-      let licensesToRevoke: string[] = [];
-
-      if (!features_type || features_type.length === 0) {
-        // If nothing is selected, revoke both QuoteAI and DealRegAI
-        licensesToRevoke = ['QuoteAI', 'DealRegAI'];
-      } else if (features_type.includes('QuoteAI')) {
-        licensesToRevoke = ['DealRegAI']; // Revoke DealRegAI if QuoteAI is selected
-      } else if (features_type.includes('DealRegAI')) {
-        licensesToRevoke = ['QuoteAI']; // Revoke QuoteAI if DealRegAI is selected
+      if (!obj.license_id || !obj.user_id) {
+        message.error('Invalid data. License ID and User ID are required.');
+        return;
       }
 
-      // Transform selected licenses into API request format
-      const licenseObjects = licensesToRevoke.map((feature) => ({
-        feature_name: feature,
-        user_id: recordData.id,
-      }));
+      const response: any = await dispatch(revokeLicense(obj));
 
-      if (licenseObjects.length > 0) {
-        const response: any = await dispatch(revokeLicense(licenseObjects));
-
-        if (response?.error) {
-          console.error('API Error:', response.error);
-          message.error(
-            response.error.message ||
-            'Failed to revoke licenses. Please try again.',
-          );
-          licenseForm?.resetFields();
-          return;
-        }
-
-        if (response?.payload) {
-          message.success('License revoked successfully!');
-        } else {
-          message.error('Unexpected error occurred. Please try again.');
-        }
-
-        // Reset form and close modal
-        setShowLicenseModal(false);
-        licenseForm?.resetFields();
-        setActiveKey('1');
+      if (response?.error) {
+        console.error('API Error:', response.error);
+        message.error(
+          response.error.message ||
+          'Failed to revoke license. Please try again.',
+        );
+        return;
       }
+
+      message.success('License revoked successfully!');
+      dispatch(queryAllUsers(searchQuery));
     } catch (error) {
       console.error('Unexpected Error:', error);
       message.error('Something went wrong. Please try again later.');
-      licenseForm?.resetFields();
-      setActiveKey('1');
     }
   };
 
@@ -368,6 +357,14 @@ const OrganizationUsers = () => {
       ),
     },
     {
+      title: <Typography name="Body 4/Medium">License Category</Typography>,
+      dataIndex: 'license_category',
+      key: 'license_category',
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
       title: <Typography name="Body 4/Medium">Expiration Date</Typography>,
       dataIndex: 'expiration_date',
       key: 'expiration_date',
@@ -384,7 +381,7 @@ const OrganizationUsers = () => {
       render: (text: any, record: any) => (
         <OsButton
           clickHandler={() => {
-            // revokeLicenseForm(record?.feature_name, record?.user_id)
+            revokeLicenseForm(record);
           }}
           text="Revoke"
           buttontype="PRIMARY"

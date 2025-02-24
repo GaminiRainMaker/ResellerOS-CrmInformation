@@ -624,7 +624,7 @@ const Dashboard = () => {
             Get In Touch
           </Typography>
         </Col>
-        {activeLicense?.[0]?.license_type === 'demo' && <Col>
+        {activeLicense?.[0]?.license_type === 'Demo' && <Col>
           <OsButton
             text="Extend Trial"
             buttontype="PRIMARY"

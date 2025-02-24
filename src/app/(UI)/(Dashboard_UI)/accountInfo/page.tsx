@@ -27,8 +27,8 @@ const AccountInfo = () => {
 
   useEffect(() => {
     if (
-      activeLicense[0]?.license_type === 'demo' ||
-      activeLicense[0]?.license_type === 'trial'
+      activeLicense[0]?.license_type === 'Demo' ||
+      activeLicense[0]?.license_type === 'Trial'
     ) {
       setIsLicenseActivate(true);
     }

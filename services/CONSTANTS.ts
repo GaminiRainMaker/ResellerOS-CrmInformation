@@ -408,11 +408,5 @@ export const API = {
     QUERY: '/orgLicenseAllocation/query',
     AllocateLicensesToOrg: '/orgLicenseAllocation/allocateLicensesToOrg',
     CheckAvailableLicenses: '/orgLicenseAllocation/checkAvailableLicenses',
-    REVOKE: '/orgLicenseAllocation/revoke',
-    Get_LICENSE_Count: '/orgLicenseAllocation/count',
-    DeleteById: '/orgLicenseAllocation/deleteById',
-    CheckQuoteAIAccess: '/orgLicenseAllocation/checkQuoteAIAccess',
-    ActivateTrailPhase: '/orgLicenseAllocation/activateTrailPhase',
-    getActiveLicensesByOrgUserId: '/orgLicenseAllocation/getActiveLicensesByOrgUserId',
   },
 };
