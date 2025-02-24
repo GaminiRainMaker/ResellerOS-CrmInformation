@@ -306,7 +306,7 @@ const AllQuote: React.FC = () => {
             >
               {activeTab === 3 && deleteIds && deleteIds?.length > 0 && (
                 <OsButton
-                  text="Submit for Review"
+                  text="Mark as Complete"
                   buttontype="PRIMARY"
                   clickHandler={markAsComplete}
                 />
