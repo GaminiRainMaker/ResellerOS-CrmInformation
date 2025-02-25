@@ -1,29 +1,29 @@
 'use client';
 
-import {Checkbox} from '@/app/components/common/antd/Checkbox';
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
-import {Tag} from '@/app/components/common/antd/Tag';
+import { Checkbox } from '@/app/components/common/antd/Checkbox';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
+import { Tag } from '@/app/components/common/antd/Tag';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import DailogModal from '@/app/components/common/os-modal/DialogModal';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {ShieldCheckIcon} from '@heroicons/react/20/solid';
+import { ShieldCheckIcon } from '@heroicons/react/20/solid';
 import {
   InformationCircleIcon,
   XCircleIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import {Avatar, Tooltip} from 'antd';
-import {useEffect, useMemo, useState} from 'react';
+import { Avatar, Tooltip } from 'antd';
+import { useEffect, useMemo, useState } from 'react';
 import {
   getUserByOrganization,
   updateUserById,
 } from '../../../../../../../redux/actions/user';
-import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
-import {checkAvailableLicenses} from '../../../../../../../redux/actions/orgLicenseAllocation';
+import { useAppDispatch, useAppSelector } from '../../../../../../../redux/hook';
+import { checkAvailableLicenses } from '../../../../../../../redux/actions/orgLicenseAllocation';
 import {
   assignLicenseToOrgUser,
   revokeLicense,
@@ -39,6 +39,7 @@ interface UserRule {
   is_order: boolean;
   isQuoteDisabled: boolean;
   isDealRegDisabled: boolean;
+  licenseCategoryType: string;
   Licenses?: {
     id: number;
     feature_name: string;
@@ -50,10 +51,10 @@ interface UserRule {
 const RolesAndPermission = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  const {data, loading, userInformation} = useAppSelector(
+  const { data, loading, userInformation } = useAppSelector(
     (state) => state.user,
   );
-  const {loading: LicenseLoading} = useAppSelector((state) => state.license);
+  const { loading: LicenseLoading } = useAppSelector((state) => state.license);
   const [userRules, setUserRules] = useState<UserRule[]>([]);
   const [licenseRecord, setLicenseRecord] = useState<any>();
   const [showDailogModal, setShowDailogModal] = useState<boolean>(false);
@@ -68,7 +69,7 @@ const RolesAndPermission = () => {
     if (userInformation?.organization) {
       dispatch(getUserByOrganization(userInformation.organization));
       dispatch(
-        checkAvailableLicenses({org_id: userInformation.organization}),
+        checkAvailableLicenses({ org_id: userInformation.organization }),
       ).then((license) => {
         if (license?.payload) {
           setLicenseRecord(license.payload.licenses);
@@ -87,6 +88,8 @@ const RolesAndPermission = () => {
           licenseCategory:
             item?.Licenses?.[0]?.license_category !==
             userInformation?.LicenseCategory,
+          licenseCategoryType:
+            item?.Licenses?.[0]?.license_category
         })),
       );
     }
@@ -97,7 +100,7 @@ const RolesAndPermission = () => {
       setUserRules((prev) =>
         prev.map((prevItem) => {
           if (prevItem.id === recordId) {
-            return {...prevItem, is_admin: true};
+            return { ...prevItem, is_admin: true };
           }
           return prevItem;
         }),
@@ -112,7 +115,7 @@ const RolesAndPermission = () => {
     try {
       await dispatch(getUserByOrganization(userInformation?.organization));
       const license = await dispatch(
-        checkAvailableLicenses({org_id: userInformation.organization}),
+        checkAvailableLicenses({ org_id: userInformation.organization }),
       );
       if (license?.payload) {
         setLicenseRecord(license.payload.licenses);
@@ -122,17 +125,17 @@ const RolesAndPermission = () => {
     }
   };
 
-  const provideLicense = async () => {
+  const provideQuoteAILicense = async () => {
     if (!isQuoteRecord?.record) return;
 
     const obj = {
-      org_id: isQuoteRecord.record.organization,
-      feature_name: 'QuoteAI',
+      org_id: isQuoteRecord?.record?.organization,
+      feature_name: isQuoteRecord?.feature_type,
       user_id: isQuoteRecord.record.id,
     };
 
     try {
-      const {payload} = await dispatch(assignLicenseToOrgUser(obj));
+      const { payload } = await dispatch(assignLicenseToOrgUser(obj));
       if (payload) {
         await updateLicenseState();
       }
@@ -140,25 +143,26 @@ const RolesAndPermission = () => {
       console.error('Error providing license:', error);
     } finally {
       setShowAssignModal(false);
+      setIsQuoteRecord([])
     }
   };
 
-  const revokeLicenseFunction = async () => {
+  const revokeQuoteAILicense = async () => {
     if (!isQuoteRecord?.record) return;
 
     const licenseId = isQuoteRecord.record.Licenses?.find(
-      (data: any) => data.feature_name === 'QuoteAI',
+      (data: any) => data.feature_name === isQuoteRecord?.feature_type,
     )?.id;
 
     if (!licenseId) {
-      console.warn('No QuoteAI license found to revoke.');
+      console.warn('No QuoteAI or DealRegAI license found to revoke.');
       return;
     }
 
-    const obj = {license_id: licenseId, user_id: isQuoteRecord.record.id};
+    const obj = { license_id: licenseId, user_id: isQuoteRecord.record.id };
 
     try {
-      const {payload} = await dispatch(revokeLicense(obj));
+      const { payload } = await dispatch(revokeLicense(obj));
       if (payload) {
         await updateLicenseState();
       }
@@ -166,6 +170,7 @@ const RolesAndPermission = () => {
       console.error('Error revoking license:', error);
     } finally {
       setShowRevokeModal(false);
+      setIsQuoteRecord([])
     }
   };
 
@@ -187,7 +192,7 @@ const RolesAndPermission = () => {
       </Typography>
       <span>
         {licenseRecord?.map(
-          ({feature_name, total_licenses, used_licenses}: any) => (
+          ({ feature_name, total_licenses, used_licenses }: any) => (
             <Typography
               key={feature_name}
               color={token.colorBgContainer}
@@ -275,7 +280,7 @@ const RolesAndPermission = () => {
               setUserRules((prev) =>
                 prev.map((prevItem) => {
                   if (prevItem.id === record.id) {
-                    return {...prevItem, is_admin: e.target.checked};
+                    return { ...prevItem, is_admin: e.target.checked };
                   }
                   return prevItem;
                 }),
@@ -300,7 +305,7 @@ const RolesAndPermission = () => {
             disabled={record?.licenseCategory}
             checked={text}
             onChange={(e) => {
-              setIsQuoteRecord({record, value: e.target.checked});
+              setIsQuoteRecord({ record, value: e.target.checked, feature_type: "QuoteAI" });
               if (e.target.checked) {
                 setShowAssignModal(true);
               } else {
@@ -326,14 +331,12 @@ const RolesAndPermission = () => {
             disabled={record?.licenseCategory}
             checked={text}
             onChange={(e) => {
-              setUserRules((prev) =>
-                prev.map((prevItem) => {
-                  if (prevItem.id === record.id) {
-                    return {...prevItem, is_dealReg: e.target.checked};
-                  }
-                  return prevItem;
-                }),
-              );
+              setIsQuoteRecord({ record, value: e.target.checked, feature_type: "DealRegAI" });
+              if (e.target.checked) {
+                setShowAssignModal(true);
+              } else {
+                setShowRevokeModal(true);
+              }
             }}
           />
         );
@@ -344,7 +347,7 @@ const RolesAndPermission = () => {
   return (
     <>
       <GlobalLoader loading={loading || LicenseLoading}>
-        <Space direction="vertical" size={24} style={{width: '100%'}}>
+        <Space direction="vertical" size={24} style={{ width: '100%' }}>
           <Row justify="space-between" align="middle">
             <Col>
               <Typography
@@ -360,7 +363,7 @@ const RolesAndPermission = () => {
                   <Tooltip
                     placement="leftBottom"
                     title={toolTipData}
-                    overlayInnerStyle={{background: '#19304f'}}
+                    overlayInnerStyle={{ background: '#19304f' }}
                   >
                     <InformationCircleIcon
                       width={24}
@@ -397,7 +400,7 @@ const RolesAndPermission = () => {
             >
               <Row
                 justify="space-between"
-                style={{width: '100%'}}
+                style={{ width: '100%' }}
                 align="middle"
               >
                 <Col span={12}>
@@ -440,7 +443,7 @@ const RolesAndPermission = () => {
                   <Typography
                     color={token.colorLink}
                     name="Button 1"
-                    style={{fontWeight: 700}}
+                    style={{ fontWeight: 700 }}
                     hoverOnText
                   >
                     Subscribe Now
@@ -463,7 +466,7 @@ const RolesAndPermission = () => {
         icon={
           <ShieldCheckIcon width={35} height={35} color={token.colorSuccess} />
         }
-        onOk={provideLicense}
+        onOk={provideQuoteAILicense}
       />
       <DailogModal
         loading={LicenseLoading}
@@ -476,7 +479,7 @@ const RolesAndPermission = () => {
         icon={
           <ShieldCheckIcon width={35} height={35} color={token.colorSuccess} />
         }
-        onOk={revokeLicenseFunction}
+        onOk={revokeQuoteAILicense}
       />
       <DailogModal
         setShowDailogModal={setShowDailogModal}
