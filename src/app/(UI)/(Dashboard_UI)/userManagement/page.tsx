@@ -13,7 +13,9 @@ import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {
   EyeIcon,
+  MinusIcon,
   PencilSquareIcon,
+  PlusIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
@@ -436,6 +438,54 @@ const UserManagement = () => {
     });
   };
 
+  const OrgLicenseColumns = [
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Feature Name
+        </Typography>
+      ),
+      dataIndex: 'feature_name',
+      key: 'feature_name',
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: <Typography name="Body 4/Medium">Total License</Typography>,
+      dataIndex: 'total_licenses',
+      key: 'total_licenses',
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: <Typography name="Body 4/Medium">Used License</Typography>,
+      dataIndex: 'used_licenses',
+      key: 'used_licenses',
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: <Typography name="Body 4/Medium">Available License</Typography>,
+      dataIndex: 'available_licenses',
+      key: 'available_licenses',
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">
+          {record?.total_licenses !== undefined &&
+          record?.used_licenses !== undefined
+            ? record.total_licenses - record.used_licenses
+            : '--'}
+        </Typography>
+      ),
+    },
+  ];
+
+  const orgLocal = {
+    emptyText: <EmptyContainer title="No Licenses" />,
+  };
+
   return (
     <>
       <Space direction="vertical" size={24} style={{width: '100%'}}>
@@ -559,6 +609,29 @@ const UserManagement = () => {
             dataSource={updatedResellerData}
             scroll
             loading={loading}
+            expandable={{
+              // eslint-disable-next-line react/no-unstable-nested-components
+              expandedRowRender: (record: any) => (
+                <OsTable
+                  columns={OrgLicenseColumns}
+                  locale={orgLocal}
+                  dataSource={record?.OrgLicenseAllocations}
+                />
+              ),
+              rowExpandable: (record: any) => record.name !== 'Not Expandable',
+              expandIcon: ({expanded, onExpand, record}: any) =>
+                expanded ? (
+                  <MinusIcon
+                    width={20}
+                    onClick={(e: any) => onExpand(record, e)}
+                  />
+                ) : (
+                  <PlusIcon
+                    width={20}
+                    onClick={(e: any) => onExpand(record, e)}
+                  />
+                ),
+            }}
           />
         </div>
       </Space>

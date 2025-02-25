@@ -2,43 +2,38 @@
 
 'use client';
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Checkbox} from '@/app/components/common/antd/Checkbox';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
+import OsButton from '@/app/components/common/os-button';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
+import {handleDate} from '@/app/utils/base';
 import {
   EyeIcon,
   MinusIcon,
   PencilSquareIcon,
   PlusIcon,
 } from '@heroicons/react/24/outline';
-import { Form, message } from 'antd';
-import { Option } from 'antd/es/mentions';
+import {Form, message} from 'antd';
+import {Option} from 'antd/es/mentions';
 import dayjs from 'dayjs';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import {useRouter, useSearchParams} from 'next/navigation';
+import {useEffect, useState} from 'react';
 import {
   assignLicenseToIndividualUser,
   revokeLicense,
 } from '../../../../../redux/actions/license';
-import { queryAllUsers } from '../../../../../redux/actions/user';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {allocateLicensesToOrg} from '../../../../../redux/actions/orgLicenseAllocation';
+import {queryAllUsers} from '../../../../../redux/actions/user';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import GrantLicense from './GrantLicense';
-import {
-  allocateLicensesToOrg,
-  checkAvailableLicenses,
-} from '../../../../../redux/actions/orgLicenseAllocation';
-import { handleDate } from '@/app/utils/base';
-import OsButton from '@/app/components/common/os-button';
-import { Checkbox } from '@/app/components/common/antd/Checkbox';
-import OsTabs from '@/app/components/common/os-tabs';
-import { TabsProps } from 'antd/lib';
 
 const OrganizationUsers = () => {
   const dispatch = useAppDispatch();
@@ -47,11 +42,10 @@ const OrganizationUsers = () => {
   const searchParams = useSearchParams();
   const getOrganization = searchParams.get('organization');
   const router = useRouter();
-  const { data: userData, loading } = useAppSelector((state) => state.user);
-  const { loading: LicenseLoading } = useAppSelector((state) => state.license);
+  const {data: userData, loading} = useAppSelector((state) => state.user);
+  const {loading: LicenseLoading} = useAppSelector((state) => state.license);
   const [showLicenseModal, setShowLicenseModal] = useState<boolean>(false);
   const [recordData, setRecordData] = useState<any>();
-  const [licenseRecord, setLicenseRecord] = useState<any>();
 
   const [query, setQuery] = useState<{
     organization: string | null;
@@ -132,7 +126,7 @@ const OrganizationUsers = () => {
             height={24}
             width={24}
             color={token.colorInfoBorder}
-            style={{ cursor: 'pointer' }}
+            style={{cursor: 'pointer'}}
             onClick={() => {
               router.push(
                 `/accountInfo?id=${record?.id}&organization=${getOrganization}&role=superAdmin`,
@@ -148,7 +142,7 @@ const OrganizationUsers = () => {
               setRecordData(record);
             }}
             color={token.colorInfoBorder}
-            style={{ cursor: 'pointer' }}
+            style={{cursor: 'pointer'}}
           />
         </Space>
       ),
@@ -158,18 +152,6 @@ const OrganizationUsers = () => {
   useEffect(() => {
     dispatch(queryAllUsers(searchQuery));
   }, [getOrganization, searchQuery]);
-
-  useEffect(() => {
-    if (getOrganization) {
-      dispatch(checkAvailableLicenses({ org_id: getOrganization })).then(
-        (license) => {
-          if (license?.payload) {
-            setLicenseRecord(license.payload.licenses);
-          }
-        },
-      );
-    }
-  }, [getOrganization]);
 
   const locale = {
     emptyText: <EmptyContainer title="No Users" />,
@@ -301,7 +283,7 @@ const OrganizationUsers = () => {
               console.error('API Error:', response.error);
               message.error(
                 response.error.message ||
-                'Failed to assign some licenses. Please try again.',
+                  'Failed to assign some licenses. Please try again.',
               );
               continue; // Skip to the next record instead of stopping execution
             }
@@ -342,7 +324,7 @@ const OrganizationUsers = () => {
         console.error('API Error:', response.error);
         message.error(
           response.error.message ||
-          'Failed to revoke license. Please try again.',
+            'Failed to revoke license. Please try again.',
         );
         return;
       }
@@ -409,108 +391,10 @@ const OrganizationUsers = () => {
       ),
     },
   ];
-  const OrgLicenseColumns = [
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Feature Name
-        </Typography>
-      ),
-      dataIndex: 'feature_name',
-      key: 'feature_name',
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: <Typography name="Body 4/Medium">Total License</Typography>,
-      dataIndex: 'total_licenses',
-      key: 'total_licenses',
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: <Typography name="Body 4/Medium">Used License</Typography>,
-      dataIndex: 'used_licenses',
-      key: 'used_licenses',
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: <Typography name="Body 4/Medium">Available License</Typography>,
-      dataIndex: 'available_licenses',
-      key: 'available_licenses',
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-  ];
-
-  const orgLocal = {
-    emptyText: <EmptyContainer title="No Licenses" />,
-  };
-
-  const dealRegTabItems: TabsProps['items'] = [
-    {
-      label: <Typography name="Body 4/Regular">Org Resellers</Typography>,
-      key: '1',
-      children: (
-        <div>
-          <OsTable
-            locale={locale}
-            columns={UserDataColumns}
-            dataSource={userData}
-            scroll
-            loading={loading}
-            expandable={{
-              // eslint-disable-next-line react/no-unstable-nested-components
-              expandedRowRender: (record: any) => (
-                <OsTable
-                  columns={LicenseColumns}
-                  dataSource={record?.Licenses}
-                  scroll
-                  paginationProps={false}
-                />
-              ),
-              rowExpandable: (record: any) => record.name !== 'Not Expandable',
-              expandIcon: ({ expanded, onExpand, record }: any) =>
-                expanded ? (
-                  <MinusIcon
-                    width={20}
-                    onClick={(e: any) => onExpand(record, e)}
-                  />
-                ) : (
-                  <PlusIcon
-                    width={20}
-                    onClick={(e: any) => onExpand(record, e)}
-                  />
-                ),
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      label: <Typography name="Body 4/Regular">Org Licenses</Typography>,
-      key: '9',
-      children: (
-        <div>
-          <OsTable
-            loading={false}
-            columns={OrgLicenseColumns}
-            dataSource={licenseRecord}
-            locale={orgLocal}
-          />
-        </div>
-      ),
-    },
-  ];
 
   return (
     <>
-      <Space direction="vertical" size={24} style={{ width: '100%' }}>
+      <Space direction="vertical" size={24} style={{width: '100%'}}>
         <Row justify="space-between" align="middle">
           <Col>
             <OsBreadCrumb items={menuItems} />
@@ -535,7 +419,7 @@ const OrganizationUsers = () => {
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">User Name</Typography>
                   <CommonSelect
-                    style={{ width: '200px' }}
+                    style={{width: '200px'}}
                     placeholder="Search here"
                     showSearch
                     onSearch={(e) => {
@@ -583,15 +467,37 @@ const OrganizationUsers = () => {
             </Col>
           </Row>
 
-          <Row
-            style={{
-              background: 'white',
-              padding: '8px 12px',
-              borderRadius: '12px',
+          <OsTable
+            locale={locale}
+            columns={UserDataColumns}
+            dataSource={userData}
+            scroll
+            loading={loading}
+            expandable={{
+              // eslint-disable-next-line react/no-unstable-nested-components
+              expandedRowRender: (record: any) => (
+                <OsTable
+                  columns={LicenseColumns}
+                  dataSource={record?.Licenses}
+                  scroll
+                  paginationProps={false}
+                />
+              ),
+              rowExpandable: (record: any) => record.name !== 'Not Expandable',
+              expandIcon: ({expanded, onExpand, record}: any) =>
+                expanded ? (
+                  <MinusIcon
+                    width={20}
+                    onClick={(e: any) => onExpand(record, e)}
+                  />
+                ) : (
+                  <PlusIcon
+                    width={20}
+                    onClick={(e: any) => onExpand(record, e)}
+                  />
+                ),
             }}
-          >
-            <OsTabs style={{ margin: '0px' }} items={dealRegTabItems} />
-          </Row>
+          />
         </div>
       </Space>
 

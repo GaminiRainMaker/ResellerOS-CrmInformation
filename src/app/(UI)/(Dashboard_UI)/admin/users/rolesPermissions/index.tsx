@@ -1,29 +1,29 @@
 'use client';
 
-import { Checkbox } from '@/app/components/common/antd/Checkbox';
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
-import { Tag } from '@/app/components/common/antd/Tag';
+import {Checkbox} from '@/app/components/common/antd/Checkbox';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
+import {Tag} from '@/app/components/common/antd/Tag';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import DailogModal from '@/app/components/common/os-modal/DialogModal';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import { ShieldCheckIcon } from '@heroicons/react/20/solid';
+import {ShieldCheckIcon} from '@heroicons/react/20/solid';
 import {
   InformationCircleIcon,
   XCircleIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import { Avatar, Tooltip } from 'antd';
-import { useEffect, useMemo, useState } from 'react';
+import {Avatar, Tooltip} from 'antd';
+import {useEffect, useMemo, useState} from 'react';
 import {
   getUserByOrganization,
   updateUserById,
 } from '../../../../../../../redux/actions/user';
-import { useAppDispatch, useAppSelector } from '../../../../../../../redux/hook';
-import { checkAvailableLicenses } from '../../../../../../../redux/actions/orgLicenseAllocation';
+import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
+import {checkAvailableLicenses} from '../../../../../../../redux/actions/orgLicenseAllocation';
 import {
   assignLicenseToOrgUser,
   revokeLicense,
@@ -39,16 +39,21 @@ interface UserRule {
   is_order: boolean;
   isQuoteDisabled: boolean;
   isDealRegDisabled: boolean;
-  Licenses?: { id: number; feature_name: string; license_category: string }[];
+  Licenses?: {
+    id: number;
+    feature_name: string;
+    license_category: string;
+    license_type: string;
+  }[];
 }
 
 const RolesAndPermission = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  const { data, loading, userInformation } = useAppSelector(
+  const {data, loading, userInformation} = useAppSelector(
     (state) => state.user,
   );
-  const { loading: LicenseLoading } = useAppSelector((state) => state.license);
+  const {loading: LicenseLoading} = useAppSelector((state) => state.license);
   const [userRules, setUserRules] = useState<UserRule[]>([]);
   const [licenseRecord, setLicenseRecord] = useState<any>();
   const [showDailogModal, setShowDailogModal] = useState<boolean>(false);
@@ -63,7 +68,7 @@ const RolesAndPermission = () => {
     if (userInformation?.organization) {
       dispatch(getUserByOrganization(userInformation.organization));
       dispatch(
-        checkAvailableLicenses({ org_id: userInformation.organization }),
+        checkAvailableLicenses({org_id: userInformation.organization}),
       ).then((license) => {
         if (license?.payload) {
           setLicenseRecord(license.payload.licenses);
@@ -79,7 +84,9 @@ const RolesAndPermission = () => {
           ...item,
           isQuoteDisabled: false,
           isDealRegDisabled: false,
-          licenseCategory: item?.Licenses?.[0]?.license_category !== userInformation?.LicenseCategory
+          licenseCategory:
+            item?.Licenses?.[0]?.license_category !==
+            userInformation?.LicenseCategory,
         })),
       );
     }
@@ -90,7 +97,7 @@ const RolesAndPermission = () => {
       setUserRules((prev) =>
         prev.map((prevItem) => {
           if (prevItem.id === recordId) {
-            return { ...prevItem, is_admin: true };
+            return {...prevItem, is_admin: true};
           }
           return prevItem;
         }),
@@ -105,7 +112,7 @@ const RolesAndPermission = () => {
     try {
       await dispatch(getUserByOrganization(userInformation?.organization));
       const license = await dispatch(
-        checkAvailableLicenses({ org_id: userInformation.organization }),
+        checkAvailableLicenses({org_id: userInformation.organization}),
       );
       if (license?.payload) {
         setLicenseRecord(license.payload.licenses);
@@ -125,7 +132,7 @@ const RolesAndPermission = () => {
     };
 
     try {
-      const { payload } = await dispatch(assignLicenseToOrgUser(obj));
+      const {payload} = await dispatch(assignLicenseToOrgUser(obj));
       if (payload) {
         await updateLicenseState();
       }
@@ -148,10 +155,10 @@ const RolesAndPermission = () => {
       return;
     }
 
-    const obj = { license_id: licenseId, user_id: isQuoteRecord.record.id };
+    const obj = {license_id: licenseId, user_id: isQuoteRecord.record.id};
 
     try {
-      const { payload } = await dispatch(revokeLicense(obj));
+      const {payload} = await dispatch(revokeLicense(obj));
       if (payload) {
         await updateLicenseState();
       }
@@ -180,7 +187,7 @@ const RolesAndPermission = () => {
       </Typography>
       <span>
         {licenseRecord?.map(
-          ({ feature_name, total_licenses, used_licenses }: any) => (
+          ({feature_name, total_licenses, used_licenses}: any) => (
             <Typography
               key={feature_name}
               color={token.colorBgContainer}
@@ -201,8 +208,6 @@ const RolesAndPermission = () => {
   const handleClose = () => {
     setVisible(false);
   };
-
-
 
   const RolesAndPermissionColumn = [
     {
@@ -236,6 +241,21 @@ const RolesAndPermission = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
+          License Type
+        </Typography>
+      ),
+      dataIndex: 'license_type',
+      key: 'license_type',
+      width: 173,
+      render: (text: string, record: UserRule) => (
+        <Typography name="Body 4/Regular">
+          {record?.Licenses?.[0]?.license_type ?? '--'}
+        </Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
           Admin Access
         </Typography>
       ),
@@ -255,7 +275,7 @@ const RolesAndPermission = () => {
               setUserRules((prev) =>
                 prev.map((prevItem) => {
                   if (prevItem.id === record.id) {
-                    return { ...prevItem, is_admin: e.target.checked };
+                    return {...prevItem, is_admin: e.target.checked};
                   }
                   return prevItem;
                 }),
@@ -280,7 +300,7 @@ const RolesAndPermission = () => {
             disabled={record?.licenseCategory}
             checked={text}
             onChange={(e) => {
-              setIsQuoteRecord({ record, value: e.target.checked });
+              setIsQuoteRecord({record, value: e.target.checked});
               if (e.target.checked) {
                 setShowAssignModal(true);
               } else {
@@ -309,7 +329,7 @@ const RolesAndPermission = () => {
               setUserRules((prev) =>
                 prev.map((prevItem) => {
                   if (prevItem.id === record.id) {
-                    return { ...prevItem, is_dealReg: e.target.checked };
+                    return {...prevItem, is_dealReg: e.target.checked};
                   }
                   return prevItem;
                 }),
@@ -319,13 +339,12 @@ const RolesAndPermission = () => {
         );
       },
     },
-  ]
-
+  ];
 
   return (
     <>
       <GlobalLoader loading={loading || LicenseLoading}>
-        <Space direction="vertical" size={24} style={{ width: '100%' }}>
+        <Space direction="vertical" size={24} style={{width: '100%'}}>
           <Row justify="space-between" align="middle">
             <Col>
               <Typography
@@ -341,7 +360,7 @@ const RolesAndPermission = () => {
                   <Tooltip
                     placement="leftBottom"
                     title={toolTipData}
-                    overlayInnerStyle={{ background: '#19304f' }}
+                    overlayInnerStyle={{background: '#19304f'}}
                   >
                     <InformationCircleIcon
                       width={24}
@@ -378,7 +397,7 @@ const RolesAndPermission = () => {
             >
               <Row
                 justify="space-between"
-                style={{ width: '100%' }}
+                style={{width: '100%'}}
                 align="middle"
               >
                 <Col span={12}>
@@ -421,7 +440,7 @@ const RolesAndPermission = () => {
                   <Typography
                     color={token.colorLink}
                     name="Button 1"
-                    style={{ fontWeight: 700 }}
+                    style={{fontWeight: 700}}
                     hoverOnText
                   >
                     Subscribe Now
