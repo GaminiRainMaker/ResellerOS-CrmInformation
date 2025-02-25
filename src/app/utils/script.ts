@@ -389,7 +389,6 @@ export const processScript = (finalObj: {
           let lineLabel = '';
           let lineName = '';
           let exactLineLabel = '';
-          debugger;
           if (currentLine.includes('combobox')) {
             const nameMatch = currentLine.match(/name: '(.*?)'/);
 
