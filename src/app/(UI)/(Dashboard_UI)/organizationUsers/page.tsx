@@ -257,7 +257,7 @@ const OrganizationUsers = () => {
         license_type: 'Paid',
         expiration_date: expirationDate,
         feature_name: feature,
-        org_id: recordData.organization,
+        organization: recordData.organization,
         user_id: recordData.id,
         status: 'active',
         license_category: licenseCategory,

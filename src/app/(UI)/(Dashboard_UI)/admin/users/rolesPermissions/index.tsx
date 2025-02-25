@@ -69,7 +69,7 @@ const RolesAndPermission = () => {
     if (userInformation?.organization) {
       dispatch(getUserByOrganization(userInformation.organization));
       dispatch(
-        checkAvailableLicenses({ org_id: userInformation.organization }),
+        checkAvailableLicenses({ organization: userInformation.organization }),
       ).then((license) => {
         if (license?.payload) {
           setLicenseRecord(license.payload.licenses);
@@ -115,7 +115,7 @@ const RolesAndPermission = () => {
     try {
       await dispatch(getUserByOrganization(userInformation?.organization));
       const license = await dispatch(
-        checkAvailableLicenses({ org_id: userInformation.organization }),
+        checkAvailableLicenses({ organization: userInformation.organization }),
       );
       if (license?.payload) {
         setLicenseRecord(license.payload.licenses);
@@ -129,7 +129,7 @@ const RolesAndPermission = () => {
     if (!isQuoteRecord?.record) return;
 
     const obj = {
-      org_id: isQuoteRecord?.record?.organization,
+      organization: isQuoteRecord?.record?.organization,
       feature_name: isQuoteRecord?.feature_type,
       user_id: isQuoteRecord.record.id,
     };
