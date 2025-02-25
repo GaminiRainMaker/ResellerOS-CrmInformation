@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
-import {FC} from 'react';
-import {CollapseProps} from '../antd/Collapse';
-import {OsCollapseStyle} from './styled-components';
+import { FC } from 'react';
+import { CollapseProps } from '../antd/Collapse';
+import { OsCollapseStyle } from './styled-components';
 
 const OsCollapse: FC<CollapseProps> = ({
   items,
@@ -18,13 +18,14 @@ const OsCollapse: FC<CollapseProps> = ({
           onChange(key);
         }
       }}
+      defaultActiveKey={defaultActiveKey}
       activeKey={activeKey}
       items={items}
       ghost
       {...props}
-      //   expandIcon={() => (
-      //     <ChevronDownIcon width={18} style={{color: token.colorLink}} />
-      //   )}
+    //   expandIcon={() => (
+    //     <ChevronDownIcon width={18} style={{color: token.colorLink}} />
+    //   )}
     />
   );
 };
