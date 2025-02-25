@@ -16,8 +16,8 @@ import {
 } from '@heroicons/react/24/outline';
 // eslint-disable-next-line import/no-extraneous-dependencies
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -31,10 +31,10 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import CommonTable from '@/app/components/common/os-table/CommonTable';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import {Form, MenuProps, notification} from 'antd';
-import {Option} from 'antd/es/mentions';
-import {useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import { Form, MenuProps, notification } from 'antd';
+import { Option } from 'antd/es/mentions';
+import { useRouter } from 'next/navigation';
+import { use, useEffect, useState } from 'react';
 import {
   insertAddAddress,
   updateAddress,
@@ -49,18 +49,18 @@ import {
   queryCustomer,
   updateCustomer,
 } from '../../../../../redux/actions/customer';
-import {queryOpportunity} from '../../../../../redux/actions/opportunity';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {setBillingContact} from '../../../../../redux/slices/billingAddress';
-import {setCustomerProfile} from '../../../../../redux/slices/customer';
-import {transformAddressData} from '@/app/utils/base';
+import { queryOpportunity } from '../../../../../redux/actions/opportunity';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import { setBillingContact } from '../../../../../redux/slices/billingAddress';
+import { setCustomerProfile } from '../../../../../redux/slices/customer';
+import { transformAddressData } from '@/app/utils/base';
 
 const CrmInformation: React.FC = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [token] = useThemeToken();
   const [form] = Form.useForm();
-  const {abbreviate} = useAbbreviationHook(0);
+  const { abbreviate } = useAbbreviationHook(0);
   const [activeTab, setActiveTab] = useState<any>('1');
   const [showModal, setShowModal] = useState<boolean>(false);
   const [objectValuesForContact, setObjectValueForContact] = useState<any>();
@@ -68,18 +68,20 @@ const CrmInformation: React.FC = () => {
   const [shipppingAddress, setShippingAddress] = useState<any>();
   const [activeKeyForTabs, setActiveKeyForTabs] = useState<string>('1');
   const [newAddContact, setNewAddContact] = useState<Boolean>(false);
-  const {loading, filteredData, customerProfile} = useAppSelector(
+  const { loading, filteredData, customerProfile } = useAppSelector(
     (state) => state.customer,
   );
-  const {filteredData: billingData} = useAppSelector(
+  const { filteredData: billingData } = useAppSelector(
     (state) => state.billingContact,
   );
-  const {queryOpportunityData} = useAppSelector((state) => state.Opportunity);
+  const { queryOpportunityData } = useAppSelector((state) => state.Opportunity);
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deletedData, setDeletedData] = useState<any>();
   const [showDrawer, setShowDrawer] = useState<boolean>(false);
   const [editRecordData, setEditRecordData] = useState<any>();
+  const [filteredCustomerData, setFilteredCustomerData] = useState<any>();
+  const { userInformation } = useAppSelector((state) => state.user);
 
   const [deleteModalDescription, setDeleteModalDescription] = useState<string>(
     `Are you sure you want to delete this account?`,
@@ -107,6 +109,16 @@ const CrmInformation: React.FC = () => {
     dispatch(queryContact(''));
   }, [searchQuery]);
 
+  useEffect(() => {
+    const data = filteredData?.account?.filter((item: any) => {
+      return (
+        item?.User?.Licenses[0]?.license_category ===
+        userInformation?.LicenseCategory
+      );
+    });
+    setFilteredCustomerData(data);
+  }, [userInformation, filteredData]);
+
   const getCustomers = () => {
     dispatch(queryCustomer(searchQuery));
   };
@@ -118,7 +130,7 @@ const CrmInformation: React.FC = () => {
   }, [billingData, activeTab]);
 
   const deleteSelectedIds = async () => {
-    const data = {Ids: deleteIds};
+    const data = { Ids: deleteIds };
     await dispatch(deleteCustomers(data));
     setTimeout(() => {
       dispatch(queryCustomer(query));
@@ -160,7 +172,7 @@ const CrmInformation: React.FC = () => {
   const analyticsData = [
     {
       key: 1,
-      primary: <div>{filteredData?.total ?? 0}</div>,
+      primary: <div>{filteredCustomerData?.length ?? 0}</div>,
       secondry: 'Customers',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
@@ -284,7 +296,7 @@ const CrmInformation: React.FC = () => {
             height={24}
             width={24}
             color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
+            style={{ cursor: 'pointer' }}
             onClick={() => {
               setContactDetail(record?.BillingContacts);
               setShippingAddress(record?.Addresses?.[0]);
@@ -297,7 +309,7 @@ const CrmInformation: React.FC = () => {
             height={24}
             width={24}
             color={token.colorError}
-            style={{cursor: 'pointer'}}
+            style={{ cursor: 'pointer' }}
             onClick={() => {
               setDeleteIds([record?.id]);
               setShowModalDelete(true);
@@ -381,8 +393,8 @@ const CrmInformation: React.FC = () => {
       const formattedAddresses = transformAddressData(formData);
 
       // Insert Customer & Get response
-      const {payload} = await dispatch(
-        insertCustomer({...formData, profile_image: customerProfile}),
+      const { payload } = await dispatch(
+        insertCustomer({ ...formData, profile_image: customerProfile }),
       );
 
       if (!payload?.id) throw new Error('Customer insertion failed');
@@ -392,14 +404,14 @@ const CrmInformation: React.FC = () => {
       // Prepare billing contact object
       const newBillingObject = formData?.billing_last_name
         ? {
-            customer_id: customerId,
-            billing_first_name: formData?.billing_first_name,
-            billing_email: formData?.billing_email,
-            billing_role: formData?.billing_role,
-            billing_last_name: formData?.billing_last_name,
-            billing_state: formData?.billing_state,
-            billing_phone: formData?.billing_phone,
-          }
+          customer_id: customerId,
+          billing_first_name: formData?.billing_first_name,
+          billing_email: formData?.billing_email,
+          billing_role: formData?.billing_role,
+          billing_last_name: formData?.billing_last_name,
+          billing_state: formData?.billing_state,
+          billing_phone: formData?.billing_phone,
+        }
         : null;
 
       // Insert Addresses if available
@@ -407,7 +419,7 @@ const CrmInformation: React.FC = () => {
         await Promise.all(
           formattedAddresses.map((addressObj) =>
             dispatch(
-              insertAddAddress({...addressObj, customer_id: customerId}),
+              insertAddAddress({ ...addressObj, customer_id: customerId }),
             ),
           ),
         );
@@ -438,9 +450,9 @@ const CrmInformation: React.FC = () => {
     const FormData = form.getFieldsValue();
 
     await dispatch(
-      updateAddress({...FormData, shipping_id: shipppingAddress?.id}),
+      updateAddress({ ...FormData, shipping_id: shipppingAddress?.id }),
     );
-    await dispatch(updateCustomer({...FormData, id: editRecordData?.id}));
+    await dispatch(updateCustomer({ ...FormData, id: editRecordData?.id }));
     dispatch(
       queryCustomer({
         customer: null,
@@ -463,7 +475,7 @@ const CrmInformation: React.FC = () => {
   };
   return (
     <>
-      <Space size={24} direction="vertical" style={{width: '100%'}}>
+      <Space size={24} direction="vertical" style={{ width: '100%' }}>
         <Row
           justify="space-between"
           style={{
@@ -509,7 +521,7 @@ const CrmInformation: React.FC = () => {
                 }}
               />
               <Space>
-                <OsDropdown menu={{items: dropDownItemss}} />
+                <OsDropdown menu={{ items: dropDownItemss }} />
               </Space>
             </div>
           </Col>
@@ -530,7 +542,7 @@ const CrmInformation: React.FC = () => {
               <Space direction="vertical" size={0}>
                 <Typography name="Body 4/Medium">Customer Name</Typography>
                 <CommonSelect
-                  style={{width: '200px'}}
+                  style={{ width: '200px' }}
                   placeholder="Search here"
                   showSearch
                   onSearch={(e) => {
@@ -581,7 +593,7 @@ const CrmInformation: React.FC = () => {
           <CommonTable
             scroll
             columns={AccountColumns}
-            dataSource={filteredData?.account}
+            dataSource={filteredCustomerData}
             loading={loading}
             locale={locale}
             rowSelection={rowSelection}
@@ -630,7 +642,7 @@ const CrmInformation: React.FC = () => {
         width={450}
         footer={
           <OsButton
-            btnStyle={{width: '100%'}}
+            btnStyle={{ width: '100%' }}
             buttontype="PRIMARY"
             text="Update Changes"
             clickHandler={form.submit}

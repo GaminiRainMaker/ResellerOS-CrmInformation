@@ -79,7 +79,7 @@ const TrialBanner: React.FC<{
 
   return (
     <>
-      {Number(remainingDays) <= 15 &&
+      {Number(remainingDays) <= 30 &&
         <Layout>
           <Alert
             style={{

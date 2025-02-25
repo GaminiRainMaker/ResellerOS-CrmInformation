@@ -62,6 +62,7 @@ const CrmAccount: React.FC = () => {
   const {filteredData: customerData} = useAppSelector(
     (state) => state.customer,
   );
+    const { userInformation } = useAppSelector((state) => state.user);
   const {queryOpportunityData} = useAppSelector((state) => state.Opportunity);
   const {
     loading,
@@ -69,6 +70,8 @@ const CrmAccount: React.FC = () => {
     data: ContactAllData,
   } = useAppSelector((state) => state.billingContact);
   const [deletedData, setDeletedData] = useState<any>();
+    const [filteredContactData, setFiltererContactData] = useState<any>();
+  
   const [query, setQuery] = useState<{
     contact: string | null;
     customer: string | null;
@@ -132,25 +135,11 @@ const CrmAccount: React.FC = () => {
     },
     {
       key: 3,
-      primary: <div>{ContactAllData?.length}</div>,
+      primary: <div>{filteredContactData?.length}</div>,
       secondry: 'Contacts',
       icon: <PhoneIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
     },
-    // {
-    //   key: 4,
-    //   primary: <div>{0}</div>,
-    //   secondry: 'Recents',
-    //   icon: <ClockIcon width={24} color={token?.colorWarning} />,
-    //   iconBg: token?.colorWarningBg,
-    // },
-    // {
-    //   key: 5,
-    //   primary: <div>{deletedData?.length}</div>,
-    //   secondry: 'Deleted',
-    //   icon: <TrashIcon width={24} color={token?.colorError} />,
-    //   iconBg: token?.colorErrorBg,
-    // },
   ];
 
   const ContactColumns = [
@@ -331,6 +320,17 @@ const CrmAccount: React.FC = () => {
     });
   };
 
+
+  useEffect(() => {
+    const data = filteredData?.filter((item: any) => {
+      return (
+        item?.User?.Licenses[0]?.license_category ===
+        userInformation?.LicenseCategory
+      );
+    });
+    setFiltererContactData(data);
+  }, [userInformation, filteredData]);
+
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -471,7 +471,7 @@ const CrmAccount: React.FC = () => {
 
           <OsTable
             columns={ContactColumns}
-            dataSource={filteredData}
+            dataSource={filteredContactData}
             rowSelection={rowSelection}
             scroll
             loading={loading}

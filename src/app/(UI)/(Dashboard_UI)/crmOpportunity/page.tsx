@@ -69,6 +69,8 @@ const CrmOpportunity: React.FC = () => {
   const [recordId, setRecordId] = useState<number>();
   const [deleteModalDescription, setDeleteModalDescription] =
     useState<string>('');
+  const [filteredOpportunityData, setFilteredOpportunityData] = useState<any>();
+  const { userInformation } = useAppSelector((state) => state.user);
 
   const [query, setQuery] = useState<{
     opportunity: string | null;
@@ -90,6 +92,19 @@ const CrmOpportunity: React.FC = () => {
     dispatch(queryCustomer({}));
     dispatch(getAllOpportunity());
   }, [searchQuery]);
+
+
+
+  useEffect(() => {
+    const data = activeOpportunity?.filter((item: any) => {
+      return (
+        item?.User?.Licenses[0]?.license_category ===
+        userInformation?.LicenseCategory
+      );
+    });
+    setFilteredOpportunityData(data);
+  }, [userInformation, activeOpportunity]);
+
 
   const deleteSelectedIds = async () => {
     const data = { Ids: deleteIds };
@@ -113,7 +128,7 @@ const CrmOpportunity: React.FC = () => {
     },
     {
       key: 2,
-      primary: <div>{queryOpportunityData?.total ?? 0}</div>,
+      primary: <div>{filteredOpportunityData?.length ?? 0}</div>,
       secondry: 'Opportunities',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
@@ -564,7 +579,7 @@ const CrmOpportunity: React.FC = () => {
                 <CommonTable
                   key={tabItem?.key}
                   columns={OpportunityColumns}
-                  dataSource={activeOpportunity}
+                  dataSource={filteredOpportunityData}
                   loading={loading}
                   locale={locale}
                   rowSelection={rowSelection}
