@@ -3,7 +3,7 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
   activateTrailPhase,
-  assignLicense,
+  assignLicenseToIndividualUser,
   checkQuoteAIAccess,
   getActiveLicensesByOrgUserId,
   getLicense,
@@ -37,15 +37,15 @@ const licenseSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-      .addCase(assignLicense.pending, (state) => {
+      .addCase(assignLicenseToIndividualUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(assignLicense.fulfilled, (state, action: PayloadAction<any>) => {
+      .addCase(assignLicenseToIndividualUser.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
         // state.data = [action.payload];
       })
-      .addCase(assignLicense.rejected, (state, action: PayloadAction<any>) => {
+      .addCase(assignLicenseToIndividualUser.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
       })

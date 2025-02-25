@@ -2,8 +2,8 @@
 
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
@@ -18,24 +18,27 @@ import {
   PencilSquareIcon,
   PlusIcon,
 } from '@heroicons/react/24/outline';
-import {Form, message} from 'antd';
-import {Option} from 'antd/es/mentions';
+import { Form, message } from 'antd';
+import { Option } from 'antd/es/mentions';
 import dayjs from 'dayjs';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
-import {revokeLicense} from '../../../../../redux/actions/license';
-import {queryAllUsers} from '../../../../../redux/actions/user';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import {
+  assignLicenseToIndividualUser,
+  revokeLicense,
+} from '../../../../../redux/actions/license';
+import { queryAllUsers } from '../../../../../redux/actions/user';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import GrantLicense from './GrantLicense';
 import {
   allocateLicensesToOrg,
   checkAvailableLicenses,
 } from '../../../../../redux/actions/orgLicenseAllocation';
-import {handleDate} from '@/app/utils/base';
+import { handleDate } from '@/app/utils/base';
 import OsButton from '@/app/components/common/os-button';
-import {Checkbox} from '@/app/components/common/antd/Checkbox';
+import { Checkbox } from '@/app/components/common/antd/Checkbox';
 import OsTabs from '@/app/components/common/os-tabs';
-import {TabsProps} from 'antd/lib';
+import { TabsProps } from 'antd/lib';
 
 const OrganizationUsers = () => {
   const dispatch = useAppDispatch();
@@ -44,8 +47,8 @@ const OrganizationUsers = () => {
   const searchParams = useSearchParams();
   const getOrganization = searchParams.get('organization');
   const router = useRouter();
-  const {data: userData, loading} = useAppSelector((state) => state.user);
-  const {loading: LicenseLoading} = useAppSelector((state) => state.license);
+  const { data: userData, loading } = useAppSelector((state) => state.user);
+  const { loading: LicenseLoading } = useAppSelector((state) => state.license);
   const [showLicenseModal, setShowLicenseModal] = useState<boolean>(false);
   const [recordData, setRecordData] = useState<any>();
   const [licenseRecord, setLicenseRecord] = useState<any>();
@@ -129,7 +132,7 @@ const OrganizationUsers = () => {
             height={24}
             width={24}
             color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
+            style={{ cursor: 'pointer' }}
             onClick={() => {
               router.push(
                 `/accountInfo?id=${record?.id}&organization=${getOrganization}&role=superAdmin`,
@@ -145,7 +148,7 @@ const OrganizationUsers = () => {
               setRecordData(record);
             }}
             color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
+            style={{ cursor: 'pointer' }}
           />
         </Space>
       ),
@@ -158,7 +161,7 @@ const OrganizationUsers = () => {
 
   useEffect(() => {
     if (getOrganization) {
-      dispatch(checkAvailableLicenses({org_id: getOrganization})).then(
+      dispatch(checkAvailableLicenses({ org_id: getOrganization })).then(
         (license) => {
           if (license?.payload) {
             setLicenseRecord(license.payload.licenses);
@@ -288,17 +291,17 @@ const OrganizationUsers = () => {
       if (licenseObjects.length > 0) {
         try {
           for (const license of licenseObjects) {
-            // const apiFunction =
-            //   licenseCategory === 'Organization' ? allocateLicensesToOrg : AssignLicenseUser; // Choose API function
-            const response: any = await dispatch(
-              allocateLicensesToOrg(license),
-            ); // Call API per record
+            const apiFunction =
+              licenseCategory === 'Organization'
+                ? allocateLicensesToOrg
+                : assignLicenseToIndividualUser; // Choose API function
+            const response: any = await dispatch(apiFunction(license)); // Call API per record
 
             if (response?.error) {
               console.error('API Error:', response.error);
               message.error(
                 response.error.message ||
-                  'Failed to assign some licenses. Please try again.',
+                'Failed to assign some licenses. Please try again.',
               );
               continue; // Skip to the next record instead of stopping execution
             }
@@ -339,7 +342,7 @@ const OrganizationUsers = () => {
         console.error('API Error:', response.error);
         message.error(
           response.error.message ||
-            'Failed to revoke license. Please try again.',
+          'Failed to revoke license. Please try again.',
         );
         return;
       }
@@ -472,7 +475,7 @@ const OrganizationUsers = () => {
                 />
               ),
               rowExpandable: (record: any) => record.name !== 'Not Expandable',
-              expandIcon: ({expanded, onExpand, record}: any) =>
+              expandIcon: ({ expanded, onExpand, record }: any) =>
                 expanded ? (
                   <MinusIcon
                     width={20}
@@ -507,7 +510,7 @@ const OrganizationUsers = () => {
 
   return (
     <>
-      <Space direction="vertical" size={24} style={{width: '100%'}}>
+      <Space direction="vertical" size={24} style={{ width: '100%' }}>
         <Row justify="space-between" align="middle">
           <Col>
             <OsBreadCrumb items={menuItems} />
@@ -532,7 +535,7 @@ const OrganizationUsers = () => {
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">User Name</Typography>
                   <CommonSelect
-                    style={{width: '200px'}}
+                    style={{ width: '200px' }}
                     placeholder="Search here"
                     showSearch
                     onSearch={(e) => {
@@ -587,7 +590,7 @@ const OrganizationUsers = () => {
               borderRadius: '12px',
             }}
           >
-            <OsTabs style={{margin: '0px'}} items={dealRegTabItems} />
+            <OsTabs style={{ margin: '0px' }} items={dealRegTabItems} />
           </Row>
         </div>
       </Space>

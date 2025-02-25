@@ -394,7 +394,7 @@ export const API = {
   LICENSE: {
     INDEX: '/license',
     QUERY: '/license/query',
-    ASSIGN: '/license/assign',
+    ASSIGN: '/license/assignLicenseToIndividualUser',
     AssignLicenseToOrgUser: '/license/assignLicenseToOrgUser',
     REVOKE: '/license/revoke',
     Get_LICENSE_Count: '/license/count',

@@ -2,8 +2,8 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {LICENSE_API} from '../../services/license';
 
-export const assignLicense = createAsyncThunk(
-  'license/assignLicense',
+export const assignLicenseToIndividualUser = createAsyncThunk(
+  'license/assignLicenseToIndividualUser',
   async (data: any, thunkApi) => {
     try {
       const res = await LICENSE_API.assignLicense(data);
