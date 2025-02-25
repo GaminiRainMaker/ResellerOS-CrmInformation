@@ -389,11 +389,14 @@ export const processScript = (finalObj: {
           let lineLabel = '';
           let lineName = '';
           let exactLineLabel = '';
-
+          debugger;
           if (currentLine.includes('combobox')) {
             const nameMatch = currentLine.match(/name: '(.*?)'/);
 
-            lineLabel = nameMatch[1].replace(/\s+/g, '').trim();
+            lineLabel =
+              nameMatch && nameMatch.length > 1
+                ? nameMatch[1].replace(/\s+/g, '').trim()
+                : null;
           }
           if (currentLine.includes('getByPlaceholder')) {
             const labelMatch = currentLine.match(
@@ -434,27 +437,16 @@ export const processScript = (finalObj: {
           }
           // Extract all locator values using regex
 
-          const locatorRegex =
-            currentPage === 1
-              ? /page\.locator\((['"`])([^'"`]+)\1\)/
-              : /page1\.locator\((['"`])([^'"`]+)\1\)/;
-          const match = currentLine.match(locatorRegex);
+          const locatorRegex = /\.locator\((.*?)\)/g; // Match all .locator(...)
 
-          if (match) {
-            const locatorName = match[2]; // Extract the locator name
+          const matches = [...currentLine.matchAll(locatorRegex)].map(
+            (match) => match[1],
+          ); // Extract values
 
-            // const locators = [
-            //   ...currentLine.matchAll(/page\.locator\((['"`])([^'"`]+)\1\)/g),
-            // ];
-            // // Get the last locator value
-            // const lastLocator =
-            //   locators.length > 0 ? locators[locators.length - 1] : null;
-            // const locatorName = lastLocator; // Extract the locator name
-            // // Replace all special characters with an empty string
-            // lineName = locatorName
-            //   ? locatorName?.replace(/[^a-zA-Z0-9]/g, '')
-            //   : null;
-            lineName = locatorName.replace(/[^a-zA-Z0-9]/g, '');
+          if (matches.length === 1) {
+            lineName = matches[0]; // Return the single locator value
+          } else {
+            lineName = matches.length > 1 ? matches[matches.length - 1] : null; // Return last locator value
           }
 
           const dataObjAll = finalObj.data.filter((objItem: any) =>
