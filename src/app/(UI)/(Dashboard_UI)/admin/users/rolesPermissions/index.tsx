@@ -11,18 +11,28 @@ import DailogModal from '@/app/components/common/os-modal/DialogModal';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import { ShieldCheckIcon } from '@heroicons/react/20/solid';
-import { InformationCircleIcon, XCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import {
+  InformationCircleIcon,
+  XCircleIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline';
 import { Avatar, Tooltip } from 'antd';
-import { useEffect, useState } from 'react';
-import { getUserByOrganization, updateUserById } from '../../../../../../../redux/actions/user';
+import { useEffect, useMemo, useState } from 'react';
+import {
+  getUserByOrganization,
+  updateUserById,
+} from '../../../../../../../redux/actions/user';
 import { useAppDispatch, useAppSelector } from '../../../../../../../redux/hook';
 import { checkAvailableLicenses } from '../../../../../../../redux/actions/orgLicenseAllocation';
-import { assignLicenseToOrgUser, revokeLicense } from '../../../../../../../redux/actions/license';
+import {
+  assignLicenseToOrgUser,
+  revokeLicense,
+} from '../../../../../../../redux/actions/license';
 
 interface UserRule {
   id: number;
   user_name: string;
-  license_category: string;
+  licenseCategory: boolean;
   is_admin: boolean;
   is_quote: boolean;
   is_dealReg: boolean;
@@ -35,7 +45,9 @@ interface UserRule {
 const RolesAndPermission = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  const { data, loading, userInformation } = useAppSelector((state) => state.user);
+  const { data, loading, userInformation } = useAppSelector(
+    (state) => state.user,
+  );
   const { loading: LicenseLoading } = useAppSelector((state) => state.license);
   const [userRules, setUserRules] = useState<UserRule[]>([]);
   const [licenseRecord, setLicenseRecord] = useState<any>();
@@ -50,7 +62,9 @@ const RolesAndPermission = () => {
   useEffect(() => {
     if (userInformation?.organization) {
       dispatch(getUserByOrganization(userInformation.organization));
-      dispatch(checkAvailableLicenses({ org_id: userInformation.organization })).then((license) => {
+      dispatch(
+        checkAvailableLicenses({ org_id: userInformation.organization }),
+      ).then((license) => {
         if (license?.payload) {
           setLicenseRecord(license.payload.licenses);
         }
@@ -65,10 +79,11 @@ const RolesAndPermission = () => {
           ...item,
           isQuoteDisabled: false,
           isDealRegDisabled: false,
+          licenseCategory: item?.Licenses?.[0]?.license_category !== userInformation?.LicenseCategory
         })),
       );
     }
-  }, [data]);
+  }, [data, userInformation]);
 
   const providePermissions = async () => {
     try {
@@ -89,12 +104,14 @@ const RolesAndPermission = () => {
   const updateLicenseState = async () => {
     try {
       await dispatch(getUserByOrganization(userInformation?.organization));
-      const license = await dispatch(checkAvailableLicenses({ org_id: userInformation.organization }));
+      const license = await dispatch(
+        checkAvailableLicenses({ org_id: userInformation.organization }),
+      );
       if (license?.payload) {
         setLicenseRecord(license.payload.licenses);
       }
     } catch (error) {
-      console.error("Error updating license state:", error);
+      console.error('Error updating license state:', error);
     }
   };
 
@@ -103,7 +120,7 @@ const RolesAndPermission = () => {
 
     const obj = {
       org_id: isQuoteRecord.record.organization,
-      feature_name: "QuoteAI",
+      feature_name: 'QuoteAI',
       user_id: isQuoteRecord.record.id,
     };
 
@@ -113,7 +130,7 @@ const RolesAndPermission = () => {
         await updateLicenseState();
       }
     } catch (error) {
-      console.error("Error providing license:", error);
+      console.error('Error providing license:', error);
     } finally {
       setShowAssignModal(false);
     }
@@ -123,11 +140,11 @@ const RolesAndPermission = () => {
     if (!isQuoteRecord?.record) return;
 
     const licenseId = isQuoteRecord.record.Licenses?.find(
-      (data: any) => data.feature_name === "QuoteAI"
+      (data: any) => data.feature_name === 'QuoteAI',
     )?.id;
 
     if (!licenseId) {
-      console.warn("No QuoteAI license found to revoke.");
+      console.warn('No QuoteAI license found to revoke.');
       return;
     }
 
@@ -139,12 +156,11 @@ const RolesAndPermission = () => {
         await updateLicenseState();
       }
     } catch (error) {
-      console.error("Error revoking license:", error);
+      console.error('Error revoking license:', error);
     } finally {
       setShowRevokeModal(false);
     }
   };
-
 
   const onFinish = async () => {
     try {
@@ -163,14 +179,21 @@ const RolesAndPermission = () => {
         Limit Left
       </Typography>
       <span>
-        {licenseRecord?.map(({ feature_name, total_licenses, used_licenses }: any) => (
-          <Typography key={feature_name} color={token.colorBgContainer} name="Body 3/Medium" as="div">
-            {feature_name}:{' '}
-            <Typography color={token.colorBgContainer} name="Body 3/Bold">
-              {used_licenses}/{total_licenses}
+        {licenseRecord?.map(
+          ({ feature_name, total_licenses, used_licenses }: any) => (
+            <Typography
+              key={feature_name}
+              color={token.colorBgContainer}
+              name="Body 3/Medium"
+              as="div"
+            >
+              {feature_name}:{' '}
+              <Typography color={token.colorBgContainer} name="Body 3/Bold">
+                {used_licenses}/{total_licenses}
+              </Typography>
             </Typography>
-          </Typography>
-        ))}
+          ),
+        )}
       </span>
     </Space>
   );
@@ -179,33 +202,50 @@ const RolesAndPermission = () => {
     setVisible(false);
   };
 
-  const RolesAndPermissionsColumns = [
+
+
+  const RolesAndPermissionColumn = [
     {
-      title: <Typography name="Body 4/Medium" className="dragHandler">User Name</Typography>,
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          User Name
+        </Typography>
+      ),
       dataIndex: 'user_name',
       key: 'user_name',
       width: 173,
-      render: (text: string) => <Typography name="Body 4/Regular">{text ?? '--'}</Typography>,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
     },
     {
-      title: <Typography name="Body 4/Medium" className="dragHandler">License Category</Typography>,
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          License Category
+        </Typography>
+      ),
       dataIndex: 'license_category',
       key: 'license_category',
       width: 173,
       render: (text: string, record: UserRule) => (
-        <Typography name="Body 4/Regular">{record?.Licenses?.[0]?.license_category ?? '--'}</Typography>
+        <Typography name="Body 4/Regular">
+          {record?.Licenses?.[0]?.license_category ?? '--'}
+        </Typography>
       ),
     },
     {
-      title: <Typography name="Body 4/Medium" className="dragHandler">Admin Access</Typography>,
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Admin Access
+        </Typography>
+      ),
       dataIndex: 'is_admin',
       key: 'is_admin',
       width: 173,
       render: (text: boolean, record: UserRule) => {
-        const licenseCategory = record?.Licenses?.[0]?.license_category === 'Individual';
         return (
           <Checkbox
-            disabled={licenseCategory}
+            disabled={record?.licenseCategory}
             checked={text}
             onChange={(e) => {
               if (e.target.checked) {
@@ -226,15 +266,18 @@ const RolesAndPermission = () => {
       },
     },
     {
-      title: <Typography name="Body 4/Medium" className="dragHandler">Quote AI</Typography>,
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Quote AI
+        </Typography>
+      ),
       dataIndex: 'is_quote',
       key: 'is_quote',
       width: 173,
       render: (text: boolean, record: UserRule) => {
-        const licenseCategory = record?.Licenses?.[0]?.license_category === 'Individual';
         return (
           <Checkbox
-            disabled={licenseCategory}
+            disabled={record?.licenseCategory}
             checked={text}
             onChange={(e) => {
               setIsQuoteRecord({ record, value: e.target.checked });
@@ -249,15 +292,18 @@ const RolesAndPermission = () => {
       },
     },
     {
-      title: <Typography name="Body 4/Medium" className="dragHandler">Deal Reg</Typography>,
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Deal Reg
+        </Typography>
+      ),
       dataIndex: 'is_dealReg',
       key: 'is_dealReg',
       width: 173,
       render: (text: boolean, record: UserRule) => {
-        const licenseCategory = record?.Licenses?.[0]?.license_category === 'Individual';
         return (
           <Checkbox
-            disabled={licenseCategory}
+            disabled={record?.licenseCategory}
             checked={text}
             onChange={(e) => {
               setUserRules((prev) =>
@@ -273,7 +319,8 @@ const RolesAndPermission = () => {
         );
       },
     },
-  ];
+  ]
+
 
   return (
     <>
@@ -281,40 +328,102 @@ const RolesAndPermission = () => {
         <Space direction="vertical" size={24} style={{ width: '100%' }}>
           <Row justify="space-between" align="middle">
             <Col>
-              <Typography name="Heading 3/Medium" color={token.colorPrimaryText}>
+              <Typography
+                name="Heading 3/Medium"
+                color={token.colorPrimaryText}
+              >
                 Roles and Permissions
               </Typography>
             </Col>
             {isSubscribed && (
               <Col>
                 <Space size={8}>
-                  <Tooltip placement="leftBottom" title={toolTipData} overlayInnerStyle={{ background: '#19304f' }}>
-                    <InformationCircleIcon width={24} cursor="pointer" color="#A0AAB8" />
+                  <Tooltip
+                    placement="leftBottom"
+                    title={toolTipData}
+                    overlayInnerStyle={{ background: '#19304f' }}
+                  >
+                    <InformationCircleIcon
+                      width={24}
+                      cursor="pointer"
+                      color="#A0AAB8"
+                    />
                   </Tooltip>
-                  <OsButton text="SAVE" buttontype="PRIMARY" clickHandler={onFinish} />
+                  <OsButton
+                    text="SAVE"
+                    buttontype="PRIMARY"
+                    clickHandler={onFinish}
+                  />
                 </Space>
               </Col>
             )}
           </Row>
 
           {isSubscribed ? (
-            <OsTable columns={RolesAndPermissionsColumns} dataSource={userRules} scroll loading={loading} />
+            <OsTable
+              columns={RolesAndPermissionColumn}
+              dataSource={userRules}
+              scroll
+              loading={loading}
+            />
           ) : (
-            <Tag style={{ display: 'flex', padding: '20px', borderRadius: '4px', border: `1px solid ${token.colorError}` }} color="error">
-              <Row justify="space-between" style={{ width: '100%' }} align="middle">
+            <Tag
+              style={{
+                display: 'flex',
+                padding: '20px',
+                borderRadius: '4px',
+                border: `1px solid ${token.colorError}`,
+              }}
+              color="error"
+            >
+              <Row
+                justify="space-between"
+                style={{ width: '100%' }}
+                align="middle"
+              >
                 <Col span={12}>
-                  <Avatar size={24} style={{ marginTop: '-12px', marginRight: '5px', background: 'none' }} icon={<InformationCircleIcon width={24} color={token.colorError} />} />
+                  <Avatar
+                    size={24}
+                    style={{
+                      marginTop: '-12px',
+                      marginRight: '5px',
+                      background: 'none',
+                    }}
+                    icon={
+                      <InformationCircleIcon
+                        width={24}
+                        color={token.colorError}
+                      />
+                    }
+                  />
                   <Space direction="vertical" size={0}>
                     <Typography color={token.colorError} name="Heading 3/Bold">
                       Unsubscribed User
                     </Typography>
-                    <Typography color={token.colorError} name="Body 3/Medium" as="span">
-                      Unlock premium features and exclusive content by subscribing to our web application today!
+                    <Typography
+                      color={token.colorError}
+                      name="Body 3/Medium"
+                      as="span"
+                    >
+                      Unlock premium features and exclusive content by
+                      subscribing to our web application today!
                     </Typography>
                   </Space>
                 </Col>
-                <Col span={12} style={{ display: 'flex', justifyContent: 'end', alignItems: 'center' }}>
-                  <Typography color={token.colorLink} name="Button 1" style={{ fontWeight: 700 }} hoverOnText>
+                <Col
+                  span={12}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'end',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Typography
+                    color={token.colorLink}
+                    name="Button 1"
+                    style={{ fontWeight: 700 }}
+                    hoverOnText
+                  >
                     Subscribe Now
                   </Typography>
                 </Col>
@@ -332,7 +441,9 @@ const RolesAndPermission = () => {
         subTitle="Are you sure want to provide the license?"
         primaryButtonText="Yes"
         secondaryButtonText="No"
-        icon={<ShieldCheckIcon width={35} height={35} color={token.colorSuccess} />}
+        icon={
+          <ShieldCheckIcon width={35} height={35} color={token.colorSuccess} />
+        }
         onOk={provideLicense}
       />
       <DailogModal
@@ -343,7 +454,9 @@ const RolesAndPermission = () => {
         subTitle="Are you sure want to revoke the license?"
         primaryButtonText="Yes"
         secondaryButtonText="No"
-        icon={<ShieldCheckIcon width={35} height={35} color={token.colorSuccess} />}
+        icon={
+          <ShieldCheckIcon width={35} height={35} color={token.colorSuccess} />
+        }
         onOk={revokeLicenseFunction}
       />
       <DailogModal
@@ -353,7 +466,9 @@ const RolesAndPermission = () => {
         subTitle="Do you wish to grant full access to this administrator?"
         primaryButtonText="Yes"
         secondaryButtonText="No"
-        icon={<ShieldCheckIcon width={35} height={35} color={token.colorSuccess} />}
+        icon={
+          <ShieldCheckIcon width={35} height={35} color={token.colorSuccess} />
+        }
         onOk={providePermissions}
       />
     </>

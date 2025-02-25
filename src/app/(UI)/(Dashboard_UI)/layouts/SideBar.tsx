@@ -89,6 +89,7 @@ const SideBar = () => {
             MasterAdmin: payload?.payload?.master_admin,
             Role: payload?.payload?.role,
             ProfileImage: payload?.payload?.profile_image,
+            LicenseCategory: payload?.payload?.Licenses[0]?.license_category
           }),
         );
       });

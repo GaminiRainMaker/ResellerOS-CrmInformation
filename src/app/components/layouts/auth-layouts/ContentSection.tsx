@@ -81,6 +81,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
               username: dataaa?.email,
               master_admin: dataaa?.master_admin,
               ProfileImage: dataaa?.profile_image,
+              LicenseCategory: payload?.payload?.Licenses[0]?.license_category
             }),
           );
           router.push(
