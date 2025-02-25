@@ -19,7 +19,7 @@ import {
   quoteReviewStatusOptions,
   formatStatus,
 } from '@/app/utils/CONSTANTS';
-import { currencyFormatter, formatDate } from '@/app/utils/base';
+import { currencyFormatter, formatDate, handleDate } from '@/app/utils/base';
 import { Form } from 'antd';
 import { useSearchParams } from 'next/navigation';
 import { FC, Suspense, useEffect, useState } from 'react';
@@ -323,7 +323,12 @@ const DrawerContent: FC<any> = ({ form, onFinish, totalValues }) => {
                 Quote Generate Date
               </Typography>
               <Typography name="Body 2/Regular">
-                {formatDate(quoteByIdData?.createdAt, 'MM/DD/YYYY | HH:MM')}
+                {quoteByIdData?.file_name ??
+                  (quoteByIdData?.date
+                    ? handleDate(quoteByIdData?.date, true)
+                    : '--')}
+                {/* {formatDate(quoteByIdData?.date, 'MM/DD/YYYY | HH:MM')} */}
+
               </Typography>
             </Col>
 
@@ -365,14 +370,24 @@ const DrawerContent: FC<any> = ({ form, onFinish, totalValues }) => {
                 />
               )}
             </Col>
+            <Col span={24} style={{ marginTop: "10px", marginBottom: "15px" }}>
+              <Typography name="Body 4/Medium" as="div">
+                Quote #
+              </Typography>
+              <Typography name="Body 2/Regular">
+                {quoteByIdData?.quote_unique_in}
+                {/* {formatDate(quoteByIdData?.date, 'MM/DD/YYYY | HH:MM')} */}
 
+              </Typography>
+            </Col>
+            {/* <Form.Item label="Quote #" name="quote_unique_in">
+              <OsInput placeholder="ID" disabled />
+            </Form.Item> */}
             <Col span={24}>
               <Form.Item label="Quote Name" name="file_name">
                 <OsInput disabled={isView === 'true'} />
               </Form.Item>
-              <Form.Item label="Quote #" name="quote_unique_in">
-                <OsInput placeholder="ID" disabled />
-              </Form.Item>
+
 
               <Form.Item label="Expiration Date" name="expiration_date">
                 <CommonDatePicker onBlur={undefined} disabledDate={disabledDate}

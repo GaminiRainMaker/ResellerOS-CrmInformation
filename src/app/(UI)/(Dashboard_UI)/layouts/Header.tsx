@@ -667,6 +667,9 @@ const CustomHeader = () => {
                           Cookies.remove('token');
                           Cookies.remove('id');
                           router.push('/login');
+                          router.replace('/login'
+                          );
+                          // location.reload()
                         }}>
                           <Space
                             style={{
@@ -677,11 +680,27 @@ const CustomHeader = () => {
                           >
 
                             <ArrowLeftStartOnRectangleIcon
+                              onClick={() => {
+                                localStorage.removeItem('userInfo');
+                                Cookies.remove('token');
+                                Cookies.remove('id');
+                                router.push('/login');
+                                router.replace('/login'
+                                );
+                              }}
                               width={24}
-                              style={{ marginTop: '5px' }}
+                              style={{ marginTop: '5px' }
+                              }
                               color={token?.colorError}
                             />
-                            <Typography name="Body 3/Regular" cursor="pointer" >
+                            <Typography onClick={() => {
+                              localStorage.removeItem('userInfo');
+                              Cookies.remove('token');
+                              Cookies.remove('id');
+                              router.push('/login');
+                              router.replace('/login'
+                              );
+                            }} name="Body 3/Regular" cursor="pointer" >
                               Logout
                             </Typography>
                           </Space>
