@@ -67,6 +67,7 @@ const ReviewQuotes: FC<any> = ({
     useState<boolean>(false);
   const [showVerificationFileModal, setShowVerificationFileModal] =
     useState<boolean>(false);
+  const [activeKeyDefault, setActiveKeyDefault] = useState<any>('0')
   const [buttonType, setButtonType] = useState<string>('');
   const [api, contextHolder] = notification.useNotification();
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
@@ -828,187 +829,191 @@ const ReviewQuotes: FC<any> = ({
             {reviewQuotesData &&
               reviewQuotesData?.length > 0 &&
               reviewQuotesData?.map((finalDataItem: any, index: number) => (
-                <OsCollapse
-                  key={index + 1}
-                  // defaultActiveKey={['0']}
-                  activeKey={['0']}
-                  items={[
-                    {
-                      label: (
-                        <Row justify="space-between">
-                          <Col span={10}>
-                            <p>{finalDataItem?.title}</p>
-                          </Col>
-                          <Col span={4}>
-                            <p>
-                              Line Items: {finalDataItem?.QuoteLineItem?.length}
-                            </p>
-                          </Col>
-                          <Col span={4}>
-                            <p>
-                              Total Cost: $
-                              {abbreviate(
-                                Number(
-                                  finalDataItem?.totalAdjustedPrice ?? 0.0,
-                                ),
-                              )}
-                            </p>
-                          </Col>
-                          <Col
-                            span={4}
-                            style={{
-                              justifyContent: 'end',
-                              display: 'flex',
-                            }}
-                          >
-                            <Space>
-                              <AvatarStyled
-                                shape="square"
-                                background={token?.colorSuccess}
-                                size={28}
-                                icon={
-                                  <CheckIcon
-                                    width={25}
-                                    color={token?.colorBgContainer}
-                                    onClick={(e) => {
-                                      e?.stopPropagation();
-                                      if (isView === 'true') {
-                                        notification.open({
-                                          message:
-                                            "You can't use in view mode.",
-                                          type: 'info',
-                                        });
-                                      } else {
-                                        setShowVerificationFileModal(true);
-                                        setFileData(finalDataItem);
-                                      }
-                                    }}
-                                  />
-                                }
-                              />
-                              <AvatarStyled
-                                shape="square"
-                                background={token?.colorError}
-                                size={28}
-                                icon={
-                                  <XMarkIcon
-                                    width={25}
-                                    color={token?.colorBgContainer}
-                                    onClick={(e) => {
-                                      if (isView === 'true') {
-                                        notification.open({
-                                          message:
-                                            "You can't use in view mode.",
-                                          type: 'info',
-                                        });
-                                      } else {
-                                        if (!finalDataItem?.maunalAdded) {
-                                          if (
-                                            finalDataItem?.QuoteLineItem
-                                              ?.length === 0
-                                          ) {
+                <>
+                  <OsCollapse
+                    key={index + 1}
+                    onChange={() => {
+                      setActiveKeyDefault(index?.toString())
+                    }}
+                    defaultActiveKey={index === 0 ? ['0'] : []}
+                    // activeKey={'0'}
+                    items={[
+                      {
+                        label: (
+                          <Row justify="space-between">
+                            <Col span={10}>
+                              <p>{finalDataItem?.title}</p>
+                            </Col>
+                            <Col span={4}>
+                              <p>
+                                Line Items: {finalDataItem?.QuoteLineItem?.length}
+                              </p>
+                            </Col>
+                            <Col span={4}>
+                              <p>
+                                Total Cost: $
+                                {abbreviate(
+                                  Number(
+                                    finalDataItem?.totalAdjustedPrice ?? 0.0,
+                                  ),
+                                )}
+                              </p>
+                            </Col>
+                            <Col
+                              span={4}
+                              style={{
+                                justifyContent: 'end',
+                                display: 'flex',
+                              }}
+                            >
+                              <Space>
+                                <AvatarStyled
+                                  shape="square"
+                                  background={token?.colorSuccess}
+                                  size={28}
+                                  icon={
+                                    <CheckIcon
+                                      width={25}
+                                      color={token?.colorBgContainer}
+                                      onClick={(e) => {
+                                        e?.stopPropagation();
+                                        if (isView === 'true') {
+                                          notification.open({
+                                            message:
+                                              "You can't use in view mode.",
+                                            type: 'info',
+                                          });
+                                        } else {
+                                          setShowVerificationFileModal(true);
+                                          setFileData(finalDataItem);
+                                        }
+                                      }}
+                                    />
+                                  }
+                                />
+                                <AvatarStyled
+                                  shape="square"
+                                  background={token?.colorError}
+                                  size={28}
+                                  icon={
+                                    <XMarkIcon
+                                      width={25}
+                                      color={token?.colorBgContainer}
+                                      onClick={(e) => {
+                                        if (isView === 'true') {
+                                          notification.open({
+                                            message:
+                                              "You can't use in view mode.",
+                                            type: 'info',
+                                          });
+                                        } else {
+                                          if (!finalDataItem?.maunalAdded) {
+                                            if (
+                                              finalDataItem?.QuoteLineItem
+                                                ?.length === 0
+                                            ) {
+                                              setConditionsForTheButtons({
+                                                ...conditionsForTheButtons,
+                                                exportAs: false,
+                                              });
+                                              setShowExportAs(false);
+                                            } else {
+                                              setConditionsForTheButtons({
+                                                ...conditionsForTheButtons,
+                                                exportAs: true,
+                                              });
+                                              setShowExportAs(true);
+                                            }
+                                            if (
+                                              !finalDataItem?.title
+                                                ?.toLowerCase()
+                                                ?.split('.')
+                                                ?.includes('pdf')
+                                            ) {
+                                              setConditionsForTheButtons({
+                                                ...conditionsForTheButtons,
+                                                exportTable: false,
+                                              });
+                                              setShowExportToTable(false);
+                                            } else {
+                                              setConditionsForTheButtons({
+                                                ...conditionsForTheButtons,
+                                                exportTable: true,
+                                              });
+                                              setShowExportToTable(true);
+                                            }
+                                            if (
+                                              finalDataItem?.QuoteLineItem
+                                                ?.length === 0 &&
+                                              !finalDataItem?.title
+                                                ?.toLowerCase()
+                                                ?.split('.')
+                                                ?.includes('pdf')
+                                            ) {
+                                              setConditionsForTheButtons({
+                                                ...conditionsForTheButtons,
+                                                maunalExport: true,
+                                              });
+                                              setShowSubmitButton(true);
+                                            } else {
+                                              setConditionsForTheButtons({
+                                                ...conditionsForTheButtons,
+                                                maunalExport: false,
+                                              });
+                                              setShowSubmitButton(false);
+                                            }
+                                          }
+                                          if (finalDataItem?.maunalAdded) {
                                             setConditionsForTheButtons({
                                               ...conditionsForTheButtons,
                                               exportAs: false,
-                                            });
-                                            setShowExportAs(false);
-                                          } else {
-                                            setConditionsForTheButtons({
-                                              ...conditionsForTheButtons,
-                                              exportAs: true,
-                                            });
-                                            setShowExportAs(true);
-                                          }
-                                          if (
-                                            !finalDataItem?.title
-                                              ?.toLowerCase()
-                                              ?.split('.')
-                                              ?.includes('pdf')
-                                          ) {
-                                            setConditionsForTheButtons({
-                                              ...conditionsForTheButtons,
                                               exportTable: false,
-                                            });
-                                            setShowExportToTable(false);
-                                          } else {
-                                            setConditionsForTheButtons({
-                                              ...conditionsForTheButtons,
-                                              exportTable: true,
-                                            });
-                                            setShowExportToTable(true);
-                                          }
-                                          if (
-                                            finalDataItem?.QuoteLineItem
-                                              ?.length === 0 &&
-                                            !finalDataItem?.title
-                                              ?.toLowerCase()
-                                              ?.split('.')
-                                              ?.includes('pdf')
-                                          ) {
-                                            setConditionsForTheButtons({
-                                              ...conditionsForTheButtons,
                                               maunalExport: true,
                                             });
                                             setShowSubmitButton(true);
-                                          } else {
-                                            setConditionsForTheButtons({
-                                              ...conditionsForTheButtons,
-                                              maunalExport: false,
-                                            });
-                                            setShowSubmitButton(false);
+                                            setShowExportToTable(false);
+                                            setShowExportAs(false);
                                           }
-                                        }
-                                        if (finalDataItem?.maunalAdded) {
-                                          setConditionsForTheButtons({
-                                            ...conditionsForTheButtons,
-                                            exportAs: false,
-                                            exportTable: false,
-                                            maunalExport: true,
-                                          });
-                                          setShowSubmitButton(true);
-                                          setShowExportToTable(false);
-                                          setShowExportAs(false);
-                                        }
 
-                                        setShowRaiseConcernModal(true);
-                                        setFileData(finalDataItem);
-                                      }
-                                      e?.stopPropagation();
-                                    }}
-                                  />
-                                }
+                                          setShowRaiseConcernModal(true);
+                                          setFileData(finalDataItem);
+                                        }
+                                        e?.stopPropagation();
+                                      }}
+                                    />
+                                  }
+                                />
+                              </Space>
+                            </Col>
+                          </Row>
+                        ),
+                        children: (
+                          <>
+                            {finalReviewCol && finalReviewCol?.length > 0 &&
+
+                              <OsTable
+                                tableScroll={tableScroll}
+                                loading={quoteFileDataLoading}
+                                columns={finalReviewCol && finalReviewCol.length > 0
+                                  ? finalReviewCol.map((items: any) => ({
+                                    ...items,
+                                    title: (
+                                      <Typography name="Body 4/Medium" className="dragHandler" color={token?.colorPrimaryText}>
+                                        {items?.title}
+                                      </Typography>
+                                    ),
+                                  }))
+                                  : []}
+                                dataSource={finalDataItem?.QuoteLineItem || []}
+                                scroll
+                                locale={locale}
+                                defaultPageSize={finalDataItem?.QuoteLineItem?.length || 10}
+                                setPageChange={setPageChange}
+                                pageChange={pageChange}
+                                uniqueId={finalDataItem?.name}
                               />
-                            </Space>
-                          </Col>
-                        </Row>
-                      ),
-                      children: (
-                        <>
-                          {finalReviewCol && finalReviewCol?.length > 0 &&
-
-                            <OsTable
-                              tableScroll={tableScroll}
-                              loading={quoteFileDataLoading}
-                              columns={finalReviewCol && finalReviewCol.length > 0
-                                ? finalReviewCol.map((items: any) => ({
-                                  ...items,
-                                  title: (
-                                    <Typography name="Body 4/Medium" className="dragHandler" color={token?.colorPrimaryText}>
-                                      {items?.title}
-                                    </Typography>
-                                  ),
-                                }))
-                                : []}
-                              dataSource={finalDataItem?.QuoteLineItem || []}
-                              scroll
-                              locale={locale}
-                              defaultPageSize={finalDataItem?.QuoteLineItem?.length || 10}
-                              setPageChange={setPageChange}
-                              pageChange={pageChange}
-                              uniqueId={finalDataItem?.name}
-                            />
-                          }
-                          {/* <OsTableWithOutDrag
+                            }
+                            {/* <OsTableWithOutDrag
                             loading={quoteFileDataLoading}
                             columns={finalReviewCol}
                             dataSource={finalDataItem?.QuoteLineItem}
@@ -1019,11 +1024,12 @@ const ReviewQuotes: FC<any> = ({
                             pageChange={pageChange}
                             uniqueId={finalDataItem?.name}
                           /> */}
-                        </>
-                      ),
-                    },
-                  ]}
-                />
+                          </>
+                        ),
+                      },
+                    ]}
+                  />
+                </>
               ))}
           </>
         ) : (
