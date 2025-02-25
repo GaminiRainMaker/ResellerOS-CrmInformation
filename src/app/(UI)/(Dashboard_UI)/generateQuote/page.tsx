@@ -665,7 +665,7 @@ const GenerateQuote: React.FC = () => {
                     quoteDetails={objectForSyncingValues}
                     isGenerateQuotePage
                   />
-                  {quoteByIdData?.status !== 'Needs Review' && (
+                  {/* {quoteByIdData?.status !== 'Needs Review' && (
                     <OsButton
                       loading={
                         statusValue === 'Needs Review'
@@ -690,7 +690,7 @@ const GenerateQuote: React.FC = () => {
                         commonUpdateCompleteAndDraftMethod('Needs Review');
                       }}
                     />
-                  )}
+                  )} */}
                 </>
               )}
 
