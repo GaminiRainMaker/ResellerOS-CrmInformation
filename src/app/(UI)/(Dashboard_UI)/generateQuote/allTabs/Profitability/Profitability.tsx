@@ -155,6 +155,9 @@ const Profitablity: FC<any> = ({
         let quantity;
         let bundleId;
         if (item?.bundle_id || filterValue) {
+
+
+
           if (item?.bundle_id) {
             bundleId = item?.bundle_id;
             name = item?.Bundle?.name;
@@ -170,16 +173,17 @@ const Profitablity: FC<any> = ({
               name = item?.QuoteLineItem?.QuoteFile?.file_name;
             } else if (
               filterValue === 'Vendor/Disti' &&
-              item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.distributor_id
+              (item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.distributor_id || !item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Partner)
             ) {
               name =
-                item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Partner
+                Number(item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.id) === 18 ? 'Other' : item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Partner
                   ?.partner ?? item?.QuoteLineItem?.QuoteFile?.distributor_name;
             } else if (
               filterValue === 'OEM' &&
-              item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.oem_id
+              (item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.oem_id || !item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Partner)
             ) {
-              name =
+
+              name = Number(item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.id) === 18 ? 'Other' :
                 item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Partner
                   ?.partner ?? item?.QuoteLineItem?.QuoteFile?.oem_name;
             }

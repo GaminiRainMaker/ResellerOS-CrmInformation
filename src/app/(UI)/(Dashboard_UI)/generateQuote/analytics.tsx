@@ -5,7 +5,7 @@
 
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
+import { Col, Row } from '@/app/components/common/antd/Grid';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
@@ -16,27 +16,27 @@ import {
   TagIcon,
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
-import {FC, Suspense, useEffect, useState} from 'react';
-import {useSearchParams} from 'next/navigation';
+import { FC, Suspense, useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {updateQuoteById} from '../../../../../redux/actions/quote';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import { updateQuoteById } from '../../../../../redux/actions/quote';
 
-const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
+const GenerateQuoteAnalytics: FC<any> = ({ totalValues, setTotalValues }) => {
   const [token] = useThemeToken();
   const searchParams = useSearchParams()!;
   const getQuoteID = searchParams.get('id');
   // const [totalValues, setTotalValues] = useState<any>();
   const dispatch = useAppDispatch();
   const [totalRebateAmount, setTotalRebateAmount] = useState<any>();
-  const {data: profitabilityDataByQuoteId} = useAppSelector(
+  const { data: profitabilityDataByQuoteId } = useAppSelector(
     (state) => state.profitability,
   );
-  const {rebateQuoteLine} = useAppSelector(
+  const { rebateQuoteLine } = useAppSelector(
     (state) => state.rebateQuoteLineItem,
   );
-  const {abbreviate} = useAbbreviationHook(0);
+  const { abbreviate } = useAbbreviationHook(0);
   useEffect(() => {
     let rebateAmount: any = 0;
     rebateQuoteLine?.map((item: any) => {
@@ -106,15 +106,26 @@ const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
     if (totalExitPrice > 0) {
       grossProfitPercentage = (totalGrossProfit / totalExitPrice) * 100;
     }
+
     setTotalValues({
       GrossProfit: totalGrossProfit,
       GrossProfitPercentage: grossProfitPercentage,
       ExitPrice: totalExitPrice,
       TotalCost: adjustedPrice + BundleAdjustedPrice,
     });
+
   }, [JSON.stringify(profitabilityDataByQuoteId), profitabilityDataByQuoteId]);
 
   const [analyticsData, setAnalyticsData] = useState<any>();
+
+  useEffect(() => {
+    setTotalValues({
+      GrossProfit: 0,
+      GrossProfitPercentage: 0,
+      ExitPrice: 0,
+      TotalCost: 0,
+    });
+  }, [])
 
   useEffect(() => {
     const analyticsDataa = [
@@ -149,7 +160,7 @@ const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
           <Image
             src={MoneyRecive}
             alt="MoneyRecive"
-            style={{cursor: 'pointer', height: '24px', width: '24px'}}
+            style={{ cursor: 'pointer', height: '24px', width: '24px' }}
           />
         ),
         iconBg: token?.colorErrorBg,
@@ -169,7 +180,7 @@ const GenerateQuoteAnalytics: FC<any> = ({totalValues, setTotalValues}) => {
           <Image
             src={MoneySend}
             alt="MoneySend"
-            style={{cursor: 'pointer', height: '24px', width: '24px'}}
+            style={{ cursor: 'pointer', height: '24px', width: '24px' }}
           />
         ),
         iconBg: token?.colorInfoHover,

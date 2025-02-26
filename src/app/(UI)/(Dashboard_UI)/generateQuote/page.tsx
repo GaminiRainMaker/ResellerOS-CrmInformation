@@ -46,6 +46,7 @@ import { getRebateQuoteLineItemByQuoteId } from '../../../../../redux/actions/re
 import { getAllValidationByQuoteId } from '../../../../../redux/actions/validation';
 import { getAddressByCustomerId } from '../../../../../redux/actions/address';
 import { getAllBillingContactByCustomerId } from '../../../../../redux/actions/billingContact';
+import { getActiveLicensesByOrgUserId } from '../../../../../redux/actions/license';
 
 const DownloadFile = dynamic(() => import('./DownloadFile'), {
   ssr: false,
@@ -125,16 +126,20 @@ const GenerateQuote: React.FC = () => {
     useState<boolean>(false);
   const [typeForAttachmentFilter, setTypeForAttachmentFilter] =
     useState<any>('all');
+  const { userInformation } = useAppSelector((state) => state.user);
+
   const [showDocumentModal, setShowDocumentModal] = useState<boolean>(false);
   const [objectForSyncingValues, setObjectForSyncingValues] = useState<any>([]);
   const [addNewCustomerQuote, setAddNewCustomerQuote] =
     useState<boolean>(false);
+  const [licenseForOrg, setLicenseForOrg] = useState<boolean>(false)
 
   useEffect(() => {
     if (getQuoteFileDataCount !== undefined && getQuoteFileDataCount !== null) {
       setFilesCount(Number(getQuoteFileDataCount));
     }
   }, [getQuoteFileDataCount]);
+
   useEffect(() => {
     if (getQuoteID) {
       dispatch(getQuoteFileCount(Number(getQuoteID)))?.then((payload: any) => {
@@ -161,6 +166,20 @@ const GenerateQuote: React.FC = () => {
     );
   };
 
+  useEffect(() => {
+    if (userInformation?.id) {
+      dispatch(getActiveLicensesByOrgUserId({ user_id: userInformation.id }))
+        .then((data) => {
+          const activeLicenses = data?.payload?.activeLicenses;
+          if (activeLicenses?.length > 0) {
+            setLicenseForOrg(true)
+          }
+        })
+        .catch((err) => {
+          console.log('ERR===>', err);
+        });
+    }
+  }, [userInformation, dispatch]);
   // console.log('32423432432', totalValues);
   useEffect(() => {
     getAlllApisData();
@@ -665,7 +684,7 @@ const GenerateQuote: React.FC = () => {
                     quoteDetails={objectForSyncingValues}
                     isGenerateQuotePage
                   />
-                  {/* {quoteByIdData?.status !== 'Needs Review' && (
+                  {licenseForOrg && quoteByIdData?.status !== 'Needs Review' && (
                     <OsButton
                       loading={
                         statusValue === 'Needs Review'
@@ -690,7 +709,7 @@ const GenerateQuote: React.FC = () => {
                         commonUpdateCompleteAndDraftMethod('Needs Review');
                       }}
                     />
-                  )} */}
+                  )}
                 </>
               )}
 

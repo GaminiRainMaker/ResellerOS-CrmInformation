@@ -29,7 +29,7 @@ export const TAAFlagPickList = [
 export const selectData = [
   {value: 'Product Family', label: 'Product Family'},
   {value: 'Pricing Method', label: 'Pricing Method'},
-  {value: 'Vendor/Disti', label: 'Vendor/Disti'},
+  {value: 'Vendor/Disti', label: 'Vendor/Distributor'},
   {value: 'OEM', label: 'OEM'},
   {value: 'File Name', label: 'File Name'},
 ];

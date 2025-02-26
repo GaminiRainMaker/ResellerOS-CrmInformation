@@ -1090,10 +1090,10 @@ const AddQuote: FC<AddQuoteInterface> = ({
             beforeUpload={beforeUpload}
             uploadFileData={uploadFileData}
             setUploadFileData={setUploadFileData}
-            addQuoteLineItem={
-              AdvancedSetting ? addQuoteLineItemAdvanced : addQuoteLineItem
-            }
-            // addQuoteLineItem={addQuoteLineItemAdvanced}
+            // addQuoteLineItem={
+            //   AdvancedSetting ? addQuoteLineItemAdvanced : addQuoteLineItem
+            // }
+            addQuoteLineItem={addQuoteLineItemAdvanced}
             addQuoteManually={addQuoteManually}
             form={form}
             cardLoading={loading}

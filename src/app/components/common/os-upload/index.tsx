@@ -333,10 +333,19 @@ const OsUpload: React.FC<any> = ({
       (items: any) =>
         (items?.product_code &&
           items?.product_code !== undefined &&
-          items?.product_code !== null) ||
+          items?.product_code !== null && items?.quantity &&
+          items?.quantity !== undefined &&
+          items?.quantity !== null) ||
         (items?.quantity &&
           items?.quantity !== undefined &&
-          items?.quantity !== null),
+          items?.quantity !== null && items?.description &&
+          items?.description !== undefined &&
+          items?.description !== null) ||
+        (items?.product_code &&
+          items?.product_code !== undefined &&
+          items?.product_code !== null && items?.description &&
+          items?.description !== undefined &&
+          items?.description !== null)
     );
 
     return {
