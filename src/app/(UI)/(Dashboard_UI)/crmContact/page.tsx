@@ -14,8 +14,8 @@ import {
   UserGroupIcon,
 } from '@heroicons/react/24/outline';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
@@ -27,10 +27,10 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import {Form, MenuProps, notification} from 'antd';
-import {Option} from 'antd/es/mentions';
-import {useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import { Form, MenuProps, notification } from 'antd';
+import { Option } from 'antd/es/mentions';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import {
   deleteBillingContact,
   getAllbillingContact,
@@ -42,8 +42,8 @@ import {
   getAllCustomer,
   queryCustomer,
 } from '../../../../../redux/actions/customer';
-import {queryOpportunity} from '../../../../../redux/actions/opportunity';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { queryOpportunity } from '../../../../../redux/actions/opportunity';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import AddContact from '@/app/components/common/os-add-contact';
 
 const CrmAccount: React.FC = () => {
@@ -59,19 +59,19 @@ const CrmAccount: React.FC = () => {
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [customerValue, setCustomerValue] = useState();
   const [open, setOpen] = useState(false);
-  const {filteredData: customerData} = useAppSelector(
+  const { filteredData: customerData } = useAppSelector(
     (state) => state.customer,
   );
-    const { userInformation } = useAppSelector((state) => state.user);
-  const {queryOpportunityData} = useAppSelector((state) => state.Opportunity);
+  const { userInformation } = useAppSelector((state) => state.user);
+  const { queryOpportunityData } = useAppSelector((state) => state.Opportunity);
   const {
     loading,
     filteredData,
     data: ContactAllData,
   } = useAppSelector((state) => state.billingContact);
   const [deletedData, setDeletedData] = useState<any>();
-    const [filteredContactData, setFiltererContactData] = useState<any>();
-  
+  const [filteredContactData, setFiltererContactData] = useState<any>();
+
   const [query, setQuery] = useState<{
     contact: string | null;
     customer: string | null;
@@ -101,7 +101,7 @@ const CrmAccount: React.FC = () => {
   }, [showModal, open]);
 
   const deleteSelectedIds = async () => {
-    const data = {Ids: deleteIds};
+    const data = { Ids: deleteIds };
     await dispatch(deleteBillingContact(data));
     setDeleteIds([]);
     setShowModalDelete(false);
@@ -218,7 +218,7 @@ const CrmAccount: React.FC = () => {
             height={24}
             width={24}
             color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
+            style={{ cursor: 'pointer' }}
             onClick={() => {
               setShowDrawer(true);
               setRecordId(record?.id);
@@ -236,7 +236,7 @@ const CrmAccount: React.FC = () => {
             height={24}
             width={24}
             color={token.colorError}
-            style={{cursor: 'pointer'}}
+            style={{ cursor: 'pointer' }}
             onClick={() => {
               setDeleteIds([record?.id]);
               setShowModalDelete(true);
@@ -294,16 +294,23 @@ const CrmAccount: React.FC = () => {
 
   const onFinish = () => {
     const FormData = form?.getFieldsValue();
+    let obj = {
+      ...FormData,
+      user_id: userInformation?.id
+    }
 
-  dispatch(insertbillingContact(FormData)).then((d: any) => {
-      if (d?.payload) {
-        dispatch(queryContact(searchQuery));
-        dispatch(getAllbillingContact(''));
-        form.resetFields();
-        setShowModal(false);
-      }
-    });
-  };
+    if (obj) {
+      dispatch(insertbillingContact(obj)).then((d: any) => {
+        if (d?.payload) {
+          dispatch(queryContact(searchQuery));
+          dispatch(getAllbillingContact(''));
+          form.resetFields();
+          setShowModal(false);
+        }
+      });
+    };
+  }
+
 
   const updatebillDetails = async () => {
     const FormData = form?.getFieldsValue();
@@ -333,7 +340,7 @@ const CrmAccount: React.FC = () => {
 
   return (
     <>
-      <Space size={24} direction="vertical" style={{width: '100%'}}>
+      <Space size={24} direction="vertical" style={{ width: '100%' }}>
         <Row
           justify="space-between"
           style={{
@@ -379,7 +386,7 @@ const CrmAccount: React.FC = () => {
                 }}
               />
               <Space>
-                <OsDropdown menu={{items: dropDownItemss}} />
+                <OsDropdown menu={{ items: dropDownItemss }} />
               </Space>
             </div>
           </Col>
@@ -393,11 +400,11 @@ const CrmAccount: React.FC = () => {
           }}
         >
           <Row justify="end">
-            <Space size={12} align="center" style={{paddingBottom: '15px'}}>
+            <Space size={12} align="center" style={{ paddingBottom: '15px' }}>
               <Space direction="vertical" size={0}>
                 <Typography name="Body 4/Medium">Customer Account</Typography>
                 <CommonSelect
-                  style={{width: '200px'}}
+                  style={{ width: '200px' }}
                   placeholder="Search here"
                   showSearch
                   onSearch={(e) => {
@@ -424,7 +431,7 @@ const CrmAccount: React.FC = () => {
               <Space direction="vertical" size={0}>
                 <Typography name="Body 4/Medium">Contact Name</Typography>
                 <CommonSelect
-                  style={{width: '200px'}}
+                  style={{ width: '200px' }}
                   placeholder="Search here"
                   showSearch
                   onSearch={(e) => {
@@ -449,7 +456,7 @@ const CrmAccount: React.FC = () => {
                 </CommonSelect>
               </Space>
 
-              <div style={{marginTop: '15px'}}>
+              <div style={{ marginTop: '15px' }}>
                 <Typography
                   cursor="pointer"
                   name="Button 1"
@@ -516,7 +523,7 @@ const CrmAccount: React.FC = () => {
         width={450}
         footer={
           <OsButton
-            btnStyle={{width: '100%'}}
+            btnStyle={{ width: '100%' }}
             buttontype="PRIMARY"
             text="Update Changes"
             clickHandler={form.submit}

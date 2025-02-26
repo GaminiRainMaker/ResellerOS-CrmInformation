@@ -51,6 +51,7 @@ const AddCustomer: React.FC<any> = ({
   const [contactRecordData, setcontactRecordData] = useState<any>();
   const [sameAsShippingAddress, setSameAsShippingAddress] =
     useState<boolean>(false);
+  const {userInformation} = useAppSelector((state) => state.user);
 
   const formatPhoneNumber = (input: any) => {
     const cleaned = input.replace(/\D/g, ''); // Remove non-digits
@@ -160,10 +161,9 @@ const AddCustomer: React.FC<any> = ({
       ...contactData,
       customer_id: contactRecordData?.customer_id ?? customerData?.id,
       id: contactRecordData?.customer_id ? contactRecordData?.id : null,
+      user_id: userInformation?.id,
     };
 
-    console.log('34324324', finalDAta);
-    return;
     dispatch(insertbillingContact(finalDAta))?.then((d: any) => {
       if (d?.payload) {
         contactForm.resetFields();

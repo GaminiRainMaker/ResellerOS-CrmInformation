@@ -30,6 +30,7 @@ const OsContactSelect: FC<OsContactSelectInterface> = ({
   );
   const [contactFilterOption, setContactFilterOption] = useState<any>();
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const {userInformation} = useAppSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(getAllbillingContact(''));
@@ -61,6 +62,7 @@ const OsContactSelect: FC<OsContactSelectInterface> = ({
     const finalDAta = {
       ...FormData,
       customer_id: customerValue,
+      user_id: userInformation?.id,
     };
 
     dispatch(insertbillingContact(finalDAta))?.then((d: any) => {

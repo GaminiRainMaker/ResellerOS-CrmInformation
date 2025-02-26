@@ -49,6 +49,8 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [errorFileds, setErrorFileds] = useState<boolean>(false);
   const [activeKeyForTabs, setActiveKeyForTabs] = useState<any>('1');
+  const { userInformation } = useAppSelector((state) => state.user);
+
 
   useEffect(() => {
     const customerOptionData =
@@ -79,7 +81,7 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
     try {
       setLoading(true);
       await dispatch(
-        insertCustomer({ ...FormData, profile_image: customerProfile }),
+        insertCustomer({ ...FormData, profile_image: customerProfile, user_id: userInformation.id, }),
       ).then((data) => {
         setCustomerOptions([
           ...customerOptions,
@@ -104,8 +106,9 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
           billing_last_name: FormData?.billing_last_name,
           billing_first_name: FormData?.billing_first_name,
           billing_role: FormData?.billing_role,
-
           billing_phone: FormData?.billing_phone,
+          user_id: userInformation?.id,
+
         };
         if (newAddressObj) {
           dispatch(insertAddAddress(newAddressObj));

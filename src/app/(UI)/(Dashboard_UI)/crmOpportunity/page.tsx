@@ -395,6 +395,7 @@ const CrmOpportunity: React.FC = () => {
     const finalData = {
       ...FormDAta,
       customer_id: customerValue,
+      user_id: userInformation.id
     };
     dispatch(insertOpportunity(finalData)).then((d: any) => {
       if (d?.payload) {

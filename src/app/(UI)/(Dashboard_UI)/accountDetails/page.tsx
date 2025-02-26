@@ -65,7 +65,7 @@ const AccountDetails = () => {
   const [recordId, setRecordId] = useState<any>();
   const [recordData, setRecordData] = useState<any>();
   const [showModalForOpp, setShowModalForOpp] = useState<boolean>(false);
-
+  const { userInformation } = useAppSelector((state) => state.user);
   const { loading: QuoteLoading } = useAppSelector((state) => state.quote);
 
   const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
@@ -537,6 +537,7 @@ const AccountDetails = () => {
     const finalData = {
       ...FormDAta,
       customer_id: getCustomerID,
+      user_id: userInformation.id
     };
 
 

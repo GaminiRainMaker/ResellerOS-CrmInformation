@@ -394,7 +394,9 @@ const CrmInformation: React.FC = () => {
 
       // Insert Customer & Get response
       const { payload } = await dispatch(
-        insertCustomer({ ...formData, profile_image: customerProfile }),
+        insertCustomer({
+          ...formData, profile_image: customerProfile, user_id: userInformation.id,
+        }),
       );
 
       if (!payload?.id) throw new Error('Customer insertion failed');
@@ -411,6 +413,8 @@ const CrmInformation: React.FC = () => {
           billing_last_name: formData?.billing_last_name,
           billing_state: formData?.billing_state,
           billing_phone: formData?.billing_phone,
+          user_id: userInformation?.id
+
         }
         : null;
 

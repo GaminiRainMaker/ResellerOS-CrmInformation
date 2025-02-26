@@ -33,6 +33,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
   const [opportunityFilterOption, setOpportunityFilterOption] = useState<any>();
   const [form1] = Form.useForm();
   const [opportunityData, setopportunityData] = useState<any>()
+  const { userInformation } = useAppSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(getAllOpportunity())?.then((payload: any) => {
@@ -67,6 +68,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
     const finalData = {
       ...FormDAta,
       customer_id: customerValue,
+      user_id: userInformation.id
     };
     dispatch(insertOpportunity(finalData)).then((d: any) => {
       if (d?.payload) {
