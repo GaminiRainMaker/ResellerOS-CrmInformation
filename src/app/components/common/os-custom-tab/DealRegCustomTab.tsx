@@ -1,7 +1,6 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable no-nested-ternary */
-import DealRegDetailForm from '@/app/(UI)/(Dashboard_UI)/dealRegDetail/DealRegDetailForm';
 import {FormInstance} from 'antd';
 import {Suspense, useEffect, useState} from 'react';
 import {formatStatus} from '@/app/utils/CONSTANTS';
@@ -136,7 +135,7 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
           ),
           children: (
             <div key={element?.partner_program_id}>
-              <DealRegDetailForm
+              {/* <DealRegDetailForm
                 // setFormDataValues={setFormDataValues}
                 data={element}
                 selectedUserId={selectedUserId}
@@ -148,7 +147,7 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
                 activeKey={activeKey}
                 setCountUniFiled={setCountUniFiled}
                 setCountOfFields={setCountOfFields}
-              />
+              /> */}
             </div>
           ),
         });
