@@ -1,10 +1,10 @@
-import {Col, Row} from '@/app/components/common/antd/Grid';
+import { Col, Row } from '@/app/components/common/antd/Grid';
 import OsInput from '@/app/components/common/os-input';
-import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
+import { SelectFormItem } from '@/app/components/common/os-oem-select/oem-select-styled';
 import Typography from '@/app/components/common/typography';
-import {Form} from 'antd';
-import {FC} from 'react';
-import {UserProfileInterface} from '../myProfile/profile.interface';
+import { Form } from 'antd';
+import { FC } from 'react';
+import { UserProfileInterface } from '../myProfile/profile.interface';
 
 const EditCompanyDetails: FC<UserProfileInterface> = ({
   form,
@@ -22,7 +22,7 @@ const EditCompanyDetails: FC<UserProfileInterface> = ({
         <Col span={24}>
           <SelectFormItem
             label={
-              <Typography name="Body 4/Medium">Organization Name</Typography>
+              <Typography name="Body 4/Medium">Organization Names</Typography>
             }
             name="company_name"
             rules={[
@@ -51,7 +51,7 @@ const EditCompanyDetails: FC<UserProfileInterface> = ({
         <Col span={12}>
           <SelectFormItem
             rules={[
-              {pattern: /^[A-Za-z\s]+$/, message: 'Please enter a valid city.'},
+              { pattern: /^[A-Za-z\s]+$/, message: 'Please enter a valid city.' },
             ]}
             label={<Typography name="Body 4/Medium">City</Typography>}
             name="shiping_city"
