@@ -1,0 +1,10 @@
+node_modules
+.next
+.husky
+coverage
+.prettierrc
+.prettierignore
+.stylelintignore
+.eslintignore
+*.json
+*.css
