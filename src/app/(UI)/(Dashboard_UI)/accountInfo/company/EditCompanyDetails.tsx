@@ -22,7 +22,7 @@ const EditCompanyDetails: FC<UserProfileInterface> = ({
         <Col span={24}>
           <SelectFormItem
             label={
-              <Typography name="Body 4/Medium">Organization Names</Typography>
+              <Typography name="Body 4/Medium">Organization Name</Typography>
             }
             name="company_name"
             rules={[

@@ -41,8 +41,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   // }, []);
 
- 
-  
+
+
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -50,20 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="en">
           <body className={`${jakartaSans.variable}`}>
             <Providers>
-              <CanvasRedirectWrapper>{children}</CanvasRedirectWrapper>
-              {/* {locationdata && ( */}
-              <Script
-                onLoad={() => console.log('Salesforce script loaded.')}
-                src={
-                  locationdata === 'lifeboat'
-                    ? '/canvas-all-quote-ai.js'
-                    : locationdata === 'OrderAI'
-                      ? '/canvas-all-orderai'
-                      : '/canvas-all.js'
-                }
-                strategy="beforeInteractive"
-              />
-              {/* )} */}
+              {children}
             </Providers>
           </body>
         </html>
