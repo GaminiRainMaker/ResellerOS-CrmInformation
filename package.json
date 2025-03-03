@@ -40,7 +40,6 @@
     "antd": "^5.24.0",
     "antd-img-crop": "^4.24.0",
     "aws": "^0.0.3-2",
-    "aws-amplify": "^6.13.0",
     "axios": "^1.7.9",
     "canvas": "^3.1.0",
     "crypto-js": "^4.2.0",
