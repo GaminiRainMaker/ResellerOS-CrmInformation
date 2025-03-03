@@ -13,8 +13,7 @@
     "format": "prettier --write .",
     "test": "yarn check-format && yarn check-lint && yarn check-types && yarn build",
     "prepare": "husky install",
-    "bolt": "next build && next start",
-    "postinstall": "yarn install"
+    "bolt": "next build && next start"
   },
   "engines": {
     "node": "18.x"
