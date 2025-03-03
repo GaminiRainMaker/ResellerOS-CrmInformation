@@ -49,7 +49,6 @@ import { setBillingContact } from '../../../../../redux/slices/billingAddress';
 import DetailCard from './DetailCard';
 import AddOpportunity from '@/app/components/common/os-add-opportunity';
 import { insertOpportunity } from '../../../../../redux/actions/opportunity';
-import AddQuote from '@/app/components/common/addQuote';
 import OsTable from '@/app/components/common/os-table';
 
 const AccountDetails = () => {
@@ -689,24 +688,7 @@ const AccountDetails = () => {
 
             </OsCard>
 
-            <Row justify="space-between" align="middle" style={{ marginTop: '10px' }}>
-              <Col>
-                <Typography name="Heading 3/Medium">All Quotes</Typography>
-              </Col>
-              <Col style={{ float: 'right' }}>
-                <AddQuote
-                  uploadFileData={uploadFileData}
-                  setUploadFileData={setUploadFileData}
-                  loading={QuoteLoading}
-                  buttonText="Add Quote"
-                  setShowToggleTable={setShowToggleTable}
-                  showToggleTable={showToggleTable}
-                  Quotecolumns={Quotecolumns}
-                  // opportunityId={26}
-                  customerId={getCustomerID}
-                />
-              </Col>
-            </Row>
+     
 
 
             <OsCard>
