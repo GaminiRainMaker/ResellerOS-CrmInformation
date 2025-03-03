@@ -18,13 +18,7 @@ import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
 import {CustomTabStyle} from './styled-components';
 import OsButton from '../os-button';
-import {OSDraggerStyleForSupport} from '../os-upload/styled-components';
 import GlobalLoader from '../os-global-loader';
-import {
-  uploadDocumentOnAzure,
-  uploadToAws,
-  uploalImageonAzure,
-} from '../../../../../redux/actions/upload';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {sendEmailForSuport} from '../../../../../redux/actions/auth';
 
@@ -144,31 +138,7 @@ const AdminCustomTabs: FC<any> = (tabs) => {
     });
   };
   const beforeUpload = async (file: File) => {
-    const obj: any = {...file};
-    setLoadingSpin(true);
-    const pathUsedToUpload = file?.type?.split('.')?.includes('document')
-      ? uploadDocumentOnAzure
-      : file?.type?.split('.')?.includes('image/jpeg') ||
-          file?.type?.split('/')?.includes('image')
-        ? uploalImageonAzure
-        : uploadToAws;
-
-    convertFileToBase64(file)
-      .then(async (base64String: string) => {
-        obj.base64 = base64String;
-        obj.name = file?.name;
-
-        await dispatch(pathUsedToUpload({document: base64String})).then(
-          (payload: any) => {
-            setDataFunc(file?.name, payload?.payload?.data);
-          },
-        );
-
-        setLoadingSpin(false);
-      })
-      .catch((error: any) => {
-        message.error('Error converting file to base64', error);
-      });
+   
   };
   useEffect(() => {
     if (addIssueToSupport && addIssueToSupport?.length > 0) {
@@ -290,18 +260,7 @@ const AdminCustomTabs: FC<any> = (tabs) => {
                         })}
                     </Row>
                   </div>
-                  <div style={{width: '200px'}}>
-                    {' '}
-                    <OSDraggerStyleForSupport
-                      beforeUpload={beforeUpload}
-                      showUploadList={false}
-                      multiple
-                      accept=".pdf,.jpg,.jpeg,.png,.docx"
-                    >
-                      {' '}
-                      <span style={{color: '#3da5d9'}}>Upload a file</span>
-                    </OSDraggerStyleForSupport>
-                  </div>
+       
                 </Space>
                 <div style={{display: 'flex', justifyContent: 'right'}}>
                   <OsButton

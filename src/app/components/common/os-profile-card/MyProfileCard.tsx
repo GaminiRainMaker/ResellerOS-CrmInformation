@@ -13,10 +13,8 @@ import {
 } from '@heroicons/react/24/outline';
 import {message, notification} from 'antd';
 import ImgCrop from 'antd-img-crop';
-import _debounce from 'lodash/debounce';
 import {useSearchParams} from 'next/navigation';
 import {FC, Suspense, useCallback, useEffect, useRef, useState} from 'react';
-import {uploalImageonAzure} from '../../../../../redux/actions/upload';
 import {useAppDispatch} from '../../../../../redux/hook';
 import {Col} from '../antd/Grid';
 import {Space} from '../antd/Space';
@@ -98,17 +96,7 @@ const MyProfileCard: FC<any> = ({data, isCompanyData}) => {
               id: getUserID,
             };
           }
-          await dispatch(uploalImageonAzure(UpdatedData)).then(
-            (payload: any) => {
-              if (payload?.payload) {
-                if (UpdatedData?.userType === 'user') {
-                  dispatch(getUserByIdLogin(getUserID));
-                } else if (UpdatedData?.userType === 'company') {
-                  dispatch(getCompanyByUserId({user_id: getUserID}));
-                }
-              }
-            },
-          );
+    
         })
         .catch((error: any) => {
           message.error('Error converting file to base64', error);
@@ -168,8 +156,6 @@ const MyProfileCard: FC<any> = ({data, isCompanyData}) => {
     }
   };
 
-  const debounceFn = useCallback(_debounce(handleNotification, 500), []);
-
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <MyProfileCardStyle
@@ -210,9 +196,7 @@ const MyProfileCard: FC<any> = ({data, isCompanyData}) => {
                   }}
                 >
                   <ImgCrop
-                    onModalOk={(list: any) => {
-                      debounceFn(list);
-                    }}
+                  
                   >
                     <CustomUpload showUploadList={false}>
                       <AvatarStyled

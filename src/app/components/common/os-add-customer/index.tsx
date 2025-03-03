@@ -4,15 +4,12 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import Typography from '@/app/components/common/typography';
 import {contactIndustryOption} from '@/app/utils/CONSTANTS';
-import {getBase64} from '@/app/utils/upload';
 import {MailOutlined} from '@ant-design/icons';
 import {PencilSquareIcon, UserCircleIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {useForm} from 'antd/es/form/Form';
-import _debounce from 'lodash/debounce';
 import {useCallback, useState} from 'react';
 import {getCustomerProfileById} from '../../../../../redux/actions/customer';
-import {uploadToAwsForUserImage} from '../../../../../redux/actions/upload';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setBillingContact} from '../../../../../redux/slices/billingAddress';
 import {setCustomerProfile} from '../../../../../redux/slices/customer';
@@ -80,43 +77,7 @@ const AddCustomer: React.FC<any> = ({
   };
 
   const uploadImagesToBackend = async (newFileList: any, index: any) => {
-    if (newFileList) {
-      notification.open({
-        message: `Image is uploading. Please wait`,
-        type: 'info',
-      });
-    }
-    const datas: any = await getBase64(newFileList);
 
-    const mediaType = newFileList?.type.split('/')[0];
-
-    const data = {
-      base64: datas,
-      type: mediaType,
-      file: newFileList,
-      userTypes: 'customer',
-      userIds: billingContact?.id,
-    };
-    dispatch(uploadToAwsForUserImage(data)).then((d: any) => {
-      if (d?.payload && !drawer) {
-        dispatch(setCustomerProfile(d?.payload));
-      } else if (d?.payload) {
-        dispatch(getCustomerProfileById({id: billingContact?.id})).then(
-          (payload: any) => {
-            if (payload?.payload) {
-              dispatch(
-                setBillingContact({
-                  BillingContacts: payload?.payload?.BillingContacts,
-                  name: payload?.payload?.name,
-                  image: payload?.payload?.profile_image,
-                  id: payload?.payload?.id,
-                }),
-              );
-            }
-          },
-        );
-      }
-    });
   };
 
   const handleNotification = (list: any) => {
@@ -150,10 +111,7 @@ const AddCustomer: React.FC<any> = ({
     }
   };
 
-  const debounceFn = useCallback(_debounce(handleNotification, 500), [
-    billingContact,
-  ]);
-
+ 
   const createContact = () => {
     setContactLoading(true);
     const contactData = contactForm.getFieldsValue();
@@ -447,7 +405,6 @@ const AddCustomer: React.FC<any> = ({
           >
             <TableNameColumn
               imageUpload
-              debounceFn={debounceFn}
               recordId={billingContact?.id}
               justifyContent="start"
               secondaryTextColor={token?.colorPrimary}
