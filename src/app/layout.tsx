@@ -8,11 +8,8 @@ import './globals.css';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { redirect, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
-import Script from 'next/script';
-import Cookies from 'js-cookie';
 import Providers from './Provider';
 import theme from './style/theme';
-import CanvasRedirectWrapper from './CanvasRedirect';
 
 const jakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
