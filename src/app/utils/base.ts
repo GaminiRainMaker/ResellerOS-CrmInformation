@@ -6,7 +6,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
 import {FormInstance, InputNumberProps} from 'antd';
-import * as CryptoJS from 'crypto-js';
 import axios from 'axios';
 
 import moment from 'moment';
@@ -2100,52 +2099,6 @@ export const arrayBufferToBase641 = function (arrayBuffer: any) {
   );
 };
 
-// Encrypts the message with the given secret (Base64 encoded)
-export const encryptForSalesforce = function (msg: any, base64Secret: any) {
-  var iv = CryptoJS.lib.WordArray.random(16); // Generate a random IV
-  var aes_options = {
-    mode: CryptoJS.mode.CBC,
-    padding: CryptoJS.pad.Pkcs7,
-    iv: iv, // Use the IV
-  };
-  var encryptionObj = CryptoJS.AES.encrypt(
-    msg, // Message to encrypt
-    CryptoJS.enc.Base64?.parse(base64Secret), // Base64 decoded secret
-    aes_options,
-  );
-  // Convert encrypted data and IV to ArrayBuffer
-  var encryptedBuffer = base64ToArrayBuffer1(encryptionObj.toString());
-  var ivBuffer = base64ToArrayBuffer1(iv.toString(CryptoJS.enc.Base64));
-  var finalBuffer = appendBuffer(ivBuffer, encryptedBuffer); // Append IV and encrypted data
-  return arrayBufferToBase641(finalBuffer); // Return as Base64
-};
-
-// Decrypts the string with the given secret (both params are Base64 encoded)
-export const decryptFromSalesforce = function (
-  encryptedBase64: any,
-  base64Secret: any,
-) {
-  var arrayBuffer = base64ToArrayBuffer1(encryptedBase64);
-  var iv = CryptoJS.enc.Base64.parse(
-    arrayBufferToBase641(arrayBuffer.slice(0, 16)),
-  );
-  var encryptedStr = arrayBufferToBase641(
-    arrayBuffer.slice(16, arrayBuffer.byteLength),
-  );
-
-  var aes_options = {
-    iv: iv, // Provide the extracted IV
-    mode: CryptoJS.mode.CBC,
-  };
-
-  var decryptObj = CryptoJS.AES.decrypt(
-    encryptedStr,
-    CryptoJS.enc.Base64.parse(base64Secret), // Base64 decoded secret
-    aes_options,
-  );
-
-  return decryptObj.toString(CryptoJS.enc.Utf8); // Return decrypted string
-};
 
 export const formatMailString = (input: string) => {
   return input

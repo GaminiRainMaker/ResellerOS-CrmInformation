@@ -9,9 +9,6 @@ const nextConfig = {
 
     return config;
   },
-  optimizeDeps: {
-    exclude: ['canvas'],
-  },
   eslint: {
     ignoreDuringBuilds: true,
   },
