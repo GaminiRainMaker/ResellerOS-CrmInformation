@@ -36,6 +36,7 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import CommonTable from '@/app/components/common/os-table/CommonTable';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
+import { transformAddressData } from '@/utils/base';
 import {
   insertAddAddress,
   updateAddress,
@@ -54,7 +55,6 @@ import { queryOpportunity } from '../../../../redux/actions/opportunity';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hook';
 import { setBillingContact } from '../../../../redux/slices/billingAddress';
 import { setCustomerProfile } from '../../../../redux/slices/customer';
-import { transformAddressData } from '@/utils/base';
 
 const CrmInformation: React.FC = () => {
   const dispatch = useAppDispatch();

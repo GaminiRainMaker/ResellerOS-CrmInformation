@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 'use client';
 
 import {Divider} from '@/app/components/common/antd/Divider';
