@@ -1,3 +1,9 @@
+/* eslint-disable no-continue */
+/* eslint-disable prefer-regex-literals */
+/* eslint-disable consistent-return */
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable @typescript-eslint/default-param-last */
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-unsafe-optional-chaining */
@@ -11,23 +17,12 @@ import {FormInstance, InputNumberProps} from 'antd';
 import axios from 'axios';
 
 import moment from 'moment';
-import {getContractInBulkByProductCode} from '../redux/actions/contractProduct';
-import {
-  getAllProfitabilityCount,
-  getProfitabilityByQuoteId,
-  insertProfitability,
-} from '../redux/actions/profitability';
-import {
-  getQuoteFileByQuoteId,
-  getQuoteFileCount,
-  quoteFileVerification,
-} from '../redux/actions/quoteFile';
-import {getRebatesInBulkByProductCode} from '../redux/actions/rebate';
-import {insertRebateQuoteLineItem} from '../redux/actions/rebateQuoteLineitem';
-import {insertValidation} from '../redux/actions/validation';
-import {setQuoteFileUnverifiedById} from '../redux/slices/quoteFile';
-import {getAllPartnerById} from '../redux/actions/partner';
-import {getAllPartnerProgramById} from '../redux/actions/partnerProgram';
+
+
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
 
 export const getResultedValue = () => {
   if (typeof window !== 'undefined') {
@@ -415,342 +410,7 @@ const genericFun = (
     )?.id,
   }));
 
-export const updateTables1 = async (
-  getQuoteID: any,
-  fileData: any,
-  quoteLineItemData: any,
-  userInformation: any,
-  dispatch: any,
-  missingId?: any,
-  edited?: boolean,
-  getQuoteId?: number,
-): Promise<any> => {
-  try {
-    const rebateDataArray: any[] = [];
-    const contractProductArray: any[] = [];
-    const profitabilityArray: any[] = [];
-    const finalLineItems: any[] = [];
-    const allProductCodes: any = [];
-    const allReabatesWithProductCodeData: any = [];
-    const allContractWithProductCodeData: any = [];
-    // if (edited) {
-    //   quoteLineItemData?.forEach((item: any) => {
-    //     dispatch(updateQuoteLineItemById(item));
-    //   });
-    //   dispatch(DeleteQuoteLineItemById({Ids: missingId}));
-    // }
-    quoteLineItemData?.map((productItems: any) => {
-      allProductCodes?.push(productItems.product_code);
-    });
 
-    // allProductCodes
-    await dispatch(getRebatesInBulkByProductCode(allProductCodes))?.then(
-      (payload: any) => {
-        payload?.payload?.map((items: any) => {
-          allReabatesWithProductCodeData?.push(items);
-        });
-      },
-    );
-
-    // await dispatch(getContractInBulkByProductCode(allProductCodes))?.then(
-    //   (payload: any) => {
-    //     payload?.payload?.map((items: any) => {
-    //       allContractWithProductCodeData?.push(items);
-    //     });
-    //   },
-    // );
-
-    for (const item of quoteLineItemData) {
-      const obj1: any = {
-        quote_id: item.quote_id ?? getQuoteId,
-        product_id: item.product_id,
-        product_code: item.product_code,
-        // line_amount: useRemoveDollarAndCommahook(item?.line_amount),
-        list_price: useRemoveDollarAndCommahook(
-          item?.MSRP ? item?.MSRP : item?.list_price,
-        ),
-        description: item.description,
-        quantity: useRemoveDollarAndCommahook(item?.quantity),
-        adjusted_price: useRemoveDollarAndCommahook(
-          item?.cost ? item?.cost : item?.adjusted_price,
-        ),
-        line_number: item.line_number,
-        organization: userInformation.organization,
-        quote_config_id: item.quote_config_id,
-        quote_file_id: item.quote_file_id,
-        file_name: fileData?.title || fileData?.file_name,
-        nanonets_id: item.nanonets_id,
-      };
-
-      // getRebatesInBulkByProductCode
-      // getContractInBulkByProductCode
-      const findRebateIndex = allReabatesWithProductCodeData?.findIndex(
-        (itemReb: any) => item.product_code === itemReb?.PID,
-      );
-      if (findRebateIndex !== -1) {
-        const newObj = {
-          ...obj1,
-          quoteline_item_id: item?.id,
-          rebate_id: allReabatesWithProductCodeData?.[findRebateIndex]?.id,
-          percentage_payout:
-            allReabatesWithProductCodeData?.[findRebateIndex]
-              ?.percentage_payout,
-        };
-        rebateDataArray.push(newObj);
-      }
-      const findContractIndex = allContractWithProductCodeData?.findIndex(
-        (itemReb: any) => item.product_code === itemReb.contract_product_name,
-      );
-      if (findContractIndex !== -1) {
-        const newObj = {
-          ...obj1,
-          quoteline_item_id: item?.id,
-          contract_product_id:
-            allContractWithProductCodeData?.[findContractIndex]?.payload.id,
-        };
-        contractProductArray.push(newObj);
-      }
-      let count: any = 0;
-      if (item?.id) {
-        profitabilityArray.push({
-          ...obj1,
-          quoteline_item_id: item?.id,
-          serial_number: count + 1,
-        });
-        count = count + 1;
-      }
-      finalLineItems.push(obj1);
-    }
-
-    if (finalLineItems.length > 0) {
-      let count = 0;
-
-      await dispatch(getAllProfitabilityCount(Number(getQuoteID))).then(
-        (payload: any) => {
-          count = payload?.payload;
-        },
-      );
-
-      if (rebateDataArray.length > 0) {
-        const newRebateArr: any = [];
-        rebateDataArray.forEach((item: any, index: number) => {
-          newRebateArr.push({...item, serial_number: index + count + 1});
-        });
-        if (newRebateArr)
-          await dispatch(insertRebateQuoteLineItem(newRebateArr));
-      }
-      if (contractProductArray.length > 0) {
-        const newContractProductArr: any = [];
-        contractProductArray.forEach((item: any, index: number) => {
-          newContractProductArr.push({
-            ...item,
-            serial_number: index + count + 1,
-          });
-        });
-        // if (newContractProductArr)
-        // await dispatch(insertValidation(newContractProductArr));
-      }
-
-      await dispatch(insertProfitability(profitabilityArray));
-      await dispatch(insertValidation(profitabilityArray));
-
-      await dispatch(quoteFileVerification({id: fileData?.id})).then(
-        (verificationResponse: any) => {
-          if (verificationResponse?.payload) {
-            dispatch(getQuoteFileByQuoteId(Number(getQuoteID))).then(
-              (quoteFileResponse: any) => {
-                if (quoteFileResponse?.payload) {
-                  dispatch(
-                    setQuoteFileUnverifiedById(quoteFileResponse?.payload),
-                  );
-                }
-              },
-            );
-            dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
-            dispatch(getQuoteFileCount(Number(getQuoteID)));
-          }
-        },
-      );
-    }
-    return true;
-  } catch (err) {
-    console.error('Error:', err);
-    return false;
-  }
-};
-
-export const updateTables = async (
-  getQuoteID: any,
-  fileData: any,
-  quoteLineItemData: any,
-  userInformation: any,
-  dispatch: any,
-  missingId?: any,
-  edited?: boolean,
-  getQuoteId?: number,
-): Promise<any> => {
-  try {
-    const rebateDataArray: any[] = [];
-    const contractProductArray: any[] = [];
-    const profitabilityArray: any[] = [];
-    const finalLineItems: any[] = [];
-    const allProductCodes: any = [];
-    const allReabatesWithProductCodeData: any = [];
-    const allContractWithProductCodeData: any = [];
-    // if (edited) {
-    //   quoteLineItemData?.forEach((item: any) => {
-    //     dispatch(updateQuoteLineItemById(item));
-    //   });
-    //   dispatch(DeleteQuoteLineItemById({Ids: missingId}));
-    // }
-    quoteLineItemData?.map((productItems: any) => {
-      allProductCodes?.push(productItems.product_code);
-    });
-
-    // allProductCodes
-    await dispatch(getRebatesInBulkByProductCode(allProductCodes))?.then(
-      (payload: any) => {
-        payload?.payload?.map((items: any) => {
-          allReabatesWithProductCodeData?.push(items);
-        });
-      },
-    );
-
-    await dispatch(getContractInBulkByProductCode(allProductCodes))?.then(
-      (payload: any) => {
-        if (payload?.payload) {
-          payload.payload.map((items: any) => {
-            allContractWithProductCodeData?.push(items);
-          });
-          console.log(
-            'allContractWithProductCodeData:',
-            allContractWithProductCodeData,
-          );
-        }
-      },
-    );
-
-    for (const item of quoteLineItemData) {
-      console.log('Enter In the Loop');
-      const obj1: any = {
-        quote_id: item.quote_id ?? getQuoteId,
-        product_id: item.product_id,
-        product_code: item.product_code,
-        // line_amount: useRemoveDollarAndCommahook(item?.line_amount),
-        list_price: useRemoveDollarAndCommahook(
-          item?.MSRP ? item?.MSRP : item?.list_price,
-        ),
-        description: item.description,
-        quantity: useRemoveDollarAndCommahook(item?.quantity),
-        adjusted_price: useRemoveDollarAndCommahook(
-          item?.cost ? item?.cost : item?.adjusted_price,
-        ),
-        line_number: item.line_number,
-        organization: userInformation.organization,
-        quote_config_id: item.quote_config_id,
-        quote_file_id: item.quote_file_id,
-        file_name: fileData?.title || fileData?.file_name,
-        nanonets_id: item.nanonets_id,
-      };
-
-      // getRebatesInBulkByProductCode
-      // getContractInBulkByProductCode
-      const findRebateIndex = allReabatesWithProductCodeData?.findIndex(
-        (itemReb: any) => item.product_code === itemReb?.PID,
-      );
-      if (findRebateIndex !== -1) {
-        const newObj = {
-          ...obj1,
-          quoteline_item_id: item?.id,
-          rebate_id: allReabatesWithProductCodeData?.[findRebateIndex]?.id,
-          percentage_payout:
-            allReabatesWithProductCodeData?.[findRebateIndex]
-              ?.percentage_payout,
-        };
-        rebateDataArray.push(newObj);
-      }
-      const findContractIndex = allContractWithProductCodeData?.findIndex(
-        (itemReb: any) => item.product_code === itemReb.contract_product_name,
-      );
-      if (findContractIndex >= 0) {
-        const newObj1 = {
-          ...obj1,
-          quoteline_item_id: item?.id,
-          contract_product_id:
-            allContractWithProductCodeData?.[findContractIndex]?.id,
-        };
-        console.log('newObjnewObj', newObj1);
-        contractProductArray.push(newObj1);
-      }
-      let count: any = 0;
-      if (item?.id) {
-        profitabilityArray.push({
-          ...obj1,
-          quoteline_item_id: item?.id,
-          serial_number: count + 1,
-        });
-        count = count + 1;
-      }
-      finalLineItems.push(obj1);
-    }
-
-    if (finalLineItems.length > 0) {
-      let count = 0;
-
-      await dispatch(getAllProfitabilityCount(Number(getQuoteID))).then(
-        (payload: any) => {
-          count = payload?.payload;
-        },
-      );
-
-      if (rebateDataArray.length > 0) {
-        const newRebateArr: any = [];
-        rebateDataArray.forEach((item: any, index: number) => {
-          newRebateArr.push({...item, serial_number: index + count + 1});
-        });
-        if (newRebateArr)
-          await dispatch(insertRebateQuoteLineItem(newRebateArr));
-      }
-      if (contractProductArray.length > 0) {
-        const newContractProductArr: any = [];
-        contractProductArray.forEach((item: any, index: number) => {
-          newContractProductArr.push({
-            ...item,
-            serial_number: index + count + 1,
-          });
-        });
-        // if (newContractProductArr)
-        //   await dispatch(insertValidation(newContractProductArr));
-      }
-      if (profitabilityArray)
-        await dispatch(insertValidation(profitabilityArray));
-
-      await dispatch(insertProfitability(profitabilityArray));
-
-      await dispatch(quoteFileVerification({id: fileData?.id})).then(
-        (verificationResponse: any) => {
-          if (verificationResponse?.payload) {
-            dispatch(getQuoteFileByQuoteId(Number(getQuoteID))).then(
-              (quoteFileResponse: any) => {
-                if (quoteFileResponse?.payload) {
-                  dispatch(
-                    setQuoteFileUnverifiedById(quoteFileResponse?.payload),
-                  );
-                }
-              },
-            );
-            dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
-            dispatch(getQuoteFileCount(Number(getQuoteID)));
-          }
-        },
-      );
-    }
-    return true;
-  } catch (err) {
-    console.error('Error:', err);
-    return false;
-  }
-};
 
 export const sendDataToNanonets = async (model_id: string, file: File) => {
   let API_ENDPOINT = '';
@@ -1201,7 +861,7 @@ export const getContractStatus = (
 export const currencyFormatter: InputNumberProps['formatter'] = (
   f,
   {userTyping},
-) => {
+) => 
   // if (!f) {
   //   return '';
   // }
@@ -1211,8 +871,8 @@ export const currencyFormatter: InputNumberProps['formatter'] = (
   //     .toString()
   //     .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
   // }
-  return `${f}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-};
+   `${f}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+;
 
 export const currencyAmountFormatter: InputNumberProps['formatter'] = (
   f,
@@ -1522,14 +1182,6 @@ export const AlphabetsRegexWithSpecialChr =
 export const emailRegex =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-const filterEmptyValues = (obj: any) => {
-  return (
-    obj &&
-    Object?.fromEntries(
-      Object?.entries(obj)?.filter(([_, v]) => v !== '' && v !== undefined),
-    )
-  );
-};
 
 const filterRequiredAndNonEmptyValues = (obj: any) => {
   if (!obj) return {};
@@ -1666,12 +1318,12 @@ export const processFormData = (template: any[], finalUniqueData: any) => {
       newKey = newKey.replace(/\bRequired\b/i, '').trim();
 
       // Determine userFill
-      const userFill = labelsWithUserFillTrue.includes(newKey) ? true : false;
+      const userFill = !!labelsWithUserFillTrue.includes(newKey);
 
       // Add the transformed key and original value to the new object
       transformedData.push({
         [newKey]: finalUniqueData[key],
-        userFill: userFill,
+        userFill,
       });
     }
   }
@@ -1699,9 +1351,7 @@ interface FinalObj {
 
 export const processScript1 = (finalObj: FinalObj) => {
   // Escape special characters in labels for use in regular expressions
-  const escapeRegExp = (string: string) => {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  };
+  const escapeRegExp = (string: string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
   // Join the script array into a single string
   let processedScript = finalObj.script.join('\n');
@@ -1848,10 +1498,10 @@ export const radioValidator = (data: any, value: any, form: FormInstance) => {
   data?.forEach((element: any) => {
     const userfill = element?.user_fill;
     const finalName =
-      'u_' +
-      convertToSnakeCase(element) +
-      '_radio' +
-      (userfill ? '_userfill' : '');
+      `u_${ 
+      convertToSnakeCase(element) 
+      }_radio${ 
+      userfill ? '_userfill' : ''}`;
     if (element !== value.name) {
       form.setFieldsValue({
         [finalName]: false,
@@ -1982,66 +1632,6 @@ export async function fetchAndDecryptRecords(
   }
 }
 
-export const updateSalesForceData = async (
-  res: any | undefined,
-  allPartnersById: Partner[],
-  allPartnerProgramById: PartnerProgram[],
-  dispatch: any,
-  setIsData?: any,
-) => {
-  if (!res) return;
-
-  const partnerArray = res?.map((item: any) => item?.partner_id);
-  const partnerProgramArray = res?.map((item: any) => item?.partner_program_id);
-  // Dispatch actions to get all partners and partner programs by id
-  const partnerData: any = [];
-  const partnerProgramData: any = [];
-
-  await dispatch(getAllPartnerById(partnerArray))?.then((payload: any) => {
-    if (payload?.payload && payload?.payload?.length > 0) {
-      payload?.payload?.map((items: any) => {
-        partnerData?.push(items);
-      });
-    }
-  });
-  await dispatch(getAllPartnerProgramById(partnerProgramArray))?.then(
-    (payload: any) => {
-      if (payload?.payload && payload?.payload?.length > 0) {
-        payload?.payload?.map((items: any) => {
-          partnerProgramData?.push(items);
-        });
-      }
-    },
-  );
-  setIsData(true);
-
-  // Updating main data with matching partner and partner program
-  const newData = res?.map((item: any) => {
-    const updatedItem = {...item};
-    // Find matching partner data
-    const partner = partnerData?.find((p: any) => p?.id == item?.partner_id);
-    if (partner) {
-      updatedItem.Partner = {...partner}; // Add the whole partner object under 'Partner'
-    }
-
-    // Find matching partner program data
-    const partnerProgram = partnerProgramData?.find(
-      (pp: any) => pp?.id == item?.partner_program_id,
-    );
-    if (partnerProgram) {
-      updatedItem.PartnerProgram = {...partnerProgram}; // Add the whole partner program object under 'PartnerProgram'
-    }
-
-    return updatedItem;
-  });
-  return newData;
-};
-
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
-import {Ubuntu_Condensed} from 'next/font/google';
-
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -2075,10 +1665,10 @@ export function convertToNumber(variable: any) {
 }
 
 export const base64ToArrayBuffer1 = function (base64: any) {
-  var binary_string = atob(base64);
-  var len = binary_string.length;
-  var bytes = new Uint8Array(len);
-  for (var i = 0; i < len; i++) {
+  const binary_string = atob(base64);
+  const len = binary_string.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
     bytes[i] = binary_string.charCodeAt(i);
   }
   return bytes.buffer;
@@ -2086,7 +1676,7 @@ export const base64ToArrayBuffer1 = function (base64: any) {
 
 // Helper function to append two ArrayBuffers
 export const appendBuffer = function (buffer1: any, buffer2: any) {
-  var tmp = new Uint8Array(buffer1.byteLength + buffer2.byteLength);
+  const tmp = new Uint8Array(buffer1.byteLength + buffer2.byteLength);
   tmp.set(new Uint8Array(buffer1), 0); // Set buffer1 content
   tmp.set(new Uint8Array(buffer2), buffer1.byteLength); // Append buffer2 content
   return tmp.buffer; // Return combined ArrayBuffer
@@ -2095,19 +1685,17 @@ export const appendBuffer = function (buffer1: any, buffer2: any) {
 // Helper function to convert ArrayBuffer to Base64
 export const arrayBufferToBase641 = function (arrayBuffer: any) {
   return btoa(
-    new Uint8Array(arrayBuffer).reduce(function (data, byte) {
-      return data + String.fromCharCode(byte);
-    }, ''),
+    new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), ''),
   );
 };
 
 
-export const formatMailString = (input: string) => {
-  return input
+export const formatMailString = (input: string) => 
+   input
     .split('_') // Split the string by underscores
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize the first letter of each word
-    .join(' '); // Join the words with spaces
-};
+    .join(' ') // Join the words with spaces
+;
 export const convertToBoolean = function (value: any) {
   if (!value) {
     return null;
@@ -2119,9 +1707,9 @@ export const convertToBoolean = function (value: any) {
     // Convert string "true" (case insensitive) to boolean true
     if (value && value.trim().toLowerCase() === 'true') {
       return true;
-    } else {
+    } 
       return false;
-    }
+    
   }
   return false; // Default case if it's neither boolean nor string
 };

@@ -21,11 +21,7 @@ import OsModal from '../os-modal';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
 import { OsCustomerSelectInterface } from './os-customer-select-interface';
-import {
-  AlphabetsRegex,
-  AlphabetsRegexWithSpecialChr,
-  emailRegex,
-} from '@/app/utils/base';
+
 
 const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
   setCustomerValue,

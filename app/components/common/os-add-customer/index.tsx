@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable import/no-cycle */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable import/extensions */
+
 'use client';
 
 import {MailOutlined} from '@ant-design/icons';
@@ -635,7 +637,7 @@ const AddCustomer: React.FC<any> = ({
                       {contactDetail?.map((item: any, index: number) => (
                           <Col key={item?.key} span={24}>
                             <Row
-                              key={index}
+                              key={item?.key}
                               style={{
                                 background: '#F6F7F8',
                                 padding: '12px',

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {insertAttributeField} from '../actions/attributeField';
 import {SignedRequest} from '../../types/salesforce';
