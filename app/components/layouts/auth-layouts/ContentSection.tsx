@@ -1,3 +1,4 @@
+/* eslint-disable import/first */
 /* eslint-disable arrow-body-style */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable eqeqeq */
@@ -20,20 +21,20 @@ import { CheckCircleIcon } from '@heroicons/react/24/outline';
 import Cookies from 'js-cookie';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import OSResellerLogo from '../../../../../public/assets/static/ResellerOsText.svg';
-import eyeSlashIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye-slash.svg';
-import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
+import eyeSlashIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/eye-slash.svg';
+import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/eye.svg';
 import {
   sendForgotPasswordEmail,
   signUpAuth,
   verifyAuth,
   verifyEmail,
-} from '../../../../../redux/actions/auth';
+} from '../../../../redux/actions/auth';
 import {
   getUserByTokenAccess,
   updateUserPassword,
-} from '../../../../../redux/actions/user';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
-import { setUserInformation } from '../../../../../redux/slices/user';
+} from '../../../../redux/actions/user';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hook';
+import { setUserInformation } from '../../../../redux/slices/user';
 import { Space } from '../../common/antd/Space';
 import useThemeToken from '../../common/hooks/useThemeToken';
 
