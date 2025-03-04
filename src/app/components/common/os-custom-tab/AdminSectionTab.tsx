@@ -6,12 +6,10 @@
 
 'use client';
 
-import Col from 'antd/es/grid/col';
-import Row from 'antd/es/grid/row';
 import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import {FC, Suspense, useEffect, useState} from 'react';
 import TextArea from 'antd/es/input/TextArea';
-import {message, notification} from 'antd';
+import {Col, message, notification, Row} from 'antd';
 import {convertFileToBase64} from '@/app/utils/base';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';

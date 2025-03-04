@@ -36,7 +36,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/(UI)/(Dashboard_UI)/crmContact",
+    "src/app/(UI)/(Dashboard_UI)/crmContactss",
     "axios/interceptors/transformers/responseTransformers.js"
   ],
   "exclude": ["node_modules", ".next", "next.config.js"]

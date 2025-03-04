@@ -108,7 +108,7 @@ const CustomHeader = () => {
   const searchParams = useSearchParams();
 
   const pathname = usePathname();
-  const loginAccount = searchParams.get('self');
+  const loginAccount = 'self';
   const { userInformation, searchDataa, loginUserInformation } = useAppSelector(
     (state) => state.user,
   );

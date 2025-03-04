@@ -64,17 +64,19 @@ const AccountDetails = () => {
   const [recordId, setRecordId] = useState<any>();
   const [recordData, setRecordData] = useState<any>();
   const [showModalForOpp, setShowModalForOpp] = useState<boolean>(false);
-  const { userInformation } = useAppSelector((state) => state.user);
-  const { loading: QuoteLoading } = useAppSelector((state) => state.quote);
+  // const { userInformation } = useAppSelector((state) => state.user);
+  // const { loading: QuoteLoading } = useAppSelector((state) => state.quote);
 
-  const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
+  const [userInformation, setShowToggleTable] = useState<boolean>(false);
 
-  const [uploadFileData, setUploadFileData] = useState<any>([]);
+  const [customerData, setUploadFileData] = useState<any>([]);
 
   const [form] = Form.useForm();
-  const { loading, customerDataById: customerData } = useAppSelector(
-    (state) => state.customer,
-  );
+  // const { loading, customerDataById: customerData } = useAppSelector(
+  //   (state) => state.customer,
+  // );
+
+
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const getCustomerID: any = searchParams && searchParams.get('id');
