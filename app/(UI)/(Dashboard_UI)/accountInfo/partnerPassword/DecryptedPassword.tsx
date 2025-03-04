@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { notification } from 'antd';
 import { CopyOutlined } from '@ant-design/icons';
-import { decrypt } from '@/app/utils/base';
+import { decrypt } from '@/utils/base';
 import Typography from '@/app/components/common/typography';
 
 const DecryptedPassword: React.FC<{ password: any }> = ({ password }) => {

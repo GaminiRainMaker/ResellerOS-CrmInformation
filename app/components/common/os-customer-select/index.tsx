@@ -1,9 +1,15 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable import/extensions */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react/no-unstable-nested-components */
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { Form } from 'antd';
 import { FC, useEffect, useState } from 'react';
+import {
+  AlphabetsRegex,
+  AlphabetsRegexWithSpecialChr,
+  emailRegex,
+} from '@/utils/base';
 import { insertAddAddress } from '../../../../redux/actions/address';
 import {
   getAllbillingContact,
@@ -22,11 +28,6 @@ import OsModal from '../os-modal';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
 import { OsCustomerSelectInterface } from './os-customer-select-interface';
-import {
-  AlphabetsRegex,
-  AlphabetsRegexWithSpecialChr,
-  emailRegex,
-} from '@/app/utils/base';
 
 const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
   setCustomerValue,

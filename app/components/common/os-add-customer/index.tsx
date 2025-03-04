@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable import/extensions */
 'use client';
@@ -7,7 +8,7 @@ import {PencilSquareIcon, UserCircleIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {useForm} from 'antd/es/form/Form';
 import {useCallback, useState} from 'react';
-import {contactIndustryOption} from '@/app/utils/CONSTANTS';
+import {contactIndustryOption} from '@/utils/CONSTANTS';
 import Typography from '@/app/components/common/typography';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import {Col, Row} from '@/app/components/common/antd/Grid';

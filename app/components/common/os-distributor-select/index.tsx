@@ -17,7 +17,7 @@ import {
   getDistributorByOemId,
   queryQuoteConfiguration,
 } from '../../../../../redux/actions/quoteConfiguration';
-import {formatStatus} from '@/app/utils/CONSTANTS';
+import {formatStatus} from '@/utils/CONSTANTS';
 
 const queryParams: any = {
   distributor: null,

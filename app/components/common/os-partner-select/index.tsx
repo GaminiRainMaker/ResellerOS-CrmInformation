@@ -16,7 +16,7 @@ import AddPartner from '../os-add-partner';
 import OsModal from '../os-modal';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
-import {formatStatus} from '@/app/utils/CONSTANTS';
+import {formatStatus} from '@/utils/CONSTANTS';
 
 const OsPartnerSelect: FC<{
   // form: FormInstance;

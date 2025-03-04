@@ -5,11 +5,11 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import Typography from '@/app/components/common/typography';
-import {formatMailString, mergeArrayWithObject} from '@/app/utils/base';
+import {formatMailString, mergeArrayWithObject} from '@/utils/base';
 import {Form} from 'antd';
 import {useEffect, useState} from 'react';
 
-import {formatStatus} from '@/app/utils/CONSTANTS';
+import {formatStatus} from '@/utils/CONSTANTS';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Option} from 'antd/lib/mentions';
 import AddPartner from '.';

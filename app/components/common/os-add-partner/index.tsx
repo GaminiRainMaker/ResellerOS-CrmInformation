@@ -5,7 +5,7 @@ import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
-import { industryOptions } from '@/app/utils/CONSTANTS';
+import { industryOptions } from '@/utils/CONSTANTS';
 import { Form, notification } from 'antd';
 import { usePathname } from 'next/navigation';
 

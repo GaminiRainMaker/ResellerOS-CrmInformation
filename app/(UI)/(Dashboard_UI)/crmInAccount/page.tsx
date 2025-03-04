@@ -54,7 +54,7 @@ import { queryOpportunity } from '../../../../redux/actions/opportunity';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hook';
 import { setBillingContact } from '../../../../redux/slices/billingAddress';
 import { setCustomerProfile } from '../../../../redux/slices/customer';
-import { transformAddressData } from '@/app/utils/base';
+import { transformAddressData } from '@/utils/base';
 
 const CrmInformation: React.FC = () => {
   const dispatch = useAppDispatch();

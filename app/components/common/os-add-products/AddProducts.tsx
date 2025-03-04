@@ -1,6 +1,6 @@
 'use client';
 
-import {selectDataForProduct} from '@/app/utils/CONSTANTS';
+import {selectDataForProduct} from '@/utils/CONSTANTS';
 import {Col, Form, Row, Space} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import {FC, useEffect} from 'react';

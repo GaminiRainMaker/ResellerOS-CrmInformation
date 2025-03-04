@@ -8,8 +8,8 @@ import {
 import {GlobalToken} from 'antd';
 import {SetStateAction} from 'react';
 import DecryptedPassword from './partnerPassword/DecryptedPassword';
-import {formatStatus} from '@/app/utils/CONSTANTS';
-import {decrypt} from '@/app/utils/base';
+import {formatStatus} from '@/utils/CONSTANTS';
+import {decrypt} from '@/utils/base';
 
 export function getMyTeamColumns(token: GlobalToken) {
   const columns = [

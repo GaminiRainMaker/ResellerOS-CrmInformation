@@ -4,7 +4,7 @@
 'use client';
 
 import {CustomUpload} from '@/app/(UI)/(Dashboard_UI)/layouts/Header';
-import {convertFileToBase64} from '@/app/utils/base';
+import {convertFileToBase64} from '@/utils/base';
 import {
   BriefcaseIcon,
   CameraIcon,

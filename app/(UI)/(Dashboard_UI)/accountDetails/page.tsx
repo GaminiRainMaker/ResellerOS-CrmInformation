@@ -34,7 +34,7 @@ import {
   getResultedValue,
   transformAddressData,
   transformExistAddressData,
-} from '@/app/utils/base';
+} from '@/utils/base';
 import { Form, message, Radio } from 'antd';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';

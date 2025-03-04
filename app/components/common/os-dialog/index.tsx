@@ -6,7 +6,7 @@ import Typography from '../typography';
 import {Form} from 'antd';
 import {SelectFormItem} from '../os-oem-select/oem-select-styled';
 import CommonSelect from '../os-select';
-import {QuoteMappingRejectOption} from '@/app/utils/CONSTANTS';
+import {QuoteMappingRejectOption} from '@/utils/CONSTANTS';
 
 const OSDialog: FC<any> = ({
   title,

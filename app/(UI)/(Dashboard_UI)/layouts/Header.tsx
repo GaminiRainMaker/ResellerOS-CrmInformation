@@ -48,7 +48,7 @@ import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import { AvatarStyled } from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import TrialBanner from '@/app/components/common/trialBanner/TrialBanner';
-import { convertFileToBase64 } from '@/app/utils/base';
+import { convertFileToBase64 } from '@/utils/base';
 import OsModal from '@/app/components/common/os-modal';
 
 import OsInput from '@/app/components/common/os-input';

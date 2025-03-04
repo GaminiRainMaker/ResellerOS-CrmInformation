@@ -3,7 +3,7 @@
 /* eslint-disable no-nested-ternary */
 import {FormInstance} from 'antd';
 import {Suspense, useEffect, useState} from 'react';
-import {formatStatus} from '@/app/utils/CONSTANTS';
+import {formatStatus} from '@/utils/CONSTANTS';
 import {useAppDispatch} from '../../../../../redux/hook';
 import {setDealReg} from '../../../../../redux/slices/dealReg';
 import {Row} from '../antd/Grid';

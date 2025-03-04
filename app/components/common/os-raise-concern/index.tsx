@@ -1,4 +1,4 @@
-import {IssueTypeOption, affectedColumns} from '@/app/utils/CONSTANTS';
+import {IssueTypeOption, affectedColumns} from '@/utils/CONSTANTS';
 import {Form} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Image from 'next/image';

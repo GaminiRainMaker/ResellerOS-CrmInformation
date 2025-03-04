@@ -16,7 +16,7 @@ import Typography from '../typography';
 import {SelectFormItem} from './oem-select-styled';
 import {OsOemSelectInterface} from './os-oem.interface';
 import {getOemByDistributorId} from '../../../../../redux/actions/quoteConfiguration';
-import {formatStatus} from '@/app/utils/CONSTANTS';
+import {formatStatus} from '@/utils/CONSTANTS';
 
 const OsOemSelect: FC<OsOemSelectInterface> = ({
   isRequired = false,

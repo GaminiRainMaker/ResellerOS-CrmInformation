@@ -10,8 +10,8 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import { decrypt, encrypt } from '@/app/utils/base';
-import { formatStatus } from '@/app/utils/CONSTANTS';
+import { decrypt, encrypt } from '@/utils/base';
+import { formatStatus } from '@/utils/CONSTANTS';
 import {
   PencilSquareIcon,
   PlusIcon,

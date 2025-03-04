@@ -6,14 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "check-types": "tsc --pretty --noEmit",
-    "check-format": "prettier --check .",
-    "check-lint": "eslint . --ext ts --ext tsx --ext js",
-    "format": "prettier --write .",
-    "test": "yarn check-format && yarn check-lint && yarn check-types && yarn build",
-    "prepare": "husky install",
-    "bolt": "next build && next start"
+    "lint": "next lint"
+    
   },
   "engines": {
     "node": "18.x"

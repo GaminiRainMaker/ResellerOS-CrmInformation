@@ -12,7 +12,7 @@ import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import {FC, Suspense, useEffect, useState} from 'react';
 import TextArea from 'antd/es/input/TextArea';
 import {message, notification} from 'antd';
-import {convertFileToBase64} from '@/app/utils/base';
+import {convertFileToBase64} from '@/utils/base';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
