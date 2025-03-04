@@ -1,14 +1,16 @@
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable import/extensions */
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import Typography from '@/app/components/common/typography';
-import {contactIndustryOption} from '@/app/utils/CONSTANTS';
 import {MailOutlined} from '@ant-design/icons';
 import {PencilSquareIcon, UserCircleIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {useForm} from 'antd/es/form/Form';
 import {useCallback, useState} from 'react';
+import {contactIndustryOption} from '@/app/utils/CONSTANTS';
+import Typography from '@/app/components/common/typography';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import {Col, Row} from '@/app/components/common/antd/Grid';
 import {useAppDispatch, useAppSelector} from '../../../../redux/hook';
 import {setBillingContact} from '../../../../redux/slices/billingAddress';
 import {setCustomerProfile} from '../../../../redux/slices/customer';
@@ -55,15 +57,15 @@ const AddCustomer: React.FC<any> = ({
 
     if (formatted.length <= 3) {
       return `(${formatted}`;
-    } else if (formatted.length <= 6) {
+    } if (formatted.length <= 6) {
       return `(${formatted.slice(0, 3)}) ${formatted.slice(3)}`;
-    } else {
+    } 
       return `(${formatted.slice(0, 3)}) ${formatted.slice(3, 6)}-${formatted.slice(6, 11)}`;
-    }
+    
   };
   const handlePhoneChange = (e: any) => {
     // Get the current value
-    const value = e.target.value;
+    const {value} = e.target;
 
     if (value === '') {
       // If input is empty, reset the form field
@@ -140,8 +142,7 @@ const AddCustomer: React.FC<any> = ({
     });
   };
 
-  const ShippingAddressForm = () => {
-    return (
+  const ShippingAddressForm = () => (
       <Row gutter={[16, 16]}>
         <Col span={24}>
           <SelectFormItem
@@ -220,11 +221,9 @@ const AddCustomer: React.FC<any> = ({
         </Col>
       </Row>
     );
-  };
 
-  const BillingAddressForm = () => {
-    return (
-      <Row gutter={[16, 16]} justify={'space-between'}>
+  const BillingAddressForm = () => (
+      <Row gutter={[16, 16]} justify="space-between">
         {!drawer && (
           <Row style={{paddingTop: '24px'}}>
             <Col>
@@ -362,7 +361,6 @@ const AddCustomer: React.FC<any> = ({
         </Col>
       </Row>
     );
-  };
   return (
     <>
       {!drawer && (
@@ -633,8 +631,7 @@ const AddCustomer: React.FC<any> = ({
                     </Row>
                   ) : (
                     <>
-                      {contactDetail?.map((item: any, index: number) => {
-                        return (
+                      {contactDetail?.map((item: any, index: number) => (
                           <Col key={item?.key} span={24}>
                             <Row
                               key={index}
@@ -718,8 +715,7 @@ const AddCustomer: React.FC<any> = ({
                               </Col>
                             </Row>
                           </Col>
-                        );
-                      })}
+                        ))}
 
                       {drawer && (
                         <Row
@@ -753,7 +749,7 @@ const AddCustomer: React.FC<any> = ({
             form={contactForm}
             onFinish={createContact}
             customerValue={contactRecordData?.customer_id}
-            isDealregForm={true}
+            isDealregForm
           />
         }
         width={700}
@@ -764,7 +760,7 @@ const AddCustomer: React.FC<any> = ({
           setcontactRecordData('');
         }}
         onOk={contactForm.submit}
-        primaryButtonText={'Save'}
+        primaryButtonText="Save"
         footerPadding={20}
       />
     </>

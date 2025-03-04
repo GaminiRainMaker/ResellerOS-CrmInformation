@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react/no-unstable-nested-components */
 import { PlusIcon } from '@heroicons/react/24/outline';

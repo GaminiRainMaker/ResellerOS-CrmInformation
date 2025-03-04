@@ -1,10 +1,10 @@
+/* eslint-disable import/extensions */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable react-hooks/exhaustive-deps */
 
 'use client';
 
-import Typography from '@/app/components/common/typography';
 import {
   CheckBadgeIcon,
   ClockIcon,
@@ -14,6 +14,11 @@ import {
   TrashIcon,
   UserGroupIcon,
 } from '@heroicons/react/24/outline';
+import { Form, MenuProps, notification } from 'antd';
+import { Option } from 'antd/es/mentions';
+import { useRouter } from 'next/navigation';
+import { use, useEffect, useState } from 'react';
+import Typography from '@/app/components/common/typography';
 // eslint-disable-next-line import/no-extraneous-dependencies
 
 import { Col, Row } from '@/app/components/common/antd/Grid';
@@ -31,10 +36,6 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import CommonTable from '@/app/components/common/os-table/CommonTable';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import { Form, MenuProps, notification } from 'antd';
-import { Option } from 'antd/es/mentions';
-import { useRouter } from 'next/navigation';
-import { use, useEffect, useState } from 'react';
 import {
   insertAddAddress,
   updateAddress,
@@ -110,12 +111,10 @@ const CrmInformation: React.FC = () => {
   }, [searchQuery]);
 
   useEffect(() => {
-    const data = filteredData?.account?.filter((item: any) => {
-      return (
+    const data = filteredData?.account?.filter((item: any) => (
         item?.User?.Licenses[0]?.license_category ===
         userInformation?.LicenseCategory
-      );
-    });
+      ));
     setFilteredCustomerData(data);
   }, [userInformation, filteredData]);
 

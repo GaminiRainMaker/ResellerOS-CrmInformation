@@ -1,3 +1,5 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable no-restricted-globals */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-lonely-if */

@@ -1,13 +1,10 @@
+/* eslint-disable import/extensions */
 /* eslint-disable no-extra-boolean-cast */
 /* eslint-disable eqeqeq */
 
 'use client';
 
-import { Space } from '@/app/components/common/antd/Space';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import OsAvatar from '@/app/components/common/os-avatar';
-import Typography from '@/app/components/common/typography';
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import {
   AdjustmentsHorizontalIcon,
@@ -22,6 +19,10 @@ import { Layout, MenuProps } from 'antd';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import Typography from '@/app/components/common/typography';
+import OsAvatar from '@/app/components/common/os-avatar';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import { Space } from '@/app/components/common/antd/Space';
 import ActiveCrmIcon from '../../../../public/assets/static/activeCrmIcon.svg';
 import InActiveCrmIcon from '../../../../public/assets/static/inActiveCrmIcon.svg';
 import { checkQuoteAIAccess } from '../../../../redux/actions/license';
@@ -152,7 +153,7 @@ const SideBar = () => {
           setSelectedKey(13);
         }}
         name="Button 1"
-        color={'#6b7280'}
+        color="#6b7280"
       >
         <Space size={12}>
           <OsAvatar
@@ -237,7 +238,7 @@ const SideBar = () => {
               setSelectedKey(14);
               router?.push('/crmContact');
             }}
-            color={'#6b7280'}
+            color="#6b7280"
           >
             <OsAvatar
               icon={
@@ -278,7 +279,7 @@ const SideBar = () => {
               setSelectedKey(15);
               router?.push('/crmOpportunity');
             }}
-            color={'#6b7280'}
+            color="#6b7280"
           >
             <OsAvatar
               icon={

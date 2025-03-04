@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable import/no-duplicates */
@@ -8,24 +9,8 @@
 
 'use client';
 
-import { Dropdown } from '@/app/components/common/antd/DropDown';
-import { Col, Row } from '@/app/components/common/antd/Grid';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { Divider } from '@/app/components/common/antd/Divider';
-import { Space } from '@/app/components/common/antd/Space';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
-import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import OsButton from '@/app/components/common/os-button';
-import GlobalLoader from '@/app/components/common/os-global-loader';
-import SearchSelect from '@/app/components/common/os-select/SearchSelect';
-import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import { AvatarStyled } from '@/app/components/common/os-table/styled-components';
-import Typography from '@/app/components/common/typography';
 import styled from '@emotion/styled';
 import { redirect, usePathname } from 'next/navigation';
-import TrialBanner from '@/app/components/common/trialBanner/TrialBanner';
-import { convertFileToBase64 } from '@/app/utils/base';
 import {
   ArrowLeftStartOnRectangleIcon,
   BellIcon,
@@ -48,6 +33,22 @@ import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { QuestionOutlined } from '@ant-design/icons';
+import { Dropdown } from '@/app/components/common/antd/DropDown';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { Divider } from '@/app/components/common/antd/Divider';
+import { Space } from '@/app/components/common/antd/Space';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import OsButton from '@/app/components/common/os-button';
+import GlobalLoader from '@/app/components/common/os-global-loader';
+import SearchSelect from '@/app/components/common/os-select/SearchSelect';
+import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
+import { AvatarStyled } from '@/app/components/common/os-table/styled-components';
+import Typography from '@/app/components/common/typography';
+import TrialBanner from '@/app/components/common/trialBanner/TrialBanner';
+import { convertFileToBase64 } from '@/app/utils/base';
 import OsModal from '@/app/components/common/os-modal';
 
 import OsInput from '@/app/components/common/os-input';
