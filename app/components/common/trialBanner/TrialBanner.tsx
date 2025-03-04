@@ -3,12 +3,12 @@ import { Alert, Layout } from 'antd';
 import dayjs from 'dayjs';
 import { usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { getActiveLicensesByOrgUserId } from '../../../../../redux/actions/license';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import { getActiveLicensesByOrgUserId } from '../../../../redux/actions/license';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hook';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
 import { StyleName } from '../typography/typography.interface';
-import { setLicense } from '../../../../../redux/slices/license';
+import { setLicense } from '../../../../redux/slices/license';
 
 const TrialBanner: React.FC<{
   PrimaryTextTypography?: StyleName;

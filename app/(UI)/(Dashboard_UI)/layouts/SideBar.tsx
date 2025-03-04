@@ -22,12 +22,12 @@ import { Layout, MenuProps } from 'antd';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import ActiveCrmIcon from '../../../../../public/assets/static/activeCrmIcon.svg';
-import InActiveCrmIcon from '../../../../../public/assets/static/inActiveCrmIcon.svg';
-import { checkQuoteAIAccess } from '../../../../../redux/actions/license';
-import { getUserByTokenAccess } from '../../../../../redux/actions/user';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
-import { setUserInformation } from '../../../../../redux/slices/user';
+import ActiveCrmIcon from '../../../../public/assets/static/activeCrmIcon.svg';
+import InActiveCrmIcon from '../../../../public/assets/static/inActiveCrmIcon.svg';
+import { checkQuoteAIAccess } from '../../../../redux/actions/license';
+import { getUserByTokenAccess } from '../../../../redux/actions/user';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hook';
+import { setUserInformation } from '../../../../redux/slices/user';
 import { LayoutMenuStyle } from './styled-components';
 // import {
 //   getAllCustomerOfCacheFlow,

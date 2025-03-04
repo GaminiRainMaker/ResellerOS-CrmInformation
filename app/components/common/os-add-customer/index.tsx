@@ -9,10 +9,9 @@ import {PencilSquareIcon, UserCircleIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {useForm} from 'antd/es/form/Form';
 import {useCallback, useState} from 'react';
-import {getCustomerProfileById} from '../../../../../redux/actions/customer';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {setBillingContact} from '../../../../../redux/slices/billingAddress';
-import {setCustomerProfile} from '../../../../../redux/slices/customer';
+import {useAppDispatch, useAppSelector} from '../../../../redux/hook';
+import {setBillingContact} from '../../../../redux/slices/billingAddress';
+import {setCustomerProfile} from '../../../../redux/slices/customer';
 import {Checkbox} from '../antd/Checkbox';
 import {Divider} from '../antd/Divider';
 import {Space} from '../antd/Space';
@@ -26,7 +25,7 @@ import {CustomerTabsStyle} from './styled-components';
 import {
   getAllbillingContact,
   insertbillingContact,
-} from '../../../../../redux/actions/billingContact';
+} from '../../../../redux/actions/billingContact';
 
 const AddCustomer: React.FC<any> = ({
   drawer,

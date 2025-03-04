@@ -5,7 +5,7 @@ import React, {Suspense} from 'react';
 import {usePathname} from 'next/navigation';
 import CustomHeader from './layouts/Header';
 import SideBar from './layouts/SideBar';
-import {useAppSelector} from '../../../../redux/hook';
+import {useAppSelector} from '../../../redux/hook';
 
 const {Content} = Layout;
 export default function DashboardLayout({

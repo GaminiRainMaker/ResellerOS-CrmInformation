@@ -3,17 +3,17 @@
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { Form } from 'antd';
 import { FC, useEffect, useState } from 'react';
-import { insertAddAddress } from '../../../../../redux/actions/address';
+import { insertAddAddress } from '../../../../redux/actions/address';
 import {
   getAllbillingContact,
   insertbillingContact,
-} from '../../../../../redux/actions/billingContact';
+} from '../../../../redux/actions/billingContact';
 import {
   getAllCustomer,
   insertCustomer,
-} from '../../../../../redux/actions/customer';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
-import { setCustomerProfile } from '../../../../../redux/slices/customer';
+} from '../../../../redux/actions/customer';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hook';
+import { setCustomerProfile } from '../../../../redux/slices/customer';
 import { Space } from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import AddCustomer from '../os-add-customer';

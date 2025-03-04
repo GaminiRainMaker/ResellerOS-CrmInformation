@@ -38,21 +38,21 @@ import { use, useEffect, useState } from 'react';
 import {
   insertAddAddress,
   updateAddress,
-} from '../../../../../redux/actions/address';
+} from '../../../../redux/actions/address';
 import {
   insertbillingContact,
   queryContact,
-} from '../../../../../redux/actions/billingContact';
+} from '../../../../redux/actions/billingContact';
 import {
   deleteCustomers,
   insertCustomer,
   queryCustomer,
   updateCustomer,
-} from '../../../../../redux/actions/customer';
-import { queryOpportunity } from '../../../../../redux/actions/opportunity';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
-import { setBillingContact } from '../../../../../redux/slices/billingAddress';
-import { setCustomerProfile } from '../../../../../redux/slices/customer';
+} from '../../../../redux/actions/customer';
+import { queryOpportunity } from '../../../../redux/actions/opportunity';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hook';
+import { setBillingContact } from '../../../../redux/slices/billingAddress';
+import { setCustomerProfile } from '../../../../redux/slices/customer';
 import { transformAddressData } from '@/app/utils/base';
 
 const CrmInformation: React.FC = () => {

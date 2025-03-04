@@ -51,15 +51,15 @@ import { QuestionOutlined } from '@ant-design/icons';
 import OsModal from '@/app/components/common/os-modal';
 
 import OsInput from '@/app/components/common/os-input';
-import creditCard from '../../../../../public/assets/static/card-pos.svg';
-import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
-import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
-import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
-import { sendEmailForSuport } from '../../../../../redux/actions/auth';
-import { getCountOfNotification } from '../../../../../redux/actions/notifications';
+import creditCard from '../../../../public/assets/static/card-pos.svg';
+import HeaderLogo from '../../../../public/assets/static/headerLogo.svg';
+import DownArrow from '../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
+import SearchImg from '../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
+import { sendEmailForSuport } from '../../../../redux/actions/auth';
+import { getCountOfNotification } from '../../../../redux/actions/notifications';
 
-import { getGloabalySearchDataa } from '../../../../../redux/actions/user';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import { getGloabalySearchDataa } from '../../../../redux/actions/user';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hook';
 
 export const CustomUpload = styled(Upload)`
   .ant-upload-list-text {

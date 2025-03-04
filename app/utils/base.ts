@@ -9,23 +9,23 @@ import {FormInstance, InputNumberProps} from 'antd';
 import axios from 'axios';
 
 import moment from 'moment';
-import {getContractInBulkByProductCode} from '../../../redux/actions/contractProduct';
+import {getContractInBulkByProductCode} from '../../redux/actions/contractProduct';
 import {
   getAllProfitabilityCount,
   getProfitabilityByQuoteId,
   insertProfitability,
-} from '../../../redux/actions/profitability';
+} from '../../redux/actions/profitability';
 import {
   getQuoteFileByQuoteId,
   getQuoteFileCount,
   quoteFileVerification,
-} from '../../../redux/actions/quoteFile';
-import {getRebatesInBulkByProductCode} from '../../../redux/actions/rebate';
-import {insertRebateQuoteLineItem} from '../../../redux/actions/rebateQuoteLineitem';
-import {insertValidation} from '../../../redux/actions/validation';
-import {setQuoteFileUnverifiedById} from '../../../redux/slices/quoteFile';
-import {getAllPartnerById} from '../../../redux/actions/partner';
-import {getAllPartnerProgramById} from '../../../redux/actions/partnerProgram';
+} from '../../redux/actions/quoteFile';
+import {getRebatesInBulkByProductCode} from '../../redux/actions/rebate';
+import {insertRebateQuoteLineItem} from '../../redux/actions/rebateQuoteLineitem';
+import {insertValidation} from '../../redux/actions/validation';
+import {setQuoteFileUnverifiedById} from '../../redux/slices/quoteFile';
+import {getAllPartnerById} from '../../redux/actions/partner';
+import {getAllPartnerProgramById} from '../../redux/actions/partnerProgram';
 
 export const getResultedValue = () => {
   if (typeof window !== 'undefined') {

@@ -5,8 +5,8 @@ import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
 import {EmptyContainerInterface} from './os-empty-container.interface';
-import EmptyDataIcon from '../../../../../public/assets/static/EmptyContainerIcon.svg';
-import MetricsEmptyIcon from '../../../../../public/assets/static/emptyDataIcon.svg';
+import EmptyDataIcon from '../../../../public/assets/static/EmptyContainerIcon.svg';
+import MetricsEmptyIcon from '../../../../public/assets/static/emptyDataIcon.svg';
 
 import OsButton from '../os-button';
 
